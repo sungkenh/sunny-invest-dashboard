@@ -1,11 +1,11 @@
 {
- "_updated": "2026-06-05T22:54:13",
+ "_updated": "2026-06-05T13:57:05",
  "today": "2026-06-05",
  "window": {
   "from": "2026-06-02",
   "to": "2026-06-12"
  },
- "count": 183,
+ "count": 160,
  "events": [
   {
    "date": "2026-06-02",
@@ -269,8 +269,8 @@
    "title_en": "Nonfarm Payrolls",
    "importance": 3,
    "forecast": "85K",
-   "previous": "115K",
-   "actual": "",
+   "previous": "179K",
+   "actual": "172K",
    "category": "지표"
   },
   {
@@ -283,8 +283,8 @@
    "title_en": "Private Nonfarm Payrolls",
    "importance": 3,
    "forecast": "85K",
-   "previous": "123K",
-   "actual": "",
+   "previous": "177K",
+   "actual": "120K",
    "category": "지표"
   },
   {
@@ -298,7 +298,7 @@
    "importance": 3,
    "forecast": "",
    "previous": "8.2%",
-   "actual": "",
+   "actual": "8.1%",
    "category": "지표"
   },
   {
@@ -312,7 +312,7 @@
    "importance": 3,
    "forecast": "4.3%",
    "previous": "4.3%",
-   "actual": "",
+   "actual": "4.3%",
    "category": "지표"
   },
   {
@@ -698,7 +698,7 @@
    "eps_est": "$1.24",
    "eps_prev": "$1.90",
    "n_ests": "7",
-   "mktcap": "$22B",
+   "mktcap": "$23B",
    "importance": 2
   },
   {
@@ -756,7 +756,7 @@
    "eps_est": "$3.72",
    "eps_prev": "$3.49",
    "n_ests": "7",
-   "mktcap": "$119B",
+   "mktcap": "$118B",
    "importance": 3
   },
   {
@@ -888,10 +888,10 @@
    "title": "Fastenal Company",
    "ticker": "FAST",
    "session": "시간 미정",
-   "eps_est": "$0.33",
+   "eps_est": "$0.32",
    "eps_prev": "$0.29",
    "n_ests": "6",
-   "mktcap": "$54B",
+   "mktcap": "$53B",
    "importance": 2
   },
   {
@@ -1236,7 +1236,7 @@
    "eps_est": "$1.49",
    "eps_prev": "$1.14",
    "n_ests": "9",
-   "mktcap": "$153B",
+   "mktcap": "$151B",
    "importance": 3
   },
   {
@@ -1251,7 +1251,7 @@
    "eps_est": "$2.24",
    "eps_prev": "$2.16",
    "n_ests": "5",
-   "mktcap": "$80B",
+   "mktcap": "$79B",
    "importance": 2
   },
   {
@@ -1266,7 +1266,7 @@
    "eps_est": "$1.08",
    "eps_prev": "$0.91",
    "n_ests": "7",
-   "mktcap": "$61B",
+   "mktcap": "$59B",
    "importance": 2
   },
   {
@@ -1281,7 +1281,7 @@
    "eps_est": "$0.97",
    "eps_prev": "$0.90",
    "n_ests": "7",
-   "mktcap": "$47B",
+   "mktcap": "$45B",
    "importance": 2
   },
   {
@@ -1296,7 +1296,7 @@
    "eps_est": "$0.39",
    "eps_prev": "$0.38",
    "n_ests": "6",
-   "mktcap": "$34B",
+   "mktcap": "$32B",
    "importance": 2
   },
   {
@@ -1461,7 +1461,7 @@
    "eps_est": "$2.85",
    "eps_prev": "$2.31",
    "n_ests": "13",
-   "mktcap": "$4.51T",
+   "mktcap": "$4.35T",
    "importance": 3
   },
   {
@@ -1476,7 +1476,7 @@
    "eps_est": "$2.85",
    "eps_prev": "$2.31",
    "n_ests": "13",
-   "mktcap": "$4.51T",
+   "mktcap": "$4.35T",
    "importance": 3
   },
   {
@@ -1491,7 +1491,7 @@
    "eps_est": "$0.28",
    "eps_prev": "$0.27",
    "n_ests": "10",
-   "mktcap": "$1.57T",
+   "mktcap": "$1.59T",
    "importance": 3
   },
   {
@@ -1506,7 +1506,7 @@
    "eps_est": "$2.95",
    "eps_prev": "$2.80",
    "n_ests": "7",
-   "mktcap": "$284B",
+   "mktcap": "$287B",
    "importance": 3
   },
   {
@@ -1521,7 +1521,7 @@
    "eps_est": "$3.11",
    "eps_prev": "$1.86",
    "n_ests": "9",
-   "mktcap": "$259B",
+   "mktcap": "$258B",
    "importance": 3
   },
   {
@@ -1536,7 +1536,7 @@
    "eps_est": "$2.57",
    "eps_prev": "$2.84",
    "n_ests": "8",
-   "mktcap": "$192B",
+   "mktcap": "$196B",
    "importance": 3
   },
   {
@@ -1551,22 +1551,7 @@
    "eps_est": "$1.16",
    "eps_prev": "$0.81",
    "n_ests": "3",
-   "mktcap": "$181B",
-   "importance": 3
-  },
-  {
-   "date": "2026-07-22",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Thermo Fisher Scientific Inc",
-   "ticker": "TMO",
-   "session": "시간 미정",
-   "eps_est": "$5.75",
-   "eps_prev": "$5.36",
-   "n_ests": "9",
-   "mktcap": "$179B",
+   "mktcap": "$182B",
    "importance": 3
   },
   {
@@ -1581,7 +1566,22 @@
    "eps_est": "$1.13",
    "eps_prev": "$1.05",
    "n_ests": "4",
-   "mktcap": "$179B",
+   "mktcap": "$176B",
+   "importance": 3
+  },
+  {
+   "date": "2026-07-22",
+   "time": "",
+   "mk": "us",
+   "type": "earnings",
+   "index": "S&P500",
+   "title": "Thermo Fisher Scientific Inc",
+   "ticker": "TMO",
+   "session": "시간 미정",
+   "eps_est": "$5.75",
+   "eps_prev": "$5.36",
+   "n_ests": "9",
+   "mktcap": "$176B",
    "importance": 3
   },
   {
@@ -1596,24 +1596,7 @@
    "eps_est": "$0.59",
    "eps_prev": "$0.54",
    "n_ests": "8",
-   "mktcap": "$158B",
-   "importance": 3
-  },
-  {
-   "date": "2026-07-22",
-   "time": "",
-   "et": "",
-   "mk": "kr",
-   "type": "earnings",
-   "title": "삼성바이오로직스",
-   "ticker": "207940.KS",
-   "market": "KOSPI",
-   "index": "KOSPI",
-   "session": "",
-   "eps_est": "8,866원",
-   "eps_prev": "7,008원",
-   "mktcap": "",
-   "n_ests": "",
+   "mktcap": "$164B",
    "importance": 3
   },
   {
@@ -1674,23 +1657,6 @@
    "eps_prev": "$1.43",
    "n_ests": "6",
    "mktcap": "$116B",
-   "importance": 3
-  },
-  {
-   "date": "2026-07-23",
-   "time": "",
-   "et": "",
-   "mk": "kr",
-   "type": "earnings",
-   "title": "현대차",
-   "ticker": "005380.KS",
-   "market": "KOSPI",
-   "index": "KOSPI",
-   "session": "",
-   "eps_est": "11,654원",
-   "eps_prev": "11,514원",
-   "mktcap": "",
-   "n_ests": "",
    "importance": 3
   },
   {
@@ -1874,57 +1840,6 @@
    "importance": 2
   },
   {
-   "date": "2026-07-24",
-   "time": "",
-   "et": "",
-   "mk": "kr",
-   "type": "earnings",
-   "title": "현대모비스",
-   "ticker": "012330.KS",
-   "market": "KOSPI",
-   "index": "KOSPI",
-   "session": "",
-   "eps_est": "13,263원",
-   "eps_prev": "10,433원",
-   "mktcap": "",
-   "n_ests": "",
-   "importance": 2
-  },
-  {
-   "date": "2026-07-24",
-   "time": "",
-   "et": "",
-   "mk": "kr",
-   "type": "earnings",
-   "title": "신한지주",
-   "ticker": "055550.KS",
-   "market": "KOSPI",
-   "index": "KOSPI",
-   "session": "",
-   "eps_est": "3,302원",
-   "eps_prev": "3,062원",
-   "mktcap": "",
-   "n_ests": "",
-   "importance": 2
-  },
-  {
-   "date": "2026-07-24",
-   "time": "",
-   "et": "",
-   "mk": "kr",
-   "type": "earnings",
-   "title": "LG전자",
-   "ticker": "066570.KS",
-   "market": "KOSPI",
-   "index": "KOSPI",
-   "session": "",
-   "eps_est": "3,704원",
-   "eps_prev": "3,357원",
-   "mktcap": "",
-   "n_ests": "",
-   "importance": 2
-  },
-  {
    "date": "2026-07-27",
    "time": "",
    "mk": "us",
@@ -1936,7 +1851,7 @@
    "eps_est": "$1.53",
    "eps_prev": "$1.28",
    "n_ests": "4",
-   "mktcap": "$141B",
+   "mktcap": "$142B",
    "importance": 3
   },
   {
@@ -1951,7 +1866,7 @@
    "eps_est": "$1.62",
    "eps_prev": "$1.22",
    "n_ests": "7",
-   "mktcap": "$113B",
+   "mktcap": "$114B",
    "importance": 3
   },
   {
@@ -1981,7 +1896,7 @@
    "eps_est": "$4.42",
    "eps_prev": "$2.60",
    "n_ests": "6",
-   "mktcap": "$59B",
+   "mktcap": "$60B",
    "importance": 2
   },
   {
@@ -2011,7 +1926,7 @@
    "eps_est": "$0.93",
    "eps_prev": "$0.87",
    "n_ests": "8",
-   "mktcap": "$331B",
+   "mktcap": "$339B",
    "importance": 3
   },
   {
@@ -2026,7 +1941,7 @@
    "eps_est": "$1.90",
    "eps_prev": "$1.41",
    "n_ests": "8",
-   "mktcap": "$278B",
+   "mktcap": "$281B",
    "importance": 3
   },
   {
@@ -2041,7 +1956,7 @@
    "eps_est": "$2.03",
    "eps_prev": "$1.91",
    "n_ests": "5",
-   "mktcap": "$273B",
+   "mktcap": "$274B",
    "importance": 3
   },
   {
@@ -2056,7 +1971,7 @@
    "eps_est": "$1.66",
    "eps_prev": "$1.56",
    "n_ests": "6",
-   "mktcap": "$242B",
+   "mktcap": "$232B",
    "importance": 3
   },
   {
@@ -2071,7 +1986,7 @@
    "eps_est": "$2.02",
    "eps_prev": "$1.83",
    "n_ests": "8",
-   "mktcap": "$148B",
+   "mktcap": "$144B",
    "importance": 3
   },
   {
@@ -2086,7 +2001,7 @@
    "eps_est": "$1.85",
    "eps_prev": "$1.80",
    "n_ests": "9",
-   "mktcap": "$132B",
+   "mktcap": "$126B",
    "importance": 3
   },
   {
@@ -2101,7 +2016,7 @@
    "eps_est": "$6.56",
    "eps_prev": "$6.14",
    "n_ests": "11",
-   "mktcap": "$122B",
+   "mktcap": "$121B",
    "importance": 3
   },
   {
@@ -2116,7 +2031,7 @@
    "eps_est": "$7.09",
    "eps_prev": "$7.29",
    "n_ests": "8",
-   "mktcap": "$120B",
+   "mktcap": "$118B",
    "importance": 3
   },
   {
@@ -2131,7 +2046,7 @@
    "eps_est": "$4.85",
    "eps_prev": "$5.48",
    "n_ests": "7",
-   "mktcap": "$114B",
+   "mktcap": "$111B",
    "importance": 3
   },
   {
@@ -2146,24 +2061,7 @@
    "eps_est": "$6.81",
    "eps_prev": "$7.11",
    "n_ests": "7",
-   "mktcap": "$77B",
-   "importance": 2
-  },
-  {
-   "date": "2026-07-28",
-   "time": "",
-   "et": "",
-   "mk": "kr",
-   "type": "earnings",
-   "title": "크래프톤",
-   "ticker": "259960.KS",
-   "market": "KOSPI",
-   "index": "KOSPI",
-   "session": "",
-   "eps_est": "5,039원",
-   "eps_prev": "335원",
-   "mktcap": "",
-   "n_ests": "",
+   "mktcap": "$75B",
    "importance": 2
   },
   {
@@ -2317,57 +2215,6 @@
    "importance": 3
   },
   {
-   "date": "2026-07-29",
-   "time": "",
-   "et": "",
-   "mk": "kr",
-   "type": "earnings",
-   "title": "삼성전자",
-   "ticker": "005930.KS",
-   "market": "KOSPI",
-   "index": "KOSPI",
-   "session": "",
-   "eps_est": "10,956원",
-   "eps_prev": "737원",
-   "mktcap": "",
-   "n_ests": "",
-   "importance": 3
-  },
-  {
-   "date": "2026-07-29",
-   "time": "",
-   "et": "",
-   "mk": "kr",
-   "type": "earnings",
-   "title": "SK하이닉스",
-   "ticker": "000660.KS",
-   "market": "KOSPI",
-   "index": "KOSPI",
-   "session": "",
-   "eps_est": "69,422원",
-   "eps_prev": "9,572원",
-   "mktcap": "",
-   "n_ests": "",
-   "importance": 3
-  },
-  {
-   "date": "2026-07-29",
-   "time": "",
-   "et": "",
-   "mk": "kr",
-   "type": "earnings",
-   "title": "에코프로비엠",
-   "ticker": "247540.KQ",
-   "market": "KOSDAQ",
-   "index": "KOSDAQ",
-   "session": "",
-   "eps_est": "42원",
-   "eps_prev": "117원",
-   "mktcap": "",
-   "n_ests": "",
-   "importance": 2
-  },
-  {
    "date": "2026-07-30",
    "time": "",
    "mk": "us",
@@ -2516,244 +2363,6 @@
    "n_ests": "6",
    "mktcap": "$108B",
    "importance": 3
-  },
-  {
-   "date": "2026-07-30",
-   "time": "",
-   "et": "",
-   "mk": "kr",
-   "type": "earnings",
-   "title": "LG에너지솔루션",
-   "ticker": "373220.KS",
-   "market": "KOSPI",
-   "index": "KOSPI",
-   "session": "",
-   "eps_est": "1,280원",
-   "eps_prev": "-1,271원",
-   "mktcap": "",
-   "n_ests": "",
-   "importance": 3
-  },
-  {
-   "date": "2026-07-30",
-   "time": "",
-   "et": "",
-   "mk": "kr",
-   "type": "earnings",
-   "title": "POSCO홀딩스",
-   "ticker": "005490.KS",
-   "market": "KOSPI",
-   "index": "KOSPI",
-   "session": "",
-   "eps_est": "5,437원",
-   "eps_prev": "2,114원",
-   "mktcap": "",
-   "n_ests": "",
-   "importance": 2
-  },
-  {
-   "date": "2026-07-30",
-   "time": "",
-   "et": "",
-   "mk": "kr",
-   "type": "earnings",
-   "title": "삼성SDI",
-   "ticker": "006400.KS",
-   "market": "KOSPI",
-   "index": "KOSPI",
-   "session": "",
-   "eps_est": "144원",
-   "eps_prev": "-2,151원",
-   "mktcap": "",
-   "n_ests": "",
-   "importance": 2
-  },
-  {
-   "date": "2026-07-30",
-   "time": "",
-   "et": "",
-   "mk": "kr",
-   "type": "earnings",
-   "title": "KB금융",
-   "ticker": "105560.KS",
-   "market": "KOSPI",
-   "index": "KOSPI",
-   "session": "",
-   "eps_est": "4,579원",
-   "eps_prev": "4,648원",
-   "mktcap": "",
-   "n_ests": "",
-   "importance": 2
-  },
-  {
-   "date": "2026-07-30",
-   "time": "",
-   "et": "",
-   "mk": "kr",
-   "type": "earnings",
-   "title": "한화에어로스페이스",
-   "ticker": "012450.KS",
-   "market": "KOSPI",
-   "index": "KOSPI",
-   "session": "",
-   "eps_est": "11,175원",
-   "eps_prev": "4,234원",
-   "mktcap": "",
-   "n_ests": "",
-   "importance": 2
-  },
-  {
-   "date": "2026-07-30",
-   "time": "",
-   "et": "",
-   "mk": "kr",
-   "type": "earnings",
-   "title": "삼성전기",
-   "ticker": "009150.KS",
-   "market": "KOSPI",
-   "index": "KOSPI",
-   "session": "",
-   "eps_est": "4,180원",
-   "eps_prev": "1,717원",
-   "mktcap": "",
-   "n_ests": "",
-   "importance": 2
-  },
-  {
-   "date": "2026-07-31",
-   "time": "",
-   "et": "",
-   "mk": "kr",
-   "type": "earnings",
-   "title": "기아",
-   "ticker": "000270.KS",
-   "market": "KOSPI",
-   "index": "KOSPI",
-   "session": "",
-   "eps_est": "6,094원",
-   "eps_prev": "5,803원",
-   "mktcap": "",
-   "n_ests": "",
-   "importance": 2
-  },
-  {
-   "date": "2026-08-03",
-   "time": "",
-   "et": "",
-   "mk": "kr",
-   "type": "earnings",
-   "title": "HD현대중공업",
-   "ticker": "329180.KS",
-   "market": "KOSPI",
-   "index": "KOSPI",
-   "session": "",
-   "eps_est": "7,970원",
-   "eps_prev": "2,376원",
-   "mktcap": "",
-   "n_ests": "",
-   "importance": 2
-  },
-  {
-   "date": "2026-08-06",
-   "time": "",
-   "et": "",
-   "mk": "kr",
-   "type": "earnings",
-   "title": "셀트리온",
-   "ticker": "068270.KS",
-   "market": "KOSPI",
-   "index": "KOSPI",
-   "session": "",
-   "eps_est": "1,239원",
-   "eps_prev": "263원",
-   "mktcap": "",
-   "n_ests": "",
-   "importance": 2
-  },
-  {
-   "date": "2026-08-06",
-   "time": "",
-   "et": "",
-   "mk": "kr",
-   "type": "earnings",
-   "title": "카카오",
-   "ticker": "035720.KS",
-   "market": "KOSPI",
-   "index": "KOSPI",
-   "session": "",
-   "eps_est": "363원",
-   "eps_prev": "360원",
-   "mktcap": "",
-   "n_ests": "",
-   "importance": 2
-  },
-  {
-   "date": "2026-08-06",
-   "time": "",
-   "et": "",
-   "mk": "kr",
-   "type": "earnings",
-   "title": "LG화학",
-   "ticker": "051910.KS",
-   "market": "KOSPI",
-   "index": "KOSPI",
-   "session": "",
-   "eps_est": "-1,145원",
-   "eps_prev": "-5,614원",
-   "mktcap": "",
-   "n_ests": "",
-   "importance": 2
-  },
-  {
-   "date": "2026-08-06",
-   "time": "",
-   "et": "",
-   "mk": "kr",
-   "type": "earnings",
-   "title": "한미반도체",
-   "ticker": "042700.KS",
-   "market": "KOSPI",
-   "index": "KOSPI",
-   "session": "",
-   "eps_est": "929원",
-   "eps_prev": "680원",
-   "mktcap": "",
-   "n_ests": "",
-   "importance": 2
-  },
-  {
-   "date": "2026-08-07",
-   "time": "",
-   "et": "",
-   "mk": "kr",
-   "type": "earnings",
-   "title": "NAVER",
-   "ticker": "035420.KS",
-   "market": "KOSPI",
-   "index": "KOSPI",
-   "session": "",
-   "eps_est": "3,735원",
-   "eps_prev": "3,227원",
-   "mktcap": "",
-   "n_ests": "",
-   "importance": 2
-  },
-  {
-   "date": "2026-08-12",
-   "time": "",
-   "et": "",
-   "mk": "kr",
-   "type": "earnings",
-   "title": "HMM",
-   "ticker": "011200.KS",
-   "market": "KOSPI",
-   "index": "KOSPI",
-   "session": "",
-   "eps_est": "",
-   "eps_prev": "-21,049원",
-   "mktcap": "",
-   "n_ests": "",
-   "importance": 2
   }
  ]
 }
