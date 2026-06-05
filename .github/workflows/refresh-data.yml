@@ -35,6 +35,11 @@ jobs:
       - name: 의존성 설치
         run: pip install -r pipeline/requirements.txt
 
+      - name: 직전 스냅샷 시드 (보존 로직용)
+        run: |
+          mkdir -p pipeline/data
+          cp data/*.json pipeline/data/ 2>/dev/null || true
+
       - name: 데이터 재수집 (개별 실패 허용)
         working-directory: pipeline
         run: |
