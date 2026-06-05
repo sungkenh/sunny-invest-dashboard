@@ -490,6 +490,29 @@ def disambiguate_period(events):
         rows[1 - hi]['title'] = title + ' ' + mom
 
 
+def preserve_kr_earnings(events):
+    """한국 실적이 새로 0건(예: 클라우드 IP에서 야후 차단)이면 직전 calendar.json의
+       미래 한국 실적을 보존해 데이터가 사라지지 않게 한다. (티커 기준 신규 우선)"""
+    here = os.path.dirname(os.path.abspath(__file__))
+    fresh_tickers = {e.get('ticker') for e in events if e.get('mk') == 'kr' and e.get('type') == 'earnings'}
+    lo = TODAY_KST.isoformat()
+    hi = (TODAY_KST + datetime.timedelta(days=EARN_HORIZON)).isoformat()
+    kept = 0
+    try:
+        prev = json.load(open(os.path.join(here, 'data', 'calendar.json'), encoding='utf-8'))
+        for e in (prev.get('events') or []):
+            if (e.get('mk') == 'kr' and e.get('type') == 'earnings'
+                    and e.get('ticker') not in fresh_tickers
+                    and lo <= (e.get('date') or '') <= hi):
+                events.append(e)
+                fresh_tickers.add(e.get('ticker'))
+                kept += 1
+    except Exception:
+        return
+    if kept:
+        print('  [kr-earn] 신규 수집 부족 → 직전 스냅샷에서 한국 실적 %d건 보존' % kept)
+
+
 def main():
     events = []
     print('경제지표 수집(US/KR, nasdaq)…')
@@ -499,6 +522,7 @@ def main():
     print('실적 수집(KR KOSPI/KOSDAQ, yfinance)…')
     fetch_kr_earnings(events)
     add_curated_kr(events)
+    preserve_kr_earnings(events)   # 야후 차단 등으로 0건이면 직전 스냅샷 보존
     disambiguate_period(events)
 
     # 정렬: 날짜 → 시각 → 중요도
