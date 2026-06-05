@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>실시간 투자 뉴스 · 써니의 투자 인사이트</title>
+<style>
+  :root{
+    --bg:#0a0e17; --panel:#0f1626; --panel2:#121b2e; --border:#1e2a42;
+    --text:#e6edf6; --muted:#8597b0; --muted2:#5c6c87;
+    --accent:#38bdf8; --accent2:#a78bfa; --gold:#f5b942;
+    --up:#ff4d5e; --down:#3b82f6; --chip:#16223a;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{
+    background:radial-gradient(1200px 600px at 80% -10%, #12203b 0%, transparent 55%), var(--bg);
+    color:var(--text); font-family:"Pretendard","Segoe UI",-apple-system,"Malgun Gothic",sans-serif; font-size:14px; line-height:1.5;
+  }
+  a{color:inherit;text-decoration:none}
+  .mono{font-variant-numeric:tabular-nums}
+
+  header.topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+    padding:10px 22px;background:rgba(10,14,23,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.5px}
+  .brand .logo{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));
+    display:grid;place-items:center;color:#05080f;font-weight:900;font-size:13px}
+  .brand small{color:var(--muted);font-weight:600;font-size:11px;letter-spacing:0}
+  nav.mainnav{display:flex;gap:4px}
+  nav.mainnav a{padding:7px 13px;border-radius:8px;font-size:13px;font-weight:700;color:var(--muted);border:1px solid transparent}
+  nav.mainnav a:hover{color:var(--text);border-color:var(--border)}
+  nav.mainnav a.active{color:#05080f;background:var(--accent)}
+  .spacer{flex:1}
+  .clock{font-size:13px;color:var(--muted);font-weight:600}
+  .demo-badge{font-size:10.5px;font-weight:800;color:var(--gold);border:1px solid #4a3a12;background:#1c1607;padding:4px 8px;border-radius:6px;letter-spacing:.6px}
+
+  /* 필터바 */
+  .filterbar{position:sticky;top:53px;z-index:40;display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+    padding:12px 22px;background:rgba(10,14,23,.8);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+  .chips{display:flex;gap:6px;flex-wrap:wrap}
+  .chip{cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--muted);
+    padding:5px 11px;border-radius:999px;font-size:12px;font-weight:700}
+  .chip:hover{color:var(--text)} .chip.on{color:#05080f;background:var(--accent);border-color:var(--accent)}
+  .search{margin-left:auto;display:flex;gap:8px;align-items:center}
+  .search input{background:#0a1120;border:1px solid var(--border);color:var(--text);padding:8px 11px;border-radius:9px;font-size:13px;width:220px}
+  .search input:focus{outline:none;border-color:var(--accent)}
+  .seg{display:inline-flex;border:1px solid var(--border);border-radius:9px;overflow:hidden;background:var(--panel)}
+  .seg button{border:none;background:transparent;color:var(--muted);padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer}
+  .seg button.on{background:var(--accent);color:#05080f}
+
+  main{padding:18px 22px 50px;max-width:1500px;margin:0 auto}
+  .sectit{display:flex;align-items:center;gap:9px;margin:6px 2px 12px;font-size:14px;font-weight:800}
+  .sectit .cnt{font-size:11px;color:var(--muted);font-weight:600;border:1px solid var(--border);padding:1px 7px;border-radius:6px}
+  .rank-note{font-size:11px;color:var(--muted2);font-weight:500;margin-left:auto}
+
+  /* HOT 헤드라인 */
+  .hotrow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}
+  .hotcard{border:1px solid var(--border);border-radius:13px;background:linear-gradient(180deg,var(--panel2),var(--panel));padding:14px;cursor:pointer;position:relative;overflow:hidden}
+  .hotcard:hover{border-color:var(--accent)}
+  .hotcard .badge{font-size:10px;font-weight:800;color:var(--gold);border:1px solid #4a3a12;background:#1c1607;padding:1px 6px;border-radius:5px}
+  .hotcard h4{margin:9px 0 7px;font-size:14px;line-height:1.4;font-weight:700}
+  .hotcard .sum{font-size:11.5px;color:var(--muted);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .hotcard .meta{font-size:10.5px;color:var(--muted2);margin-top:9px;display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+
+  /* 2열 KR/US */
+  .news-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .news-col{border:1px solid var(--border);border-radius:14px;background:var(--panel);overflow:hidden}
+  .news-col > .colhead{display:flex;align-items:center;gap:8px;padding:13px 15px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--panel);z-index:1}
+  .news-col > .colhead h3{margin:0;font-size:14px;font-weight:800}
+  .news-col .feed{max-height:1400px;overflow:auto}
+  .feed::-webkit-scrollbar{width:8px}.feed::-webkit-scrollbar-thumb{background:#22324f;border-radius:8px}
+  .nitem{display:flex;gap:11px;padding:13px 15px;border-bottom:1px solid #141d31;cursor:pointer}
+  .nitem:hover{background:#101a2e}
+  .nitem .rk{font-weight:800;color:var(--muted2);width:20px;text-align:center;flex:none;font-size:13px;padding-top:1px}
+  .nitem .ti{font-size:13.5px;line-height:1.45;font-weight:600}
+  .nitem .sum{font-size:11.5px;color:var(--muted);line-height:1.45;margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .nitem .meta{font-size:10.5px;color:var(--muted2);margin-top:6px;display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+  .ctag{border:1px solid var(--border);border-radius:4px;padding:0 5px;color:var(--accent)}
+  .hot{color:var(--gold);font-weight:800;border:1px solid #4a3a12;background:#1c1607;padding:0 5px;border-radius:4px}
+  .src{color:var(--muted)}
+  .empty{padding:30px;text-align:center;color:var(--muted2);font-size:13px}
+
+  footer{padding:22px;color:var(--muted2);font-size:11px;line-height:1.6;border-top:1px solid var(--border);margin-top:24px}
+  footer b{color:var(--accent2)}
+
+  @media(max-width:1100px){ .hotrow{grid-template-columns:repeat(2,1fr)} }
+  @media(max-width:840px){ .news-cols{grid-template-columns:1fr} .search input{width:150px} }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand"><div class="logo">S</div>써니의&nbsp;투자&nbsp;인사이트<small>실시간 투자 뉴스</small></div>
+  <nav class="mainnav">
+    <a href="index.html">대시보드</a>
+    <a href="news.html" class="active">실시간 뉴스</a>
+    <a href="schedule.html">일정</a>
+  </nav>
+  <div class="spacer"></div>
+  <span class="clock mono" id="clock">--:--:--</span>
+  <span class="demo-badge" id="upd" style="color:#22c55e;border-color:#14532d;background:#06210f">● 실시간</span>
+</header>
+
+<section class="filterbar">
+  <div class="chips" id="cat-chips"></div>
+  <div class="search">
+    <div class="seg" id="sort-seg">
+      <button data-s="latest" class="on">최신순</button>
+      <button data-s="popular">인기순</button>
+    </div>
+    <input id="q" placeholder="키워드 검색 (예: HBM, 금리)" />
+  </div>
+</section>
+
+<main>
+  <div class="sectit">🔥 HOT 헤드라인 <span class="rank-note">추천 기준: 출처 신뢰도 × 발행 속도(시간당 조회·언급) × 관심종목 관련도</span></div>
+  <section class="hotrow" id="hotrow"></section>
+
+  <div class="news-cols">
+    <div class="news-col">
+      <div class="colhead"><h3>🇰🇷 한국</h3><span class="sectit cnt" id="kr-cnt" style="margin:0"></span></div>
+      <div class="feed" id="kr-list"></div>
+    </div>
+    <div class="news-col">
+      <div class="colhead"><h3>🇺🇸 미국</h3><span class="sectit cnt" id="us-cnt" style="margin:0"></span></div>
+      <div class="feed" id="us-list"></div>
+    </div>
+  </div>
+</main>
+
+<footer id="disc"></footer>
+
+<script>
+/* ============================================================
+   실시간 투자 뉴스 페이지 — 목업 (샘플 데이터)
+   실제 서비스: RSS(한경·매경·연합)+Finnhub News+Marketaux 등을 수집해
+   data/news.json 으로 떨군 뒤 아래 SAMPLE_NEWS 를 교체.
+   각 항목 필드: mk(kr|us) cat src tm min(분전) pop(인기점수) sum hot
+   ============================================================ */
+let SAMPLE_NEWS = [
+  // 🇰🇷 한국
+  {mk:'kr',cat:'반도체',src:'전자신문',tm:'38분 전',min:38,pop:95,hot:true,ti:'SK하이닉스 HBM4 샘플 출하 임박… 엔비디아 퀄 통과 관측',sum:'차세대 고대역폭 메모리 HBM4 샘플을 주요 고객사에 공급하며 연내 양산 채비. 엔비디아 차세대 가속기 탑재 여부가 관전 포인트.'},
+  {mk:'kr',cat:'반도체',src:'서울경제',tm:'45분 전',min:45,pop:90,hot:true,ti:'삼성전자, HBM3E 엔비디아 공급 승인 임박 관측',sum:'엔비디아 품질 인증 막바지 단계라는 관측이 잇따르며 메모리 사업 반등 기대. 파운드리 가동률 회복도 동반.'},
+  {mk:'kr',cat:'방산',src:'매일경제',tm:'51분 전',min:51,pop:80,ti:'한화에어로스페이스, 폴란드 추가 수주 협상… 방산 슈퍼사이클',sum:'K9 자주포·천무 등 2차 실행계약 협상이 진행 중. 장기 수주잔고 가시성이 높아지며 밸류에이션 재평가 기대.'},
+  {mk:'kr',cat:'국내증시',src:'연합인포맥스',tm:'1시간 전',min:62,pop:72,ti:'코스피 외국인 6거래일 연속 순매수… 반도체에 집중',sum:'외국인 자금이 대형 반도체주를 중심으로 유입. 원화 강세 전환 기대가 수급을 뒷받침.'},
+  {mk:'kr',cat:'2차전지',src:'이데일리',tm:'2시간 전',min:120,pop:64,ti:'2차전지株 반등… 에코프로비엠·포스코퓨처엠 강세',sum:'리튬 가격 바닥 인식과 하반기 출하 회복 기대가 맞물리며 소재주 반등. 전기차 캐즘 우려는 여전.'},
+  {mk:'kr',cat:'환율',src:'이데일리',tm:'3시간 전',min:182,pop:55,ti:'원/달러 1,378원… 외환당국 구두개입 경계감',sum:'달러 강세 진정에도 변동성 확대. 당국의 미세조정 가능성에 시장 경계.'},
+  {mk:'kr',cat:'매크로',src:'연합뉴스',tm:'3시간 전',min:195,pop:60,ti:'한국은행 기준금리 동결 전망… 하반기 인하론 부상',sum:'물가 둔화에도 가계부채·환율 부담으로 동결 무게. 하반기 인하 시점에 시장 관심 집중.'},
+  {mk:'kr',cat:'자동차',src:'한국경제',tm:'4시간 전',min:240,pop:58,ti:'현대차·기아, 美 전기차 판매 호조… IRA 보조금 수혜',sum:'북미 생산 확대와 보조금 요건 충족으로 판매 모멘텀. 하이브리드 라인업도 동반 강세.'},
+  {mk:'kr',cat:'바이오',src:'머니투데이',tm:'5시간 전',min:300,pop:50,ti:'코스닥 바이오 IPO 흥행… 청약 경쟁률 1,000대 1',sum:'신약 개발 바이오텍 공모에 자금 몰려. 금리 인하 기대가 성장주 투자심리 개선.'},
+  {mk:'kr',cat:'원전·전력',src:'한국경제',tm:'6시간 전',min:360,pop:52,ti:'두산에너빌리티, SMR 부품 수주 기대… AI 전력수요 수혜',sum:'데이터센터 전력 급증으로 소형모듈원자로(SMR) 밸류체인 주목. 대형 원전 수출도 파이프라인 확대.'},
+  {mk:'kr',cat:'빅테크',src:'디지털타임스',tm:'7시간 전',min:420,pop:40,ti:"네이버, AI 검색 '큐:' 적용 확대… 광고 효율 개선",sum:'생성형 AI 검색을 메인에 확대 적용. 커머스·광고 시너지로 수익화 기대.'},
+  {mk:'kr',cat:'2차전지',src:'매일경제',tm:'8시간 전',min:480,pop:38,ti:'포스코그룹, 리튬 염호·광석 사업 본격 가동',sum:'아르헨티나 염호와 호주 광석 기반 수직계열화. 2026년 생산능력 대폭 확대 계획.'},
+  {mk:'kr',cat:'방산',src:'서울경제',tm:'9시간 전',min:540,pop:36,ti:'LIG넥스원, 중동 유도미사일 수출 협의 진전',sum:'천궁-II 등 방공 체계 수출 논의. 중동 지정학 리스크로 수요 견조.'},
+  {mk:'kr',cat:'바이오',src:'한국경제',tm:'10시간 전',min:600,pop:34,ti:'삼성바이오로직스, 8공장 증설 발표… CDMO 1위 굳히기',sum:'대규모 증설로 글로벌 위탁생산 점유율 확대. 장기 수주 가시성 부각.'},
+  {mk:'kr',cat:'국내증시',src:'연합인포맥스',tm:'11시간 전',min:660,pop:30,ti:'코스피 2,700선 안착… 대형주가 지수 견인',sum:'반도체·자동차 등 시총 상위주 강세로 지수 안정. 중소형주 순환매 조짐.'},
+  // 🇺🇸 미국
+  {mk:'us',cat:'반도체',src:'Reuters',tm:'12분 전',min:12,pop:99,hot:true,ti:'엔비디아, 차세대 AI 가속기 공급 계약 확대… 하이퍼스케일러 CapEx 상향',sum:'주요 클라우드 업체들이 설비투자 가이던스를 상향하며 가속기 수요가 추가 확대. 차세대 GPU 양산 램프업이 변수.'},
+  {mk:'us',cat:'매크로',src:'Reuters',tm:'25분 전',min:25,pop:97,hot:true,ti:'美 5월 고용 둔화 신호… 9월 금리인하 기대 재점화',sum:'비농업 고용 증가폭이 예상을 하회. 노동시장 냉각이 연준의 인하 명분을 강화.'},
+  {mk:'us',cat:'금리',src:'Bloomberg',tm:'1시간 전',min:58,pop:92,hot:true,ti:'Fed 9월 인하 확률 70%로 상승… 점도표에 시선',sum:'선물시장이 반영하는 9월 인하 확률이 급등. 향후 FOMC 점도표가 방향성을 좌우.'},
+  {mk:'us',cat:'자동차',src:'CNBC',tm:'1시간 전',min:64,pop:78,ti:'테슬라 로보택시 공개 일정 확정… 자율주행 모멘텀',sum:'무인 로보택시 공개 이벤트 일정이 확정되며 자율주행 기대감 부각. 규제 승인은 과제.'},
+  {mk:'us',cat:'빅테크',src:'Reuters',tm:'2시간 전',min:120,pop:74,ti:'애플, AI 아이폰 슈퍼사이클 기대감 확산',sum:'온디바이스 AI 기능 강화로 교체 수요 자극 전망. 서비스 매출 성장도 동반.'},
+  {mk:'us',cat:'AI',src:'Bloomberg',tm:'2시간 전',min:135,pop:70,ti:'팔란티어, 신규 정부 계약 수주… AIP 매출 가속',sum:'정부·국방 부문 AI 플랫폼 채택 확대. 상업 부문 성장과 함께 매출 모멘텀 강화.'},
+  {mk:'us',cat:'금리',src:'MarketWatch',tm:'2시간 전',min:140,pop:62,ti:'美 10년물 금리 4.38%로 하락… 성장주에 우호적',sum:'국채 금리 하락으로 밸류에이션 부담 완화. 기술·성장주 투자심리 개선.'},
+  {mk:'us',cat:'반도체',src:'CNBC',tm:'3시간 전',min:180,pop:66,ti:'마이크론 실적 호조… 메모리 업황 바닥 통과 시그널',sum:'데이터센터향 수요 회복과 HBM 비중 확대로 마진 개선. 메모리 사이클 반등 신호.'},
+  {mk:'us',cat:'빅테크',src:'WSJ',tm:'4시간 전',min:240,pop:54,ti:'아마존 AWS, AI 데이터센터 투자 대폭 확대',sum:'생성형 AI 수요 대응을 위한 인프라 투자 가속. 전력·냉각 밸류체인 동반 수혜.'},
+  {mk:'us',cat:'반도체',src:'Nikkei',tm:'5시간 전',min:300,pop:56,ti:'TSMC 5월 매출 전년比 +30%… AI 수요 견조',sum:'첨단 공정 가동률 호조로 매출 급증. AI 가속기 위탁생산 수요가 견인.'},
+  {mk:'us',cat:'AI',src:'The Information',tm:'6시간 전',min:360,pop:48,ti:'메타, 자체 AI 추론칩 개발 가속… 엔비디아 의존 축소',sum:'추론 비용 절감을 위한 커스텀 실리콘 내재화. 장기적으로 가속기 시장 경쟁 변수.'},
+  {mk:'us',cat:'바이오',src:'Bloomberg',tm:'7시간 전',min:420,pop:46,ti:'일라이릴리, 비만치료제(GLP-1) 매출 급증',sum:'젭바운드·마운자로 수요 폭증으로 가이던스 상향. 공급 능력 확대가 관건.'},
+  {mk:'us',cat:'반도체',src:'Reuters',tm:'8시간 전',min:480,pop:44,ti:'브로드컴, 커스텀 AI칩 수요 급증… 수주잔고 확대',sum:'하이퍼스케일러 맞춤형 ASIC 수요가 가파르게 증가. 네트워킹 부문도 동반 성장.'},
+  {mk:'us',cat:'원자재',src:'CNBC',tm:'9시간 전',min:540,pop:34,ti:'엑손모빌, 유가 반등 수혜… 정제마진 개선',sum:'WTI 반등과 정제마진 회복으로 실적 개선 기대. 주주환원 확대 기조 유지.'},
+  {mk:'us',cat:'빅테크',src:'WSJ',tm:'10시간 전',min:600,pop:32,ti:'마이크로소프트 코파일럿, 기업 도입 빠르게 확산',sum:'M365 코파일럿 좌석 수 증가로 AI 수익화 본격화. 클라우드 성장과 시너지.'},
+];
+
+const fmtClock=()=>{const n=new Date();document.getElementById('clock').textContent=n.toLocaleTimeString('ko-KR',{hour12:false})+' KST';};
+
+let state={cat:'전체', q:'', sort:'latest'};
+
+function categories(){
+  const set=['전체', ...Array.from(new Set(SAMPLE_NEWS.map(n=>n.cat)))];
+  return set;
+}
+function renderChips(){
+  document.getElementById('cat-chips').innerHTML = categories().map(c=>
+    `<span class="chip ${c===state.cat?'on':''}" data-c="${c}">${c}</span>`).join('');
+  document.querySelectorAll('#cat-chips .chip').forEach(ch=>ch.addEventListener('click',()=>{
+    state.cat=ch.dataset.c; renderChips(); renderAll();
+  }));
+}
+function match(n){
+  if(state.cat!=='전체' && n.cat!==state.cat) return false;
+  if(state.q){ const q=state.q.toLowerCase(); if(!(n.ti.toLowerCase().includes(q)||n.sum.toLowerCase().includes(q)||n.cat.toLowerCase().includes(q))) return false; }
+  return true;
+}
+function sortFn(a,b){ return state.sort==='popular' ? b.pop-a.pop : a.min-b.min; }
+
+function itemHTML(n,i){
+  return `<a class="nitem" href="${n.link||'#'}" ${n.link?'target="_blank" rel="noopener"':'onclick="return false"'}>
+    <span class="rk mono">${i+1}</span>
+    <span style="min-width:0">
+      <div class="ti">${n.ti}</div>
+      ${n.sum?`<div class="sum">${n.sum}</div>`:''}
+      <div class="meta">${n.hot?'<span class="hot">HOT</span>':''}<span class="ctag">${n.cat}</span><span class="src">${n.src} · ${n.tm}</span></div>
+    </span>
+  </a>`;
+}
+function renderCols(){
+  const kr=SAMPLE_NEWS.filter(n=>n.mk==='kr'&&match(n)).sort(sortFn);
+  const us=SAMPLE_NEWS.filter(n=>n.mk==='us'&&match(n)).sort(sortFn);
+  document.getElementById('kr-cnt').textContent=kr.length+'건';
+  document.getElementById('us-cnt').textContent=us.length+'건';
+  document.getElementById('kr-list').innerHTML = kr.length? kr.map(itemHTML).join('') : '<div class="empty">조건에 맞는 한국 뉴스가 없습니다.</div>';
+  document.getElementById('us-list').innerHTML = us.length? us.map(itemHTML).join('') : '<div class="empty">조건에 맞는 미국 뉴스가 없습니다.</div>';
+}
+function renderHot(){
+  const hot=SAMPLE_NEWS.filter(n=>n.hot&&match(n)).sort((a,b)=>a.min-b.min).slice(0,4);
+  document.getElementById('hotrow').innerHTML = hot.map(n=>`
+    <a class="hotcard" href="${n.link||'#'}" ${n.link?'target="_blank" rel="noopener"':'onclick="return false"'} style="display:block">
+      <span class="badge">🔥 HOT</span> <span style="font-size:11px;color:var(--muted)">${n.mk==='kr'?'🇰🇷 한국':'🇺🇸 미국'} · ${n.cat}</span>
+      <h4>${n.ti}</h4>
+      ${n.sum?`<div class="sum">${n.sum}</div>`:''}
+      <div class="meta"><span class="src">${n.src} · ${n.tm}</span></div>
+    </a>`).join('') || '<div class="empty" style="grid-column:1/-1">HOT 뉴스 없음</div>';
+}
+function renderAll(){ renderHot(); renderCols(); }
+
+document.querySelectorAll('#sort-seg button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#sort-seg button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on'); state.sort=b.dataset.s; renderAll();
+}));
+document.getElementById('q').addEventListener('input',e=>{ state.q=e.target.value.trim(); renderAll(); });
+
+document.getElementById('disc').innerHTML =
+  '✅ <b>실시간</b> · 구글뉴스 RSS에서 헤드라인·출처·링크를 수집해 한국/미국·카테고리별로 정리합니다(본문 복제 안 함, 클릭 시 원문으로 이동). 약 3분마다 갱신. 정보 제공 목적이며 투자 권유가 아닙니다. HOT은 발행 최신순으로 선별합니다.';
+
+/* /api/news(서버리스 실시간) 우선 → 실패 시 data/news.json 폴백 */
+async function loadNews(){
+  let d=null;
+  try{ const r=await fetch('/api/news',{cache:'default'}); if(r.ok) d=await r.json(); }catch(e){}
+  if(!d){ try{ const r=await fetch('data/news.json?t='+Date.now(),{cache:'no-store'}); if(r.ok) d=await r.json(); }catch(e){} }
+  if(d && d.items && d.items.length){
+    SAMPLE_NEWS=d.items; renderChips(); renderAll();
+    const u=document.getElementById('upd'); if(u) u.textContent='● '+(d._updated||'').replace('T',' ').slice(11,16)+' 갱신';
+  }
+}
+
+renderChips(); renderAll(); fmtClock(); loadNews();
+setInterval(fmtClock,1000); setInterval(loadNews,180000);
+</script>
+</body>
+</html>

@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>써니의 투자 인사이트</title>
+<style>
+  :root{
+    --bg:#0a0e17; --panel:#0f1626; --panel2:#121b2e; --border:#1e2a42;
+    --text:#e6edf6; --muted:#8597b0; --muted2:#5c6c87;
+    --accent:#38bdf8; --accent2:#a78bfa; --gold:#f5b942;
+    /* 한국식 색상: 상승=빨강, 하락=파랑 (기본) */
+    --up:#ff4d5e; --down:#3b82f6; --flat:#8597b0;
+    --chip:#16223a;
+  }
+  body.us-colors{ --up:#22c55e; --down:#ef4444; }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:
+      radial-gradient(1200px 600px at 80% -10%, #12203b 0%, transparent 55%),
+      radial-gradient(1000px 500px at -10% 0%, #161033 0%, transparent 50%),
+      var(--bg);
+    color:var(--text);
+    font-family:"Pretendard","Segoe UI",-apple-system,"Malgun Gothic",sans-serif;
+    font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none}
+  .up{color:var(--up)} .down{color:var(--down)} .flat{color:var(--flat)}
+  .mono{font-variant-numeric:tabular-nums; font-feature-settings:"tnum"}
+
+  /* ===== 상단바 ===== */
+  header.topbar{
+    position:sticky;top:0;z-index:50;
+    display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+    padding:10px 20px; background:rgba(10,14,23,.86); backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.5px}
+  .brand .logo{width:26px;height:26px;border-radius:7px;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    display:grid;place-items:center;color:#05080f;font-weight:900;font-size:13px}
+  .brand small{color:var(--muted);font-weight:600;font-size:11px;letter-spacing:0}
+  nav.mainnav{display:flex;gap:4px}
+  nav.mainnav a{padding:6px 12px;border-radius:8px;font-size:13px;font-weight:700;color:var(--muted);border:1px solid transparent}
+  nav.mainnav a:hover{color:var(--text);border-color:var(--border)}
+  nav.mainnav a.active{color:#05080f;background:var(--accent)}
+  .status-pills{display:flex;gap:8px;flex-wrap:wrap}
+  .pill{display:flex;align-items:center;gap:6px;padding:5px 10px;border:1px solid var(--border);
+    border-radius:999px;background:var(--panel);font-size:12px;color:var(--muted)}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--flat)}
+  .dot.open{background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.16)}
+  .dot.ext{background:#f5b942;box-shadow:0 0 0 3px rgba(245,185,66,.18)}
+  .dot.closed{background:#5c6c87}
+  .sess-open{color:#22c55e;font-weight:800}
+  .sess-ext{color:#f5b942;font-weight:800}
+  .sess-closed{color:var(--muted2);font-weight:700}
+  .sess-end{color:var(--muted2);font-weight:600;font-size:10px}
+  .spacer{flex:1}
+  .topbar .clock{font-size:13px;color:var(--muted);font-weight:600}
+  .btn{cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--text);
+    padding:6px 11px;border-radius:8px;font-size:12px;font-weight:600}
+  .btn:hover{border-color:var(--accent)}
+  .demo-badge{font-size:10.5px;font-weight:800;color:var(--gold);border:1px solid #4a3a12;
+    background:#1c1607;padding:4px 8px;border-radius:6px;letter-spacing:.6px}
+  .live-ind{font-size:10px;font-weight:700;color:var(--muted2);border:1px solid var(--border);background:var(--panel);padding:4px 8px;border-radius:6px;white-space:nowrap}
+  .live-ind.on{color:#22c55e;border-color:#14532d;background:#06210f}
+
+  /* ===== 목표 트래커 ===== */
+  .goal{margin:16px 20px 0;padding:14px 18px;border:1px solid var(--border);border-radius:14px;
+    background:linear-gradient(180deg,var(--panel2),var(--panel));
+    display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+  .goal h2{margin:0;font-size:13px;color:var(--muted);font-weight:700;letter-spacing:.4px}
+  .goal .big{font-size:24px;font-weight:800}
+  .goal .sub{font-size:12px;color:var(--muted)}
+  .goal .barwrap{flex:1;min-width:220px}
+  .bar{height:12px;border-radius:999px;background:#0c1424;border:1px solid var(--border);overflow:hidden}
+  .bar > i{display:block;height:100%;width:6.18%;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:999px}
+  .goal .target{text-align:right}
+
+  /* ===== 시장 스트립 ===== */
+  .strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(166px,1fr));gap:10px;padding:16px 20px}
+  .idx{padding:11px 12px;border:1px solid var(--border);border-radius:12px;background:var(--panel)}
+  .idx .nm{font-size:11.5px;color:var(--muted);font-weight:700}
+  .idx .nm .sym2{color:var(--muted2);font-weight:600;font-size:10px}
+  @keyframes fl-up{0%{background:rgba(255,77,94,.30)}100%{background:transparent}}
+  @keyframes fl-dn{0%{background:rgba(59,130,246,.30)}100%{background:transparent}}
+  body.us-colors .idx.flash-up{animation:fl-up2 1s ease-out}
+  @keyframes fl-up2{0%{background:rgba(34,197,94,.30)}100%{background:transparent}}
+  .idx.flash-up{animation:fl-up 1s ease-out}
+  .idx.flash-down{animation:fl-dn 1s ease-out}
+  .idx .val{font-size:17px;font-weight:800;margin-top:3px}
+  .idx .chg{font-size:11.5px;font-weight:700;margin-top:1px}
+  .idx svg{display:block;margin-top:6px}
+
+  /* ===== 시가총액 히트맵 ===== */
+  .heatmap-card{margin:6px 20px 4px}
+  .live-badge{font-size:10px;font-weight:800;color:#05130b;background:#22c55e;padding:2px 7px;border-radius:5px;letter-spacing:.4px}
+  .hm-controls{display:flex;align-items:center;gap:10px;margin-left:auto;flex-wrap:wrap}
+  .seg{display:inline-flex;border:1px solid var(--border);border-radius:9px;overflow:hidden;background:var(--panel)}
+  .seg button{border:none;background:transparent;color:var(--muted);padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer}
+  .seg button.on{background:var(--accent);color:#05080f}
+  .seg button:hover:not(.on){color:var(--text)}
+  .hm-controls .legend{font-size:11px;color:var(--muted)}
+  .hm-body{height:468px;position:relative;background:#0b1120;overflow:hidden}
+  #hm-widget{position:absolute;inset:0;z-index:1}
+  .tradingview-widget-container,.tradingview-widget-container__widget{height:100%;width:100%;position:relative}
+  .tradingview-widget-copyright{padding:6px 14px;font-size:11px;color:var(--muted2)}
+  .tradingview-widget-copyright a{color:var(--accent)}
+  /* 오프라인/file:// 폴백 트리맵 */
+  .hm-fallback{position:absolute;inset:0;z-index:0;padding:10px}
+  .hm-fb-note{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:20px;font-size:12px;color:var(--muted2);z-index:0;line-height:1.5}
+  .hm-fb-note:empty{display:none}
+  .hm-engine-tag{font-size:10.5px;color:var(--accent2);border:1px solid var(--border);padding:2px 9px;border-radius:6px;white-space:nowrap}
+  .hm-open{font-size:10.5px;font-weight:700;color:var(--accent);border:1px solid var(--border);padding:3px 9px;border-radius:6px;white-space:nowrap;cursor:pointer}
+  .hm-open:hover{border-color:var(--accent);background:#0e1b30}
+  .hm-open.kospi{color:#05080f;background:var(--accent);border-color:var(--accent);font-weight:800}
+  .hm-open.kospi:hover{background:#5cc7f5}
+  .hm-sectors{display:flex;flex-wrap:wrap;gap:8px;height:100%;align-content:stretch}
+  .hm-sector{border:1px solid var(--border);border-radius:8px;padding:6px;display:flex;flex-direction:column;flex:1 1 150px;background:#0a1020}
+  .hm-sector h6{margin:0 0 5px;font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.3px}
+  .hm-tiles{display:flex;flex-wrap:wrap;gap:4px;flex:1}
+  .hm-tile{border-radius:4px;display:flex;flex-direction:column;justify-content:center;align-items:center;color:#fff;font-weight:700;padding:3px;overflow:hidden;text-align:center;line-height:1.12}
+  .hm-tile small{font-size:9px;opacity:.92;font-weight:600}
+  .hm-tile.lg{flex:2.4 1 92px;min-height:56px;font-size:12px}
+  .hm-tile.md{flex:1.4 1 66px;min-height:44px;font-size:11px}
+  .hm-tile.sm{flex:1 1 50px;min-height:34px;font-size:10px}
+
+  /* ===== 메인 그리드 ===== */
+  main{display:grid;grid-template-columns:300px minmax(0,1fr) 340px;gap:14px;padding:4px 20px 30px}
+  .col{display:flex;flex-direction:column;gap:14px;min-width:0}
+  .card{border:1px solid var(--border);border-radius:14px;background:var(--panel);overflow:hidden}
+  .card > .head{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--border)}
+  .card > .head h3{margin:0;font-size:13.5px;font-weight:800;letter-spacing:.2px}
+  .card > .head .tag{font-size:10.5px;color:var(--muted);border:1px solid var(--border);
+    padding:2px 7px;border-radius:6px;margin-left:auto}
+  .card .body{padding:12px 14px}
+  .scroll{max-height:340px;overflow:auto}
+  .scroll::-webkit-scrollbar{width:8px}.scroll::-webkit-scrollbar-thumb{background:#22324f;border-radius:8px}
+
+  /* 관심종목 */
+  .wl-add{display:flex;gap:6px;padding:10px 14px;border-bottom:1px solid var(--border)}
+  .wl-add input{flex:1;min-width:0;background:#0a1120;border:1px solid var(--border);color:var(--text);
+    padding:7px 9px;border-radius:8px;font-size:12px}
+  .wl-add input:focus{outline:none;border-color:var(--accent)}
+  .wl-results{display:none;border-bottom:1px solid var(--border);max-height:260px;overflow:auto;background:#0a1120}
+  .wl-res{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;cursor:pointer;border-bottom:1px solid #141d31}
+  .wl-res:hover{background:#13233f}
+  .wl-res .rn{font-size:12.5px;font-weight:600}
+  .wl-res .rs{font-size:10px;color:var(--muted2);white-space:nowrap}
+  .wl-res.muted{color:var(--muted2);cursor:default;font-size:11.5px;justify-content:center;text-align:center}
+  table.wl{width:100%;border-collapse:collapse}
+  table.wl td{padding:9px 10px;border-bottom:1px solid #15203500;cursor:pointer}
+  table.wl tr{border-bottom:1px solid #141d31}
+  table.wl tr:hover{background:#101a2e}
+  table.wl tr.sel{background:#13233f;box-shadow:inset 3px 0 0 var(--accent)}
+  .wl .sym{font-weight:700;font-size:12.5px}
+  .wl .mk{font-size:10px;color:var(--muted2);margin-left:5px;border:1px solid var(--border);padding:0 4px;border-radius:4px}
+  .wl .px{font-weight:700;text-align:right}
+  .wl .pc{font-size:11px;text-align:right}
+  .wl .del{color:var(--muted2);font-size:14px;text-align:center}
+  .wl .del:hover{color:var(--up)}
+
+  /* 일정 */
+  .sch{display:flex;gap:10px;padding:9px 6px;border-bottom:1px solid #141d31}
+  .sch .tm{font-weight:800;font-size:12px;color:var(--accent);width:46px;flex:none}
+  .sch .fl{font-size:14px;width:18px;text-align:center;flex:none}
+  .sch .ev{font-size:12.5px}
+  .sch .ev small{display:block;color:var(--muted);font-size:11px}
+  .stars{color:var(--gold);font-size:11px;margin-left:auto;flex:none}
+  /* 핵심 일정(대시보드 미니, KR/US 분리) */
+  .sched-sec{margin:0 0 10px}
+  .sched-sec:last-child{margin-bottom:0}
+  .sched-sec h6{margin:0 0 5px;font-size:11px;font-weight:800;color:var(--muted);display:flex;align-items:center;gap:6px}
+  .sched-sec h6 .n{font-size:10px;color:var(--muted2);font-weight:600;border:1px solid var(--border);border-radius:5px;padding:0 5px;margin-left:auto}
+  .srow{display:flex;gap:8px;padding:6px 1px;border-bottom:1px solid #141d31;align-items:baseline}
+  .srow:last-child{border-bottom:none}
+  .srow .d{font-size:11px;font-weight:800;color:var(--accent);flex:none;width:58px;line-height:1.25}
+  .srow .d small{color:var(--muted2);font-weight:600}
+  .srow .d .tm{display:block;color:var(--muted);font-size:10px;font-weight:700}
+  .srow .t{font-size:12px;min-width:0;flex:1}
+  .srow .t .nm{font-weight:700}
+  .srow .t .st{color:var(--gold);font-size:9px;letter-spacing:-1px;margin-left:3px}
+  .srow .t .x{font-size:10.5px;color:var(--muted2);display:block;margin-top:1px}
+  .srow .tkr{font-size:9.5px;font-weight:800;color:var(--muted2);border:1px solid var(--border);border-radius:4px;padding:0 4px;margin-left:4px}
+  .sched-empty{color:var(--muted2);font-size:11.5px;padding:8px 2px}
+
+  /* 심층 분석 패널 */
+  .deep .head{align-items:flex-start}
+  .deep .px-now{font-size:22px;font-weight:800}
+  .tabs{display:flex;gap:4px;padding:0 14px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+  .tab{padding:9px 12px;font-size:12.5px;font-weight:700;color:var(--muted);cursor:pointer;
+    border-bottom:2px solid transparent;margin-bottom:-1px}
+  .tab.on{color:var(--text);border-bottom-color:var(--accent)}
+  .tabpane{display:none;padding:14px} .tabpane.on{display:block}
+  /* 관심종목 인터랙티브 주가차트(Lightweight Charts) */
+  .tv-chart{height:360px;margin:0 14px 4px;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--panel);display:flex;flex-direction:column}
+  .px-bar{display:flex;gap:4px;align-items:center;padding:6px 8px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+  .px-tf{background:var(--panel2);border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:3px 9px;font-size:11px;cursor:pointer;font-family:inherit}
+  .px-tf:hover{color:var(--text)}
+  .px-tf.on{background:var(--accent);color:#06121f;border-color:var(--accent);font-weight:800}
+  .px-canvas{flex:1;min-height:0;position:relative}
+  .px-info{font-size:10.5px;color:var(--muted2);padding:3px 9px;border-top:1px solid var(--border);display:flex;justify-content:space-between;gap:8px}
+  .px-info #px-sym{color:var(--muted);font-weight:700}
+  .tv-chart .tv-loading{display:flex;align-items:center;justify-content:center;flex:1;color:var(--muted);font-size:12px;text-align:center;padding:0 14px}
+  .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .metric{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:10px}
+  .metric .k{font-size:11px;color:var(--muted)} .metric .v{font-size:16px;font-weight:800;margin-top:2px}
+  .metric .x{font-size:10.5px;color:var(--muted2)}
+  .vbar{height:7px;border-radius:6px;background:#0c1424;margin-top:7px;overflow:hidden}
+  .vbar>i{display:block;height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent))}
+  .ov-box{background:var(--panel2);border:1px solid var(--border);border-left:3px solid var(--accent);
+    border-radius:10px;padding:11px 13px;margin-bottom:12px;font-size:12.5px;line-height:1.65;color:#cdd8e8}
+  .ov-box b{color:var(--text);font-weight:800;margin-right:6px}
+
+  /* 밸류체인 */
+  .chain{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .chain .stage{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:10px}
+  .chain .stage h5{margin:0 0 8px;font-size:11px;color:var(--accent);letter-spacing:.3px;text-transform:uppercase}
+  .node{display:flex;justify-content:space-between;gap:6px;padding:6px 8px;border:1px solid var(--border);
+    border-radius:8px;background:var(--panel);margin-bottom:6px;font-size:12px;cursor:pointer}
+  .node:hover{border-color:var(--accent)}
+  .node b{font-weight:700}.node span{color:var(--muted);font-size:11px}
+  .chain-arrow{text-align:center;color:var(--muted2);font-size:11px;margin:4px 0}
+
+  /* 연관종목 */
+  .rel-grp{margin-bottom:12px}
+  .rel-grp h5{margin:0 0 7px;font-size:11.5px;color:var(--muted)}
+  .reltag{display:inline-flex;align-items:center;gap:6px;background:var(--chip);border:1px solid var(--border);
+    border-radius:999px;padding:5px 10px;margin:0 6px 6px 0;font-size:12px;cursor:pointer}
+  .reltag:hover{border-color:var(--accent)} .reltag .add{color:var(--accent);font-weight:800}
+
+  /* 리포트 본문 */
+  .opinion{display:inline-block;font-size:11px;font-weight:800;padding:3px 9px;border-radius:6px}
+  .op-buy{color:#fff;background:#c0354a} .op-hold{color:#0a0e17;background:var(--gold)} .op-sell{color:#fff;background:#2563eb}
+  body.us-colors .op-buy{background:#15803d}
+  .report p{margin:8px 0;color:#cdd8e8}
+  .report .blk{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+  .report .blk > div{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:11px}
+  .report .blk h5{margin:0 0 6px;font-size:12px}
+  .report ul{margin:6px 0;padding-left:18px;color:#cdd8e8} .report li{margin:4px 0}
+  .src{font-size:10.5px;color:var(--muted2);margin-top:10px;border-top:1px dashed var(--border);padding-top:8px}
+  .src b{color:var(--accent2)}
+
+  /* 테마 리포트 카드 */
+  .themes{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  .theme{border:1px solid var(--border);border-radius:12px;background:var(--panel2);padding:12px}
+  .theme .t-top{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+  .theme h4{margin:0;font-size:13px;font-weight:800}
+  .theme .desk{font-size:10.5px;color:var(--muted)}
+  .theme ul{margin:6px 0;padding-left:16px;font-size:12px;color:#c6d2e4}.theme li{margin:3px 0}
+  .theme .picks{font-size:11px;color:var(--muted);margin-top:6px}
+  .theme .picks b{color:var(--text)}
+  .theme .cat{font-size:11px;color:var(--accent);margin-top:5px}
+
+  /* 뉴스/영상 */
+  .news{display:flex;flex-direction:column}
+  .news a.item{display:flex;gap:9px;padding:10px 4px;border-bottom:1px solid #141d31}
+  .news a.item:hover{background:#101a2e}
+  .news .rk{font-weight:800;color:var(--muted2);width:18px;text-align:center;flex:none}
+  .news .ti{font-size:12.5px;line-height:1.45}
+  .news .meta{font-size:10.5px;color:var(--muted);margin-top:3px;display:flex;gap:7px;flex-wrap:wrap}
+  .news .ctag{border:1px solid var(--border);border-radius:4px;padding:0 5px;color:var(--accent)}
+  .hot{color:var(--gold);font-weight:800;font-size:10px;border:1px solid #4a3a12;background:#1c1607;padding:0 5px;border-radius:4px}
+  .news-tabs button{padding:4px 9px;font-size:11px}
+  .news .flag{font-size:11px;margin-right:1px}
+  .vid a.item .thumb{width:62px;height:38px;border-radius:7px;flex:none;
+    background:linear-gradient(135deg,#1b2740,#10192c);display:grid;place-items:center;color:var(--muted);font-size:10px;border:1px solid var(--border)}
+  .vid .ch{color:var(--accent2)}
+
+  footer{padding:18px 20px 40px;color:var(--muted)}
+  .engine{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px}
+  .engine .e{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:10px}
+  .engine .e .k{font-size:11px;color:var(--accent);font-weight:700}
+  .engine .e .v{font-size:11.5px;color:var(--muted);margin-top:3px}
+  .disc{font-size:11px;color:var(--muted2);border-top:1px solid var(--border);padding-top:12px;line-height:1.6}
+
+  @media(max-width:1180px){ main{grid-template-columns:1fr} .strip{grid-template-columns:repeat(4,1fr)} .engine{grid-template-columns:repeat(2,1fr)} .themes,.metrics,.chain{grid-template-columns:1fr 1fr} }
+  @media(max-width:620px){ .strip{grid-template-columns:repeat(2,1fr)} }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand"><div class="logo">S</div>써니의&nbsp;투자&nbsp;인사이트</div>
+  <nav class="mainnav"><a href="index.html" class="active">대시보드</a><a href="news.html">실시간 뉴스</a><a href="schedule.html">일정</a></nav>
+  <div class="status-pills">
+    <span class="pill" title="KOSPI·KOSDAQ (서울 KST) — 프리마켓 08:00–09:00 · 정규장 09:00–15:30 · 애프터마켓 15:30–20:00"><span class="dot" id="krx-dot"></span>KOSPI <b id="krx-st">—</b></span>
+    <span class="pill" title="NASDAQ (서울 KST) — 데이마켓 09:00–17:00 · 프리마켓 17:00–22:30 · 정규장 22:30–05:00 · 애프터마켓 05:00–09:00"><span class="dot" id="us-dot"></span>NASDAQ <b id="us-st">—</b></span>
+    <span class="pill">USD/KRW <b class="mono" id="fx">1,378.0</b></span>
+  </div>
+  <div class="spacer"></div>
+  <span class="live-ind" id="live-ind">시세 연결 대기</span>
+  <span class="clock mono" id="clock">--:--:--</span>
+  <button class="btn" id="colorToggle">색상: 한국식</button>
+</header>
+
+<!-- 시장 스트립 -->
+<section class="strip" id="strip"></section>
+
+<!-- 시가총액 히트맵 (TradingView · 시장 직접 선택, 국내/미국 구분 없음) -->
+<section class="card heatmap-card">
+  <div class="head">
+    <h3>시가총액 히트맵</h3>
+    <span class="live-badge">● LIVE</span>
+    <div class="hm-controls">
+      <div class="seg" id="hm-dataset"></div>
+      <span class="legend">색상=등락률 · 블록=시가총액 · 그룹=섹터 · 위젯 상단 ▾로 시장 직접 선택</span>
+      <a class="hm-open kospi" id="hm-kospi" target="_blank" rel="noopener">🇰🇷 KOSPI200 새 탭 ↗</a>
+      <a class="hm-open" id="hm-open" target="_blank" rel="noopener">↗ 전체화면</a>
+    </div>
+  </div>
+  <div class="hm-body" id="hm-body">
+    <div class="hm-fb-note" id="hm-note">실시간 히트맵 — 온라인·http(localhost:4321) 환경에서 표시됩니다.</div>
+    <div id="hm-widget"></div>
+  </div>
+  <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/heatmap/stock/" rel="noopener nofollow" target="_blank">Track all markets on TradingView</a> · 데이터 제공: TradingView · 한국(KOSPI200) 등 위젯 미지원 시장은 ↗ 새 탭에서 직접 선택</div>
+</section>
+
+<!-- 메인 -->
+<main>
+  <!-- 좌: 관심종목 + 일정 -->
+  <div class="col">
+    <div class="card">
+      <div class="head"><h3>관심 종목</h3><span class="tag" id="wl-count">0</span></div>
+      <div class="wl-add">
+        <input id="wl-search" placeholder="종목 검색 — 삼성전자, 엔비디아, AAPL…" autocomplete="off" />
+      </div>
+      <div id="wl-results" class="wl-results"></div>
+      <div class="scroll"><table class="wl"><tbody id="wl-body"></tbody></table></div>
+    </div>
+
+    <div class="card">
+      <div class="head" style="flex-wrap:wrap;gap:6px 8px">
+        <h3>핵심 일정</h3>
+        <span class="tag" id="sched-when">다가올 일정</span>
+        <a href="schedule.html" style="font-size:11px;color:var(--accent);font-weight:700;margin-left:auto">전체 →</a>
+      </div>
+      <div class="body" style="padding:8px 12px" id="sched"></div>
+    </div>
+  </div>
+
+  <!-- 중앙: 심층 분석 + 테마 리포트 -->
+  <div class="col">
+    <div class="card deep">
+      <div class="head" id="deep-head"></div>
+      <div id="tv-chart" class="tv-chart"></div>
+      <div class="tabs" id="deep-tabs">
+        <div class="tab on" data-t="m">개요 · 투자지표</div>
+        <div class="tab" data-t="c">밸류체인</div>
+        <div class="tab" data-t="r">연관 종목</div>
+        <div class="tab" data-t="rep">전문가 리포트</div>
+      </div>
+      <div class="tabpane on" id="pane-m"></div>
+      <div class="tabpane" id="pane-c"></div>
+      <div class="tabpane" id="pane-r"></div>
+      <div class="tabpane" id="pane-rep"></div>
+    </div>
+
+    <div class="card">
+      <div class="head"><h3>테마별 전문가 데스크</h3><span class="tag">Claude 에이전트 자동 생성 · 매일 07:30</span></div>
+      <div class="body"><div class="themes" id="themes"></div></div>
+    </div>
+  </div>
+
+  <!-- 우: 뉴스 + 영상 -->
+  <div class="col">
+    <div class="card">
+      <div class="head" style="flex-wrap:wrap;gap:6px 8px">
+        <h3>실시간 투자 뉴스</h3>
+        <span id="news-count" style="font-size:10.5px;color:var(--muted2);margin-left:auto"></span>
+        <a href="news.html" style="font-size:11px;color:var(--accent);font-weight:700">전체 →</a>
+        <div class="seg news-tabs" id="news-tabs" style="flex-basis:100%">
+          <button data-f="all" class="on">전체</button>
+          <button data-f="kr">🇰🇷 한국</button>
+          <button data-f="us">🇺🇸 미국</button>
+        </div>
+      </div>
+      <div class="news scroll" id="news" style="padding:0 10px"></div>
+    </div>
+    <div class="card">
+      <div class="head"><h3>추천 투자 영상</h3><span class="tag">상위 10 · 제목+링크</span></div>
+      <div class="news vid scroll" id="videos" style="padding:0 10px"></div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="engine" id="engine"></div>
+  <div class="disc" id="disc"></div>
+</footer>
+
+<script>
+/* =========================================================================
+   써니의 투자 인사이트 — 샘플 데이터 & 렌더링 (백엔드 없음 / 완전 오프라인)
+   실제 서비스에서는 아래 SAMPLE_* 를 data/*.json (Claude 에이전트·수집
+   스크립트가 갱신) 또는 API fetch 결과로 교체하면 됩니다.
+   ========================================================================= */
+
+const fmt = n => n.toLocaleString('ko-KR');
+const sign = n => (n>0?'+':'') + n;
+const cls  = n => n>0?'up':(n<0?'down':'flat');
+const arr  = n => n>0?'▲':(n<0?'▼':'■');
+
+/* ---- 시장 지표 ---- */
+// key = data/market.json 의 키 (yfinance 수집). val/chg/pct 는 실데이터 로드 전 폴백값.
+const SAMPLE_INDEX = [
+  {key:'kospi',  nm:'코스피',     sym:'KOSPI',   val:2712.45, chg:+18.32, pct:+0.68, dec:2, sp:[40,42,41,44,46,45,48,50,49,52]},
+  {key:'kosdaq', nm:'코스닥',     sym:'KOSDAQ',  val:842.10,  chg:-3.44,  pct:-0.41, dec:2, sp:[55,54,52,53,50,49,50,48,47,46]},
+  {key:'spx',    nm:'S&P 500',   sym:'SPX',     val:5431.60, chg:+24.10, pct:+0.45, dec:2, sp:[30,33,35,34,38,40,42,44,46,49]},
+  {key:'ndx',    nm:'나스닥100',  sym:'NDX',     val:19420.3, chg:+112.4, pct:+0.58, dec:1, sp:[28,30,29,34,37,39,38,43,47,50]},
+  {key:'sox',    nm:'필라델피아 반도체', sym:'SOX', val:5240.1, chg:+48.2, pct:+0.93, dec:1, sp:[26,29,31,30,35,38,40,44,47,51]},
+  {key:'btc',    nm:'비트코인',    sym:'BTC',     val:98420,  chg:+2180, pct:+2.27, pre:'$', dec:0, sp:[40,42,41,45,47,46,50,52,51,55]},
+  {key:'gold',   nm:'금',         sym:'Gold/oz', val:2712.4, chg:+14.2, pct:+0.53, pre:'$', dec:1, sp:[44,45,44,46,47,46,48,49,48,50]},
+  {key:'wti',    nm:'WTI 원유',   sym:'bbl',     val:74.18,  chg:+0.62, pct:+0.84, pre:'$', dec:2, sp:[40,41,43,42,45,46,45,48,49,50]},
+  {key:'ust10y', nm:'미국 10년물', sym:'UST 10Y', val:4.38,   chg:+0.02, pct:+0.46, suf:'%', dec:2, sp:[44,45,46,45,47,48,49,50,51,52]},
+  {key:'ust2y',  nm:'미국 2년물',  sym:'UST 2Y',  val:4.19,   chg:-0.03, pct:-0.71, suf:'%', dec:2, sp:[54,53,52,53,50,49,50,48,47,46]},
+  {key:'usdkrw', nm:'원/달러',    sym:'USD/KRW', val:1378.0, chg:-4.20, pct:-0.30, dec:1, sp:[52,53,51,50,49,50,48,47,47,46]},
+  {key:'usdjpy', nm:'엔/달러',    sym:'USD/JPY', val:156.20, chg:+0.42, pct:+0.27, dec:2, sp:[46,47,46,48,49,48,50,51,50,52]},
+  {key:'vix',    nm:'VIX',       sym:'변동성',   val:13.24,  chg:-0.51, pct:-3.71, dec:2, sp:[60,58,55,52,50,48,47,45,44,42]},
+];
+
+/* ---- 관심종목 기본값 ---- */
+const DEFAULT_WL = [
+  {sym:'005930.KS', name:'삼성전자',   mk:'kr'},
+  {sym:'000660.KS', name:'SK하이닉스', mk:'kr'},
+  {sym:'012450.KS', name:'한화에어로', mk:'kr'},
+  {sym:'NVDA',      name:'엔비디아',   mk:'us'},
+  {sym:'TSLA',      name:'테슬라',     mk:'us'},
+  {sym:'PLTR',      name:'팔란티어',   mk:'us'},
+  {sym:'TSM',       name:'TSMC',       mk:'us'},
+];
+
+/* ---- 종목 심층 데이터 ----
+   data/deep.json(fetch_deep.py 생성)을 우선 사용 → 모든 관심종목에 5개 섹션 일관 생성.
+   신규 종목은 /api/deep 온디맨드 생성. 로드 실패 시 아래 DEEP_SEED(오프라인 폴백). */
+let DEEPDATA = {};          // data/deep.json 로드 결과(우선)
+const DEEP_PENDING = {};    // /api/deep 온디맨드 진행/시도 플래그
+const DEEP_SEED = {
+  'NVDA':{
+    name:'엔비디아 (NVIDIA)', mk:'US', px:131.26, pct:+2.10,
+    metrics:[
+      {k:'시가총액',v:'$3.23T',x:'글로벌 1위권'},
+      {k:'PER (TTM)',v:'64.2',x:'섹터 평균 38'},
+      {k:'PBR',v:'52.1',x:'고평가 구간', bar:88},
+      {k:'ROE',v:'115%',x:'압도적'},
+      {k:'매출성장(YoY)',v:'+122%',x:'데이터센터 +154%'},
+      {k:'영업이익률',v:'62.1%',x:'역대급 마진', bar:82},
+      {k:'배당수익률',v:'0.03%',x:'성장주'},
+      {k:'컨센서스 목표가',v:'$148',x:'상승여력 +12.7%', bar:70},
+    ],
+    chain:[
+      {h:'업스트림 (장비·소재·IP)',nodes:[['ASML','EUV 노광 독점'],['어플라이드머티어리얼즈','증착·식각'],['시높시스/케이던스','EDA 설계툴']]},
+      {h:'제조 (파운드리·메모리)',nodes:[['TSMC','첨단 파운드리'],['SK하이닉스','HBM 1위'],['삼성전자/마이크론','HBM·DRAM']]},
+      {h:'설계 (코어)',nodes:[['NVIDIA','GPU·CUDA 생태계'],['CoWoS 패키징','TSMC 병목']]},
+      {h:'다운스트림 (수요)',nodes:[['MS·아마존·구글','하이퍼스케일러 CapEx'],['메타·테슬라','자체 AI 클러스터'],['팔란티어','AI 응용 SW']]},
+    ],
+    rel:{
+      '경쟁사':[['AMD','MI 가속기'],['브로드컴','커스텀 ASIC'],['인텔','가우디']],
+      '공급사(밸류체인)':[['TSMC','파운드리'],['SK하이닉스','HBM'],['ASML','장비']],
+      '핵심 고객':[['마이크로소프트',''],['아마존',''],['구글','']],
+      '동일 테마/상관':[['SMCI','AI 서버'],['버티브','전력·냉각'],['팔란티어','AI SW']],
+    },
+    rep:{
+      op:'op-buy', opTxt:'비중확대', desk:'AI·반도체 데스크',
+      thesis:'AI 데이터센터 CapEx 사이클의 핵심 수혜주. CUDA 소프트웨어 해자와 차세대 GPU(Blackwell→Rubin) 로드맵으로 가속기 시장 점유율 80%+ 유지. 단기 밸류에이션 부담은 있으나, 하이퍼스케일러 4사 합산 CapEx 가이던스 상향이 실적 추정치를 계속 끌어올리는 구간.',
+      bull:['하이퍼스케일러 CapEx 가이던스 연속 상향','Blackwell 양산 램프업 + 네트워킹(NVLink) 부가가치','주권 AI·엔터프라이즈 추론 수요 확산'],
+      bear:['커스텀 ASIC(브로드컴·자체칩) 침투','대중국 수출규제 변수','피크아웃 우려 시 멀티플 축소'],
+      cat:['차세대 GPU 출시·가이던스 (분기 실적)','주요 고객 CapEx 시즌','GTC 컨퍼런스 신제품'],
+      risk:'밸류에이션 민감도 높음 — 성장률 둔화 신호 시 변동성 확대. 포지션 분할·헤지 권장.'
+    }
+  },
+  '005930':{
+    name:'삼성전자', mk:'KR', px:73400, pct:+1.24,
+    metrics:[
+      {k:'시가총액',v:'438조',x:'코스피 1위'},
+      {k:'PER',v:'13.8',x:'사이클 저점권'},
+      {k:'PBR',v:'1.32',x:'역사적 하단', bar:35},
+      {k:'ROE',v:'9.8%',x:'회복 국면'},
+      {k:'매출성장(YoY)',v:'+18%',x:'메모리 반등'},
+      {k:'영업이익률',v:'14.2%',x:'개선 중', bar:48},
+      {k:'배당수익률',v:'1.96%',x:'분기배당'},
+      {k:'컨센서스 목표가',v:'92,000',x:'상승여력 +25%', bar:75},
+    ],
+    chain:[
+      {h:'업스트림 (장비·소재)',nodes:[['한미반도체','HBM TC본더'],['원익IPS','증착장비'],['동진쎄미켐','포토레지스트']]},
+      {h:'제조 (코어)',nodes:[['삼성전자','메모리·파운드리·세트'],['SK실트론','웨이퍼']]},
+      {h:'설계·고객 IP',nodes:[['퀄컴/엔비디아','파운드리·HBM 고객'],['애플','부품 고객']]},
+      {h:'다운스트림 (수요)',nodes:[['글로벌 스마트폰','갤럭시·외부고객'],['데이터센터','서버 DRAM·HBM']]},
+    ],
+    rel:{
+      '경쟁사':[['SK하이닉스','HBM·DRAM'],['TSMC','파운드리'],['마이크론','메모리']],
+      '공급사(밸류체인)':[['한미반도체','본더'],['원익IPS','장비'],['동진쎄미켐','소재']],
+      '핵심 고객':[['엔비디아','HBM'],['퀄컴','파운드리'],['애플','부품']],
+      '동일 테마/상관':[['SK하이닉스',''],['삼성전기',''],['DB하이텍','']],
+    },
+    rep:{
+      op:'op-buy', opTxt:'비중확대', desk:'AI·반도체 데스크',
+      thesis:'메모리 업사이클 + HBM 경쟁 재진입이 핵심. PBR 1.3배의 역사적 저평가 구간에서 HBM3E 엔비디아 퀄 통과 모멘텀과 파운드리 가동률 회복이 더해지면 멀티플 리레이팅 여지. 다만 HBM 점유율 회복 속도가 관건.',
+      bull:['HBM3E/4 고객 퀄 통과 시 점유율 회복','메모리 가격 상승 사이클','자사주 매입·밸류업 정책'],
+      bear:['HBM 경쟁 열위 지속','파운드리 적자','중국 레거시 공급과잉'],
+      cat:['HBM 고객 승인·공급계약 발표','분기 실적·메모리 가이던스','밸류업 공시'],
+      risk:'HBM 경쟁 구도 변화에 주가 민감. 반도체 사이클 하강 전환 리스크 모니터링.'
+    }
+  },
+  '000660':{
+    name:'SK하이닉스', mk:'KR', px:198500, pct:+2.85,
+    metrics:[
+      {k:'시가총액',v:'144조',x:'코스피 2위'},
+      {k:'PER',v:'9.6',x:'이익 급증'},
+      {k:'PBR',v:'2.4',x:'프리미엄', bar:62},
+      {k:'ROE',v:'24%',x:'고수익'},
+      {k:'매출성장(YoY)',v:'+90%',x:'HBM 견인'},
+      {k:'영업이익률',v:'33%',x:'HBM 마진', bar:78},
+      {k:'배당수익률',v:'0.8%',x:''},
+      {k:'컨센서스 목표가',v:'265,000',x:'상승여력 +33%', bar:80},
+    ],
+    chain:[
+      {h:'업스트림',nodes:[['한미반도체','TC본더'],['이오테크닉스','레이저']]},
+      {h:'제조 (코어)',nodes:[['SK하이닉스','HBM 1위'],['SK실트론','웨이퍼']]},
+      {h:'설계 고객',nodes:[['엔비디아','HBM 최대고객'],['AMD','가속기']]},
+      {h:'다운스트림',nodes:[['AI 데이터센터','가속기 수요'],['서버·PC','DRAM']]},
+    ],
+    rel:{
+      '경쟁사':[['삼성전자','HBM'],['마이크론','HBM3E']],
+      '공급사(밸류체인)':[['한미반도체','본더'],['이오테크닉스','장비']],
+      '핵심 고객':[['엔비디아','HBM']],
+      '동일 테마/상관':[['삼성전자',''],['한미반도체',''],['NVDA','']],
+    },
+    rep:{
+      op:'op-hold', opTxt:'중립(차익)', desk:'AI·반도체 데스크',
+      thesis:'HBM 선두 프리미엄을 이미 상당 부분 반영. 이익 모멘텀은 강하나 주가가 선행하여 단기 차익실현 구간. 조정 시 분할 재매수 관점.',
+      bull:['HBM 점유율·마진 1위','엔비디아 동반 성장'],
+      bear:['삼성·마이크론 추격','메모리 가격 변동성'],
+      cat:['HBM4 공급계약','분기 실적'],
+      risk:'단기 과열 — 변동성 확대 가능. 신규 진입은 분할 권장.'
+    }
+  },
+};
+function deepFor(sym,row){
+  const base=(sym||'').replace(/\.(KS|KQ)$/,'');
+  const hit = DEEPDATA[sym]||DEEPDATA[base]||DEEP_SEED[sym]||DEEP_SEED[base];
+  if(hit) return hit;
+  ensureDeep(sym,row);   // 온디맨드 생성(비동기) — 완료 시 자동 재렌더
+  return {
+    name:(row?row.name:sym)+' ('+sym+')', mk:row?(row.mk==='kr'?'KR':'US'):'-',
+    px:row&&row.px!=null?row.px:0, pct:row&&row.pct!=null?row.pct:0, fallback:true,
+    overview:'이 종목의 심층 분석(개요·투자지표·밸류체인·연관종목·전문가 리포트)을 실시간 생성하고 있습니다…',
+    metrics:[{k:'데이터',v:'생성 중…',x:'잠시만 기다려 주세요'}],
+    chain:[], rel:{},
+    rep:{op:'op-hold',opTxt:'생성 중',desk:'리서치 큐',asof:'',
+      thesis:'종목 심층 데이터를 실시간 생성하는 중입니다. 잠시 후 개요·투자지표·밸류체인·연관종목·리포트가 자동으로 채워집니다.',
+      bull:['-'],bear:['-'],cat:['-'],risk:'-'}
+  };
+}
+/* data/deep.json 로드(큐레이션+사전생성) → 모든 관심종목 5개 섹션 일관 표시 */
+async function loadDeep(){
+  try{
+    const r=await fetch('data/deep.json?t='+Date.now(),{cache:'no-store'});
+    if(r.ok){ const j=await r.json(); if(j&&typeof j==='object'){ DEEPDATA=j; if(SEL) renderDeep(); } }
+  }catch(e){}
+}
+/* 신규 종목 온디맨드 생성: /api/deep (serve.py·Netlify 함수). 세션당 1회 시도, 큐레이션 덮어쓰지 않음 */
+async function ensureDeep(sym,row){
+  const base=(sym||'').replace(/\.(KS|KQ)$/,'');
+  if(DEEPDATA[sym]||DEEPDATA[base]||DEEP_PENDING[base]) return;
+  DEEP_PENDING[base]=1;   // 실패해도 유지 → 재시도 폭주 방지
+  try{
+    const r=await fetch('/api/deep?sym='+encodeURIComponent(sym),{cache:'no-store'});
+    if(r.ok){ const d=await r.json();
+      if(d&&!d.error&&!DEEPDATA[base]){ DEEPDATA[base]=d; if(SEL===sym) renderDeep(); } }
+  }catch(e){}
+}
+
+/* ---- 핵심 일정(경제지표·실적) — data/calendar.json ---- */
+let CAL_EVENTS = [];   // {date,time,mk,type,title,importance,forecast,previous,actual,ticker,session,eps_est,mktcap}
+let CAL_TODAY = '';
+
+/* ---- 뉴스 상위 10 ---- */
+let SAMPLE_NEWS = [
+  {ti:'엔비디아, 차세대 AI 가속기 공급 계약 확대… 하이퍼스케일러 CapEx 상향',src:'한국경제',tm:'12분 전',cat:'반도체',mk:'us',hot:true},
+  {ti:'美 5월 고용 둔화 신호… 9월 금리인하 기대 재점화',src:'Reuters',tm:'25분 전',cat:'매크로',mk:'us',hot:true},
+  {ti:'SK하이닉스 HBM4 샘플 출하 임박… 엔비디아 퀄 통과 관측',src:'전자신문',tm:'38분 전',cat:'반도체',mk:'kr',hot:true},
+  {ti:'삼성전자, HBM3E 엔비디아 공급 승인 임박 관측',src:'서울경제',tm:'45분 전',cat:'반도체',mk:'kr',hot:true},
+  {ti:'한화에어로스페이스, 폴란드 추가 수주 협상… 방산 슈퍼사이클',src:'매일경제',tm:'51분 전',cat:'방산',mk:'kr'},
+  {ti:'Fed 9월 인하 확률 70%로 상승… 점도표 주목',src:'Bloomberg',tm:'1시간 전',cat:'매크로',mk:'us',hot:true},
+  {ti:'테슬라 로보택시 공개 일정 확정… 자율주행 모멘텀',src:'CNBC',tm:'1시간 전',cat:'전기차',mk:'us'},
+  {ti:'코스피 외국인 6거래일 연속 순매수… 반도체 집중',src:'연합인포맥스',tm:'1시간 전',cat:'국내증시',mk:'kr'},
+  {ti:'애플, AI 아이폰 슈퍼사이클 기대감 확산',src:'Reuters',tm:'2시간 전',cat:'빅테크',mk:'us'},
+  {ti:'팔란티어, 신규 정부 계약 수주… AIP 매출 가속',src:'Bloomberg',tm:'2시간 전',cat:'AI SW',mk:'us'},
+  {ti:'2차전지株 반등… 에코프로비엠·포스코퓨처엠 강세',src:'이데일리',tm:'2시간 전',cat:'2차전지',mk:'kr'},
+  {ti:'美 10년물 금리 4.38%로 하락… 성장주에 우호적',src:'MarketWatch',tm:'2시간 전',cat:'채권',mk:'us'},
+  {ti:'마이크론 실적 호조… 메모리 업황 바닥 통과 시그널',src:'CNBC',tm:'3시간 전',cat:'반도체',mk:'us'},
+  {ti:'원/달러 1,378원… 외환당국 구두개입 경계감',src:'이데일리',tm:'3시간 전',cat:'환율',mk:'kr'},
+  {ti:'한국은행 기준금리 동결 전망… 하반기 인하론 부상',src:'연합뉴스',tm:'3시간 전',cat:'매크로',mk:'kr'},
+  {ti:'아마존 AWS, AI 데이터센터 투자 대폭 확대',src:'WSJ',tm:'4시간 전',cat:'클라우드',mk:'us'},
+  {ti:'현대차·기아, 美 전기차 판매 호조… IRA 수혜',src:'한국경제',tm:'4시간 전',cat:'자동차',mk:'kr'},
+  {ti:'TSMC 5월 매출 전년比 +30%… AI 수요 견조',src:'Nikkei',tm:'5시간 전',cat:'반도체',mk:'us'},
+  {ti:'코스닥 바이오 IPO 흥행… 청약 경쟁률 1,000대 1',src:'머니투데이',tm:'5시간 전',cat:'바이오',mk:'kr'},
+  {ti:'메타, 자체 AI 추론칩 개발 가속… 엔비디아 의존 축소',src:'The Information',tm:'6시간 전',cat:'AI',mk:'us'},
+];
+
+/* ---- 영상 상위 10 ---- */
+let SAMPLE_VIDEOS = [
+  {ti:'[오늘의 마켓] 엔비디아 신고가, 지금 들어가도 될까?',ch:'삼프로TV',meta:'18분 · 1시간 전',hot:true},
+  {ti:'미국 고용보고서 프리뷰 — 금리인하 시나리오 점검',ch:'한경 글로벌마켓',meta:'12분 · 2시간 전',hot:true},
+  {ti:'HBM 전쟁 2라운드: 삼성 vs SK하이닉스 vs 마이크론',ch:'슈카월드',meta:'24분 · 5시간 전',hot:true},
+  {ti:'방산주 어디까지 가나 — 한화에어로 밸류에이션 점검',ch:'김단테',meta:'15분 · 7시간 전'},
+  {ti:'Tesla Robotaxi: What Wall Street Expects',ch:'CNBC Television',meta:'9분 · 9시간 전'},
+  {ti:'팔란티어 실적 리뷰와 AI SW 밸류에이션',ch:'미국주식 데일리',meta:'20분 · 12시간 전'},
+  {ti:'코스피 2700 돌파, 외국인 수급의 비밀',ch:'이브닝 브리핑',meta:'16분 · 14시간 전'},
+  {ti:'Fed Watch: September Cut Back on the Table?',ch:'Bloomberg Television',meta:'11분 · 1일 전'},
+  {ti:'2차전지 바닥인가 — 에코프로·LG엔솔 차트 분석',ch:'주식고수의 비밀',meta:'22분 · 1일 전'},
+  {ti:'반도체 소부장 다음 주도주 찾기',ch:'박곰AI',meta:'19분 · 1일 전'},
+];
+
+/* ---- 테마 데스크 리포트 ---- */
+const SAMPLE_THEMES = [
+  {nm:'AI · 반도체',desk:'반도체 섹터 데스크',op:'op-buy',opTxt:'비중확대',
+    pts:['하이퍼스케일러 CapEx 가이던스 연속 상향','HBM 공급 부족 2026년까지 지속','전력·냉각 인프라로 수혜 확산'],
+    picks:'NVDA · SK하이닉스 · 한미반도체 · SMCI', cat:'촉매: 차세대 GPU 출시, 분기 CapEx 시즌'},
+  {nm:'방산 · 우주',desk:'방산 데스크',op:'op-buy',opTxt:'비중확대',
+    pts:['글로벌 국방비 GDP 2%+ 증액 기조','K-방산 수출 파이프라인 확대','장기 수주잔고 가시성 높음'],
+    picks:'한화에어로 · LIG넥스원 · 현대로템 · RTX', cat:'촉매: 신규 수출계약, NATO 정상회의'},
+  {nm:'원전 · 전력인프라',desk:'에너지 데스크',op:'op-buy',opTxt:'비중확대',
+    pts:['AI 데이터센터 전력수요 폭증','SMR·송배전 투자 사이클','전력기기 공급 타이트'],
+    picks:'두산에너빌리티 · GE Vernova · 비스트라 · LS ELECTRIC', cat:'촉매: SMR 인허가, 전력망 투자안'},
+  {nm:'2차전지 · 소재',desk:'2차전지 데스크',op:'op-hold',opTxt:'중립',
+    pts:['전기차 캐즘 단기 지속','메탈 가격 바닥 다지기','고체전지 로드맵 장기 모멘텀'],
+    picks:'LG에너지솔루션 · 에코프로비엠 · 포스코퓨처엠', cat:'촉매: 보조금 정책, 신규 수주'},
+  {nm:'바이오 · 헬스케어',desk:'헬스케어 데스크',op:'op-hold',opTxt:'중립',
+    pts:['비만치료제(GLP-1) 시장 확대','대형 M&A·라이선스 딜 활발','금리 인하 시 밸류 우호'],
+    picks:'일라이릴리 · 노보노디스크 · 알테오젠', cat:'촉매: 임상 데이터, FDA 승인'},
+  {nm:'금융 · 금리',desk:'매크로·금융 데스크',op:'op-hold',opTxt:'중립',
+    pts:['금리인하 사이클 진입 국면','국내 밸류업 배당 매력','순이자마진 둔화 주의'],
+    picks:'KB금융 · 메리츠금융 · JPM', cat:'촉매: FOMC, 금통위, 밸류업 공시'},
+];
+
+/* ---- 분석 엔진 매핑 ---- */
+const ENGINE = [
+  {k:'뉴스 · 영상',v:'RSS(한경/매경/연합) + Finnhub News + YouTube Data API → 헤드라인·링크 수집'},
+  {k:'시황 · 지표',v:'KIS Developers(국내) · yfinance/Finnhub(미국) · Frankfurter(환율)'},
+  {k:'일정',v:'Finnhub Economic Calendar + 실적 캘린더 + 수기 큐레이션'},
+  {k:'종목 심층분석',v:'trading-agents-runner (Bull/Bear·리스크 에이전트 협업)'},
+  {k:'테마 리포트',v:'bigdata-com sector-analysis / peer-comparables / catalyst-monitor'},
+];
+
+/* ========================= 렌더링 ========================= */
+function spark(data, up){
+  const w=92,h=24,max=Math.max(...data),min=Math.min(...data),rng=(max-min)||1;
+  const pts=data.map((v,i)=>`${(i/(data.length-1))*w},${h-((v-min)/rng)*h}`).join(' ');
+  const c = up>0?'var(--up)':(up<0?'var(--down)':'var(--flat)');
+  return `<svg width="${w}" height="${h}"><polyline points="${pts}" fill="none" stroke="${c}" stroke-width="1.6"/></svg>`;
+}
+
+const prevStrip={};
+function renderStrip(){
+  document.getElementById('strip').innerHTML = SAMPLE_INDEX.map(d=>{
+    const dec=d.dec||0;
+    const valStr=(d.pre||'')+d.val.toLocaleString('ko-KR',{minimumFractionDigits:dec,maximumFractionDigits:dec})+(d.suf||'');
+    const chgStr=(d.chg>0?'+':d.chg<0?'-':'')+Math.abs(d.chg).toLocaleString('ko-KR',{minimumFractionDigits:dec,maximumFractionDigits:dec});
+    let flash='';
+    if(prevStrip[d.key]!==undefined && prevStrip[d.key]!==d.val) flash=d.val>prevStrip[d.key]?'flash-up':'flash-down';
+    prevStrip[d.key]=d.val;
+    return `<div class="idx ${flash}">
+      <div class="nm">${d.nm}${d.sym?` <span class="sym2">${d.sym}</span>`:''}</div>
+      <div class="val mono">${valStr}</div>
+      <div class="chg ${cls(d.chg)} mono">${arr(d.chg)} ${chgStr} (${sign(d.pct)}%)</div>
+      ${spark(d.sp, d.chg)}
+    </div>`;
+  }).join('');
+}
+
+/* 관심종목 */
+let WL = JSON.parse(localStorage.getItem('alphadesk.wl2')||'null') || DEFAULT_WL.slice();
+let SEL = WL.length?WL[0].sym:null;
+const saveWL = ()=>localStorage.setItem('alphadesk.wl2', JSON.stringify(WL));
+
+function renderWL(){
+  document.getElementById('wl-count').textContent = WL.length;
+  document.getElementById('wl-body').innerHTML = WL.map(r=>{
+    const hasPx = r.px!=null;
+    return `<tr data-sym="${r.sym}" class="${r.sym===SEL?'sel':''}">
+      <td><span class="sym">${r.name}</span><span class="mk">${(r.mk||'').toUpperCase()}</span></td>
+      <td class="px mono">${hasPx?fmt(r.px):'…'}</td>
+      <td class="pc ${cls(r.pct||0)} mono">${hasPx?arr(r.pct)+' '+sign(r.pct)+'%':''}</td>
+      <td class="del" data-del="${r.sym}">×</td>
+    </tr>`;}).join('');
+  document.querySelectorAll('#wl-body tr').forEach(tr=>{
+    tr.addEventListener('click',e=>{
+      if(e.target.dataset.del){ WL=WL.filter(x=>x.sym!==e.target.dataset.del); if(SEL===e.target.dataset.del)SEL=WL[0]&&WL[0].sym; saveWL(); renderWL(); renderDeep(); return; }
+      SEL=tr.dataset.sym; renderWL(); renderDeep();
+    });
+  });
+}
+// 검색 결과에서 호출: sym=yfinance 심볼(예: 005930.KS, NVDA), name=표시명, mk=kr|us
+function addWL(sym,name,mk){
+  if(!sym) return;
+  if(WL.some(x=>x.sym===sym)){ SEL=sym; renderWL(); renderDeep(); return; }
+  WL.unshift({sym, name:name||sym, mk:mk||(/\.(KS|KQ)$/.test(sym)?'kr':'us'), px:null, pct:null});
+  SEL=sym; saveWL(); renderWL(); renderDeep(); loadWatch();   // 즉시 실시간 시세 조회
+}
+
+/* 핵심 일정 — KR/US 분리, 다가올 7일 */
+const CAL_DOW=['일','월','화','수','목','금','토'];
+function calToday(){ return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()); }
+function calDayLabel(ds){
+  const t=CAL_TODAY||calToday();
+  const [ay,am,ad]=ds.split('-').map(Number),[ty,tm,td]=t.split('-').map(Number);
+  const d=new Date(ay,am-1,ad), tt=new Date(ty,tm-1,td);
+  const diff=Math.round((d-tt)/86400000);
+  const lab=diff===0?'오늘':diff===1?'내일':diff===2?'모레':(am+'/'+ad);
+  return lab+' <small>'+CAL_DOW[d.getDay()]+'</small>';
+}
+function schedRow(e){
+  const d=`<span class="d">${calDayLabel(e.date)}${e.time?`<span class="tm mono">${e.time}</span>`:''}</span>`;
+  const st=e.importance?`<span class="st">${'★'.repeat(e.importance)}</span>`:'';
+  if(e.type==='earnings'){
+    const tail = e.mk==='kr' ? (e.market||'') : (e.session||'');
+    const x=`EPS 예상 ${e.eps_est||'—'}${tail?' · '+tail:''}`;
+    return `<div class="srow">${d}<span class="t"><span class="nm">${e.title}</span>${e.ticker?`<span class="tkr">${e.ticker}</span>`:''}${st}<span class="x">${x}</span></span></div>`;
+  }
+  const x = e.actual ? `실제 <b style="color:var(--gold)">${e.actual}</b> · 예상 ${e.forecast||'—'}` : `예상 ${e.forecast||'—'} · 이전 ${e.previous||'—'}`;
+  return `<div class="srow">${d}<span class="t"><span class="nm">${e.title}</span>${st}<span class="x">${x}</span></span></div>`;
+}
+const CAL_PRIO=['비농업 고용','소비자물가','생산자물가','기준금리','개인소비지출','PCE','ISM','소매판매','국내총생산','실업률'];
+function collapseEcon(list){   // 경제지표는 같은 일시 묶음을 대표 1건으로, 실적은 모두 유지
+  const rank=e=>{let b=CAL_PRIO.findIndex(k=>e.title.includes(k)); if(b<0)b=CAL_PRIO.length; return b+(/민간|광의|특수|제외|근원/.test(e.title)?0.4:0);};
+  const econ=list.filter(e=>e.type==='econ'), other=list.filter(e=>e.type!=='econ');
+  const g={};
+  econ.forEach(e=>{const k=e.date+'|'+e.time;(g[k]=g[k]||[]).push(e);});
+  const reps=Object.keys(g).map(k=>g[k].slice().sort((a,b)=>rank(a)-rank(b)||(b.importance-a.importance)||a.title.length-b.title.length)[0]);
+  return reps.concat(other);
+}
+function schedSection(mk,flag,label){
+  const t=CAL_TODAY||calToday();
+  let list=CAL_EVENTS.filter(e=>e.mk===mk && e.date>=t && e.category!=='연설');
+  // 중요도 우선 → 임박순으로 상위 5건 선별 후, 표시는 날짜순
+  let cand=collapseEcon(list).sort((a,b)=>(b.importance||0)-(a.importance||0) || (a.date+(a.time||'99:99')).localeCompare(b.date+(b.time||'99:99')));
+  let pick=cand.slice(0,5).sort((a,b)=>(a.date+(a.time||'99:99')).localeCompare(b.date+(b.time||'99:99')));
+  const body = pick.length ? pick.map(schedRow).join('')
+    : `<div class="sched-empty">예정된 ${label} 일정이 없습니다.</div>`;
+  return `<div class="sched-sec"><h6>${flag} ${label}<span class="n">${list.length}건</span></h6>${body}</div>`;
+}
+function renderSched(){
+  const host=document.getElementById('sched'); if(!host) return;
+  if(!CAL_EVENTS.length){ host.innerHTML='<div class="sched-empty">일정을 불러오는 중…</div>'; return; }
+  host.innerHTML = schedSection('kr','🇰🇷','한국') + schedSection('us','🇺🇸','미국');
+}
+async function loadCalendar(){
+  let live=null, snap=null;
+  try{ const r=await fetch('/api/calendar',{cache:'default'}); if(r.ok) live=await r.json(); }catch(e){}
+  try{ const r=await fetch('data/calendar.json?t='+Date.now(),{cache:'no-store'}); if(r.ok) snap=await r.json(); }catch(e){}
+  const base=(live && live.events && live.events.length)?live:snap;
+  if(!base || !base.events) return;
+  let events=base.events.slice();
+  if(base===live && snap && snap.events){   // 라이브에 없는 실적(원거리 US·한국)을 스냅샷에서 보강
+    const have=new Set(events.filter(e=>e.type==='earnings').map(e=>e.ticker+'|'+e.date));
+    snap.events.filter(e=>e.type==='earnings'&&!have.has(e.ticker+'|'+e.date)).forEach(e=>events.push(e));
+  }
+  CAL_EVENTS=events; CAL_TODAY=base.today||calToday(); renderSched();
+}
+
+/* 심층 분석 */
+/* 관심종목 인터랙티브 주가차트 — Lightweight Charts(오픈소스) + 야후 데이터(/api/chart).
+   한국(.KS/.KQ)·미국 모두 동작. 기본 일봉. 타임프레임 버튼으로 기간 전환. */
+const CHART_RANGES=[
+  ['1일','1d','5m'],['1주','5d','15m'],['1개월','1mo','1d'],['3개월','3mo','1d'],
+  ['6개월','6mo','1d'],['1년','1y','1d'],['5년','5y','1wk']
+];
+let lwc=null,lwcCandle=null,lwcVol=null,curChartSym=null,curRange='6mo',curInterval='1d';
+function ensureLWC(){
+  return new Promise(res=>{
+    if(window.LightweightCharts) return res(true);
+    const s=document.createElement('script');
+    s.src='https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js';
+    s.onload=()=>res(true); s.onerror=()=>res(false);
+    document.head.appendChild(s);
+  });
+}
+function chartColors(){
+  const cs=getComputedStyle(document.body);
+  return {up:(cs.getPropertyValue('--up')||'#ff4d5e').trim(), down:(cs.getPropertyValue('--down')||'#3b82f6').trim()};
+}
+async function renderChart(sym){
+  const host=document.getElementById('tv-chart'); if(!host) return;
+  if(!sym){ host.innerHTML='<div class="tv-loading">종목을 선택하세요</div>'; curChartSym=null; return; }
+  if(sym===curChartSym) return;            // 같은 종목이면 유지(시세 10초 갱신에 안 깜빡임)
+  curChartSym=sym;
+  const okLib=await ensureLWC();
+  if(sym!==curChartSym) return;            // 로딩 중 다른 종목 선택되면 취소
+  if(!okLib||!window.LightweightCharts){ host.innerHTML='<div class="tv-loading">차트 라이브러리를 불러오지 못했습니다</div>'; return; }
+  if(lwc){ try{lwc.remove()}catch(e){} lwc=null; }
+  host.innerHTML='<div class="px-bar" id="px-bar"></div><div class="px-canvas" id="px-canvas"></div>'+
+    '<div class="px-info"><span id="px-sym"></span><span id="px-meta"></span></div>';
+  const bar=host.querySelector('#px-bar');
+  bar.innerHTML=CHART_RANGES.map((r,i)=>`<button class="px-tf${r[1]===curRange?' on':''}" data-i="${i}">${r[0]}</button>`).join('');
+  bar.querySelectorAll('.px-tf').forEach(b=>b.onclick=()=>{
+    const r=CHART_RANGES[+b.dataset.i]; curRange=r[1]; curInterval=r[2];
+    bar.querySelectorAll('.px-tf').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+    loadChartData(curChartSym);
+  });
+  const col=chartColors();
+  lwc=LightweightCharts.createChart(host.querySelector('#px-canvas'),{
+    autoSize:true,
+    layout:{background:{color:'#0f1626'},textColor:'#8597b0',fontFamily:'inherit'},
+    grid:{vertLines:{color:'rgba(30,42,66,0.35)'},horzLines:{color:'rgba(30,42,66,0.35)'}},
+    rightPriceScale:{borderColor:'#1e2a42'},
+    timeScale:{borderColor:'#1e2a42',timeVisible:/[mh]/.test(curInterval),secondsVisible:false},
+    crosshair:{mode:LightweightCharts.CrosshairMode.Normal}
+  });
+  lwcCandle=lwc.addCandlestickSeries({upColor:col.up,downColor:col.down,borderVisible:false,wickUpColor:col.up,wickDownColor:col.down});
+  lwcVol=lwc.addHistogramSeries({priceFormat:{type:'volume'},priceScaleId:''});
+  lwcVol.priceScale().applyOptions({scaleMargins:{top:0.82,bottom:0}});
+  document.getElementById('px-sym').textContent=((WL.find(x=>x.sym===sym)||{}).name||sym)+' · 주가차트';
+  loadChartData(sym);
+}
+async function loadChartData(sym){
+  if(!lwcCandle) return;
+  const meta=document.getElementById('px-meta');
+  if(meta) meta.textContent='불러오는 중…';
+  try{
+    const r=await fetch(`/api/chart?sym=${encodeURIComponent(sym)}&range=${curRange}&interval=${curInterval}`,{cache:'default'});
+    if(!r.ok) throw new Error('http');
+    const d=await r.json();
+    if(d.error||!d.ohlc||!d.ohlc.length) throw new Error(d.error||'no data');
+    if(sym!==curChartSym) return;          // 응답 사이 종목 바뀌면 무시
+    const col=chartColors();
+    lwc.applyOptions({timeScale:{timeVisible:/[mh]/.test(curInterval)}});
+    lwcCandle.setData(d.ohlc);
+    lwcVol.setData(d.vol.map(v=>({time:v.time,value:v.value,color:(v.up?col.up:col.down)+'55'})));
+    lwc.timeScale().fitContent();
+    if(meta) meta.textContent=(d.currency?d.currency+' · ':'')+d.ohlc.length+'봉 · '+curInterval;
+  }catch(e){
+    if(meta) meta.textContent='데이터를 불러올 수 없습니다 (로컬 서버/배포 환경에서 표시)';
+  }
+}
+function renderDeep(){
+  const row = WL.find(x=>x.sym===SEL);
+  const d = deepFor(SEL,row);
+  renderChart(SEL);
+  const px = (row && row.px!=null)?row.px:d.px;
+  const pct = (row && row.pct!=null)?row.pct:d.pct;
+  document.getElementById('deep-head').innerHTML = `
+    <div><h3 style="font-size:16px">${d.name}</h3>
+      <div class="px-now mono">${fmt(px)} <span class="${cls(pct)}" style="font-size:14px">${arr(pct)} ${sign(pct)}%</span></div>
+    </div>
+    <span class="tag">${d.mk==='KR'?'한국':'미국'} · ${SEL}${d.fallback?' · 분석 대기':''}</span>`;
+
+  // 개요·지표
+  const ov = d.overview ? `<div class="ov-box"><b>개요</b>${d.overview}</div>` : '';
+  document.getElementById('pane-m').innerHTML = ov + `<div class="metrics">${
+    d.metrics.map(m=>`<div class="metric"><div class="k">${m.k}</div><div class="v mono">${m.v}</div>
+      <div class="x">${m.x||''}</div>${m.bar?`<div class="vbar"><i style="width:${m.bar}%"></i></div>`:''}</div>`).join('')
+  }</div>`;
+
+  // 밸류체인
+  document.getElementById('pane-c').innerHTML = d.chain.length ? `<div class="chain">${
+    d.chain.map((st,i)=>`<div class="stage"><h5>${st.h}</h5>${
+      st.nodes.map(n=>`<div class="node" onclick="searchAndAdd('${n[0]}')"><b>${n[0]}</b><span>${n[1]}</span></div>`).join('')
+    }</div>`).join('')
+  }</div><div class="chain-arrow">← 업스트림 · · · 다운스트림 → · 노드 클릭 시 관심종목 담기</div>`
+  : '<p style="color:var(--muted)">밸류체인 매핑이 아직 없습니다. bigdata-com peer-comparables 에이전트가 생성합니다.</p>';
+
+  // 연관종목
+  const rk=Object.keys(d.rel);
+  document.getElementById('pane-r').innerHTML = rk.length ? rk.map(g=>`
+    <div class="rel-grp"><h5>${g}</h5>${
+      d.rel[g].map(t=>`<span class="reltag" onclick="searchAndAdd('${t[0]}')">${t[0]}${t[1]?` · ${t[1]}`:''} <span class="add">＋</span></span>`).join('')
+    }</div>`).join('') : '<p style="color:var(--muted)">연관 종목 데이터 생성 대기.</p>';
+
+  // 전문가 리포트
+  const r=d.rep;
+  document.getElementById('pane-rep').innerHTML = `<div class="report">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <span class="opinion ${r.op}">${r.opTxt}</span>
+      <span style="font-size:11.5px;color:var(--muted)">${r.desk||'리서치 데스크'}${(r.asof||d.asof)?' · 업데이트 '+(r.asof||d.asof):''}</span>
+    </div>
+    <p><b>투자 논거</b><br>${r.thesis}</p>
+    <div class="blk">
+      <div><h5 class="up">▲ 강세 요인</h5><ul>${r.bull.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+      <div><h5 class="down">▼ 약세 요인</h5><ul>${r.bear.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+    </div>
+    <div class="blk">
+      <div><h5 style="color:var(--gold)">예정 촉매(Catalyst)</h5><ul>${r.cat.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+      <div><h5 style="color:var(--accent)">리스크 관리</h5><p style="margin:6px 0">${r.risk}</p></div>
+    </div>
+    <div class="src">생성 엔진: <b>trading-agents-runner</b> (Market/News/Fundamentals 애널리스트 + Bull/Bear 연구원 + 리스크 매니저 협업) · 정보 제공용이며 투자 권유가 아닙니다.</div>
+  </div>`;
+}
+
+/* 테마 */
+function renderThemes(){
+  document.getElementById('themes').innerHTML = SAMPLE_THEMES.map(t=>`
+    <div class="theme">
+      <div class="t-top"><span class="opinion ${t.op}">${t.opTxt}</span>
+        <div><h4>${t.nm}</h4><div class="desk">${t.desk}</div></div></div>
+      <ul>${t.pts.map(p=>`<li>${p}</li>`).join('')}</ul>
+      <div class="picks">관심: <b>${t.picks}</b></div>
+      <div class="cat">${t.cat}</div>
+    </div>`).join('');
+}
+
+/* 뉴스/영상 */
+let newsFilter='all';   // all | kr | us
+function renderNews(){
+  const items = SAMPLE_NEWS.filter(n=> newsFilter==='all' || n.mk===newsFilter);
+  const c=document.getElementById('news-count'); if(c) c.textContent = items.length+'건';
+  document.getElementById('news').innerHTML = items.map((n,i)=>`
+    <a class="item" href="${n.link||'#'}" ${n.link?'target="_blank" rel="noopener"':'onclick="return false"'}>
+      <span class="rk mono">${i+1}</span>
+      <span><span class="ti">${n.ti}</span>
+        <span class="meta">${n.hot?'<span class="hot">HOT</span>':''}<span class="flag">${n.mk==='kr'?'🇰🇷':'🇺🇸'}</span><span class="ctag">${n.cat}</span>${n.src} · ${n.tm}</span></span>
+    </a>`).join('');
+}
+function renderVideos(){
+  document.getElementById('videos').innerHTML = SAMPLE_VIDEOS.map((v,i)=>`
+    <a class="item" href="${v.link||'#'}" ${v.link?'target="_blank" rel="noopener"':'onclick="return false"'}>
+      <span class="thumb"${v.thumb?` style="background-image:url('${v.thumb}');background-size:cover;background-position:center"`:''}>${v.thumb?'':'▶ '+(i+1)}</span>
+      <span><span class="ti">${v.ti}</span>
+        <span class="meta">${v.hot?'<span class="hot">HOT</span>':''}<span class="ch">${v.ch}</span>${(v.tm||v.meta)?' · '+(v.tm||v.meta):''}</span></span>
+    </a>`).join('');
+}
+/* ---- 추천 투자 영상: data/videos.json (유튜브 채널 RSS 수집, 진짜 링크) ---- */
+async function loadVideos(){
+  const d=await fetchLive('/api/videos','data/videos.json');
+  if(d && d.items && d.items.length){ SAMPLE_VIDEOS=d.items; renderVideos(); }
+}
+function bindNewsTabs(){
+  document.querySelectorAll('#news-tabs button').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('#news-tabs button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); newsFilter=b.dataset.f; renderNews();
+  }));
+}
+
+/* 엔진/면책 */
+function renderFooter(){
+  document.getElementById('engine').innerHTML = ENGINE.map(e=>`<div class="e"><div class="k">${e.k}</div><div class="v">${e.v}</div></div>`).join('');
+  document.getElementById('disc').innerHTML =
+    '✅ <b>자동 갱신</b>: 시장지표 13종·환율(yfinance, 약 15분 지연·10초 갱신) · 관심종목 시세(10초) · 비트코인(5초·Binance) · 실시간 뉴스(60초) · 추천 영상(5분) · 핵심 일정의 경제지표·실적(5분) · 시가총액 히트맵(TradingView). ' +
+    '🔄 <b>주기적 갱신</b>: 종목 심층분석(에이전트 생성) · 한국/원거리 실적 일정(분기 단위, 재수집 시 반영). ' +
+    '⚠ <b>샘플</b>: 테마별 전문가 데스크 리포트(예시). &nbsp; 본 화면은 정보 제공용이며 투자자문·매매 권유가 아닙니다. 투자 판단과 책임은 이용자 본인에게 있습니다.';
+}
+
+/* 시계 / 마켓 세션 (대한민국 서울 KST 기준) */
+function kstParts(){
+  const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Seoul',hourCycle:'h23',weekday:'short',
+    hour:'2-digit',minute:'2-digit',second:'2-digit'}).formatToParts(new Date());
+  const o={}; p.forEach(x=>o[x.type]=x.value);
+  const dm={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6};
+  return {h:+o.hour, m:+o.minute, hh:o.hour, mm:o.minute, ss:o.second, dow:dm[o.weekday]};
+}
+// KOSPI/KOSDAQ (KST): 프리 08:00~09:00 · 정규 09:00~15:30 · 애프터 15:30~20:00
+function kospiSession(dow,mins){
+  if(dow===0||dow===6) return {l:'휴장',k:'closed'};
+  if(mins>=480&&mins<540)  return {l:'프리마켓',  k:'ext', end:'09:00'};
+  if(mins>=540&&mins<930)  return {l:'정규장',    k:'open',end:'15:30'};
+  if(mins>=930&&mins<1200) return {l:'애프터마켓',k:'ext', end:'20:00'};
+  return {l:'장마감',k:'closed'};
+}
+// NASDAQ (KST): 데이 09:00~17:00 · 프리 17:00~22:30 · 정규 22:30~05:00 · 애프터 05:00~09:00
+function nasdaqSession(dow,mins){
+  const gap=(dow===6&&mins>=540)||(dow===0)||(dow===1&&mins<1020); // 주말 갭: 토 09:00~월 17:00
+  if(gap) return {l:'휴장',k:'closed'};
+  if(mins>=540&&mins<1020)  return {l:'데이마켓',  k:'ext', end:'17:00'};
+  if(mins>=1020&&mins<1350) return {l:'프리마켓',  k:'ext', end:'22:30'};
+  if(mins>=1350||mins<300)  return {l:'정규장',    k:'open',end:'05:00'};
+  return {l:'애프터마켓',k:'ext', end:'09:00'};
+}
+function paintMkt(id,s){
+  const dot=document.getElementById(id+'-dot'), lab=document.getElementById(id+'-st');
+  if(!dot||!lab) return;
+  dot.className='dot '+(s.k==='open'?'open':s.k==='ext'?'ext':'closed');
+  lab.className=(s.k==='open'?'sess-open':s.k==='ext'?'sess-ext':'sess-closed');
+  lab.innerHTML=s.l+(s.end?' <span class="sess-end">~'+s.end+'</span>':'');
+}
+function tick(){
+  const t=kstParts(), mins=t.h*60+t.m;
+  document.getElementById('clock').textContent=t.hh+':'+t.mm+':'+t.ss+' KST';
+  paintMkt('krx', kospiSession(t.dow,mins));
+  paintMkt('us',  nasdaqSession(t.dow,mins));
+}
+function liveJitter(){
+  // 관심종목(데모)만 미세 변동. 상단 지표는 실데이터(loadMarket)라 흔들지 않음.
+  WL.forEach(r=>{ r.px += (Math.random()-0.5)*r.px*0.0008; });
+  renderWL();
+}
+
+/* 서버리스 함수(/api/*) 우선 → 실패 시 정적 스냅샷(data/*.json) 폴백.
+   /api/*는 캐시버스터 없이 호출해야 엣지 캐시가 동작(함수 호출 최소화). */
+async function fetchLive(api, file){
+  try{ const r=await fetch(api,{cache:'default'}); if(r.ok) return await r.json(); }catch(e){}
+  try{ const r=await fetch(file+'?t='+Date.now(),{cache:'no-store'}); if(r.ok) return await r.json(); }catch(e){}
+  return null;
+}
+/* ---- 실시간 시세 로드: /api/market (없으면 data/market.json) ---- */
+let marketTime='';
+async function loadMarket(){
+  const m = await fetchLive('/api/market','data/market.json');
+  if(!m){ updateLiveBadge(0); return; }
+  let n=0;
+  SAMPLE_INDEX.forEach(d=>{
+    const q=m[d.key];
+    if(q && typeof q.price==='number'){
+      if(d.key!=='btc'){ d.val=q.price; d.chg=q.chg; d.pct=q.pct; }  // btc 값은 바이낸스 실시간이 전담
+      if(Array.isArray(q.sp) && q.sp.length>1) d.sp=q.sp;            // 스파크라인=장중 5분봉 실데이터(btc 곡선 포함)
+      n++;
+    }
+  });
+  marketTime=(m._updated||'').replace('T',' ').slice(0,16);
+  renderStrip();
+  const fx=document.getElementById('fx');
+  if(m.usdkrw && typeof m.usdkrw.price==='number') fx.textContent=m.usdkrw.price.toLocaleString('ko-KR',{minimumFractionDigits:1,maximumFractionDigits:1});
+  updateLiveBadge(n);
+}
+function updateLiveBadge(n){
+  const el=document.getElementById('live-ind'); if(!el) return;
+  if(n>0){ el.className='live-ind on'; el.innerHTML='● 시세 LIVE '+n+'/13 · '+marketTime+' <span style="opacity:.7">yfinance</span>'; }
+  else { el.className='live-ind'; el.textContent='시세 연결 대기 — fetch_market.py 실행 필요'; }
+}
+
+/* ---- 관심종목 실시간 시세: data/quotes.json ---- */
+async function loadWatch(){
+  const syms=[...new Set(WL.map(x=>x.sym))];
+  const apply=q=>{ WL.forEach(it=>{ const v=q[it.sym]; if(v && typeof v.price==='number'){ it.px=v.price; it.pct=v.pct; } }); renderWL(); renderDeep(); };
+  if(syms.length){
+    try{   // 1) 로컬 서버 실시간 API — 임의 종목도 실시간
+      const r=await fetch('/api/quote?syms='+encodeURIComponent(syms.join(',')),{cache:'no-store'});
+      if(r.ok){ apply(await r.json()); return; }
+    }catch(e){}
+  }
+  try{     // 2) 폴백: 미리 수집된 quotes.json (정적 배포 환경)
+    const r=await fetch('data/quotes.json?t='+Date.now(),{cache:'no-store'});
+    if(r.ok) apply(await r.json());
+  }catch(e){}
+}
+/* ---- 실시간 뉴스: data/news.json (구글뉴스 RSS 수집) ---- */
+async function loadNewsLive(){
+  const d=await fetchLive('/api/news','data/news.json');
+  if(d && d.items && d.items.length){ SAMPLE_NEWS=d.items; renderNews(); }
+}
+/* ---- 비트코인 실시간 틱: Binance (CORS 개방, 24시간 거래) ---- */
+async function loadBTC(){
+  try{
+    const r=await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT',{cache:'no-store'});
+    if(!r.ok) throw new Error();
+    const b=await r.json();
+    const d=SAMPLE_INDEX.find(x=>x.key==='btc');
+    if(d){ d.val=parseFloat(b.lastPrice); d.chg=parseFloat(b.priceChange); d.pct=+parseFloat(b.priceChangePercent).toFixed(2); renderStrip(); }
+  }catch(e){}
+}
+
+/* 색상 토글 */
+document.getElementById('colorToggle').addEventListener('click',e=>{
+  document.body.classList.toggle('us-colors');
+  e.target.textContent = document.body.classList.contains('us-colors') ? '색상: 미국식' : '색상: 한국식';
+});
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.tabpane').forEach(x=>x.classList.remove('on'));
+  t.classList.add('on'); document.getElementById('pane-'+t.dataset.t).classList.add('on');
+}));
+/* 종목 검색 → /api/search (네이버 한글 + yfinance, 로컬 서버에서 동작) */
+let wlSearchTimer=null;
+const wlSearchInput=document.getElementById('wl-search');
+const wlResults=document.getElementById('wl-results');
+function renderResults(list){
+  if(!list || !list.length){ wlResults.innerHTML=''; wlResults.style.display='none'; return; }
+  wlResults.style.display='block';
+  wlResults.innerHTML=list.map(r=>`<div class="wl-res" data-sym="${r.sym}" data-name="${(r.name||'').replace(/"/g,'&quot;')}" data-mk="${r.mk||''}">
+    <span class="rn">${r.name} <span style="color:var(--muted2);font-size:10px">${(r.mk||'').toUpperCase()}</span></span><span class="rs">${r.sym} · ${r.exch||''}</span></div>`).join('');
+  wlResults.querySelectorAll('.wl-res').forEach(el=>el.addEventListener('click',()=>{
+    addWL(el.dataset.sym, el.dataset.name, el.dataset.mk); wlSearchInput.value=''; renderResults([]);
+  }));
+}
+async function doSearch(q){
+  if(!q){ renderResults([]); return; }
+  try{
+    const r=await fetch('/api/search?q='+encodeURIComponent(q),{cache:'no-store'});
+    if(!r.ok) throw new Error();
+    renderResults(await r.json());
+  }catch(e){
+    wlResults.innerHTML='<div class="wl-res muted">종목 검색은 로컬 서버(대시보드-실행.bat)에서 동작합니다</div>'; wlResults.style.display='block';
+  }
+}
+wlSearchInput.addEventListener('input',e=>{ clearTimeout(wlSearchTimer); const q=e.target.value.trim(); wlSearchTimer=setTimeout(()=>doSearch(q),250); });
+wlSearchInput.addEventListener('keydown',e=>{ if(e.key==='Escape'){ wlSearchInput.value=''; renderResults([]); } });
+document.addEventListener('click',e=>{ if(!e.target.closest('#wl-results') && e.target!==wlSearchInput) renderResults([]); });
+/* 밸류체인/연관종목 '+' : 이름으로 검색해 최선 결과 자동 추가 */
+async function searchAndAdd(q){
+  try{ const r=await fetch('/api/search?q='+encodeURIComponent(q),{cache:'no-store'});
+    if(r.ok){ const l=await r.json(); if(l.length){ addWL(l[0].sym, l[0].name, l[0].mk); return; } } }catch(e){}
+}
+
+/* ---- 시가총액 히트맵 (TradingView 실시간 + 오프라인 폴백) ---- */
+const HM_SETS=[
+  {k:'S&P 500',t:'SPX500'},{k:'나스닥100',t:'NASDAQ100'},{k:'다우',t:'DJDJI'},{k:'미국 전체',t:'AllUSCommon'}
+];
+let hmSource='SPX500';
+function renderHmDataset(){
+  const seg=document.getElementById('hm-dataset');
+  seg.innerHTML = HM_SETS.map(d=>`<button data-t="${d.t}" class="${d.t===hmSource?'on':''}">${d.k}</button>`).join('');
+  seg.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{ hmSource=b.dataset.t; renderHmDataset(); renderHeatmap(); }));
+}
+function tvHeatmapUrl(ds, kr){
+  const cfg={dataSource:ds,blockColor:'change',blockSize:'market_cap_basic',grouping:'sector'};
+  return (kr?'https://kr.tradingview.com/heatmap/stock/':'https://www.tradingview.com/heatmap/stock/')+'#'+encodeURIComponent(JSON.stringify(cfg));
+}
+// 국내/미국 탭 없음 — 위젯 내장 선택기(▾)로 시장 직접 선택. KOSPI200 등 위젯 미지원 시장은 새 탭 링크.
+function renderHeatmap(){
+  document.getElementById('hm-open').href  = tvHeatmapUrl(hmSource, false);   // 현재 위젯 시장 전체화면
+  document.getElementById('hm-kospi').href = tvHeatmapUrl('KOSPI200', true);  // 한국 KOSPI200(새 탭)
+  loadHeatmap();
+}
+// iframe 직접 생성(스크립트 재주입의 토글 불가 문제 회피 → src만 교체하면 매번 새로 렌더)
+function loadHeatmap(){
+  const host=document.getElementById('hm-widget'); host.innerHTML='';
+  const cfg={dataSource:hmSource,blockColor:'change',blockSize:'market_cap_basic',grouping:'sector',
+    colorTheme:'dark',hasTopBar:true,isDataSetEnabled:true,isMonoSize:false,isZoomEnabled:true,isFullsizeEnabled:true,
+    locale:'kr',width:'100%',height:'100%'};
+  const f=document.createElement('iframe');
+  f.style.cssText='width:100%;height:100%;border:0;display:block';
+  f.setAttribute('scrolling','no'); f.setAttribute('frameborder','0'); f.setAttribute('allowtransparency','true');
+  f.src='https://www.tradingview-widget.com/embed-widget/stock-heatmap/?locale=kr#'+encodeURIComponent(JSON.stringify(cfg));
+  host.appendChild(f);
+}
+/* 초기화 */
+renderStrip(); renderWL(); renderSched(); renderDeep(); renderThemes(); renderNews(); renderVideos(); bindNewsTabs(); renderFooter(); tick();
+renderHmDataset(); renderHeatmap();
+loadDeep(); loadMarket(); loadWatch(); loadNewsLive(); loadBTC(); loadVideos(); loadCalendar();  // 심층분석·지표·관심종목·뉴스·비트코인·영상·일정
+setInterval(loadDeep,120000);                    // 심층분석 2분(큐레이션·지표 갱신 반영)
+setInterval(tick,1000);
+setInterval(loadMarket,10000);                   // 지표 10초
+setInterval(loadWatch,10000);                    // 관심종목 10초
+setInterval(loadBTC,5000);                       // 비트코인 5초(바이낸스 실시간)
+setInterval(loadNewsLive,60000);                 // 뉴스 60초
+setInterval(loadVideos,300000);                  // 영상 5분
+setInterval(loadCalendar,300000);                // 일정 5분
+</script>
+</body>
+</html>

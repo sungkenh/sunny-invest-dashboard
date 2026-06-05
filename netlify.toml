@@ -1,0 +1,46 @@
+# Netlify 설정 — 정적 사이트 + 서버리스 함수(종목 검색·시세)
+# /api/search · /api/quote 를 함수로 리다이렉트 → 프론트엔드는 그대로 /api/* 사용
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+[[redirects]]
+  from = "/api/search"
+  to = "/.netlify/functions/search"
+  status = 200
+
+[[redirects]]
+  from = "/api/quote"
+  to = "/.netlify/functions/quote"
+  status = 200
+
+[[redirects]]
+  from = "/api/deep"
+  to = "/.netlify/functions/deep"
+  status = 200
+
+[[redirects]]
+  from = "/api/market"
+  to = "/.netlify/functions/market"
+  status = 200
+
+[[redirects]]
+  from = "/api/news"
+  to = "/.netlify/functions/news"
+  status = 200
+
+[[redirects]]
+  from = "/api/videos"
+  to = "/.netlify/functions/videos"
+  status = 200
+
+[[redirects]]
+  from = "/api/chart"
+  to = "/.netlify/functions/chart"
+  status = 200
+
+[[redirects]]
+  from = "/api/calendar"
+  to = "/.netlify/functions/calendar"
+  status = 200
