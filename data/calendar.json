@@ -1,54 +1,12 @@
 {
- "_updated": "2026-06-05T14:01:15",
- "today": "2026-06-05",
+ "_updated": "2026-06-05T19:46:44",
+ "today": "2026-06-06",
  "window": {
-  "from": "2026-06-02",
-  "to": "2026-06-12"
+  "from": "2026-06-03",
+  "to": "2026-06-13"
  },
- "count": 183,
+ "count": 163,
  "events": [
-  {
-   "date": "2026-06-02",
-   "time": "08:00",
-   "et": "19:00",
-   "mk": "kr",
-   "type": "econ",
-   "title": "소비자물가(CPI) (전년比)",
-   "title_en": "CPI",
-   "importance": 3,
-   "forecast": "3.0%",
-   "previous": "2.6%",
-   "actual": "3.1%",
-   "category": "지표"
-  },
-  {
-   "date": "2026-06-02",
-   "time": "08:00",
-   "et": "19:00",
-   "mk": "kr",
-   "type": "econ",
-   "title": "소비자물가(CPI) (전월比)",
-   "title_en": "CPI",
-   "importance": 3,
-   "forecast": "0.3%",
-   "previous": "0.5%",
-   "actual": "0.5%",
-   "category": "지표"
-  },
-  {
-   "date": "2026-06-02",
-   "time": "23:00",
-   "et": "10:00",
-   "mk": "us",
-   "type": "econ",
-   "title": "JOLTs 구인건수",
-   "title_en": "JOLTS Job Openings",
-   "importance": 2,
-   "forecast": "6.860M",
-   "previous": "6.887M",
-   "actual": "7.618M",
-   "category": "지표"
-  },
   {
    "date": "2026-06-03",
    "time": "21:15",
@@ -260,62 +218,6 @@
    "category": "지표"
   },
   {
-   "date": "2026-06-05",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "비농업 고용",
-   "title_en": "Nonfarm Payrolls",
-   "importance": 3,
-   "forecast": "85K",
-   "previous": "179K",
-   "actual": "172K",
-   "category": "지표"
-  },
-  {
-   "date": "2026-06-05",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "민간 비농업 고용",
-   "title_en": "Private Nonfarm Payrolls",
-   "importance": 3,
-   "forecast": "85K",
-   "previous": "177K",
-   "actual": "120K",
-   "category": "지표"
-  },
-  {
-   "date": "2026-06-05",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "U6 실업률(광의)",
-   "title_en": "U6 Unemployment Rate",
-   "importance": 3,
-   "forecast": "",
-   "previous": "8.2%",
-   "actual": "8.1%",
-   "category": "지표"
-  },
-  {
-   "date": "2026-06-05",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "실업률",
-   "title_en": "Unemployment Rate",
-   "importance": 3,
-   "forecast": "4.3%",
-   "previous": "4.3%",
-   "actual": "4.3%",
-   "category": "지표"
-  },
-  {
    "date": "2026-06-08",
    "time": "",
    "mk": "us",
@@ -360,62 +262,6 @@
   },
   {
    "date": "2026-06-09",
-   "time": "21:15",
-   "et": "08:15",
-   "mk": "us",
-   "type": "econ",
-   "title": "ADP Employment Change Weekly",
-   "title_en": "ADP Employment Change Weekly",
-   "importance": 2,
-   "forecast": "",
-   "previous": "35.75K",
-   "actual": "",
-   "category": "지표"
-  },
-  {
-   "date": "2026-06-09",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "무역수지",
-   "title_en": "Trade Balance",
-   "importance": 2,
-   "forecast": "-55.20B",
-   "previous": "-60.30B",
-   "actual": "",
-   "category": "지표"
-  },
-  {
-   "date": "2026-06-09",
-   "time": "23:00",
-   "et": "10:00",
-   "mk": "us",
-   "type": "econ",
-   "title": "기존주택판매",
-   "title_en": "Existing Home Sales",
-   "importance": 2,
-   "forecast": "4.08M",
-   "previous": "4.02M",
-   "actual": "",
-   "category": "지표"
-  },
-  {
-   "date": "2026-06-09",
-   "time": "23:00",
-   "et": "10:00",
-   "mk": "us",
-   "type": "econ",
-   "title": "기존주택판매",
-   "title_en": "Existing Home Sales",
-   "importance": 2,
-   "forecast": "",
-   "previous": "0.2%",
-   "actual": "",
-   "category": "지표"
-  },
-  {
-   "date": "2026-06-09",
    "time": "",
    "mk": "us",
    "type": "earnings",
@@ -425,7 +271,7 @@
    "session": "시간 미정",
    "eps_est": "",
    "eps_prev": "",
-   "n_ests": "",
+   "n_ests": "2",
    "mktcap": "$42B",
    "importance": 2
   },
@@ -561,118 +407,6 @@
   },
   {
    "date": "2026-06-11",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "근원 생산자물가 (전월比)",
-   "title_en": "Core PPI",
-   "importance": 3,
-   "forecast": "0.5%",
-   "previous": "1.0%",
-   "actual": "",
-   "category": "지표"
-  },
-  {
-   "date": "2026-06-11",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "근원 생산자물가 (전년比)",
-   "title_en": "Core PPI",
-   "importance": 3,
-   "forecast": "",
-   "previous": "5.2%",
-   "actual": "",
-   "category": "지표"
-  },
-  {
-   "date": "2026-06-11",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "생산자물가(PPI) (전월比)",
-   "title_en": "PPI",
-   "importance": 3,
-   "forecast": "0.7%",
-   "previous": "1.4%",
-   "actual": "",
-   "category": "지표"
-  },
-  {
-   "date": "2026-06-11",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "생산자물가(PPI) (전년比)",
-   "title_en": "PPI",
-   "importance": 3,
-   "forecast": "",
-   "previous": "6.0%",
-   "actual": "",
-   "category": "지표"
-  },
-  {
-   "date": "2026-06-11",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "생산자물가(식품·에너지·운송 제외)",
-   "title_en": "PPI ex. Food/Energy/Transport",
-   "importance": 3,
-   "forecast": "",
-   "previous": "4.4%",
-   "actual": "",
-   "category": "지표"
-  },
-  {
-   "date": "2026-06-11",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "생산자물가(식품·에너지·운송 제외)",
-   "title_en": "PPI ex. Food/Energy/Transport",
-   "importance": 3,
-   "forecast": "",
-   "previous": "0.6%",
-   "actual": "",
-   "category": "지표"
-  },
-  {
-   "date": "2026-06-11",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "연속 실업수당청구",
-   "title_en": "Continuing Jobless Claims",
-   "importance": 2,
-   "forecast": "",
-   "previous": "1,777K",
-   "actual": "",
-   "category": "지표"
-  },
-  {
-   "date": "2026-06-11",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "신규 실업수당청구",
-   "title_en": "Initial Jobless Claims",
-   "importance": 2,
-   "forecast": "",
-   "previous": "225K",
-   "actual": "",
-   "category": "지표"
-  },
-  {
-   "date": "2026-06-11",
    "time": "",
    "mk": "us",
    "type": "earnings",
@@ -703,20 +437,6 @@
   },
   {
    "date": "2026-06-12",
-   "time": "11:00",
-   "et": "22:00",
-   "mk": "kr",
-   "type": "econ",
-   "title": "소비자심리지수(IPSOS)",
-   "title_en": "Thomson Reuters IPSOS PCSI",
-   "importance": 1,
-   "forecast": "",
-   "previous": "46.57",
-   "actual": "",
-   "category": "지표"
-  },
-  {
-   "date": "2026-06-12",
    "time": "23:00",
    "et": "10:00",
    "mk": "us",
@@ -741,7 +461,7 @@
    "eps_est": "$2.92",
    "eps_prev": "$2.39",
    "n_ests": "4",
-   "mktcap": "$40B",
+   "mktcap": "$39B",
    "importance": 2
   },
   {
@@ -786,7 +506,7 @@
    "eps_est": "$5.84",
    "eps_prev": "$6.07",
    "n_ests": "9",
-   "mktcap": "$78B",
+   "mktcap": "$77B",
    "importance": 2
   },
   {
@@ -801,7 +521,7 @@
    "eps_est": "$0.34",
    "eps_prev": "$0.35",
    "n_ests": "6",
-   "mktcap": "$40B",
+   "mktcap": "$39B",
    "importance": 2
   },
   {
@@ -861,7 +581,7 @@
    "eps_est": "$2.20",
    "eps_prev": "$2.12",
    "n_ests": "8",
-   "mktcap": "$195B",
+   "mktcap": "$194B",
    "importance": 3
   },
   {
@@ -906,7 +626,7 @@
    "eps_est": "$1.10",
    "eps_prev": "$0.89",
    "n_ests": "6",
-   "mktcap": "$372B",
+   "mktcap": "$384B",
    "importance": 3
   },
   {
@@ -921,7 +641,7 @@
    "eps_est": "$13.71",
    "eps_prev": "$10.91",
    "n_ests": "7",
-   "mktcap": "$307B",
+   "mktcap": "$322B",
    "importance": 3
   },
   {
@@ -936,7 +656,7 @@
    "eps_est": "$1.71",
    "eps_prev": "$1.54",
    "n_ests": "7",
-   "mktcap": "$241B",
+   "mktcap": "$250B",
    "importance": 3
   },
   {
@@ -951,7 +671,7 @@
    "eps_est": "$2.59",
    "eps_prev": "$1.96",
    "n_ests": "7",
-   "mktcap": "$222B",
+   "mktcap": "$231B",
    "importance": 3
   },
   {
@@ -1371,7 +1091,7 @@
    "eps_est": "$5.39",
    "eps_prev": "$4.96",
    "n_ests": "6",
-   "mktcap": "$806B",
+   "mktcap": "$833B",
    "importance": 3
   },
   {
@@ -1386,7 +1106,7 @@
    "eps_est": "$12.53",
    "eps_prev": "$12.05",
    "n_ests": "7",
-   "mktcap": "$154B",
+   "mktcap": "$159B",
    "importance": 3
   },
   {
@@ -1401,7 +1121,7 @@
    "eps_est": "$2.16",
    "eps_prev": "$1.94",
    "n_ests": "6",
-   "mktcap": "$96B",
+   "mktcap": "$99B",
    "importance": 2
   },
   {
@@ -1416,7 +1136,7 @@
    "eps_est": "$3.12",
    "eps_prev": "$2.53",
    "n_ests": "9",
-   "mktcap": "$74B",
+   "mktcap": "$75B",
    "importance": 2
   },
   {
@@ -1431,7 +1151,7 @@
    "eps_est": "$2.98",
    "eps_prev": "$3.36",
    "n_ests": "18",
-   "mktcap": "$41B",
+   "mktcap": "$42B",
    "importance": 2
   },
   {
@@ -1446,7 +1166,7 @@
    "eps_est": "$1.69",
    "eps_prev": "$1.31",
    "n_ests": "9",
-   "mktcap": "$26B",
+   "mktcap": "$27B",
    "importance": 2
   },
   {
@@ -1461,7 +1181,7 @@
    "eps_est": "$2.85",
    "eps_prev": "$2.31",
    "n_ests": "13",
-   "mktcap": "$4.35T",
+   "mktcap": "$4.51T",
    "importance": 3
   },
   {
@@ -1476,7 +1196,7 @@
    "eps_est": "$2.85",
    "eps_prev": "$2.31",
    "n_ests": "13",
-   "mktcap": "$4.35T",
+   "mktcap": "$4.51T",
    "importance": 3
   },
   {
@@ -1491,7 +1211,7 @@
    "eps_est": "$0.28",
    "eps_prev": "$0.27",
    "n_ests": "10",
-   "mktcap": "$1.59T",
+   "mktcap": "$1.57T",
    "importance": 3
   },
   {
@@ -1506,7 +1226,7 @@
    "eps_est": "$2.95",
    "eps_prev": "$2.80",
    "n_ests": "7",
-   "mktcap": "$287B",
+   "mktcap": "$284B",
    "importance": 3
   },
   {
@@ -1521,7 +1241,7 @@
    "eps_est": "$3.11",
    "eps_prev": "$1.86",
    "n_ests": "9",
-   "mktcap": "$258B",
+   "mktcap": "$259B",
    "importance": 3
   },
   {
@@ -1536,7 +1256,7 @@
    "eps_est": "$2.57",
    "eps_prev": "$2.84",
    "n_ests": "8",
-   "mktcap": "$196B",
+   "mktcap": "$192B",
    "importance": 3
   },
   {
@@ -1551,22 +1271,7 @@
    "eps_est": "$1.16",
    "eps_prev": "$0.81",
    "n_ests": "3",
-   "mktcap": "$182B",
-   "importance": 3
-  },
-  {
-   "date": "2026-07-22",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "NextEra Energy",
-   "ticker": "NEE",
-   "session": "시간 미정",
-   "eps_est": "$1.13",
-   "eps_prev": "$1.05",
-   "n_ests": "4",
-   "mktcap": "$176B",
+   "mktcap": "$181B",
    "importance": 3
   },
   {
@@ -1581,7 +1286,22 @@
    "eps_est": "$5.75",
    "eps_prev": "$5.36",
    "n_ests": "9",
-   "mktcap": "$176B",
+   "mktcap": "$179B",
+   "importance": 3
+  },
+  {
+   "date": "2026-07-22",
+   "time": "",
+   "mk": "us",
+   "type": "earnings",
+   "index": "S&P500",
+   "title": "NextEra Energy",
+   "ticker": "NEE",
+   "session": "시간 미정",
+   "eps_est": "$1.13",
+   "eps_prev": "$1.05",
+   "n_ests": "4",
+   "mktcap": "$179B",
    "importance": 3
   },
   {
@@ -1596,7 +1316,7 @@
    "eps_est": "$0.59",
    "eps_prev": "$0.54",
    "n_ests": "8",
-   "mktcap": "$164B",
+   "mktcap": "$158B",
    "importance": 3
   },
   {
@@ -1795,7 +1515,7 @@
    "eps_est": "$4.39",
    "eps_prev": "$4.08",
    "n_ests": "8",
-   "mktcap": "$205B",
+   "mktcap": "$213B",
    "importance": 3
   },
   {
@@ -1810,7 +1530,7 @@
    "eps_est": "$0.53",
    "eps_prev": "$0.74",
    "n_ests": "10",
-   "mktcap": "$85B",
+   "mktcap": "$87B",
    "importance": 2
   },
   {
@@ -1825,7 +1545,7 @@
    "eps_est": "$7.37",
    "eps_prev": "$6.84",
    "n_ests": "10",
-   "mktcap": "$81B",
+   "mktcap": "$80B",
    "importance": 2
   },
   {
@@ -1855,7 +1575,7 @@
    "eps_est": "$3.80",
    "eps_prev": "$3.49",
    "n_ests": "10",
-   "mktcap": "$67B",
+   "mktcap": "$69B",
    "importance": 2
   },
   {
@@ -1870,7 +1590,7 @@
    "eps_est": "$0.77",
    "eps_prev": "($0.16)",
    "n_ests": "6",
-   "mktcap": "$29B",
+   "mktcap": "$31B",
    "importance": 2
   },
   {
