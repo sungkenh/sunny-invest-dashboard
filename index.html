@@ -207,6 +207,7 @@
   .wl .sym{font-weight:700;font-size:12.5px}
   .wl .mk{font-size:10px;color:var(--muted2);margin-left:5px;border:1px solid var(--border);padding:0 4px;border-radius:4px}
   .wl .px{font-weight:700;text-align:right}
+  .wl .px .cur{color:var(--muted2);font-size:.82em;font-weight:600;margin-right:1px}
   .wl .pc{font-size:11px;text-align:right}
   .wl .del{color:var(--muted2);font-size:14px;text-align:center}
   .wl .del:hover{color:var(--up)}
@@ -383,6 +384,11 @@
 
   @media(max-width:1180px){ main{grid-template-columns:1fr} .strip{grid-template-columns:repeat(4,1fr)} .engine{grid-template-columns:repeat(2,1fr)} .themes,.metrics,.chain{grid-template-columns:1fr 1fr} }
   @media(max-width:620px){ .strip{grid-template-columns:repeat(2,1fr)} }
+  /* 데스크톱: 좌·우 컬럼의 지정 카드를 중앙(가장 긴 컬럼) 높이에 맞춰 늘려 가시성 향상 */
+  @media(min-width:1181px){
+    .card.fill{flex:1 1 0;min-height:0;display:flex;flex-direction:column}
+    .card.fill > .scroll{flex:1;min-height:0;max-height:none}
+  }
 </style>
 </head>
 <body>
@@ -443,7 +449,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card fill">
       <div class="head" style="flex-wrap:wrap;gap:5px 6px"><h3>관심 종목</h3><span class="tag" id="wl-count">0</span>
         <button class="wl-io" id="wl-export" title="현재 관심종목을 watchlist.json 파일로 저장합니다. 이 파일을 data/ 폴더에 넣고 재배포하면 모든 기기·재배포에서 영구 유지됩니다.">💾 저장</button>
         <button class="wl-io" id="wl-import" title="저장해 둔 watchlist.json 을 불러옵니다.">📁 불러오기</button>
@@ -499,7 +505,7 @@
       <div class="head"><h3>🇺🇸 트럼프 · Truth Social</h3><span class="tag" id="trump-tag">한국어 번역</span></div>
       <div class="trump scroll" id="trump"></div>
     </div>
-    <div class="card">
+    <div class="card fill">
       <div class="head" style="flex-wrap:wrap;gap:6px 8px">
         <h3>실시간 투자 뉴스</h3>
         <span id="news-count" style="font-size:10.5px;color:var(--muted2);margin-left:auto"></span>
@@ -512,7 +518,7 @@
       </div>
       <div class="news scroll" id="news" style="padding:0 10px"></div>
     </div>
-    <div class="card">
+    <div class="card fill">
       <div class="head"><h3>추천 투자 영상</h3><span class="tag">국내 경제 유튜브 · 최신순</span><a href="videos.html" style="font-size:11px;color:var(--accent);font-weight:700;margin-left:8px">전체 →</a></div>
       <div class="news vid scroll" id="videos" style="padding:0 10px"></div>
     </div>
@@ -911,9 +917,10 @@ function renderWL(){
   document.getElementById('wl-count').textContent = WL.length;
   document.getElementById('wl-body').innerHTML = WL.map(r=>{
     const hasPx = r.px!=null;
+    const cur = (r.mk==='kr') ? '₩' : '$';   // 한국 ₩ · 미국 $
     return `<tr data-sym="${r.sym}" class="${r.sym===SEL?'sel':''}">
       <td><span class="sym">${r.name}</span><span class="mk">${(r.mk||'').toUpperCase()}</span></td>
-      <td class="px mono">${hasPx?fmt(r.px):'…'}</td>
+      <td class="px mono">${hasPx?`<span class="cur">${cur}</span>${fmt(r.px)}`:'…'}</td>
       <td class="pc ${cls(r.pct||0)} mono">${hasPx?arr(r.pct)+' '+sign(r.pct)+'%':''}</td>
       <td class="del" data-del="${r.sym}">×</td>
     </tr>`;}).join('');
