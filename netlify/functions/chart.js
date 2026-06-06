@@ -44,7 +44,11 @@ exports.handler = async (event) => {
       ohlc.push({ time, open: round(q.open[i], 4), high: round(q.high[i], 4), low: round(q.low[i], 4), close: round(q.close[i], 4) });
       vol.push({ time, value: Math.round(q.volume[i] || 0), up: q.close[i] >= q.open[i] });
     }
-    const data = { sym, name: meta.shortName || meta.longName || sym, currency: meta.currency || '', range, interval, ohlc, vol };
+    const pc = (meta.chartPreviousClose != null) ? meta.chartPreviousClose
+      : (meta.previousClose != null) ? meta.previousClose : null;
+    const data = { sym, name: meta.shortName || meta.longName || sym, currency: meta.currency || '', range, interval, ohlc, vol,
+      prevClose: pc != null ? round(pc, 4) : null,                          // 전일 종가(당일 시작 기준선)
+      dayOpen: (intraday && ohlc.length) ? ohlc[0].open : null };           // 당일 첫 봉 시가
     CACHE[key] = { ts: Date.now(), data };
     return resp(data);
   } catch (e) {

@@ -5,7 +5,7 @@
    - 모든 시각은 미 동부(ET) → 한국(KST)로 변환해 KST 날짜/시각으로 그룹화.
    실행: py fetch_calendar.py
 """
-import json, os, re, csv, io, datetime, urllib.request, urllib.parse
+import json, os, re, csv, io, html, datetime, urllib.request, urllib.parse
 from concurrent.futures import ThreadPoolExecutor
 from zoneinfo import ZoneInfo
 
@@ -14,12 +14,13 @@ KST = ZoneInfo('Asia/Seoul')
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36'
 HDR = {'User-Agent': UA, 'Accept': 'application/json, text/plain, */*', 'Accept-Language': 'en-US,en;q=0.9'}
 
-# 표시 윈도: 한국 시간 기준
-#  - 경제지표: 지난 결과 -3일 ~ 다가올 +7일
-#  - 실적(미국·한국): 다음 분기 실적 시즌까지 +EARN_HORIZON일 (한·미 동일)
+# 표시 윈도: 한국 시간 기준 — 지난주(-7일) ~ 다음달(+30일)
+#  - 경제지표: 지난주 발표결과(actual) ~ 다가올 한 달 예정
+#  - 실적(미국·한국): 지난주 발표결과(실제 EPS·서프라이즈) ~ 다가올 한 달 예정
 TODAY_KST = datetime.datetime.now(KST).date()
-PAST_DAYS, FUTURE_DAYS = 3, 7
-EARN_HORIZON = 80
+PAST_DAYS, FUTURE_DAYS = 7, 30
+EARN_PAST, EARN_FUTURE = 7, 30
+EARN_HORIZON = EARN_FUTURE   # 하위호환(기존 참조)
 
 # ── 경제지표 영문→한글 (주요 지표 우선; 미수록은 영문 유지) ──────────────
 ECON_KO = {
@@ -273,13 +274,22 @@ def in_window(dkst):
 # → ET 발표일 = ds - 1 로 보정 후 KST 변환. (실적 endpoint 은 보정 불필요)
 def fetch_econ(events):
     seen = set()
-    for off in range(-PAST_DAYS, FUTURE_DAYS + 2):
+    offs = list(range(-PAST_DAYS, FUTURE_DAYS + 2))
+
+    def fetch_day(off):
         d = TODAY_KST + datetime.timedelta(days=off)
         ds = d.isoformat()
         try:
-            j = get_json('https://api.nasdaq.com/api/calendar/economicevents?date=%s' % ds)
+            return d, get_json('https://api.nasdaq.com/api/calendar/economicevents?date=%s' % ds)
         except Exception as e:
             print('  [econ %s] %s' % (ds, str(e)[:50]))
+            return d, None
+
+    with ThreadPoolExecutor(max_workers=12) as ex:
+        results = list(ex.map(fetch_day, offs))
+
+    for d, j in sorted(results, key=lambda x: x[0]):
+        if not j:
             continue
         et_date = (d - datetime.timedelta(days=1)).isoformat()   # ET 실제 발표일 보정
         for r in (((j.get('data') or {}).get('rows')) or []):
@@ -344,15 +354,26 @@ def cap_str(n):
     return ''
 
 
+def fmt_surprise(s):
+    """nasdaq surprise(%) → '+11.7%' / '-207.7%' / ''."""
+    try:
+        v = float(str(s).replace(',', '').strip())
+        return ('+' if v >= 0 else '') + ('%.1f%%' % v)
+    except Exception:
+        return ''
+
+
 def fetch_earnings(events):
-    """미국 실적 — S&P500 ∪ 나스닥100 ∪ 다우 구성종목, 다음 분기 시즌까지(+EARN_HORIZON일)."""
+    """미국 실적 — S&P500 ∪ 나스닥100 ∪ 다우 구성종목.
+       과거 -EARN_PAST일(실제 보고 EPS·서프라이즈) ~ 미래 +EARN_FUTURE일(컨센서스 EPS) 스크리닝."""
     SESS = {'time-pre-market': '장 시작 전', 'time-after-hours': '장 마감 후', 'time-not-supplied': '시간 미정'}
     sp, ndx, dow = load_sp500(), load_ndx(), set(DOW)
     universe = sp | ndx | dow
     print('  지수 구성종목 S&P500 %d · 나스닥100 %d · 다우 %d → 합집합 %d개 기준 필터'
           % (len(sp), len(ndx), len(dow), len(universe)))
 
-    dates = [(off, (TODAY_KST + datetime.timedelta(days=off)).isoformat()) for off in range(0, EARN_HORIZON + 1)]
+    dates = [(off, (TODAY_KST + datetime.timedelta(days=off)).isoformat())
+             for off in range(-EARN_PAST, EARN_FUTURE + 1)]
 
     def fetch_day(item):
         off, ds = item
@@ -361,7 +382,7 @@ def fetch_earnings(events):
         except Exception:
             return off, ds, None
 
-    with ThreadPoolExecutor(max_workers=10) as ex:
+    with ThreadPoolExecutor(max_workers=12) as ex:
         results = list(ex.map(fetch_day, dates))
 
     for off, ds, j in sorted(results, key=lambda x: x[0]):
@@ -375,16 +396,25 @@ def fetch_earnings(events):
                 continue
             big.append((parse_cap(r.get('marketCap')), r))
         big.sort(key=lambda x: -x[0])
-        # 근시일(±10일)은 폭넓게, 그 이후 먼 일정은 대형주 위주로
-        picked = big[:12] if off <= 10 else [(c, r) for c, r in big if c >= 25e9][:10]
+        # 과거: 실제 보고된 종목 위주 / 근시일(0~10): 폭넓게 / 먼 미래: 대형주 위주
+        if off < 0:
+            picked = [(c, r) for c, r in big if clean(r.get('eps'))][:12]
+        elif off <= 10:
+            picked = big[:12]
+        else:
+            picked = [(c, r) for c, r in big if c >= 25e9][:10]
         for cap, r in picked:
             sym = clean(r.get('symbol'))
+            released = off <= 0           # 발표일이 오늘 이전 → 실제 보고 EPS 사용
+            eps_actual = clean(r.get('eps')) if released else ''
             events.append({
                 'date': ds, 'time': '', 'mk': 'us', 'type': 'earnings', 'index': us_index_of(sym, sp, ndx, dow),
                 'title': TICKER_KO.get(sym, clean(r.get('name')).replace(', Inc.', '').replace(' Inc.', '')
                                        .replace(', Incorporated', '').replace(' Corporation', '').strip()),
                 'ticker': sym, 'session': SESS.get(clean(r.get('time')), '시간 미정'),
                 'eps_est': clean(r.get('epsForecast')), 'eps_prev': clean(r.get('lastYearEPS')),
+                'eps_actual': eps_actual,
+                'surprise': fmt_surprise(r.get('surprise')) if eps_actual else '',
                 'n_ests': clean(r.get('noOfEsts')), 'mktcap': cap_str(cap),
                 'importance': 3 if cap >= 1e11 else 2,
             })
@@ -401,6 +431,8 @@ def fetch_kr_earnings(events):
         print('  [kr-earn] yfinance/pandas 미설치 — 건너뜀 (%s)' % str(e)[:40])
         return
     n = 0
+    lo = TODAY_KST - datetime.timedelta(days=EARN_PAST)
+    hi = TODAY_KST + datetime.timedelta(days=EARN_FUTURE)
     for sym, nm, mkt, imp in KR_EARN_UNIV:
         try:
             ed = yf.Ticker(sym).get_earnings_dates(limit=16)
@@ -408,30 +440,47 @@ def fetch_kr_earnings(events):
                 continue
             rows = sorted([(d, row.get('EPS Estimate'), row.get('Reported EPS')) for d, row in ed.iterrows()],
                           key=lambda x: x[0])
-            tz = rows[0][0].tz
-            now = pd.Timestamp.now(tz=tz)
+            now = pd.Timestamp.now(tz=rows[0][0].tz)
+
+            def prev_year_reported(ts):
+                """발표일 −1년에 가장 가까운 과거 '보고 EPS'(전년 동기)."""
+                target = ts - pd.Timedelta(days=365)
+                past = [r for r in rows if r[2] == r[2] and r[0] < ts]   # Reported EPS not NaN
+                return min(past, key=lambda r: abs((r[0] - target).days))[2] if past else None
+
+            def push(r, released):
+                dd = r[0].date()
+                if not (lo <= dd <= hi):
+                    return False
+                est, rep = r[1], r[2]
+                eps_actual = fmt_krw(rep) if (released and rep == rep) else ''
+                surprise = ''
+                if eps_actual and est == est and est not in (0, None):
+                    try:
+                        g = (float(rep) - float(est)) / abs(float(est)) * 100
+                        surprise = ('+' if g >= 0 else '') + ('%.1f%%' % g)
+                    except Exception:
+                        pass
+                events.append({
+                    'date': dd.isoformat(), 'time': '', 'et': '', 'mk': 'kr', 'type': 'earnings',
+                    'title': nm, 'ticker': sym, 'market': mkt, 'index': mkt, 'session': '',
+                    'eps_est': fmt_krw(est), 'eps_prev': fmt_krw(prev_year_reported(r[0])),
+                    'eps_actual': eps_actual, 'surprise': surprise, 'mktcap': '', 'n_ests': '',
+                    'importance': imp,
+                })
+                return True
+
+            # 다음 예정 실적(컨센서스) + 최근 발표된 실적(보고 EPS·서프라이즈)
             future = [r for r in rows if r[0] >= now]
-            if not future:
-                continue
-            nxt = future[0]
-            dd = nxt[0].date()
-            if not (TODAY_KST <= dd <= TODAY_KST + datetime.timedelta(days=EARN_HORIZON)):
-                continue
-            # 전년 동기 보고 EPS(다음 발표일 −1년에 가장 가까운 과거 실적)
-            target = nxt[0] - pd.Timedelta(days=365)
-            past = [r for r in rows if r[0] < now and r[2] == r[2]]   # Reported EPS not NaN
-            prev = min(past, key=lambda r: abs((r[0] - target).days))[2] if past else None
-            events.append({
-                'date': dd.isoformat(), 'time': '', 'et': '', 'mk': 'kr', 'type': 'earnings',
-                'title': nm, 'ticker': sym, 'market': mkt, 'index': mkt, 'session': '',
-                'eps_est': fmt_krw(nxt[1]), 'eps_prev': fmt_krw(prev), 'mktcap': '', 'n_ests': '',
-                'importance': imp,
-            })
-            n += 1
+            if future and push(future[0], False):
+                n += 1
+            past_rep = [r for r in rows if r[0] < now and r[2] == r[2]]
+            if past_rep and push(past_rep[-1], True):
+                n += 1
         except Exception as e:
             print('  [kr-earn %s] %s' % (sym, str(e)[:40]))
             continue
-    print('  한국 실적 %d건 (KOSPI/KOSDAQ, 다음 %d일)' % (n, EARN_HORIZON))
+    print('  한국 실적 %d건 (KOSPI/KOSDAQ, -%d~+%d일)' % (n, EARN_PAST, EARN_FUTURE))
 
 
 # ── 한국 보강(공개 발표일정) ── 날짜는 발표예정일, 수치는 직전/예상(확인된 범위) ──
@@ -494,23 +543,121 @@ def preserve_kr_earnings(events):
     """한국 실적이 새로 0건(예: 클라우드 IP에서 야후 차단)이면 직전 calendar.json의
        미래 한국 실적을 보존해 데이터가 사라지지 않게 한다. (티커 기준 신규 우선)"""
     here = os.path.dirname(os.path.abspath(__file__))
-    fresh_tickers = {e.get('ticker') for e in events if e.get('mk') == 'kr' and e.get('type') == 'earnings'}
-    lo = TODAY_KST.isoformat()
-    hi = (TODAY_KST + datetime.timedelta(days=EARN_HORIZON)).isoformat()
+    have = {(e.get('ticker'), e.get('date')) for e in events
+            if e.get('mk') == 'kr' and e.get('type') == 'earnings'}
+    lo = (TODAY_KST - datetime.timedelta(days=EARN_PAST)).isoformat()
+    hi = (TODAY_KST + datetime.timedelta(days=EARN_FUTURE)).isoformat()
     kept = 0
     try:
         prev = json.load(open(os.path.join(here, 'data', 'calendar.json'), encoding='utf-8'))
         for e in (prev.get('events') or []):
             if (e.get('mk') == 'kr' and e.get('type') == 'earnings'
-                    and e.get('ticker') not in fresh_tickers
+                    and (e.get('ticker'), e.get('date')) not in have
                     and lo <= (e.get('date') or '') <= hi):
                 events.append(e)
-                fresh_tickers.add(e.get('ticker'))
+                have.add((e.get('ticker'), e.get('date')))
                 kept += 1
     except Exception:
         return
     if kept:
         print('  [kr-earn] 신규 수집 부족 → 직전 스냅샷에서 한국 실적 %d건 보존' % kept)
+
+
+# ── 분석 기사 링크 (Google News RSS · 키 불필요 · 한국어) ─────────────────
+# 발표된(또는 임박한) 지표·실적에 대해 한국어 분석/해설 기사 최대 2건을 부착한다.
+ECON_QUERY = {
+    '비농업 고용': '고용보고서 비농업', '실업률': '고용 실업률', '시간당 평균임금': '시간당 임금',
+    '소비자물가': '소비자물가 CPI', 'CPI': '소비자물가 CPI', '근원 PCE': 'PCE 물가', 'PCE 물가': 'PCE 물가',
+    '생산자물가': '생산자물가 PPI', 'PPI': '생산자물가', '소매판매': '소매판매', '기준금리 결정': '기준금리 결정',
+    'FOMC': 'FOMC 연준', '국내총생산': 'GDP 성장률', 'GDP': 'GDP 성장률', 'ISM 제조업': 'ISM 제조업',
+    'ISM 서비스': 'ISM 서비스업', 'PMI': 'PMI 경기', 'JOLTs': 'JOLTs 구인', 'ADP 민간고용': 'ADP 고용',
+    '신규 실업수당청구': '신규 실업수당청구', '내구재 주문': '내구재 주문', 'CB 소비자신뢰': '소비자신뢰지수',
+    '미시간대 소비심리': '소비자심리지수', '한국은행 기준금리': '한국은행 기준금리', '무역수지': '무역수지',
+    '수출': '수출 무역', '산업생산': '산업생산',
+}
+
+
+def _news_query(e):
+    if e.get('type') == 'earnings':
+        return (e.get('title') or '').strip() + ' 실적'
+    prefix = '한국' if e.get('mk') == 'kr' else '미국'
+    title = e.get('title') or ''
+    core = None
+    for k, v in ECON_QUERY.items():
+        if k in title:
+            core = v
+            break
+    if not core:
+        core = re.sub(r'\(.*?\)', '', title).strip()
+    return '%s %s' % (prefix, core)
+
+
+def _gnews(query, when='21d', n=2):
+    url = ('https://news.google.com/rss/search?q=%s+when:%s&hl=ko&gl=KR&ceid=KR:ko'
+           % (urllib.parse.quote(query), when))
+    try:
+        req = urllib.request.Request(url, headers={'User-Agent': UA})
+        raw = urllib.request.urlopen(req, timeout=15).read().decode('utf-8', 'replace')
+    except Exception:
+        return []
+    out = []
+    for it in re.findall(r'<item>(.*?)</item>', raw, re.S)[:n + 3]:
+        mt = re.search(r'<title>(.*?)</title>', it, re.S)
+        ml = re.search(r'<link>(.*?)</link>', it, re.S)
+        mp = re.search(r'<pubDate>(.*?)</pubDate>', it, re.S)
+        ms = re.search(r'<source[^>]*>(.*?)</source>', it, re.S)
+        ti = re.sub(r'<!\[CDATA\[|\]\]>', '', mt.group(1)).strip() if mt else ''
+        ti = html.unescape(ti)
+        src = html.unescape(ms.group(1).strip()) if ms else ''
+        if src and ti.endswith(' - ' + src):
+            ti = ti[:-(len(src) + 3)].strip()
+        link = ml.group(1).strip() if ml else ''
+        if not ti or not link:
+            continue
+        d = ''
+        if mp:
+            try:
+                d = datetime.datetime.strptime(mp.group(1).strip()[:16], '%a, %d %b %Y').date().isoformat()
+            except Exception:
+                d = ''
+        out.append({'t': ti[:90], 'u': link, 's': src[:24], 'd': d})
+        if len(out) >= n:
+            break
+    return out
+
+
+def add_articles(events):
+    """중요도 ≥2 이고 발표 근접(±밴드) 지표·실적에 한국어 분석 기사 링크를 부착."""
+    cand = []
+    for e in events:
+        if e.get('importance', 0) < 2 or e.get('category') == '연설':
+            continue
+        try:
+            off = (datetime.date.fromisoformat(e['date']) - TODAY_KST).days
+        except Exception:
+            continue
+        if -8 <= off <= 14:
+            cand.append((e, off))
+    # 중요도 우선 → 발표일 근접 우선, 요청량 제한(상위 70건)
+    cand.sort(key=lambda x: (-x[0].get('importance', 0), abs(x[1])))
+    cand = cand[:70]
+    qmap = {}   # 동일 쿼리 캐시(예: CPI 전년/전월 → 1회 요청)
+    for e, off in cand:
+        qmap.setdefault(_news_query(e), []).append((e, off))
+
+    def work(item):
+        q, lst = item
+        off0 = min(o for _, o in lst)
+        return q, _gnews(q, when='30d' if off0 > 0 else '21d')
+
+    with ThreadPoolExecutor(max_workers=10) as ex:
+        for q, arts in ex.map(work, list(qmap.items())):
+            if not arts:
+                continue
+            for e, _ in qmap[q]:
+                e['articles'] = arts
+    n = sum(1 for e in events if e.get('articles'))
+    print('  분석 기사 링크: %d개 이벤트(고유 쿼리 %d)' % (n, len(qmap)))
 
 
 def main():
@@ -524,6 +671,8 @@ def main():
     add_curated_kr(events)
     preserve_kr_earnings(events)   # 야후 차단 등으로 0건이면 직전 스냅샷 보존
     disambiguate_period(events)
+    print('분석 기사 링크 수집(Google News RSS, 한국어)…')
+    add_articles(events)
 
     # 정렬: 날짜 → 시각 → 중요도
     def sk(e):
@@ -531,8 +680,8 @@ def main():
     events.sort(key=sk)
 
     lo = (TODAY_KST - datetime.timedelta(days=PAST_DAYS)).isoformat()
-    hi = (TODAY_KST + datetime.timedelta(days=FUTURE_DAYS)).isoformat()
-    data = {'_updated': datetime.datetime.now().isoformat(timespec='seconds'),
+    hi = (TODAY_KST + datetime.timedelta(days=max(FUTURE_DAYS, EARN_FUTURE))).isoformat()
+    data = {'_updated': datetime.datetime.now(datetime.timezone.utc).isoformat(timespec='seconds'),
             'today': TODAY_KST.isoformat(), 'window': {'from': lo, 'to': hi},
             'count': len(events), 'events': events}
     here = os.path.dirname(os.path.abspath(__file__))

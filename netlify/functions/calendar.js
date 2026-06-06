@@ -3,7 +3,9 @@
 // 방문 시점 수집. 모듈 캐시(30분) + 엣지 캐시. 모든 시각 ET→KST 변환.
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36';
 const HDR = { 'User-Agent': UA, 'Accept': 'application/json, text/plain, */*', 'Accept-Language': 'en-US,en;q=0.9' };
-const PAST = 3, FUT = 7;
+// 서버리스는 '근시일 신선도'(갓 발표된 실제값) 패치 담당. 넓은 ±30 윈도·분석 기사·원거리 실적은
+// 스냅샷(data/calendar.json, fetch_calendar.py 6h)이 제공하며 프런트가 둘을 병합한다.
+const PAST = 7, FUT = 10;
 let CACHE = { ts: 0, data: null };
 const TTL = 30 * 60 * 1000;
 
@@ -140,6 +142,7 @@ function todayKstYmd() {
 function addDays(ymdStr, n) { const [y, m, d] = ymdStr.split('-').map(Number); const t = new Date(Date.UTC(y, m - 1, d + n)); return ymd(t); }
 function magNum(s) { const m = String(s == null ? '' : s).replace(/,/g, '').match(/-?\d+(?:\.\d+)?/); return m ? Math.abs(parseFloat(m[0])) : null; }
 function parseCap(s) { const v = parseFloat(String(s || '').replace(/[^0-9.]/g, '')); return isNaN(v) ? 0 : v; }
+function fmtSurprise(s) { const v = parseFloat(String(s == null ? '' : s).replace(/,/g, '')); return isNaN(v) ? '' : (v >= 0 ? '+' : '') + v.toFixed(1) + '%'; }
 function capStr(n) { if (n >= 1e12) return '$' + (n / 1e12).toFixed(2) + 'T'; if (n >= 1e9) return '$' + Math.round(n / 1e9) + 'B'; if (n >= 1e6) return '$' + Math.round(n / 1e6) + 'M'; return ''; }
 
 async function getJson(url) { const r = await fetch(url, { headers: HDR }); if (!r.ok) throw new Error('http ' + r.status); return r.json(); }
@@ -181,9 +184,9 @@ async function fetchEcon(today, events) {
 async function fetchEarnings(today, events) {
   const SESS = { 'time-pre-market': '장 시작 전', 'time-after-hours': '장 마감 후', 'time-not-supplied': '시간 미정' };
   const [sp, ndx] = await Promise.all([loadSP500(), loadNDX()]);
-  const dates = []; for (let o = 0; o <= FUT; o++) dates.push(addDays(today, o));
-  const lists = await Promise.all(dates.map(ds => getJson('https://api.nasdaq.com/api/calendar/earnings?date=' + ds).then(j => [ds, j]).catch(() => [ds, null])));
-  for (const [ds, j] of lists) {
+  const dates = []; for (let o = -PAST; o <= FUT; o++) dates.push([o, addDays(today, o)]);
+  const lists = await Promise.all(dates.map(([o, ds]) => getJson('https://api.nasdaq.com/api/calendar/earnings?date=' + ds).then(j => [o, ds, j]).catch(() => [o, ds, null])));
+  for (const [o, ds, j] of lists) {
     const rows = (j && j.data && j.data.rows) || [];
     const big = [];
     for (const r of rows) {
@@ -192,11 +195,16 @@ async function fetchEarnings(today, events) {
       big.push([parseCap(r.marketCap), r]);
     }
     big.sort((a, b) => b[0] - a[0]);
-    for (const [cap, r] of big.slice(0, 12)) {
+    // 과거: 실제 보고된 종목 위주, 그 외: 시총 상위 12
+    const picked = o < 0 ? big.filter(([, r]) => clean(r.eps)).slice(0, 12) : big.slice(0, 12);
+    for (const [cap, r] of picked) {
       const sym = clean(r.symbol);
       const nm = TICKER_KO[sym] || clean(r.name).replace(', Inc.', '').replace(' Inc.', '').replace(', Incorporated', '').replace(' Corporation', '').trim();
+      const released = o <= 0;
+      const epsActual = released ? clean(r.eps) : '';
       events.push({ date: ds, time: '', mk: 'us', type: 'earnings', index: usIndexOf(sym, sp, ndx), title: nm, ticker: sym,
         session: SESS[clean(r.time)] || '시간 미정', eps_est: clean(r.epsForecast), eps_prev: clean(r.lastYearEPS),
+        eps_actual: epsActual, surprise: epsActual ? fmtSurprise(r.surprise) : '',
         n_ests: clean(r.noOfEsts), mktcap: capStr(cap), importance: cap >= 1e11 ? 3 : 2 });
     }
   }

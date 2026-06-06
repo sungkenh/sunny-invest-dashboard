@@ -35,6 +35,11 @@ jobs:
       - name: 의존성 설치
         run: pip install -r pipeline/requirements.txt
 
+      - name: Node 설정 (심층분석 생성용)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
       - name: 직전 스냅샷 시드 (보존 로직용)
         run: |
           mkdir -p pipeline/data
@@ -48,11 +53,19 @@ jobs:
           python fetch_news.py      || echo "::warning::news 수집 실패(스킵)"
           python fetch_videos.py    || echo "::warning::videos 수집 실패(스킵)"
           python fetch_watchlist.py || echo "::warning::watchlist 수집 실패(스킵)"
+          python fetch_themes.py    || echo "::warning::themes 수집 실패(스킵)"
+          python fetch_feargreed.py || echo "::warning::feargreed 수집 실패(스킵)"
+          python fetch_trump.py     || echo "::warning::trump 수집 실패(스킵)"
 
       - name: 결과를 data/ 로 복사
         run: |
           mkdir -p data
           cp pipeline/data/*.json data/ 2>/dev/null || true
+
+      - name: 심층분석(기업 생태계·투자지표) 사전 생성
+        # 관심종목 ∪ 인기종목을 data/deep.json 에 병합(큐레이션 8종목은 보존).
+        # → 모든 사용자·기기에서 /api/deep 호출 없이 즉시 표시. 실패해도 워크플로는 계속.
+        run: node pipeline/gen_deep.js || echo "::warning::deep 사전생성 실패(스킵 — 기존 deep.json 유지)"
 
       - name: 변경분 커밋·푸시
         run: |

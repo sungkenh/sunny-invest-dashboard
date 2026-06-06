@@ -4,18 +4,31 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>실시간 투자 뉴스 · 써니의 투자 인사이트</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css"></noscript>
+<link rel="prefetch" href="index.html">
 <style>
   :root{
-    --bg:#0a0e17; --panel:#0f1626; --panel2:#121b2e; --border:#1e2a42;
-    --text:#e6edf6; --muted:#8597b0; --muted2:#5c6c87;
-    --accent:#38bdf8; --accent2:#a78bfa; --gold:#f5b942;
-    --up:#ff4d5e; --down:#3b82f6; --chip:#16223a;
+    --bg:#0a0b0d; --panel:#16181c; --panel2:#1c1f25; --border:#2a2d34;
+    --text:#f5f7fa; --muted:#a8acb3; --muted2:#7c828a;
+    --accent:#1268ff; --accent2:#5b8cff; --gold:#f4b000;
+    --up:#f6465d; --down:#3b82f6; --chip:#1c1f25;
   }
   *{box-sizing:border-box} html,body{margin:0;padding:0}
   body{
-    background:radial-gradient(1200px 600px at 80% -10%, #12203b 0%, transparent 55%), var(--bg);
-    color:var(--text); font-family:"Pretendard","Segoe UI",-apple-system,"Malgun Gothic",sans-serif; font-size:14px; line-height:1.5;
+    background:var(--bg);
+    color:var(--text); font-family:"Pretendard Variable","Pretendard","Inter","Segoe UI",-apple-system,"Malgun Gothic",sans-serif; font-size:14px; line-height:1.5; letter-spacing:-0.01em;
   }
+  body.light{
+    --bg:#f5f6f8; --panel:#ffffff; --panel2:#f2f3f5; --border:#dee1e6;
+    --text:#0a0b0d; --muted:#5b616e; --muted2:#8a909a;
+    --accent:#0052ff; --accent2:#3d7bff; --gold:#a8780a;
+    --up:#d4243a; --down:#2f6bdb; --chip:#eef0f3;
+  }
+  body.light header.topbar{background:rgba(255,255,255,.82)}
+  .btn{cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--text);padding:7px 14px;border-radius:999px;font-size:12px;font-weight:600}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
   a{color:inherit;text-decoration:none}
   .mono{font-variant-numeric:tabular-nums}
 
@@ -23,29 +36,40 @@
     padding:10px 22px;background:rgba(10,14,23,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
   .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.5px}
   .brand .logo{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));
-    display:grid;place-items:center;color:#05080f;font-weight:900;font-size:13px}
+    display:grid;place-items:center;color:#ffffff;font-weight:900;font-size:13px}
   .brand small{color:var(--muted);font-weight:600;font-size:11px;letter-spacing:0}
   nav.mainnav{display:flex;gap:4px}
   nav.mainnav a{padding:7px 13px;border-radius:8px;font-size:13px;font-weight:700;color:var(--muted);border:1px solid transparent}
   nav.mainnav a:hover{color:var(--text);border-color:var(--border)}
-  nav.mainnav a.active{color:#05080f;background:var(--accent)}
+  nav.mainnav a.active{color:#ffffff;background:var(--accent)}
   .spacer{flex:1}
   .clock{font-size:13px;color:var(--muted);font-weight:600}
   .demo-badge{font-size:10.5px;font-weight:800;color:var(--gold);border:1px solid #4a3a12;background:#1c1607;padding:4px 8px;border-radius:6px;letter-spacing:.6px}
 
-  /* 필터바 */
-  .filterbar{position:sticky;top:53px;z-index:40;display:flex;align-items:center;gap:12px;flex-wrap:wrap;
-    padding:12px 22px;background:rgba(10,14,23,.8);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+  /* 필터바 (2행: 섹터 칩 + 오늘의 키워드) */
+  .filterbar{position:sticky;top:53px;z-index:40;display:flex;flex-direction:column;align-items:stretch;gap:9px;flex-wrap:wrap;
+    padding:11px 22px;background:rgba(10,14,23,.8);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+  .fb-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .fb-tag{font-size:11px;font-weight:800;color:var(--muted2);flex:none;letter-spacing:.3px}
+  .fb-tag.hot{color:var(--gold)}
   .chips{display:flex;gap:6px;flex-wrap:wrap}
   .chip{cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--muted);
-    padding:5px 11px;border-radius:999px;font-size:12px;font-weight:700}
-  .chip:hover{color:var(--text)} .chip.on{color:#05080f;background:var(--accent);border-color:var(--accent)}
+    padding:5px 11px;border-radius:999px;font-size:12px;font-weight:700;display:inline-flex;align-items:center}
+  .chip:hover{color:var(--text)} .chip.on{color:#ffffff;background:var(--accent);border-color:var(--accent)}
+  .chip .cn{margin-left:5px;font-size:10px;font-weight:700;color:var(--muted2);background:var(--panel2);border-radius:8px;padding:0 5px;min-width:15px;text-align:center}
+  .chip.on .cn{color:#fff;background:rgba(255,255,255,.22)}
+  .tchip{cursor:pointer;border:1px dashed var(--border);background:var(--panel);color:var(--muted);
+    padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;display:inline-flex;align-items:center}
+  .tchip:hover{color:var(--text);border-color:var(--gold)}
+  .tchip.on{color:#1a1400;background:var(--gold);border-style:solid;border-color:var(--gold)}
+  .tchip .cn{margin-left:5px;font-size:10px;color:var(--muted2)} .tchip.on .cn{color:#3a2c00}
+  .trend-empty{font-size:11px;color:var(--muted2)}
   .search{margin-left:auto;display:flex;gap:8px;align-items:center}
   .search input{background:#0a1120;border:1px solid var(--border);color:var(--text);padding:8px 11px;border-radius:9px;font-size:13px;width:220px}
   .search input:focus{outline:none;border-color:var(--accent)}
   .seg{display:inline-flex;border:1px solid var(--border);border-radius:9px;overflow:hidden;background:var(--panel)}
   .seg button{border:none;background:transparent;color:var(--muted);padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer}
-  .seg button.on{background:var(--accent);color:#05080f}
+  .seg button.on{background:var(--accent);color:#ffffff}
 
   main{padding:18px 22px 50px;max-width:1500px;margin:0 auto}
   .sectit{display:flex;align-items:center;gap:9px;margin:6px 2px 12px;font-size:14px;font-weight:800}
@@ -94,20 +118,29 @@
     <a href="index.html">대시보드</a>
     <a href="news.html" class="active">실시간 뉴스</a>
     <a href="schedule.html">일정</a>
+    <a href="videos.html">추천 영상</a>
   </nav>
   <div class="spacer"></div>
+  <button class="btn" id="themeToggle">🌙 다크</button>
   <span class="clock mono" id="clock">--:--:--</span>
   <span class="demo-badge" id="upd" style="color:#22c55e;border-color:#14532d;background:#06210f">● 실시간</span>
 </header>
 
 <section class="filterbar">
-  <div class="chips" id="cat-chips"></div>
-  <div class="search">
-    <div class="seg" id="sort-seg">
-      <button data-s="latest" class="on">최신순</button>
-      <button data-s="popular">인기순</button>
+  <div class="fb-row">
+    <span class="fb-tag">분야</span>
+    <div class="chips" id="cat-chips"></div>
+    <div class="search">
+      <div class="seg" id="sort-seg">
+        <button data-s="latest" class="on">최신순</button>
+        <button data-s="popular">인기순</button>
+      </div>
+      <input id="q" placeholder="키워드 검색 (예: HBM, 금리)" />
     </div>
-    <input id="q" placeholder="키워드 검색 (예: HBM, 금리)" />
+  </div>
+  <div class="fb-row">
+    <span class="fb-tag hot">🔥 오늘의 키워드</span>
+    <div class="chips" id="trend-chips"></div>
   </div>
 </section>
 
@@ -172,18 +205,61 @@ let SAMPLE_NEWS = [
 ];
 
 const fmtClock=()=>{const n=new Date();document.getElementById('clock').textContent=n.toLocaleTimeString('ko-KR',{hour12:false})+' KST';};
+/* _updated(서버리스 toISOString·Actions UTC) → 한국시간(KST) 표시. 오프셋 없으면 UTC로 간주. */
+function kstUpd(iso, withDate){
+  if(!iso) return '';
+  const s=String(iso).replace(' ','T');
+  const d=new Date(/[Zz]|[+\-]\d\d:?\d\d$/.test(s)?s:s+'Z');
+  if(isNaN(d)) return s.replace('T',' ').slice(withDate?5:11,16);
+  const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Seoul',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(d);
+  const g=t=>(p.find(x=>x.type===t)||{}).value||'';
+  return (withDate?g('month')+'-'+g('day')+' ':'')+g('hour')+':'+g('minute');
+}
 
 let state={cat:'전체', q:'', sort:'latest'};
 
-function categories(){
-  const set=['전체', ...Array.from(new Set(SAMPLE_NEWS.map(n=>n.cat)))];
-  return set;
+/* 섹터 칩 — 당일 수집된 기사 수 기준 동적 정렬·건수 표시·빈 섹터 자동 숨김(고정 목록 아님) */
+function categoryCounts(){
+  const m={};
+  SAMPLE_NEWS.forEach(n=>{ if(n.cat) m[n.cat]=(m[n.cat]||0)+1; });
+  const arr=Object.entries(m).map(([c,n])=>({c,n})).sort((a,b)=>b.n-a.n || a.c.localeCompare(b.c,'ko'));
+  return [{c:'전체', n:SAMPLE_NEWS.length}, ...arr];
 }
 function renderChips(){
-  document.getElementById('cat-chips').innerHTML = categories().map(c=>
-    `<span class="chip ${c===state.cat?'on':''}" data-c="${c}">${c}</span>`).join('');
+  document.getElementById('cat-chips').innerHTML = categoryCounts().map(({c,n})=>
+    `<span class="chip ${c===state.cat?'on':''}" data-c="${c}">${c}<span class="cn">${n}</span></span>`).join('');
   document.querySelectorAll('#cat-chips .chip').forEach(ch=>ch.addEventListener('click',()=>{
     state.cat=ch.dataset.c; renderChips(); renderAll();
+  }));
+}
+
+/* 🔥 오늘의 키워드 — 당일 수집 기사 '제목'에서 자주 등장한 종목·테마를 빈도순으로 추출(매일 달라짐) */
+const KW_DICT=['엔비디아','HBM','SK하이닉스','삼성전자','TSMC','마이크론','반도체','파운드리','D램','낸드',
+ '금리','금리인하','연준','FOMC','인플레이션','소비자물가','고용','환율','국채','달러','관세',
+ '비트코인','이더리움','가상자산','코인','스테이블코인','코인베이스',
+ '테슬라','로보택시','전기차','자율주행','2차전지','에코프로','배터리','리튬',
+ '애플','마이크로소프트','아마존','구글','메타','알파벳','AI','데이터센터','클라우드','코파일럿',
+ '팔란티어','오픈AI','챗GPT','방산','한화에어로스페이스','LIG넥스원','수주',
+ '원전','SMR','두산에너빌리티','전력','조선','HD현대','한화오션','삼성중공업',
+ '바이오','셀트리온','삼성바이오','신약','비만치료제','일라이릴리',
+ '코스피','코스닥','외국인','순매수','실적','어닝','트럼프','현대차','기아','네이버','카카오','크래프톤'];
+function trendingKeywords(){
+  return KW_DICT.map(kw=>{
+    const low=kw.toLowerCase(); let n=0;
+    for(const it of SAMPLE_NEWS){ if((it.ti||'').toLowerCase().includes(low)) n++; }   // 한국어 표시 제목 기준
+    return {kw,n};
+  }).filter(x=>x.n>=2).sort((a,b)=>b.n-a.n).slice(0,12);
+}
+function renderTrending(){
+  const host=document.getElementById('trend-chips'); if(!host) return;
+  const tks=trendingKeywords();
+  if(!tks.length){ host.innerHTML='<span class="trend-empty">오늘 자주 등장한 키워드를 집계 중…</span>'; return; }
+  host.innerHTML=tks.map(({kw,n})=>`<span class="tchip ${state.q===kw?'on':''}" data-k="${kw}">${kw}<span class="cn">${n}</span></span>`).join('');
+  host.querySelectorAll('.tchip').forEach(ch=>ch.addEventListener('click',()=>{
+    const k=ch.dataset.k;
+    state.q=(state.q===k)?'':k;                       // 토글
+    document.getElementById('q').value=state.q;
+    renderTrending(); renderAll();
   }));
 }
 function match(n){
@@ -227,24 +303,37 @@ document.querySelectorAll('#sort-seg button').forEach(b=>b.addEventListener('cli
   document.querySelectorAll('#sort-seg button').forEach(x=>x.classList.remove('on'));
   b.classList.add('on'); state.sort=b.dataset.s; renderAll();
 }));
-document.getElementById('q').addEventListener('input',e=>{ state.q=e.target.value.trim(); renderAll(); });
+document.getElementById('q').addEventListener('input',e=>{ state.q=e.target.value.trim(); renderTrending(); renderAll(); });
 
 document.getElementById('disc').innerHTML =
-  '✅ <b>실시간</b> · 구글뉴스 RSS에서 헤드라인·출처·링크를 수집해 한국/미국·카테고리별로 정리합니다(본문 복제 안 함, 클릭 시 원문으로 이동). 약 3분마다 갱신. 정보 제공 목적이며 투자 권유가 아닙니다. HOT은 발행 최신순으로 선별합니다.';
+  '✅ <b>실시간</b> · 구글뉴스 RSS에서 헤드라인·출처·링크를 수집해 한국/미국·섹터별로 정리합니다(본문 복제 안 함, 클릭 시 원문으로 이동). ' +
+  '<b>분야 칩</b>은 고정 목록이 아니라 <b>당일 수집된 기사 수 기준으로 정렬·표시</b>되며(기사 없는 섹터는 숨김, 옆 숫자=건수), ' +
+  '<b>🔥 오늘의 키워드</b>는 그날 기사 제목에 자주 등장한 종목·테마를 자동 추출해 보여줍니다(클릭 시 해당 키워드로 필터). ' +
+  '약 3분마다 갱신. 정보 제공 목적이며 투자 권유가 아닙니다. HOT은 발행 최신순으로 선별합니다.';
 
-/* /api/news(서버리스 실시간) 우선 → 실패 시 data/news.json 폴백 */
+/* /api/news(서버리스) + 트럼프 Truth Social(/api/trump, 한국어 번역) 병합 */
+let TRUMP_ITEMS=[];
+function mergeTrump(){ SAMPLE_NEWS=SAMPLE_NEWS.filter(n=>n.cat!=='트럼프').concat(TRUMP_ITEMS); renderChips(); renderTrending(); renderAll(); }
 async function loadNews(){
   let d=null;
   try{ const r=await fetch('/api/news',{cache:'default'}); if(r.ok) d=await r.json(); }catch(e){}
   if(!d){ try{ const r=await fetch('data/news.json?t='+Date.now(),{cache:'no-store'}); if(r.ok) d=await r.json(); }catch(e){} }
   if(d && d.items && d.items.length){
-    SAMPLE_NEWS=d.items; renderChips(); renderAll();
-    const u=document.getElementById('upd'); if(u) u.textContent='● '+(d._updated||'').replace('T',' ').slice(11,16)+' 갱신';
+    SAMPLE_NEWS=d.items; mergeTrump();
+    const u=document.getElementById('upd'); if(u) u.textContent='● '+kstUpd(d._updated)+' 갱신';
   }
 }
+async function loadTrump(){
+  let d=null;
+  try{ const r=await fetch('/api/trump',{cache:'default'}); if(r.ok) d=await r.json(); }catch(e){}
+  if(!d || !d.items || d.error){ try{ const r=await fetch('data/trump.json?t='+Date.now(),{cache:'no-store'}); if(r.ok) d=await r.json(); }catch(e){} }
+  if(d && d.items && d.items.length){ TRUMP_ITEMS=d.items; mergeTrump(); }
+}
 
-renderChips(); renderAll(); fmtClock(); loadNews();
-setInterval(fmtClock,1000); setInterval(loadNews,180000);
+function setThemeClass(mode){var light=mode==='light';document.body.classList.toggle('light',light);var b=document.getElementById('themeToggle');if(b)b.textContent=light?'☀️ 라이트':'🌙 다크';}
+(function(){var t=document.getElementById('themeToggle');if(t)t.addEventListener('click',function(){var m=document.body.classList.contains('light')?'dark':'light';setThemeClass(m);try{localStorage.setItem('alphadesk.theme',m)}catch(e){}});setThemeClass(localStorage.getItem('alphadesk.theme')||'dark');})();
+renderChips(); renderTrending(); renderAll(); fmtClock(); loadNews(); loadTrump();
+setInterval(fmtClock,1000); setInterval(loadNews,180000); setInterval(loadTrump,300000);
 </script>
 </body>
 </html>

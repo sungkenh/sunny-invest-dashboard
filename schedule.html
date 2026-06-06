@@ -4,18 +4,31 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>핵심 일정 · 써니의 투자 인사이트</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css"></noscript>
+<link rel="prefetch" href="index.html">
 <style>
   :root{
-    --bg:#0a0e17; --panel:#0f1626; --panel2:#121b2e; --border:#1e2a42;
-    --text:#e6edf6; --muted:#8597b0; --muted2:#5c6c87;
-    --accent:#38bdf8; --accent2:#a78bfa; --gold:#f5b942;
-    --up:#ff4d5e; --down:#3b82f6; --chip:#16223a;
+    --bg:#0a0b0d; --panel:#16181c; --panel2:#1c1f25; --border:#2a2d34;
+    --text:#f5f7fa; --muted:#a8acb3; --muted2:#7c828a;
+    --accent:#1268ff; --accent2:#5b8cff; --gold:#f4b000;
+    --up:#f6465d; --down:#3b82f6; --chip:#1c1f25;
   }
   *{box-sizing:border-box} html,body{margin:0;padding:0}
   body{
-    background:radial-gradient(1200px 600px at 80% -10%, #12203b 0%, transparent 55%), var(--bg);
-    color:var(--text); font-family:"Pretendard","Segoe UI",-apple-system,"Malgun Gothic",sans-serif; font-size:14px; line-height:1.5;
+    background:var(--bg);
+    color:var(--text); font-family:"Pretendard Variable","Pretendard","Inter","Segoe UI",-apple-system,"Malgun Gothic",sans-serif; font-size:14px; line-height:1.5; letter-spacing:-0.01em;
   }
+  body.light{
+    --bg:#f5f6f8; --panel:#ffffff; --panel2:#f2f3f5; --border:#dee1e6;
+    --text:#0a0b0d; --muted:#5b616e; --muted2:#8a909a;
+    --accent:#0052ff; --accent2:#3d7bff; --gold:#a8780a;
+    --up:#d4243a; --down:#2f6bdb; --chip:#eef0f3;
+  }
+  body.light header.topbar{background:rgba(255,255,255,.82)}
+  .btn{cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--text);padding:7px 14px;border-radius:999px;font-size:12px;font-weight:600}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
   a{color:inherit;text-decoration:none}
   .mono{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
 
@@ -23,12 +36,12 @@
     padding:10px 22px;background:rgba(10,14,23,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
   .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.5px}
   .brand .logo{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));
-    display:grid;place-items:center;color:#05080f;font-weight:900;font-size:13px}
+    display:grid;place-items:center;color:#ffffff;font-weight:900;font-size:13px}
   .brand small{color:var(--muted);font-weight:600;font-size:11px;letter-spacing:0}
   nav.mainnav{display:flex;gap:4px}
   nav.mainnav a{padding:7px 13px;border-radius:8px;font-size:13px;font-weight:700;color:var(--muted);border:1px solid transparent}
   nav.mainnav a:hover{color:var(--text);border-color:var(--border)}
-  nav.mainnav a.active{color:#05080f;background:var(--accent)}
+  nav.mainnav a.active{color:#ffffff;background:var(--accent)}
   .spacer{flex:1}
   .clock{font-size:13px;color:var(--muted);font-weight:600}
   .live-ind{font-size:10.5px;font-weight:800;color:#22c55e;border:1px solid #14532d;background:#06210f;padding:4px 8px;border-radius:6px;letter-spacing:.4px}
@@ -38,7 +51,7 @@
     padding:11px 22px;background:rgba(10,14,23,.8);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
   .seg{display:inline-flex;border:1px solid var(--border);border-radius:9px;overflow:hidden;background:var(--panel)}
   .seg button{border:none;background:transparent;color:var(--muted);padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer}
-  .seg button.on{background:var(--accent);color:#05080f}
+  .seg button.on{background:var(--accent);color:#ffffff}
   .seg button:hover:not(.on){color:var(--text)}
   .fb-label{font-size:11px;color:var(--muted2);font-weight:700;margin-left:4px}
   .legend{margin-left:auto;font-size:11px;color:var(--muted2)}
@@ -106,7 +119,15 @@
   .epscell .k{font-size:9.5px;color:var(--muted2);font-weight:700}
   .epscell .v{font-size:12.5px;font-weight:800;margin-top:1px}
   .epscell.est .v{color:var(--accent)}
+  .epscell.act{border-color:#4a3a12;background:#1c1607} .epscell.act .v{color:var(--gold)}
+  body.light .epscell.act{border-color:#e6cf8f;background:#fbf3da}
   .growth{font-size:10.5px;font-weight:700;margin-top:5px}
+
+  /* 분석 기사 링크 */
+  .arts{margin-top:7px;display:flex;flex-direction:column;gap:3px}
+  .art{font-size:11px;color:var(--accent2);font-weight:600;line-height:1.4;display:block}
+  .art:hover{text-decoration:underline}
+  .art .art-src{color:var(--muted2);font-weight:500;font-size:10px;margin-left:5px}
 
   .empty{padding:34px 16px;text-align:center;color:var(--muted2);font-size:13px;line-height:1.6}
   .offline{display:none;margin:0 0 16px;padding:10px 14px;border:1px dashed var(--border);border-radius:10px;color:var(--muted2);font-size:11.5px;background:#0c1424}
@@ -126,8 +147,10 @@
     <a href="index.html">대시보드</a>
     <a href="news.html">실시간 뉴스</a>
     <a href="schedule.html" class="active">일정</a>
+    <a href="videos.html">추천 영상</a>
   </nav>
   <div class="spacer"></div>
+  <button class="btn" id="themeToggle">🌙 다크</button>
   <span class="clock mono" id="clock">--:--:--</span>
   <span class="live-ind" id="upd">● 일정</span>
 </header>
@@ -145,18 +168,19 @@
     <button data-i="2">★★ 이상</button>
     <button data-i="3">★★★</button>
   </div>
-  <span class="fb-label">기간</span>
+  <span class="fb-label">보기</span>
   <div class="seg" id="when-seg">
-    <button data-w="up" class="on">다가올 일정</button>
-    <button data-w="past">지난 결과</button>
+    <button data-w="all" class="on">전체</button>
+    <button data-w="past">발표 결과</button>
+    <button data-w="up">예정</button>
   </div>
-  <span class="legend">시각 <b>KST</b> · 지표=예상·이전·실제 · 미국 실적=<b>S&P500·나스닥100·다우</b> · 한국 실적=<b>KOSPI·KOSDAQ</b> · 실적은 다음 분기 시즌까지</span>
+  <span class="legend">지난주(<b>−7일</b>)~다음달(<b>+30일</b>) · 시각 <b>KST</b> · 지표=예상·이전·<b>실제</b> · 실적=예상·<b>실제 EPS·서프라이즈</b> · 발표 항목엔 <b>📰 분석 기사</b> 링크</span>
 </section>
 
 <main>
   <div class="offline" id="offline">⚠ 실시간 일정 데이터를 불러오지 못해 예시를 표시 중입니다. (로컬 서버 <b>대시보드-실행.bat</b> 또는 배포 환경에서 실시간 표시)</div>
 
-  <div class="sectit">⭐ 이번 주 핵심 일정 <span style="font-size:11px;color:var(--muted2);font-weight:500">중요도 최상위 지표·대형 실적</span></div>
+  <div class="sectit">⭐ 주요 지표·실적 발표 <span style="font-size:11px;color:var(--muted2);font-weight:500">지난주~이번주 · 중요도 최상위 지표·대형 실적</span></div>
   <section class="hirow" id="hirow"></section>
 
   <div class="cols">
@@ -190,10 +214,20 @@ let EVENTS = [
 let TODAY = '';
 
 const DOW=['일','월','화','수','목','금','토'];
-const state={type:'all', imp:0, when:'up'};
+const state={type:'all', imp:0, when:'all'};
 
 function pad(n){return (n<10?'0':'')+n;}
 function fmtClock(){const n=new Date();document.getElementById('clock').textContent=n.toLocaleTimeString('ko-KR',{hour12:false})+' KST';}
+/* _updated(UTC) → 한국시간(KST) 표시. 오프셋 없으면 UTC로 간주. */
+function kstUpd(iso, withDate){
+  if(!iso) return '';
+  const s=String(iso).replace(' ','T');
+  const d=new Date(/[Zz]|[+\-]\d\d:?\d\d$/.test(s)?s:s+'Z');
+  if(isNaN(d)) return s.replace('T',' ').slice(withDate?5:11,16);
+  const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Seoul',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(d);
+  const g=t=>(p.find(x=>x.type===t)||{}).value||'';
+  return (withDate?g('month')+'-'+g('day')+' ':'')+g('hour')+':'+g('minute');
+}
 function todayKST(){
   const p=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
   return p; // YYYY-MM-DD
@@ -213,35 +247,61 @@ function match(e){
   if(state.type!=='all' && e.type!==state.type) return false;
   if(state.imp && (e.importance||0)<state.imp) return false;
   const t=TODAY||todayKST();
+  if(state.when==='all') return true;     // 전체: 지난주~다음달(수집 윈도 그대로)
   if(state.when==='up') return e.date>=t;
   return e.date<t;
 }
 
 /* ── 이벤트 렌더 ── */
 function starHTML(n){n=n||0;return n?`<span class="stars">${'★'.repeat(n)}</span>`:'';}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function articlesHTML(e){
+  if(!e.articles||!e.articles.length) return '';
+  const links=e.articles.slice(0,2).map(a=>
+    `<a class="art" href="${esc(a.u)}" target="_blank" rel="noopener" title="${esc(a.t)}">📰 ${esc(a.t)}${a.s?`<span class="art-src">${esc(a.s)}</span>`:''}</a>`
+  ).join('');
+  return `<div class="arts">${links}</div>`;
+}
+
+/* 실제 vs 예상 비교 → 화살표·색상 (예상 초과=▲빨강 / 미달=▼파랑 / 동일=■중립) */
+function cmpMark(aStr, fStr){
+  const a=num(aStr), f=num(fStr);
+  if(a==null||f==null) return null;
+  if(a>f) return {ar:'▲', c:'var(--up)'};
+  if(a<f) return {ar:'▼', c:'var(--down)'};
+  return {ar:'■', c:'var(--muted)'};
+}
+function epsMark(surprise, aStr, eStr){   // 실적: 서프라이즈 부호 우선, 없으면 실제vs예상 숫자비교
+  const v=(surprise!=null && surprise!=='') ? parseFloat(String(surprise).replace(/[+%\s]/g,'')) : NaN;
+  if(!isNaN(v)) return v>0?{ar:'▲',c:'var(--up)'}:v<0?{ar:'▼',c:'var(--down)'}:{ar:'■',c:'var(--muted)'};
+  return cmpMark(aStr, eStr);
+}
+function actSpan(valStr, mk){   // 실제값 렌더(화살표+색상). mk 없으면 골드(비교불가)
+  if(!valStr) return '발표 전';
+  return mk ? `<span style="color:${mk.c}">${mk.ar} ${valStr}</span>` : valStr;
+}
 
 function econHTML(e){
   const hasA=!!e.actual;
+  const mk = hasA ? cmpMark(e.actual, e.forecast) : null;
   let surprise='';
-  if(hasA){
-    const a=num(e.actual), f=num(e.forecast);
-    if(a!=null && f!=null){
-      const cls=a>f?'beat':a<f?'miss':'meet';
-      const txt=a>f?'예상 상회':a<f?'예상 하회':'예상 부합';
-      surprise=`<div class="surprise">예상 대비 <b class="${cls}">${txt}</b></div>`;
-    }
+  if(hasA && mk){
+    const txt = mk.ar==='▲'?'예상 상회':mk.ar==='▼'?'예상 하회':'예상 부합';
+    surprise=`<div class="surprise">예상 대비 <b style="color:${mk.c}">${mk.ar} ${txt}</b></div>`;
   }
   const cat = e.category==='연설'?'<span class="tag speak">연설</span>':'<span class="tag econ">지표</span>';
+  const done = hasA?'<span class="tag" style="color:var(--gold);border-color:#4a3a12">발표완료</span>':'';
   return `<div class="ev">
     <div class="tm">${e.time||'미정'}${e.et?`<small>현지 ${e.et} ET</small>`:''}</div>
     <div class="bd">
-      <div class="ti">${starHTML(e.importance)}<span>${e.title}</span>${cat}</div>
+      <div class="ti">${starHTML(e.importance)}<span>${e.title}</span>${cat}${done}</div>
       ${e.category==='연설'?'':`<div class="vals">
-        <div class="vcell"><div class="k">예상</div><div class="v">${e.forecast||'—'}</div></div>
         <div class="vcell"><div class="k">이전</div><div class="v">${e.previous||'—'}</div></div>
-        <div class="vcell ${hasA?'act':'pending'}"><div class="k">실제</div><div class="v">${e.actual||'발표 전'}</div></div>
+        <div class="vcell"><div class="k">예상</div><div class="v">${e.forecast||'—'}</div></div>
+        <div class="vcell ${hasA?'act':'pending'}"><div class="k">실제</div><div class="v">${actSpan(e.actual, mk)}</div></div>
       </div>`}
       ${surprise}
+      ${articlesHTML(e)}
     </div>
   </div>`;
 }
@@ -252,25 +312,34 @@ function earnHTML(e){
   const badge = isKR
     ? `<span class="sess ${mkt==='KOSDAQ'?'mk-kosdaq':'mk-kospi'}">${mkt||'KR'}</span>`
     : `<span class="sess ${/시작 전|장전|pre/i.test(e.session)?'pre':/마감 후|장후|post/i.test(e.session)?'post':'tbd'}">${e.session||'시간 미정'}</span>`;
+  const hasA=!!e.eps_actual;
+  const mk = hasA ? epsMark(e.surprise, e.eps_actual, e.eps_est) : null;
   const est=num(e.eps_est), prev=num(e.eps_prev);
   let growth='';
-  if(est!=null && prev!=null && prev!==0){
-    const g=(est-prev)/Math.abs(prev)*100;
-    const up=g>=0;
-    growth=`<div class="growth" style="color:${up?'#22c55e':'var(--down)'}">EPS 컨센서스 전년比 ${up?'▲':'▼'} ${Math.abs(g).toFixed(0)}%</div>`;
+  if(hasA && e.surprise){                 // 발표 후: 예상 대비 서프라이즈
+    const beat=!/^-/.test(e.surprise);
+    growth=`<div class="growth" style="color:${beat?'var(--up)':'var(--down)'}">예상 대비 서프라이즈 ${beat?'▲':'▼'} ${e.surprise.replace(/[+\-]/,'')}</div>`;
+  } else if(est!=null && prev!=null && prev!==0){   // 발표 전: 컨센서스 전년比
+    const g=(est-prev)/Math.abs(prev)*100, up=g>=0;
+    growth=`<div class="growth" style="color:${up?'var(--up)':'var(--down)'}">EPS 컨센서스 전년比 ${up?'▲':'▼'} ${Math.abs(g).toFixed(0)}%</div>`;
   }
   const idxTag = (!isKR && e.index)?`<span class="tag idx">${e.index}</span>`:'';
   const capTag = e.mktcap?`<span class="tag earn">${e.mktcap}</span>`:'';
+  const done = hasA?'<span class="tag" style="color:var(--gold);border-color:#4a3a12">발표완료</span>':'';
+  const prevCell = e.eps_prev?`<div class="epscell"><div class="k">전년 동기</div><div class="v">${e.eps_prev}</div></div>`:'';
+  const actCell = hasA?`<div class="epscell act"><div class="k">실제 EPS</div><div class="v">${mk?`<span style="color:${mk.c}">${mk.ar} ${e.eps_actual}</span>`:e.eps_actual}</div></div>`:'';
   return `<div class="ev">
     <div class="tm" style="width:auto;min-width:46px">${badge}</div>
     <div class="bd">
-      <div class="ti">${starHTML(e.importance)}<span>${e.title}</span>${e.ticker?`<span class="tkr">${e.ticker}</span>`:''}${idxTag}${capTag}</div>
+      <div class="ti">${starHTML(e.importance)}<span>${e.title}</span>${e.ticker?`<span class="tkr">${e.ticker}</span>`:''}${idxTag}${capTag}${done}</div>
       <div class="eps">
+        ${prevCell}
         <div class="epscell est"><div class="k">EPS 예상</div><div class="v">${e.eps_est||'—'}</div></div>
-        <div class="epscell"><div class="k">전년 동기</div><div class="v">${e.eps_prev||'—'}</div></div>
+        ${actCell}
         ${e.n_ests?`<div class="epscell"><div class="k">추정기관</div><div class="v">${e.n_ests}곳</div></div>`:''}
       </div>
       ${growth}
+      ${articlesHTML(e)}
     </div>
   </div>`;
 }
@@ -278,7 +347,7 @@ function earnHTML(e){
 function feedHTML(mk){
   const list=EVENTS.filter(e=>e.mk===mk && match(e)).sort((a,b)=>
     (a.date+ (a.time||'99:99')).localeCompare(b.date+(b.time||'99:99')));
-  if(!list.length) return {n:0, html:`<div class="empty">${state.when==='up'?'다가오는':'지난'} ${mk==='kr'?'한국':'미국'} 일정이 없습니다.<br><span style="font-size:11px">필터(유형·중요도)를 조정해 보세요.</span></div>`};
+  if(!list.length){ const w=state.when==='up'?'다가오는':state.when==='past'?'발표된':'표시할'; return {n:0, html:`<div class="empty">${w} ${mk==='kr'?'한국':'미국'} 일정이 없습니다.<br><span style="font-size:11px">필터(유형·중요도)를 조정해 보세요.</span></div>`}; }
   const byDay={};
   list.forEach(e=>{(byDay[e.date]=byDay[e.date]||[]).push(e);});
   const days=Object.keys(byDay).sort((a,b)=>state.when==='past'?b.localeCompare(a):a.localeCompare(b));
@@ -299,21 +368,29 @@ function collapseEcon(list){   // 같은 일시의 한 발표(예: 고용지표 
   list.forEach(e=>{const k=e.date+'|'+e.time;(g[k]=g[k]||[]).push(e);});
   return Object.keys(g).map(k=>g[k].slice().sort((a,b)=>rank(a)-rank(b)||(b.importance-a.importance)||a.title.length-b.title.length)[0]);
 }
-function highlights(){
+function addD(ds,n){const[a,b,c]=ds.split('-').map(Number);const d=new Date(a,b-1,c+n);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function highlights(){   // 지난주~이번주(±7일) 최상위 지표·대형 실적 — 발표된 것은 실제값으로
   const t=TODAY||todayKST();
-  const econ=collapseEcon(EVENTS.filter(e=>e.date>=t&&e.type==='econ'&&e.importance>=3&&e.category!=='연설'));
-  const earn=EVENTS.filter(e=>e.date>=t&&e.type==='earnings'&&e.importance>=3);
-  const up=econ.concat(earn).sort((a,b)=>(a.date+(a.time||'99')).localeCompare(b.date+(b.time||'99')));
-  const top=up.slice(0,4);
-  if(!top.length){ document.getElementById('hirow').innerHTML='<div class="empty" style="grid-column:1/-1">다가오는 최상위 일정이 없습니다.</div>'; return; }
+  const lo=addD(t,-7), hi=addD(t,7), inWin=e=>e.date>=lo&&e.date<=hi;
+  const econ=collapseEcon(EVENTS.filter(e=>inWin(e)&&e.type==='econ'&&e.importance>=3&&e.category!=='연설'));
+  const earn=EVENTS.filter(e=>inWin(e)&&e.type==='earnings'&&e.importance>=3);
+  const prox=e=>Math.abs(Math.round((parseD(e.date)-parseD(t))/86400000));   // 오늘 근접 우선
+  const all=econ.concat(earn).sort((a,b)=>prox(a)-prox(b) || (a.date+(a.time||'99')).localeCompare(b.date+(b.time||'99')));
+  const top=all.slice(0,4).sort((a,b)=>(a.date+(a.time||'99')).localeCompare(b.date+(b.time||'99')));
+  if(!top.length){ document.getElementById('hirow').innerHTML='<div class="empty" style="grid-column:1/-1">표시할 주요 지표·실적이 없습니다.</div>'; return; }
   document.getElementById('hirow').innerHTML=top.map(e=>{
     const dl=dayLabel(e.date);
     const flag=e.mk==='kr'?'🇰🇷 한국':'🇺🇸 미국';
-    let det;
-    if(e.type==='earnings') det=`${e.ticker?e.ticker+' · ':''}${e.session||''} · EPS 예상 ${e.eps_est||'—'}`;
-    else det=`예상 ${e.forecast||'—'} · 이전 ${e.previous||'—'}`;
+    let det, done='';
+    if(e.type==='earnings'){
+      if(e.eps_actual){ const mk=epsMark(e.surprise,e.eps_actual,e.eps_est); det=`${e.ticker?e.ticker+' · ':''}예상 ${e.eps_est||'—'} · 실제 <b style="color:${mk?mk.c:'var(--gold)'}">${mk?mk.ar+' ':''}${e.eps_actual}</b>${e.surprise?` (${e.surprise})`:''}`; done='발표완료'; }
+      else det=`${e.ticker?e.ticker+' · ':''}${e.session||''} · EPS 예상 ${e.eps_est||'—'}`;
+    } else {
+      if(e.actual){ const mk=cmpMark(e.actual,e.forecast); det=`이전 ${e.previous||'—'} · 예상 ${e.forecast||'—'} · 실제 <b style="color:${mk?mk.c:'var(--gold)'}">${mk?mk.ar+' ':''}${e.actual}</b>`; done='발표완료'; }
+      else det=`이전 ${e.previous||'—'} · 예상 ${e.forecast||'—'}`;
+    }
     return `<div class="hicard ${e.mk}">
-      <div class="when">${dl.lab} ${dl.md}(${dl.dow}) ${e.time?'· '+e.time:''}</div>
+      <div class="when">${dl.lab} ${dl.md}(${dl.dow}) ${e.time?'· '+e.time:''}${done?` · <span style="color:var(--gold);font-weight:800">${done}</span>`:''}</div>
       <h4>${e.title}</h4>
       <div class="det">${det}</div>
       <div class="flag" style="margin-top:7px">${flag} · ${e.type==='earnings'?'실적':'경제지표'}</div>
@@ -344,28 +421,45 @@ bindSeg('when-seg','when',v=>v);
 document.getElementById('disc').innerHTML =
   '✅ <b>미국</b> · 경제지표(예상·이전·실제)와 실적은 nasdaq.com 공개 캘린더 — 실적은 <b>S&P500·나스닥100·다우 구성종목</b>(합집합)을 표시합니다(나스닥 상장 대형주는 S&P500에 이미 포함). ' +
   '🇰🇷 <b>한국</b> · 지표는 nasdaq 한국 항목 + 한국은행·국가데이터처(구 통계청)·관세청 발표일정, 실적은 <b>KOSPI·KOSDAQ 주요 종목</b>의 다음 발표일·컨센서스 EPS(yfinance)입니다. ' +
-  '실적은 분기 시즌(미국·한국 모두 대개 1·4·7·10월)에 집중되어, 한·미 공통으로 다가오는 분기 실적까지 미리 표시합니다. ' +
-  '모든 시각은 한국시간(KST) 환산(미 동부시간 ET 병기). 약 5분 갱신. 정보 제공 목적이며 투자 권유가 아닙니다. 발표일·예상치는 변동될 수 있습니다.';
+  '실적은 분기 시즌(미국·한국 모두 대개 1·4·7·10월)에 집중되어, 한·미 공통으로 지난 분기 <b>발표 결과(실제 EPS·서프라이즈)</b>와 다가오는 분기 실적을 함께 표시합니다. ' +
+  '📰 <b>분석 기사</b>는 발표된(또는 임박한) 주요 지표·실적에 대해 Google 뉴스에서 한국어 해설 기사를 자동 연결합니다(클릭 시 원문 이동). ' +
+  '<b>지난주(−7일)~다음달(+30일)</b>의 발표 결과와 예정 일정을 함께 표시하며, 모든 시각은 한국시간(KST) 환산(미 동부시간 ET 병기). 약 5분 갱신. 정보 제공 목적이며 투자 권유가 아닙니다. 발표일·예상치는 변동될 수 있습니다.';
 
-/* /api/calendar(서버리스 실시간) + data/calendar.json(스냅샷) 병합.
-   한국 실적은 서버리스가 생성하지 못하므로 스냅샷에서 보강한다. */
+/* 스냅샷(data/calendar.json · ±30일·기사 링크 포함)을 '넓은 기준'으로 삼고,
+   서버리스(/api/calendar · 30분)의 갓 발표된 실제값을 그 위에 패치한다.
+   → 완전성(±30·기사)과 신선도(방금 나온 실제 수치)를 동시에 확보. */
+function evKey(e){
+  return e.type==='earnings'
+    ? 'e|'+e.mk+'|'+e.date+'|'+(e.ticker||e.title)
+    : 'c|'+e.mk+'|'+e.date+'|'+(e.time||'')+'|'+e.title;
+}
 async function loadCalendar(){
   let live=null, snap=null;
   try{ const r=await fetch('/api/calendar',{cache:'default'}); if(r.ok) live=await r.json(); }catch(e){}
   try{ const r=await fetch('data/calendar.json?t='+Date.now(),{cache:'no-store'}); if(r.ok) snap=await r.json(); }catch(e){}
-  const base=(live && live.events && live.events.length)?live:snap;
+  const base=(snap && snap.events && snap.events.length) ? snap : live;   // 스냅샷 우선(넓은 윈도·기사)
   if(!base || !base.events || !base.events.length){ document.getElementById('offline').style.display='block'; return; }
   let events=base.events.slice();
-  if(base===live && snap && snap.events){   // 라이브(근시일 US+지표)에 없는 실적(원거리 US·한국)을 스냅샷에서 보강
-    const have=new Set(events.filter(e=>e.type==='earnings').map(e=>e.ticker+'|'+e.date));
-    snap.events.filter(e=>e.type==='earnings'&&!have.has(e.ticker+'|'+e.date)).forEach(e=>events.push(e));
+  if(live && live.events && live.events.length){
+    const idx={}; events.forEach((e,i)=>{ idx[evKey(e)]=i; });
+    live.events.forEach(le=>{
+      const i=idx[evKey(le)];
+      if(i!=null){   // 갓 발표된 실제값을 패치
+        const e=events[i];
+        if(le.actual && le.actual!==e.actual) e.actual=le.actual;
+        if(le.eps_actual && le.eps_actual!==e.eps_actual){ e.eps_actual=le.eps_actual; if(le.surprise) e.surprise=le.surprise; }
+      } else { events.push(le); idx[evKey(le)]=events.length-1; }   // 스냅샷에 아직 없는 신규 이벤트
+    });
   }
-  EVENTS=events; TODAY=base.today||todayKST();
+  EVENTS=events; TODAY=(snap&&snap.today)||(live&&live.today)||todayKST();
   document.getElementById('offline').style.display='none';
   renderAll();
-  const u=document.getElementById('upd'); if(u) u.textContent='● '+((base._updated||'').replace('T',' ').slice(5,16))+' 갱신';
+  const fresh=(live&&live._updated)?live:base;
+  const u=document.getElementById('upd'); if(u) u.textContent='● '+kstUpd(fresh._updated,true)+' 갱신';
 }
 
+function setThemeClass(mode){var light=mode==='light';document.body.classList.toggle('light',light);var b=document.getElementById('themeToggle');if(b)b.textContent=light?'☀️ 라이트':'🌙 다크';}
+(function(){var t=document.getElementById('themeToggle');if(t)t.addEventListener('click',function(){var m=document.body.classList.contains('light')?'dark':'light';setThemeClass(m);try{localStorage.setItem('alphadesk.theme',m)}catch(e){}});setThemeClass(localStorage.getItem('alphadesk.theme')||'dark');})();
 TODAY=todayKST();
 renderAll(); fmtClock(); loadCalendar();
 setInterval(fmtClock,1000); setInterval(loadCalendar,300000);

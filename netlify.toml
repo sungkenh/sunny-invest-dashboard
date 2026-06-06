@@ -44,3 +44,28 @@
   from = "/api/calendar"
   to = "/.netlify/functions/calendar"
   status = 200
+
+[[redirects]]
+  from = "/api/themes"
+  to = "/.netlify/functions/themes"
+  status = 200
+
+[[redirects]]
+  from = "/api/feargreed"
+  to = "/.netlify/functions/feargreed"
+  status = 200
+
+[[redirects]]
+  from = "/api/trump"
+  to = "/.netlify/functions/trump"
+  status = 200
+
+[[redirects]]
+  from = "/api/stocknews"
+  to = "/.netlify/functions/stocknews"
+  status = 200
+
+[[redirects]]
+  from = "/api/reports"
+  to = "/.netlify/functions/reports"
+  status = 200

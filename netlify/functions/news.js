@@ -2,20 +2,26 @@
 // 방문 시점 수집. 모듈 캐시(10분) + 엣지 캐시. 미국 기사 번역은 병렬 처리.
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36';
 
-// (mk, cat, query) — fetch_news.py와 동일
+// (mk, cat, query) — fetch_news.py와 동일. 섹터별로 수집 → 카테고리 칩은 당일 기사 수 기준 동적 표시.
 const QUERIES = [
   ['kr', '반도체', '삼성전자 OR SK하이닉스 OR HBM 반도체'],
+  ['kr', 'AI', 'AI 반도체 OR 생성형 AI OR 네이버 카카오 AI'],
   ['kr', '2차전지', '2차전지 OR 에코프로 OR LG에너지솔루션'],
   ['kr', '방산', '방산 OR 한화에어로스페이스 OR LIG넥스원'],
+  ['kr', '원전·전력', '원전 OR SMR OR 두산에너빌리티 OR 전력설비'],
+  ['kr', '조선', '조선 OR HD현대중공업 OR 한화오션 OR 삼성중공업'],
+  ['kr', '자동차', '현대차 OR 기아 OR 자동차 수출'],
+  ['kr', '바이오', '삼성바이오 OR 셀트리온 OR 바이오 신약'],
+  ['kr', '코인', '비트코인 OR 가상자산 OR 알트코인'],
   ['kr', '국내증시', '코스피 OR 코스닥 증시 외국인'],
   ['kr', '매크로', '한국은행 기준금리 OR 원달러 환율'],
-  ['kr', '바이오', '삼성바이오 OR 셀트리온 OR 바이오 신약'],
   ['us', '반도체', 'Nvidia OR TSMC OR semiconductor'],
-  ['us', '매크로', 'Federal Reserve OR US jobs report OR inflation'],
   ['us', '빅테크', 'Apple OR Microsoft OR Amazon AI'],
   ['us', 'AI', 'Palantir OR AI stocks OR OpenAI'],
-  ['us', '금리', 'Treasury yields OR Fed rate cut'],
   ['us', '전기차', 'Tesla OR EV sales'],
+  ['us', '코인', 'Bitcoin OR Coinbase OR crypto'],
+  ['us', '금리', 'Treasury yields OR Fed rate cut'],
+  ['us', '매크로', 'Federal Reserve OR US jobs report OR inflation'],
 ];
 const PER_QUERY = 7;
 let CACHE = { ts: 0, data: null };

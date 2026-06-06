@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""써니의 투자 인사이트 시세 수집기 — yfinance로 13개 지표를 받아 data/market.json 저장.
+"""써니의 투자 인사이트 시세 수집기 — yfinance 12종 + 美재무부 2년물 + NY연준 역레포 = 14지표 → data/market.json.
    실행: py fetch_market.py   (스케줄러로 5~10분마다 돌리면 준실시간)"""
 import json, os, datetime
 import yfinance as yf
@@ -70,6 +70,34 @@ try:
                     'pct': round((last - prev) / prev * 100, 2), 'sp': sp2}
 except Exception as e:
     res['ust2y'] = {'sym': 'UST2Y', 'error': str(e)[:90]}
+
+# 미국 익일물 역레포(ON RRP) 잔고 — NY연준 공개 API(키 불필요). 단위: 10억$(billions)
+res['rrp'] = {'sym': 'ON RRP', 'error': 'n/a'}
+try:
+    u = 'https://markets.newyorkfed.org/api/rp/reverserepo/all/results/last/30.json'
+    req = urllib.request.Request(u, headers={'User-Agent': 'Mozilla/5.0'})
+    jd = json.loads(urllib.request.urlopen(req, timeout=25).read())
+    ops = (jd.get('repo') or {}).get('operations') or []
+    by_date = {}   # 고정금리 익일물 ON RRP만, 날짜별 1건
+    for o in ops:
+        if o.get('operationType') != 'Reverse Repo' or o.get('operationMethod') != 'Fixed Rate':
+            continue
+        d = o.get('operationDate')
+        if not d or d in by_date:
+            continue
+        try:
+            by_date[d] = float(o.get('totalAmtAccepted'))
+        except Exception:
+            pass
+    dated = sorted(by_date.items())   # old→new
+    bil = [v / 1e9 for _, v in dated]
+    last = bil[-1]; prev = bil[-2] if len(bil) > 1 else last
+    sp = [round(v, 3) for v in bil[-24:]]
+    res['rrp'] = {'sym': 'ON RRP', 'price': round(last, 3), 'chg': round(last - prev, 3),
+                  'pct': round((last - prev) / prev * 100, 2) if prev else 0,
+                  'sp': sp, 'date': dated[-1][0]}
+except Exception as e:
+    res['rrp'] = {'sym': 'ON RRP', 'error': str(e)[:90]}
 
 res['_updated'] = datetime.datetime.now().isoformat(timespec='seconds')
 here = os.path.dirname(os.path.abspath(__file__))

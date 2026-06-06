@@ -6,20 +6,26 @@ import json, os, datetime, urllib.request, urllib.parse, html
 import xml.etree.ElementTree as ET
 from email.utils import parsedate_to_datetime
 
-# (mk, cat, query)
+# (mk, cat, query) — 섹터별 수집 → 카테고리 칩은 당일 기사 수 기준 동적 표시. news.js 와 동일.
 QUERIES = [
-    ('kr', '반도체',   '삼성전자 OR SK하이닉스 OR HBM 반도체'),
-    ('kr', '2차전지',  '2차전지 OR 에코프로 OR LG에너지솔루션'),
-    ('kr', '방산',     '방산 OR 한화에어로스페이스 OR LIG넥스원'),
-    ('kr', '국내증시', '코스피 OR 코스닥 증시 외국인'),
-    ('kr', '매크로',   '한국은행 기준금리 OR 원달러 환율'),
-    ('kr', '바이오',   '삼성바이오 OR 셀트리온 OR 바이오 신약'),
-    ('us', '반도체',   'Nvidia OR TSMC OR semiconductor'),
-    ('us', '매크로',   'Federal Reserve OR US jobs report OR inflation'),
-    ('us', '빅테크',   'Apple OR Microsoft OR Amazon AI'),
-    ('us', 'AI',       'Palantir OR AI stocks OR OpenAI'),
-    ('us', '금리',     'Treasury yields OR Fed rate cut'),
-    ('us', '전기차',   'Tesla OR EV sales'),
+    ('kr', '반도체',    '삼성전자 OR SK하이닉스 OR HBM 반도체'),
+    ('kr', 'AI',        'AI 반도체 OR 생성형 AI OR 네이버 카카오 AI'),
+    ('kr', '2차전지',   '2차전지 OR 에코프로 OR LG에너지솔루션'),
+    ('kr', '방산',      '방산 OR 한화에어로스페이스 OR LIG넥스원'),
+    ('kr', '원전·전력', '원전 OR SMR OR 두산에너빌리티 OR 전력설비'),
+    ('kr', '조선',      '조선 OR HD현대중공업 OR 한화오션 OR 삼성중공업'),
+    ('kr', '자동차',    '현대차 OR 기아 OR 자동차 수출'),
+    ('kr', '바이오',    '삼성바이오 OR 셀트리온 OR 바이오 신약'),
+    ('kr', '코인',      '비트코인 OR 가상자산 OR 알트코인'),
+    ('kr', '국내증시',  '코스피 OR 코스닥 증시 외국인'),
+    ('kr', '매크로',    '한국은행 기준금리 OR 원달러 환율'),
+    ('us', '반도체',    'Nvidia OR TSMC OR semiconductor'),
+    ('us', '빅테크',    'Apple OR Microsoft OR Amazon AI'),
+    ('us', 'AI',        'Palantir OR AI stocks OR OpenAI'),
+    ('us', '전기차',    'Tesla OR EV sales'),
+    ('us', '코인',      'Bitcoin OR Coinbase OR crypto'),
+    ('us', '금리',      'Treasury yields OR Fed rate cut'),
+    ('us', '매크로',    'Federal Reserve OR US jobs report OR inflation'),
 ]
 
 def reltime(mins):
@@ -93,7 +99,7 @@ items.sort(key=lambda x: x['min'])
 for i, n in enumerate(items):       # 최신 6건은 HOT
     n['hot'] = i < 6
 
-data = {'_updated': datetime.datetime.now().isoformat(timespec='seconds'),
+data = {'_updated': datetime.datetime.now(datetime.timezone.utc).isoformat(timespec='seconds'),
         'count': len(items), 'items': items}
 here = os.path.dirname(os.path.abspath(__file__))
 os.makedirs(os.path.join(here, 'data'), exist_ok=True)
