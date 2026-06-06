@@ -119,6 +119,32 @@
 
   /* ===== 시가총액 히트맵 ===== */
   .heatmap-card{margin:6px 20px 4px}
+  /* 지수 대비 주도주 */
+  .rs-card{margin:6px 20px 4px}
+  .rs-period{margin-left:6px}
+  .rs-body{display:grid;grid-template-columns:minmax(290px,380px) 1fr;gap:14px;padding:8px 14px 14px}
+  @media(max-width:880px){.rs-body{grid-template-columns:1fr}}
+  .rs-board{overflow:auto;max-height:360px}
+  .rs-msg{color:var(--muted);font-size:12px;padding:18px 6px}
+  .rs-tbl{width:100%;border-collapse:collapse;font-size:12px}
+  .rs-tbl th{position:sticky;top:0;background:var(--panel);color:var(--muted2);font-weight:600;text-align:right;padding:6px 5px;border-bottom:1px solid var(--border);font-size:10px;white-space:nowrap}
+  .rs-tbl th.l{text-align:left}
+  .rs-tbl td{padding:7px 5px;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap}
+  .rs-tbl td.rk{color:var(--muted2);text-align:center;width:20px}
+  .rs-tbl td.nm{text-align:left;font-weight:700;color:var(--text)}
+  .rs-tbl td.bm{text-align:left;color:var(--accent2);font-size:10.5px}
+  .rs-tbl td.al{font-weight:800}
+  .rs-tbl tbody tr{cursor:pointer}
+  .rs-tbl tbody tr:hover{background:rgba(255,255,255,.03)}
+  .rs-tbl tbody tr.on{background:var(--rs-on,rgba(240,185,11,.10));box-shadow:inset 2px 0 0 var(--accent)}
+  .rs-tbl .lead{color:#05130b;background:#f0b90b;border-radius:4px;padding:0 5px;font-size:9px;font-weight:800;margin-left:5px;vertical-align:middle}
+  .rs-chartwrap{display:flex;flex-direction:column;min-height:330px}
+  .rs-chart{flex:1;min-height:300px;position:relative}
+  .rs-legend{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:0 2px 8px;font-size:12px;color:var(--muted)}
+  .rs-lg{display:inline-flex;align-items:center;gap:5px}
+  .rs-lg i{width:13px;height:3px;border-radius:2px;display:inline-block}
+  .rs-lg b{font-weight:800}
+  .rs-note{color:var(--muted2);font-size:11px;margin-left:auto}
   .live-badge{font-size:10px;font-weight:800;color:#05130b;background:#22c55e;padding:2px 7px;border-radius:5px;letter-spacing:.4px}
   .hm-controls{display:flex;align-items:center;gap:10px;margin-left:auto;flex-wrap:wrap}
   .seg{display:inline-flex;border:1px solid var(--border);border-radius:9px;overflow:hidden;background:var(--panel)}
@@ -493,6 +519,23 @@
   </div>
 </main>
 
+<!-- 지수 대비 주도주 (상대강도) — 관심종목을 상장 지수와 100 기준 비교해 '지수 이기는 종목' 발굴 -->
+<section class="card rs-card" id="rs-card">
+  <div class="head">
+    <h3>지수 대비 주도주</h3>
+    <span class="tag">관심종목 vs 상장 지수(NASDAQ·S&P500·KOSPI·KOSDAQ) · 100 기준 정규화</span>
+    <button class="deep-refresh" id="rs-refresh" title="비교 데이터 새로고침" style="margin-left:8px">🔄 새로고침</button>
+    <div class="seg rs-period" id="rs-period"></div>
+  </div>
+  <div class="rs-body">
+    <div class="rs-board" id="rs-board"><div class="rs-msg">스크롤하면 관심종목의 지수 대비 성과를 불러옵니다…</div></div>
+    <div class="rs-chartwrap">
+      <div class="rs-legend" id="rs-legend"></div>
+      <div class="rs-chart" id="rs-chart"></div>
+    </div>
+  </div>
+</section>
+
 <footer>
   <div class="engine" id="engine"></div>
   <div class="disc" id="disc"></div>
@@ -839,7 +882,7 @@ let WL_HAS_STORAGE = !!localStorage.getItem('alphadesk.wl2');
 let SEL = WL.length?WL[0].sym:null;
 const saveWL = ()=>localStorage.setItem('alphadesk.wl2', JSON.stringify(WL.map(x=>({sym:x.sym,name:x.name,mk:x.mk}))));
 function normWL(x){ return {sym:x.sym, name:x.name||x.sym, mk:x.mk||(/\.(KS|KQ)$/.test(x.sym)?'kr':'us'), px:null, pct:null}; }
-function setWL(arr){ WL=arr.filter(x=>x&&x.sym).map(normWL); SEL=WL.length?WL[0].sym:null; saveWL(); renderWL(); renderDeep(); loadWatch(); }
+function setWL(arr){ WL=arr.filter(x=>x&&x.sym).map(normWL); SEL=WL.length?WL[0].sym:null; saveWL(); renderWL(); renderDeep(); loadWatch(); rsMaybeReload(); }
 /* 저장본이 없을 때만 배포 파일(data/watchlist.json)을 기본값으로 시드 → 모든 기기·재배포에서 동일 */
 async function loadWatchlistBaseline(){
   if(WL_HAS_STORAGE) return;
@@ -876,7 +919,7 @@ function renderWL(){
     </tr>`;}).join('');
   document.querySelectorAll('#wl-body tr').forEach(tr=>{
     tr.addEventListener('click',e=>{
-      if(e.target.dataset.del){ WL=WL.filter(x=>x.sym!==e.target.dataset.del); if(SEL===e.target.dataset.del)SEL=WL[0]&&WL[0].sym; saveWL(); renderWL(); renderDeep(); return; }
+      if(e.target.dataset.del){ WL=WL.filter(x=>x.sym!==e.target.dataset.del); if(SEL===e.target.dataset.del)SEL=WL[0]&&WL[0].sym; saveWL(); renderWL(); renderDeep(); rsMaybeReload(); return; }
       SEL=tr.dataset.sym; renderWL(); renderDeep();
     });
   });
@@ -886,7 +929,7 @@ function addWL(sym,name,mk){
   if(!sym) return;
   if(WL.some(x=>x.sym===sym)){ SEL=sym; renderWL(); renderDeep(); return; }
   WL.unshift({sym, name:name||sym, mk:mk||(/\.(KS|KQ)$/.test(sym)?'kr':'us'), px:null, pct:null});
-  SEL=sym; saveWL(); renderWL(); renderDeep(); loadWatch();   // 즉시 실시간 시세 조회
+  SEL=sym; saveWL(); renderWL(); renderDeep(); loadWatch(); rsMaybeReload();   // 즉시 실시간 시세 조회 + 주도주 갱신
 }
 
 /* 핵심 일정 — KR/US 분리, 다가올 7일 */
@@ -1103,6 +1146,110 @@ async function loadChartData(sym){
   }catch(e){
     if(meta) meta.textContent='데이터를 불러올 수 없습니다 (로컬 서버/배포 환경에서 표시)';
   }
+}
+
+/* ===================== 지수 대비 주도주 (상대강도) =====================
+   관심종목을 상장 지수(NASDAQ/S&P500/KOSPI/KOSDAQ)와 100 기준으로 정규화 비교 →
+   지수를 초과하는(α>0) 주도주를 순위로 발굴. 거래소(exchange)로 벤치마크 자동 매칭. */
+const RS_PERIODS=[['1개월','1mo'],['3개월','3mo'],['6개월','6mo'],['1년','1y']];
+let rsPeriod='6mo', rsSel=null, rsRows=[], rsLoaded=false, rsLoading=false;
+let rsChart=null, rsSerS=null, rsSerI=null, _rsTimer=null;
+const _rsCache={};                                  // sym|range → {closes:[{t,c}], exchange, name}
+const rsPct = x => (x>=0?'+':'') + x.toFixed(1) + '%';
+function rsBench(sym, exchange){
+  if(/\.KS$/.test(sym)) return {idx:'^KS11', label:'KOSPI'};
+  if(/\.KQ$/.test(sym)) return {idx:'^KQ11', label:'KOSDAQ'};
+  const ex=(exchange||'').toUpperCase();
+  if(/^N(MS|GM|CM|SM)$/.test(ex)||/NASDAQ|NIM/.test(ex)) return {idx:'^IXIC', label:'NASDAQ'};
+  return {idx:'^GSPC', label:'S&P 500'};
+}
+async function rsCloses(sym, range){
+  const k=sym+'|'+range; if(_rsCache[k]) return _rsCache[k];
+  try{
+    const r=await fetch(`/api/chart?sym=${encodeURIComponent(sym)}&range=${range}&interval=1d`,{cache:'default'});
+    const d=await r.json();
+    if(d&&d.ohlc&&d.ohlc.length){ const v={closes:d.ohlc.map(o=>({t:o.time,c:o.close})), exchange:d.exchange||'', name:d.name||sym}; _rsCache[k]=v; return v; }
+  }catch(e){}
+  return null;
+}
+function rsAlign(stock, index){
+  const im={}; index.forEach(p=>im[p.t]=p.c);
+  const ps=[]; for(const p of stock){ if(im[p.t]!=null) ps.push({t:p.t,s:p.c,i:im[p.t]}); }
+  if(ps.length<2) return null;
+  const s0=ps[0].s, i0=ps[0].i, n=ps.length-1;
+  return { sNorm:ps.map(p=>({time:p.t,value:p.s/s0*100})), iNorm:ps.map(p=>({time:p.t,value:p.i/i0*100})),
+    sRet:(ps[n].s/s0-1)*100, iRet:(ps[n].i/i0-1)*100, alpha:(ps[n].s/s0-ps[n].i/i0)*100 };
+}
+async function loadRelStr(){
+  if(rsLoading) return; rsLoading=true;
+  const board=document.getElementById('rs-board');
+  if(board && !rsLoaded) board.innerHTML='<div class="rs-msg">관심종목 vs 지수 비교 계산 중…</div>';
+  try{
+    const wl=WL.slice();
+    const stocks=(await Promise.all(wl.map(async w=>{ const d=await rsCloses(w.sym, rsPeriod); return d?Object.assign({},w,d,{bench:rsBench(w.sym,d.exchange)}):null; }))).filter(Boolean);
+    const idxes=[...new Set(stocks.map(s=>s.bench.idx))];
+    const idxData={}; await Promise.all(idxes.map(async i=>{ const d=await rsCloses(i, rsPeriod); idxData[i]=d?d.closes:null; }));
+    const rows=[];
+    for(const s of stocks){ const ic=idxData[s.bench.idx]; if(!ic) continue; const a=rsAlign(s.closes, ic); if(a) rows.push(Object.assign({sym:s.sym,name:s.name,bench:s.bench},a)); }
+    rows.sort((a,b)=>b.alpha-a.alpha);
+    rsRows=rows; rsLoaded=true;
+    renderRSBoard();
+    if(rows.length){ const keep=rows.find(r=>r.sym===rsSel)||rows[0]; rsSel=keep.sym; renderRSChart(keep); }
+    else if(board) board.innerHTML='<div class="rs-msg">비교 데이터를 불러올 수 없습니다. (배포 환경에서 표시됩니다)</div>';
+  } finally { rsLoading=false; }
+}
+function renderRSBoard(){
+  const board=document.getElementById('rs-board'); if(!board) return;
+  if(!rsRows.length){ board.innerHTML='<div class="rs-msg">관심종목이 없습니다.</div>'; return; }
+  board.innerHTML=`<table class="rs-tbl"><thead><tr>
+    <th>#</th><th class="l">종목</th><th class="l">지수</th><th>종목</th><th>지수</th><th>초과 α</th>
+   </tr></thead><tbody>${rsRows.map((r,i)=>`<tr class="${r.sym===rsSel?'on':''}" onclick="rsPick('${r.sym}')">
+      <td class="rk">${i+1}</td>
+      <td class="nm">${r.name}${(i===0&&r.alpha>0)?'<span class="lead">주도주</span>':''}</td>
+      <td class="bm">${r.bench.label}</td>
+      <td class="mono ${cls(r.sRet)}">${rsPct(r.sRet)}</td>
+      <td class="mono ${cls(r.iRet)}">${rsPct(r.iRet)}</td>
+      <td class="mono al ${cls(r.alpha)}">${arr(r.alpha)} ${rsPct(r.alpha)}</td>
+   </tr>`).join('')}</tbody></table>`;
+}
+function rsPick(sym){ const r=rsRows.find(x=>x.sym===sym); if(!r) return; rsSel=sym; renderRSBoard(); renderRSChart(r); }
+async function renderRSChart(r){
+  const host=document.getElementById('rs-chart'); if(!host||!r) return;
+  const ok=await ensureLWC(); if(!ok||!window.LightweightCharts){ host.innerHTML='<div class="tv-loading">차트 라이브러리 로드 실패</div>'; return; }
+  if(rsChart){ try{rsChart.remove()}catch(e){} rsChart=null; }
+  host.innerHTML='';
+  const col=chartColors(); const cs=getComputedStyle(document.body);
+  const stockCol=(cs.getPropertyValue('--accent')||'').trim()||'#f0b90b';
+  const idxCol=col.text;
+  rsChart=LightweightCharts.createChart(host,{autoSize:true,
+    layout:{background:{color:col.bg},textColor:col.text,fontFamily:'inherit'},
+    grid:{vertLines:{color:col.grid},horzLines:{color:col.grid}},
+    rightPriceScale:{borderColor:col.border}, timeScale:{borderColor:col.border},
+    crosshair:{mode:LightweightCharts.CrosshairMode.Normal}});
+  rsSerI=rsChart.addLineSeries({color:idxCol,lineWidth:1});
+  rsSerS=rsChart.addLineSeries({color:stockCol,lineWidth:2,priceFormat:{type:'price',precision:1,minMove:0.1}});
+  rsSerI.setData(r.iNorm); rsSerS.setData(r.sNorm);
+  try{ rsSerS.createPriceLine({price:100,color:col.border,lineWidth:1,lineStyle:2,axisLabelVisible:false}); }catch(e){}
+  rsChart.timeScale().fitContent();
+  const lg=document.getElementById('rs-legend');
+  if(lg) lg.innerHTML=`<span class="rs-lg"><i style="background:${stockCol}"></i>${r.name} <b class="${cls(r.sRet)}">${rsPct(r.sRet)}</b></span>
+    <span class="rs-lg"><i style="background:${idxCol}"></i>${r.bench.label} <b class="${cls(r.iRet)}">${rsPct(r.iRet)}</b></span>
+    <span class="rs-lg">지수 초과 <b class="${cls(r.alpha)}">${arr(r.alpha)} ${rsPct(r.alpha)}</b></span>
+    <span class="rs-note">시작점 100 정규화 · ${(RS_PERIODS.find(p=>p[1]===rsPeriod)||[])[0]||''}</span>`;
+}
+function renderRSPeriod(){
+  const seg=document.getElementById('rs-period'); if(!seg) return;
+  seg.innerHTML=RS_PERIODS.map(p=>`<button data-r="${p[1]}" class="${p[1]===rsPeriod?'on':''}">${p[0]}</button>`).join('');
+  seg.querySelectorAll('button').forEach(b=>b.onclick=()=>{ if(rsPeriod===b.dataset.r) return; rsPeriod=b.dataset.r; renderRSPeriod(); rsLoaded=false; loadRelStr(); });
+}
+function rsMaybeReload(){ if(!rsLoaded) return; clearTimeout(_rsTimer); _rsTimer=setTimeout(()=>{ rsLoaded=false; loadRelStr(); }, 500); }
+function setupRelStrLazy(){
+  const card=document.getElementById('rs-card'); if(!card) return;
+  renderRSPeriod();
+  const rf=document.getElementById('rs-refresh'); if(rf) rf.onclick=()=>{ for(const k in _rsCache) delete _rsCache[k]; rsLoaded=false; loadRelStr(); };
+  let done=false; const go=()=>{ if(done)return; done=true; loadRelStr(); };
+  if('IntersectionObserver' in window){ const io=new IntersectionObserver(es=>{ if(es.some(e=>e.isIntersecting)){ io.disconnect(); go(); } },{rootMargin:'250px'}); io.observe(card); setTimeout(go,7000); }
+  else setTimeout(go,1500);
 }
 function renderDeep(){
   const row = WL.find(x=>x.sym===SEL);
@@ -1514,7 +1661,7 @@ async function searchAndAdd(q){
 
 /* ---- 시가총액 히트맵 (TradingView 실시간 + 오프라인 폴백) ---- */
 const HM_SETS=[
-  {k:'S&P 500',t:'SPX500'},{k:'나스닥100',t:'NASDAQ100'},{k:'다우',t:'DJDJI'},{k:'미국 전체',t:'AllUSCommon'}
+  {k:'S&P 500',t:'SPX500'},{k:'나스닥100',t:'NASDAQ100'}
 ];
 let hmSource='SPX500';
 function renderHmDataset(){
@@ -1566,6 +1713,7 @@ idleLoad(()=>{ loadNewsLive(); loadThemes(); }, 2);
 idleLoad(()=>{ loadVideos(); loadTrump(); }, 3);                               // 영상 썸네일은 loading=lazy(네이티브) 지연
 idleLoad(()=>{ loadStripCandles(); }, 4);                                      // 지표 미니캔들(합성 프리뷰 이미 표시)
 setupHeatmapLazy();
+setupRelStrLazy();                                                             // 지수 대비 주도주(뷰포트 진입 시)
 setInterval(loadDeep,120000);                    // 심층분석 2분(큐레이션·지표 갱신 반영)
 setInterval(tick,1000);
 setInterval(loadMarket,5000);                    // 지표 5초(거의 실시간)

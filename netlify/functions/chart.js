@@ -47,6 +47,7 @@ exports.handler = async (event) => {
     const pc = (meta.chartPreviousClose != null) ? meta.chartPreviousClose
       : (meta.previousClose != null) ? meta.previousClose : null;
     const data = { sym, name: meta.shortName || meta.longName || sym, currency: meta.currency || '', range, interval, ohlc, vol,
+      exchange: meta.exchangeName || '',                                    // 거래소(NMS=나스닥, NYQ=NYSE …) → 벤치마크 지수 판별
       prevClose: pc != null ? round(pc, 4) : null,                          // 전일 종가(당일 시작 기준선)
       dayOpen: (intraday && ohlc.length) ? ohlc[0].open : null };           // 당일 첫 봉 시가
     CACHE[key] = { ts: Date.now(), data };
