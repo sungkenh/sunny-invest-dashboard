@@ -248,6 +248,7 @@
   /* 심층 분석 패널 */
   .deep .head{align-items:flex-start}
   .deep .px-now{font-size:22px;font-weight:800}
+  .deep .px-now .cur{color:var(--muted);font-size:.62em;font-weight:600;margin-right:1px}
   .deep-head-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
   .deep-refresh{background:var(--card2,#161b26);color:var(--muted);border:1px solid var(--border);border-radius:7px;
     padding:3px 9px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;transition:.15s}
@@ -1120,13 +1121,16 @@ async function renderChart(sym){
     loadChartData(curChartSym);
   });
   const col=chartColors();
+  const isKRsym=/\.(KS|KQ)$/.test(sym), curSym=isKRsym?'₩':'$';   // Y축 통화 표시
+  const priceFmt=p=> curSym + (isKRsym ? Math.round(p).toLocaleString('en-US') : p.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
   lwc=LightweightCharts.createChart(host.querySelector('#px-canvas'),{
     autoSize:true,
     layout:{background:{color:col.bg},textColor:col.text,fontFamily:'inherit'},
     grid:{vertLines:{color:col.grid},horzLines:{color:col.grid}},
     rightPriceScale:{borderColor:col.border},
     timeScale:{borderColor:col.border,timeVisible:/[mh]/.test(curInterval),secondsVisible:false},
-    crosshair:{mode:LightweightCharts.CrosshairMode.Normal}
+    crosshair:{mode:LightweightCharts.CrosshairMode.Normal},
+    localization:{priceFormatter:priceFmt}
   });
   lwcCandle=lwc.addCandlestickSeries({upColor:col.up,downColor:col.down,borderVisible:false,wickUpColor:col.up,wickDownColor:col.down});
   lwcVol=lwc.addHistogramSeries({priceFormat:{type:'volume'},priceScaleId:''});
@@ -1264,10 +1268,11 @@ function renderDeep(){
   renderChart(SEL);
   const px = (row && row.px!=null)?row.px:d.px;
   const pct = (row && row.pct!=null)?row.pct:d.pct;
+  const curH = /\.(KS|KQ)$/.test(SEL) ? '₩' : '$';   // 한국 ₩ · 미국 $
   const canRefresh = (d.curated===false && !d.fallback);   // 자동생성 종목만(큐레이션은 보호)
   document.getElementById('deep-head').innerHTML = `
     <div><h3 style="font-size:16px">${d.name}</h3>
-      <div class="px-now mono">${fmt(px)} <span class="${cls(pct)}" style="font-size:14px">${arr(pct)} ${sign(pct)}%</span></div>
+      <div class="px-now mono"><span class="cur">${curH}</span>${fmt(px)} <span class="${cls(pct)}" style="font-size:14px">${arr(pct)} ${sign(pct)}%</span></div>
     </div>
     <div class="deep-head-right">
       <span class="tag">${d.mk==='KR'?'한국':'미국'} · ${SEL}${d.fallback?' · 분석 대기':''}</span>
