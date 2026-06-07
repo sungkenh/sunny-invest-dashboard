@@ -73,6 +73,11 @@
   .vbody .vm{font-size:11px;color:var(--muted2);margin-top:auto;padding-top:9px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
   .vbody .vch{color:var(--accent);font-weight:800}
   .vbody .vviews{color:var(--text);font-weight:700}
+  /* ⭐고정 */
+  .vcard.pinned{border-color:var(--gold);box-shadow:0 0 0 1px rgba(244,176,0,.35)}
+  .vpin{margin-left:auto;background:transparent;border:none;color:var(--muted2);font-size:15px;line-height:1;cursor:pointer;padding:1px 5px;border-radius:6px;font-family:inherit;transition:.12s}
+  .vpin:hover{color:var(--gold);background:rgba(255,255,255,.08)}
+  .vpin.on{color:var(--gold)}
   .empty{grid-column:1/-1;padding:40px;text-align:center;color:var(--muted2)}
 
   footer{padding:22px;color:var(--muted2);font-size:11px;line-height:1.6;border-top:1px solid var(--border);margin-top:24px;max-width:1500px;margin-left:auto;margin-right:auto}
@@ -131,19 +136,38 @@ function kstUpd(iso, withDate){
   const g=t=>(p.find(x=>x.type===t)||{}).value||'';
   return (withDate?g('month')+'-'+g('day')+' ':'')+g('hour')+':'+g('minute');
 }
-function cardHTML(v,i){
-  return `<a class="vcard" href="${v.link||'#'}" ${v.link?'target="_blank" rel="noopener"':'onclick="return false"'}>
-    <div class="vthumb">${v.thumb?`<img loading="lazy" decoding="async" src="${v.thumb}" alt="">`:''}<span class="rank">${i+1}</span>${v.hot?'<span class="hotb">HOT</span>':''}</div>
+/* ⭐고정 — 체크한 영상을 맨 앞으로(대시보드와 동일 localStorage 공유). 영상정보째 저장 */
+const VID_PINS_KEY='alphadesk.vidpins';
+function vidPinsRead(){ try{ return JSON.parse(localStorage.getItem(VID_PINS_KEY)||'[]'); }catch(e){ return []; } }
+function vidPinsWrite(a){ try{ localStorage.setItem(VID_PINS_KEY, JSON.stringify(a)); }catch(e){} }
+function vidTogglePin(link){
+  if(!link) return;
+  let pins=vidPinsRead();
+  if(pins.some(p=>p.link===link)) pins=pins.filter(p=>p.link!==link);
+  else { const v=[...pins, ...VIDEOS].find(x=>x.link===link); if(!v) return; pins=[Object.assign({_pinnedAt:Date.now()},v), ...pins].slice(0,40); }
+  vidPinsWrite(pins); render();
+}
+function cardHTML(v,i,pinned){
+  return `<a class="vcard${pinned?' pinned':''}" href="${v.link||'#'}" ${v.link?'target="_blank" rel="noopener"':'onclick="return false"'}>
+    <div class="vthumb">${v.thumb?`<img loading="lazy" decoding="async" src="${v.thumb}" alt="">`:''}<span class="rank">${pinned?'★':i+1}</span>${v.hot?'<span class="hotb">HOT</span>':''}</div>
     <div class="vbody"><div class="vt">${v.ti||''}</div>
-      <div class="vm"><span class="vch">${v.ch||''}</span>${v.viewsKo?`<span class="vviews">조회 ${v.viewsKo}</span>`:''}<span>${v.tm||''}</span></div>
+      <div class="vm"><span class="vch">${v.ch||''}</span>${v.viewsKo?`<span class="vviews">조회 ${v.viewsKo}</span>`:''}<span>${v.tm||''}</span>
+        <button class="vpin${pinned?' on':''}" data-pin="${v.link}" title="${pinned?'고정 해제':'맨 앞에 고정'}" aria-label="고정">${pinned?'★':'☆'}</button></div>
     </div></a>`;
 }
 function render(){
+  const pins=vidPinsRead(), pinSet=new Set(pins.map(p=>p.link));
   let v=VIDEOS.slice();
   if(state.ch!=='all') v=v.filter(x=>x.ch===state.ch);
   v.sort(state.sort==='new' ? (a,b)=>(a.min||0)-(b.min||0) : (a,b)=>(b.views||0)-(a.views||0));
-  document.getElementById('grid').innerHTML = v.length ? v.map(cardHTML).join('') : '<div class="empty">표시할 영상이 없습니다.</div>';
-  document.getElementById('cnt').textContent=v.length+'편';
+  const pinnedList=pins.filter(p=>state.ch==='all'||p.ch===state.ch);   // 고정 영상 먼저(채널 필터 존중)
+  const rest=v.filter(x=>!pinSet.has(x.link));
+  const final=[...pinnedList, ...rest];
+  document.getElementById('grid').innerHTML = final.length ? final.map((x,i)=>cardHTML(x,i,pinSet.has(x.link))).join('') : '<div class="empty">표시할 영상이 없습니다.</div>';
+  document.getElementById('cnt').textContent=final.length+'편';
+  if(!render._bound){ render._bound=true;
+    document.getElementById('grid').addEventListener('click', e=>{ const b=e.target.closest('.vpin'); if(!b) return; e.preventDefault(); e.stopPropagation(); vidTogglePin(b.dataset.pin); });
+  }
 }
 function renderChips(){
   const chs=['all',...Array.from(new Set(VIDEOS.map(x=>x.ch)))];
