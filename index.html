@@ -940,7 +940,7 @@ function bindNewsTabs(){
 function renderFooter(){
   document.getElementById('engine').innerHTML = ENGINE.map(e=>`<div class="e"><div class="k">${e.k}</div><div class="v">${e.v}</div></div>`).join('');
   document.getElementById('disc').innerHTML =
-    '✅ <b>자동 갱신</b>: 시장지표 13종·환율(yfinance, 약 15분 지연·10초 갱신) · 관심종목 시세(10초) · 비트코인(5초·Binance) · 실시간 뉴스(60초) · 추천 영상(5분) · 핵심 일정의 경제지표·실적(5분) · 시가총액 히트맵(TradingView). ' +
+    '✅ <b>자동 갱신</b>: 코스피·코스닥(네이버 <b>실시간</b>) · 그 외 지수·선물·환율(yfinance, 약 15분 지연) — 화면 10초 갱신 · 관심종목 시세(10초) · 비트코인(5초·Binance) · 실시간 뉴스(60초) · 추천 영상(5분) · 핵심 일정의 경제지표·실적(5분) · 시가총액 히트맵(TradingView). ' +
     '🔄 <b>주기적 갱신</b>: 종목 심층분석(에이전트 생성) · 한국/원거리 실적 일정(분기 단위, 재수집 시 반영). ' +
     '⚠ <b>샘플</b>: 테마별 전문가 데스크 리포트(예시). &nbsp; 본 화면은 정보 제공용이며 투자자문·매매 권유가 아닙니다. 투자 판단과 책임은 이용자 본인에게 있습니다.';
 }
@@ -1018,7 +1018,7 @@ async function loadMarket(){
 }
 function updateLiveBadge(n){
   const el=document.getElementById('live-ind'); if(!el) return;
-  if(n>0){ el.className='live-ind on'; el.innerHTML='● 시세 LIVE '+n+'/13 · '+marketTime+' <span style="opacity:.7">yfinance</span>'; }
+  if(n>0){ el.className='live-ind on'; el.innerHTML='● 시세 LIVE '+n+'/15 · '+marketTime+' <span style="opacity:.7">네이버·yfinance</span>'; }
   else { el.className='live-ind'; el.textContent='시세 연결 대기 — fetch_market.py 실행 필요'; }
 }
 
