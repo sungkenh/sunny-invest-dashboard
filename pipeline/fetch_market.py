@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """써니의 투자 인사이트 시세 수집기 — yfinance로 13개 지표를 받아 data/market.json 저장.
    실행: py fetch_market.py   (스케줄러로 5~10분마다 돌리면 준실시간)"""
-import json, os, datetime
+import json, os, datetime, urllib.request
 import yfinance as yf
 
 SYMS = {
@@ -11,6 +11,24 @@ SYMS = {
     'ust10y': '^TNX',
     'usdkrw': 'KRW=X',   'usdjpy': 'JPY=X',  'vix': '^VIX',
 }
+
+# 국내 지수는 네이버 증권 실시간(지연 0분) 우선 — 야후는 약 15분 지연.
+# (브라우저 직접 호출은 CORS·Origin 차단 → 반드시 서버에서. 해외 IP는 차단될 수 있어 야후 폴백)
+NAVER_CODE = {'kospi': 'KOSPI', 'kosdaq': 'KOSDAQ'}
+NAVER_HDR = {'User-Agent': 'Mozilla/5.0', 'Referer': 'https://finance.naver.com/sise/'}
+
+def naver_index(code):
+    """네이버 실시간 지수 → (price, chg, pct, delay분). 등락 부호는 코드(1·2 상승 / 4·5 하락)로."""
+    u = 'https://polling.finance.naver.com/api/realtime/domestic/index/%s' % code
+    d = json.loads(urllib.request.urlopen(urllib.request.Request(u, headers=NAVER_HDR), timeout=8).read())
+    row = d['datas'][0]
+    c = (row.get('compareToPreviousPrice') or {}).get('code', '3')
+    sign = -1 if c in ('4', '5') else (0 if c == '3' else 1)
+    price = float(row['closePriceRaw'])
+    chg = float(row['compareToPreviousClosePriceRaw']) * sign
+    pct = float(row['fluctuationsRatioRaw']) * sign
+    delay = int((row.get('stockExchangeType') or {}).get('delayTime', 0))
+    return price, chg, pct, delay
 
 def quote(s):
     t = yf.Ticker(s)
@@ -41,10 +59,19 @@ def series(s, n=40):
 
 res = {}
 for k, s in SYMS.items():
+    # 국내 지수: 네이버 실시간 우선(가격·등락) + 야후 5분봉(스파크라인). 실패 시 야후 전체로 폴백.
+    if k in NAVER_CODE:
+        try:
+            price, chg, pct, delay = naver_index(NAVER_CODE[k])
+            res[k] = {'sym': s, 'price': round(price, 4), 'chg': round(chg, 4), 'pct': round(pct, 2),
+                      'sp': series(s), 'src': 'naver', 'delay': delay}
+            continue
+        except Exception:
+            pass
     try:
         lp, pc = quote(s)
         res[k] = {'sym': s, 'price': round(lp, 4), 'chg': round(lp - pc, 4),
-                  'pct': round((lp - pc) / pc * 100, 2), 'sp': series(s)}
+                  'pct': round((lp - pc) / pc * 100, 2), 'sp': series(s), 'src': 'yahoo'}
     except Exception as e:
         res[k] = {'sym': s, 'error': str(e)[:90]}
 

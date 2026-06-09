@@ -28,6 +28,21 @@ async function chartQuote(sym) {
   return { price: round(price, 4), chg: round(price - pc, 4), pct: pc ? round((price - pc) / pc * 100, 2) : 0, sp };
 }
 
+// 국내 지수는 네이버 실시간(지연 0분) 우선 — 야후는 약 15분 지연. (해외 IP 차단 시 야후 폴백)
+const NAVER_CODE = { kospi: 'KOSPI', kosdaq: 'KOSDAQ' };
+async function naverIndex(code) {
+  const r = await fetch('https://polling.finance.naver.com/api/realtime/domestic/index/' + code,
+    { headers: { 'User-Agent': UA, 'Referer': 'https://finance.naver.com/sise/' } });
+  if (!r.ok) throw new Error('naver ' + r.status);
+  const j = await r.json(); const row = j.datas[0];
+  const c = (row.compareToPreviousPrice || {}).code || '3';
+  const sign = (c === '4' || c === '5') ? -1 : (c === '3' ? 0 : 1);
+  return {
+    price: round(+row.closePriceRaw, 4), chg: round(+row.compareToPreviousClosePriceRaw * sign, 4),
+    pct: round(+row.fluctuationsRatioRaw * sign, 2), delay: +((row.stockExchangeType || {}).delayTime || 0),
+  };
+}
+
 // 시계열을 스파크라인용 ~N점으로 균등 다운샘플(마지막=최신가 포함)
 function downsample(arr, n) {
   const a = (arr || []).filter((v) => typeof v === 'number' && isFinite(v));
@@ -62,7 +77,15 @@ exports.handler = async () => {
   if (CACHE.data && Date.now() - CACHE.ts < TTL) return ok(CACHE.data);
   const res = {};
   await Promise.all(Object.entries(SYMS).map(async ([k, s]) => {
-    try { res[k] = { sym: s, ...(await chartQuote(s)) }; }
+    // 국내 지수: 네이버 실시간(가격·등락) + 야후 스파크라인. 실패 시 야후 전체로 폴백.
+    if (NAVER_CODE[k]) {
+      try {
+        const [nv, ch] = await Promise.all([naverIndex(NAVER_CODE[k]), chartQuote(s).catch(() => null)]);
+        res[k] = { sym: s, price: nv.price, chg: nv.chg, pct: nv.pct, sp: (ch && ch.sp) || [], src: 'naver', delay: nv.delay };
+        return;
+      } catch (e) { /* 야후 폴백 */ }
+    }
+    try { res[k] = { sym: s, ...(await chartQuote(s)), src: 'yahoo' }; }
     catch (e) { res[k] = { sym: s, error: String(e).slice(0, 60) }; }
   }));
   try { res.ust2y = { sym: 'UST2Y', ...(await treasury2y()) }; }
