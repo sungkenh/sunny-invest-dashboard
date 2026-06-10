@@ -68,13 +68,29 @@ jobs:
         run: node pipeline/gen_deep.js || echo "::warning::deep 사전생성 실패(스킵 — 기존 deep.json 유지)"
 
       - name: 변경분 커밋·푸시
+        id: commit
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data
           if git diff --staged --quiet; then
             echo "변경 없음 — 커밋 생략"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             git commit -m "chore(data): 대시보드 스냅샷 자동 갱신"
             git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # GitHub→Netlify 자동배포가 봇 커밋에선 잘 안 떠서(드래그 배포에 의존), 빌드 훅으로 직접 배포 트리거.
+      # 준비: Netlify Build hook URL 생성 → repo Secrets에 NETLIFY_BUILD_HOOK 로 추가.
+      - name: Netlify 배포 트리거 (빌드 훅)
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          HOOK: ${{ secrets.NETLIFY_BUILD_HOOK }}
+        run: |
+          if [ -n "$HOOK" ]; then
+            curl -fsS -X POST -d '{}' "$HOOK" && echo "✅ Netlify 배포 요청 전송됨"
+          else
+            echo "::warning::NETLIFY_BUILD_HOOK 시크릿이 없습니다 — Netlify에서 Build hook 생성 후 repo Secrets에 추가하면 자동 배포됩니다."
           fi
