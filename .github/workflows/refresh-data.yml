@@ -10,7 +10,7 @@ name: 대시보드 데이터 자동 갱신
 
 on:
   schedule:
-    - cron: '0 */3 * * *'      # 3시간마다 (UTC). 실시간 시세는 서버리스가 즉시 제공 — 이건 스냅샷/공유 deep.json 갱신용
+    - cron: '0 */6 * * *'      # 6시간마다 (UTC) = 하루 4회. 매 push가 Netlify 재배포를 부르므로, 무료 빌드한도(월 300분) 안에 들어오도록 4회/일로 제한. 실시간 데이터는 서버리스 함수가 매 방문마다 즉시 제공.
   workflow_dispatch: {}          # Actions 탭에서 수동 실행 가능
 
 permissions:
