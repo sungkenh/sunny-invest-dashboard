@@ -220,6 +220,9 @@ exports.handler = async (event) => {
   if (per == null && raw(ks.forwardPE) != null) { per = raw(ks.forwardPE); perFwd = true; }
   let pbr = raw(ks.priceToBook) || raw(sd.priceToBook);
   if (pbr == null) { const bv = raw(ks.bookValue); if (bv && px) pbr = px / bv; }
+  let eps = raw(ks.trailingEps), epsFwd = false;                          // 주당순이익(EPS)
+  if (eps == null && raw(ks.forwardEps) != null) { eps = raw(ks.forwardEps); epsFwd = true; }
+  if (eps == null && per && px) eps = px / per;                           // 폴백: 주가 ÷ PER
   const mcap = raw(sd.marketCap) || raw(pr.marketCap);
   const roe = raw(fd.returnOnEquity);
   const rg = raw(fd.revenueGrowth);
@@ -237,6 +240,7 @@ exports.handler = async (event) => {
   const metrics = [
     { k: '시가총액', v: fmtMcap(mcap, kr), x: sector },
     { k: perFwd ? 'PER (Fwd)' : 'PER (TTM)', v: num(per, '', 1, 1), x: perNote(per) },
+    { k: epsFwd ? 'EPS (Fwd)' : 'EPS (TTM)', v: eps != null ? fmtPx(eps, kr) : '-', x: '주당순이익' },
     { k: 'PBR', v: num(pbr, '', 1, 2), x: pbrNote(pbr) },
     { k: 'ROE', v: num(roe, '%', 100), x: '자기자본이익률' },
     { k: '매출성장(YoY)', v: num(rg, '%', 100), x: '연간 매출 증가율' },
