@@ -4,7 +4,7 @@
    최신 게시물 한국어 번역(원문 보존). 서버리스 trump.js 와 동일.
    실행: python fetch_trump.py
 """
-import os, sys, re, json, html, datetime, urllib.request, urllib.parse
+import os, sys, re, json, html, time, datetime, urllib.request, urllib.parse
 from email.utils import parsedate_to_datetime
 
 try:
@@ -40,18 +40,27 @@ def reltime(mins):
     return '%d일 전' % (h // 24)
 
 
+def has_ko(s):
+    return bool(re.search(r'[가-힣]', s or ''))
+
+
 def translate(text):
     if not text:
-        return ''
-    try:
-        s = text[:900]
-        u = ('https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ko&dt=t&q='
-             + urllib.parse.quote(s))
-        req = urllib.request.Request(u, headers={'User-Agent': UA})
-        d = json.loads(urllib.request.urlopen(req, timeout=12).read())
-        return ''.join(seg[0] for seg in d[0] if seg and seg[0]) or text
-    except Exception:
         return text
+    s = text[:900]
+    u = ('https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ko&dt=t&q='
+         + urllib.parse.quote(s))
+    for i in range(3):   # 재시도: gtx 실패·미번역(한국어 없음)이면 백오프 후 재시도
+        try:
+            req = urllib.request.Request(u, headers={'User-Agent': UA})
+            d = json.loads(urllib.request.urlopen(req, timeout=12).read())
+            out = ''.join(seg[0] for seg in d[0] if seg and seg[0])
+            if has_ko(out):
+                return out
+        except Exception:
+            pass
+        time.sleep(0.4 * (i + 1))
+    return text
 
 
 def main():

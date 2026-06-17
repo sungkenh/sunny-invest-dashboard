@@ -20,15 +20,29 @@ function clean(s) {
 }
 function reltime(mins) { if (mins < 1) return '방금'; if (mins < 60) return mins + '분 전'; const h = Math.floor(mins / 60); if (h < 24) return h + '시간 전'; return Math.floor(h / 24) + '일 전'; }
 
-async function translate(text) {
-  if (!text) return '';
-  try {
-    const s = text.slice(0, 900);   // gtx 길이 보호
-    const u = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ko&dt=t&q=' + encodeURIComponent(s);
-    const r = await fetch(u, { headers: { 'User-Agent': UA } });
-    const d = await r.json();
-    return (d[0] || []).map((seg) => seg[0]).filter(Boolean).join('') || text;
-  } catch (e) { return text; }
+const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
+function hasKo(s) { return /[가-힣]/.test(s || ''); }
+
+// gtx 1회 호출 — HTTP 오류·빈 응답·미번역(한국어 없음)이면 throw
+async function gtxOnce(text) {
+  const s = text.slice(0, 900);   // gtx 길이 보호
+  const u = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ko&dt=t&q=' + encodeURIComponent(s);
+  const r = await fetch(u, { headers: { 'User-Agent': UA, 'Accept': 'application/json' } });
+  if (!r.ok) throw new Error('gtx ' + r.status);
+  const d = await r.json();
+  const out = (d[0] || []).map((seg) => seg[0]).filter(Boolean).join('');
+  if (!hasKo(out)) throw new Error('not-ko');
+  return out;
+}
+// 영어→한국어. 스태거 + 3회 재시도(백오프). 끝내 실패 시 {ko:영어원문, ok:false}
+async function translate(text, stagger) {
+  if (!text) return { ko: '', ok: true };
+  if (stagger) await sleep(stagger);
+  for (let i = 0; i < 3; i++) {
+    try { return { ko: await gtxOnce(text), ok: true }; }
+    catch (e) { await sleep(150 * (i + 1)); }
+  }
+  return { ko: text, ok: false };
 }
 
 async function __cfHandler(event) {
@@ -49,25 +63,30 @@ async function __cfHandler(event) {
       items.push({ en, link, mins, tm: reltime(mins) });
       if (items.length >= N) break;
     }
-    // 한국어 번역(병렬)
-    await Promise.all(items.map(async (it) => { it.ti = await translate(it.en); }));
+    // 한국어 번역(80ms 스태거로 분산 + 재시도). 실패분은 영어 원문 유지하되 카운트
+    const tr = await Promise.all(items.map((it, i) => translate(it.en, i * 80)));
+    items.forEach((it, i) => { it.ti = tr[i].ko; });
+    const failed = tr.filter((t) => !t.ok).length;
     const out = items.map((it) => ({
       ti: it.ti, ti_en: it.en, link: it.link, tm: it.tm, min: it.mins,
       src: 'Truth Social', cat: '트럼프', mk: 'us', sum: it.en, pop: Math.max(1, 100000 - it.mins),
     }));
     const data = { _updated: new Date().toISOString().slice(0, 19), count: out.length, items: out };
-    CACHE = { ts: Date.now(), data };
-    return ok(data);
+    // 번역 전부 성공 → 10분 캐시. 일부 실패 → 60초 뒤 만료(다음 방문 시 재시도)
+    CACHE = { ts: failed ? Date.now() - (TTL - 60000) : Date.now(), data };
+    return ok(data, failed);
   } catch (e) {
     return { statusCode: 502, headers: cors(), body: JSON.stringify({ error: String(e).slice(0, 80) }) };
   }
 };
 
 function cors() { return { 'Content-Type': 'application/json; charset=utf-8', 'Access-Control-Allow-Origin': '*' }; }
-function ok(obj) {
+function ok(obj, failed) {
+  const mx = failed ? 60 : 120;          // 번역 실패분 있으면 짧게 캐시(다음 방문 재시도)
+  const sm = failed ? 60 : 600;
   return { statusCode: 200, headers: Object.assign(cors(), {
-    'Cache-Control': 'public, max-age=120',
-    'Netlify-CDN-Cache-Control': 'public, s-maxage=600, stale-while-revalidate=1200',
+    'Cache-Control': 'public, max-age=' + mx,
+    'Netlify-CDN-Cache-Control': 'public, s-maxage=' + sm + ', stale-while-revalidate=1200',
   }), body: JSON.stringify(obj) };
 }
 

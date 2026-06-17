@@ -1086,11 +1086,18 @@ function renderTrump(){
       <div class="mt">🇺🇸 Truth Social · ${p.tm||''}</div>
     </a>`).join('');
 }
+function trumpKoR(items){ if(!items||!items.length) return -1; let k=0; for(const p of items){ if(/[가-힣]/.test(p.ti||'')) k++; } return k/items.length; }
 async function loadTrump(){
-  let d=null;
-  try{ const r=await fetch('/api/trump',{cache:'default'}); if(r.ok) d=await r.json(); }catch(e){}
-  if(!d || !d.items || d.error){ try{ const r=await fetch('data/trump.json?t='+Date.now(),{cache:'no-store'}); if(r.ok) d=await r.json(); }catch(e){} }
-  if(d && d.items && d.items.length){ TRUMP=d.items; renderTrump(); }
+  let live=null, snap=null;
+  try{ const r=await fetch('/api/trump',{cache:'default'}); if(r.ok) live=await r.json(); }catch(e){}
+  // 라이브 번역이 부실(한국어<50%)하거나 실패면 스냅샷도 받아 비교
+  if(!live || !live.items || live.error || trumpKoR(live.items)<0.5){
+    try{ const r=await fetch('data/trump.json?t='+Date.now(),{cache:'no-store'}); if(r.ok) snap=await r.json(); }catch(e){}
+  }
+  const cand=[live,snap].filter(x=>x&&x.items&&x.items.length);
+  if(!cand.length) return;
+  cand.sort((a,b)=>trumpKoR(b.items)-trumpKoR(a.items));   // 한국어 비율 높은 쪽 우선
+  TRUMP=cand[0].items; renderTrump();
 }
 
 /* 심층 분석 */
