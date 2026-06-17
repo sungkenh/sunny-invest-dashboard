@@ -126,7 +126,7 @@ function fmtClock(){
   try{ const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Seoul',hourCycle:'h23',weekday:'short',year:'2-digit',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'}).formatToParts(new Date());
     const o={}; p.forEach(x=>o[x.type]=x.value);
     const wk=['일','월','화','수','목','금','토'][{Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6}[o.weekday]];
-    document.getElementById('clock').textContent=o.year+'년 '+(+o.month)+'월 '+(+o.day)+'일('+wk+') '+o.hour+':'+o.minute+':'+o.second+' KST'; }catch(e){}
+    document.getElementById('clock').textContent=o.year+'년 '+(+o.month)+'월 '+(+o.day)+'일('+wk+') '+o.hour+':'+o.minute+':'+o.second; }catch(e){}
 }
 /* _updated(UTC) → 한국시간(KST) 표시. 오프셋 없으면 UTC로 간주. */
 function kstUpd(iso, withDate){

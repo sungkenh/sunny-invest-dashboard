@@ -1539,7 +1539,7 @@ function paintMkt(id,s){
 }
 function tick(){
   const t=kstParts(), mins=t.h*60+t.m;
-  document.getElementById('clock').textContent=t.yy+'년 '+t.mon+'월 '+t.day+'일('+t.wk+') '+t.hh+':'+t.mm+':'+t.ss+' KST';
+  document.getElementById('clock').textContent=t.yy+'년 '+t.mon+'월 '+t.day+'일('+t.wk+') '+t.hh+':'+t.mm+':'+t.ss;
   paintMkt('krx', kospiSession(t.dow,mins));
   paintMkt('us',  nasdaqSession(t.dow,mins));
 }
