@@ -204,7 +204,7 @@ let SAMPLE_NEWS = [
   {mk:'us',cat:'빅테크',src:'WSJ',tm:'10시간 전',min:600,pop:32,ti:'마이크로소프트 코파일럿, 기업 도입 빠르게 확산',sum:'M365 코파일럿 좌석 수 증가로 AI 수익화 본격화. 클라우드 성장과 시너지.'},
 ];
 
-const fmtClock=()=>{const n=new Date();document.getElementById('clock').textContent=n.toLocaleTimeString('ko-KR',{hour12:false})+' KST';};
+const fmtClock=()=>{try{const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Seoul',hourCycle:'h23',weekday:'short',year:'2-digit',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'}).formatToParts(new Date());const o={};p.forEach(x=>o[x.type]=x.value);const wk=['일','월','화','수','목','금','토'][{Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6}[o.weekday]];document.getElementById('clock').textContent=o.year+'년 '+(+o.month)+'월 '+(+o.day)+'일('+wk+') '+o.hour+':'+o.minute+':'+o.second+' KST';}catch(e){}};
 /* _updated(서버리스 toISOString·Actions UTC) → 한국시간(KST) 표시. 오프셋 없으면 UTC로 간주. */
 function kstUpd(iso, withDate){
   if(!iso) return '';

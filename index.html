@@ -1505,10 +1505,13 @@ function renderFooter(){
 /* 시계 / 마켓 세션 (대한민국 서울 KST 기준) */
 function kstParts(){
   const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Seoul',hourCycle:'h23',weekday:'short',
+    year:'2-digit',month:'numeric',day:'numeric',
     hour:'2-digit',minute:'2-digit',second:'2-digit'}).formatToParts(new Date());
   const o={}; p.forEach(x=>o[x.type]=x.value);
   const dm={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6};
-  return {h:+o.hour, m:+o.minute, hh:o.hour, mm:o.minute, ss:o.second, dow:dm[o.weekday]};
+  const wk=['일','월','화','수','목','금','토'][dm[o.weekday]];
+  return {h:+o.hour, m:+o.minute, hh:o.hour, mm:o.minute, ss:o.second, dow:dm[o.weekday],
+    yy:o.year, mon:String(+o.month), day:String(+o.day), wk};
 }
 // KOSPI/KOSDAQ (KST): 프리 08:00~09:00 · 정규 09:00~15:30 · 애프터 15:30~20:00
 function kospiSession(dow,mins){
@@ -1536,7 +1539,7 @@ function paintMkt(id,s){
 }
 function tick(){
   const t=kstParts(), mins=t.h*60+t.m;
-  document.getElementById('clock').textContent=t.hh+':'+t.mm+':'+t.ss+' KST';
+  document.getElementById('clock').textContent=t.yy+'년 '+t.mon+'월 '+t.day+'일('+t.wk+') '+t.hh+':'+t.mm+':'+t.ss+' KST';
   paintMkt('krx', kospiSession(t.dow,mins));
   paintMkt('us',  nasdaqSession(t.dow,mins));
 }
