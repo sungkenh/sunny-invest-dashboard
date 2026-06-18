@@ -48,13 +48,19 @@ async function translate(text) {
   } catch (e) { return text; }
 }
 
-async function fetchQuery(mk, cat, q) {
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// 단일 쿼리 1회 — HTTP 오류·빈 RSS(차단·레이트리밋 징후)면 throw
+async function fetchQueryOnce(mk, cat, q) {
   const [hl, gl, ceid] = mk === 'kr' ? ['ko', 'KR', 'KR:ko'] : ['en-US', 'US', 'US:en'];
   const url = 'https://news.google.com/rss/search?q=' + encodeURIComponent(q) + '&hl=' + hl + '&gl=' + gl + '&ceid=' + ceid;
-  const r = await fetch(url, { headers: { 'User-Agent': UA } });
+  const r = await fetch(url, { headers: { 'User-Agent': UA, 'Accept': 'application/rss+xml, application/xml;q=0.9, */*;q=0.8', 'Accept-Language': hl + ',en;q=0.8' } });
+  if (!r.ok) throw new Error('rss ' + r.status);
   const xml = await r.text();
+  const blocks = xml.match(/<item\b[\s\S]*?<\/item>/g) || [];
+  if (!blocks.length) throw new Error('empty');
   const now = Date.now();
-  const items = (xml.match(/<item\b[\s\S]*?<\/item>/g) || []).slice(0, PER_QUERY).map((b) => {
+  return blocks.slice(0, PER_QUERY).map((b) => {
     let title = decode(tag(b, 'title'));
     const link = decode(tag(b, 'link'));
     let src = decode(tag(b, 'source'));
@@ -65,13 +71,28 @@ async function fetchQuery(mk, cat, q) {
     if (pd) { const t = Date.parse(pd); if (!isNaN(t)) mins = Math.max(0, Math.floor((now - t) / 60000)); }
     return title ? { mk, cat, src, ti: title, link, min: mins, tm: reltime(mins), sum: '', pop: Math.max(1, 100000 - mins) } : null;
   }).filter(Boolean);
-  return items;
+}
+// 2회 재시도(백오프). 끝내 실패면 [] (해당 쿼리만 비고 나머지는 살림)
+async function fetchQuery(mk, cat, q) {
+  for (let i = 0; i < 3; i++) {
+    try { return await fetchQueryOnce(mk, cat, q); }
+    catch (e) { await sleep(250 * (i + 1)); }
+  }
+  return [];
+}
+// 동시 실행 수 제한 풀 — 18개를 한꺼번에 안 때리고 limit개씩(구글 레이트리밋·차단 회피)
+async function runPool(thunks, limit) {
+  const out = new Array(thunks.length);
+  let idx = 0;
+  async function worker() { while (idx < thunks.length) { const i = idx++; out[i] = await thunks[i](); } }
+  await Promise.all(Array.from({ length: Math.min(limit, thunks.length) }, worker));
+  return out;
 }
 
 exports.handler = async () => {
   if (CACHE.data && Date.now() - CACHE.ts < TTL) return ok(CACHE.data);
 
-  const lists = await Promise.all(QUERIES.map(([mk, cat, q]) => fetchQuery(mk, cat, q).catch(() => [])));
+  const lists = await runPool(QUERIES.map(([mk, cat, q]) => () => fetchQuery(mk, cat, q)), 6);
   const items = [], seen = new Set();
   for (const list of lists) for (const n of list) {
     const k = n.ti.slice(0, 28);
