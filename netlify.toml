@@ -61,6 +61,11 @@
   status = 200
 
 [[redirects]]
+  from = "/api/yieldgap"
+  to = "/.netlify/functions/yieldgap"
+  status = 200
+
+[[redirects]]
   from = "/api/stocknews"
   to = "/.netlify/functions/stocknews"
   status = 200

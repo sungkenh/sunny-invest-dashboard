@@ -1,0 +1,59 @@
+{
+ "_updated": "2026-06-18T09:03:52+00:00",
+ "us": {
+  "safe": {
+   "label": "국채 10년",
+   "val": 4.45,
+   "est": false
+  },
+  "stock": {
+   "label": "주식 어닝일드 (S&P500)",
+   "val": 3.13,
+   "est": false
+  },
+  "reit": {
+   "label": "리츠 배당 (VNQ)",
+   "val": 3.64,
+   "est": false
+  },
+  "gap": -1.32
+ },
+ "kr": {
+  "safe": {
+   "label": "국채 10년",
+   "val": 4.12,
+   "est": false
+  },
+  "stock": {
+   "label": "주식 어닝일드 (KOSPI)",
+   "val": 8.7,
+   "est": true
+  },
+  "reit": {
+   "label": "리츠 배당",
+   "val": 6.0,
+   "est": true
+  },
+  "gap": 4.58
+ },
+ "longterm": [
+  {
+   "k": "stock",
+   "label": "주식",
+   "us": 10.0,
+   "kr": 8.0
+  },
+  {
+   "k": "bond",
+   "label": "채권",
+   "us": 4.5,
+   "kr": 3.5
+  },
+  {
+   "k": "real",
+   "label": "부동산",
+   "us": 8.5,
+   "kr": 5.0
+  }
+ ]
+}

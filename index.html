@@ -122,6 +122,24 @@
 
   /* ===== 시가총액 히트맵 ===== */
   .heatmap-card{margin:6px 20px 4px}
+  /* 자산군 기대수익률 · 일드갭 */
+  .yg-card .yg{padding:6px 14px 11px}
+  .yg-mk{margin-bottom:8px}
+  .yg-mkhead{display:flex;align-items:center;justify-content:space-between;font-weight:700;font-size:0.8125rem;margin-bottom:3px}
+  .yg-gap{font-size:0.75rem;font-weight:700}
+  .yg-gap.pos,.yg-note.pos{color:var(--up)}
+  .yg-gap.neg,.yg-note.neg{color:var(--down)}
+  .yg-row{display:flex;align-items:center;justify-content:space-between;font-size:0.75rem;padding:1.5px 0;color:var(--muted)}
+  .yg-row .v{font-weight:700;color:var(--text);font-variant-numeric:tabular-nums}
+  .yg-row .v .est{color:var(--gold);font-weight:700}
+  .yg-note{font-size:0.7188rem;margin:2px 0 0;padding-left:1px;color:var(--muted)}
+  .yg-lt{margin-top:8px;border-top:1px solid var(--border);padding-top:7px}
+  .yg-lt table{width:100%;border-collapse:collapse;font-size:0.7188rem}
+  .yg-lt th{color:var(--muted);font-weight:600;text-align:right;padding:1px 0}
+  .yg-lt th.l,.yg-lt td.l{text-align:left;color:var(--text)}
+  .yg-lt td{text-align:right;color:var(--text);font-variant-numeric:tabular-nums;padding:1px 0}
+  .yg-foot{font-size:0.6875rem;color:var(--muted2);margin-top:6px;line-height:1.45}
+  .yg-loading{padding:10px 2px;color:var(--muted);font-size:0.75rem}
   /* 지수 대비 주도주 */
   .rs-card{margin:6px 20px 4px}
   .rs-period{margin-left:6px}
@@ -461,6 +479,11 @@
         <div class="fng-scale"><span>극공포 0</span><span>50</span><span>100 극탐욕</span></div>
         <div class="fng-hist" id="fng-hist"></div>
       </div>
+    </div>
+
+    <div class="card yg-card">
+      <div class="head"><h3>자산군 기대수익률 · 일드갭</h3><span class="tag" id="yg-when">연 % · 추정 포함</span></div>
+      <div class="yg" id="yg-body"><div class="yg-loading">불러오는 중…</div></div>
     </div>
 
     <div class="card fill">
@@ -1074,6 +1097,33 @@ async function loadFearGreed(){
   try{ const r=await fetch('/api/feargreed',{cache:'default'}); if(r.ok) d=await r.json(); }catch(e){}
   if(!d || d.error || typeof d.score!=='number'){ try{ const r=await fetch('data/feargreed.json?t='+Date.now(),{cache:'no-store'}); if(r.ok) d=await r.json(); }catch(e){} }
   if(d && typeof d.score==='number') renderFNG(d);
+}
+/* ---- 자산군 기대수익률 · 일드갭 — /api/yieldgap → data/yieldgap.json 폴백 ---- */
+let YIELDGAP=null;
+function ygVal(o){ return o.val==null?'—':(o.val.toFixed(2)+'%'+(o.est?'<span class="est"> ~</span>':'')); }
+function ygMarket(name, flag, m){
+  const g=m.gap; let gtxt='—', cls='';
+  if(g!=null){ gtxt='일드갭 '+(g>0?'+':'')+g.toFixed(2)+'%p'; cls=g>=1?'pos':(g<=-1?'neg':''); }
+  const interp = g==null?'' : (g>=1?'주식이 채권보다 쌈 · 밸류 매력':(g<=-1?'주식이 채권보다 비쌈 · 밸류 부담':'주식·채권 균형'));
+  return `<div class="yg-mk">
+    <div class="yg-mkhead"><span>${flag} ${name}</span><span class="yg-gap ${cls}">${gtxt}</span></div>
+    <div class="yg-row"><span>📈 위험자산 · ${m.stock.label}</span><span class="v">${ygVal(m.stock)}</span></div>
+    <div class="yg-row"><span>🏦 안전자산 · ${m.safe.label}</span><span class="v">${ygVal(m.safe)}</span></div>
+    <div class="yg-row"><span>🏢 실물자산 · ${m.reit.label}</span><span class="v">${ygVal(m.reit)}</span></div>
+    ${interp?`<div class="yg-note ${cls}">→ ${interp}</div>`:''}
+  </div>`;
+}
+function renderYieldGap(){
+  const host=document.getElementById('yg-body'); if(!host) return;
+  const d=YIELDGAP; if(!d||!d.us||!d.kr){ host.innerHTML='<div class="yg-loading">불러오는 중…</div>'; return; }
+  const lt=(d.longterm||[]).map(r=>`<tr><td class="l">${r.label}</td><td>~${r.us}%</td><td>~${r.kr}%</td></tr>`).join('');
+  host.innerHTML = ygMarket('미국','🇺🇸',d.us) + ygMarket('한국','🇰🇷',d.kr)
+    + `<div class="yg-lt"><table><thead><tr><th class="l">장기 연평균 <span style="font-weight:400;color:var(--muted2)">(참고)</span></th><th>미국</th><th>한국</th></tr></thead><tbody>${lt}</tbody></table></div>`
+    + `<div class="yg-foot">일드갭 = 주식 어닝일드(1/PER) − 국채 10년. <b style="color:var(--gold)">~</b> = 추정치(KOSPI·국내 리츠), 장기는 역사적 참고치(명목·배당/임대 포함). 투자 권유 아님.</div>`;
+}
+async function loadYieldGap(){
+  const d=await fetchLive('/api/yieldgap','data/yieldgap.json');
+  if(d && d.us && d.kr){ YIELDGAP=d; renderYieldGap(); }
 }
 /* ---- 트럼프 Truth Social — /api/trump(한국어 번역) → data/trump.json 폴백 ---- */
 let TRUMP=[];
@@ -1773,7 +1823,7 @@ loadMarket(); loadWatch(); loadBTC(); loadDeep();                              /
 idleLoad(()=>{ loadCalendar(); loadFearGreed(); }, 1);
 idleLoad(()=>{ loadNewsLive(); loadThemes(); }, 2);
 idleLoad(()=>{ loadVideos(); loadTrump(); }, 3);                               // 영상 썸네일은 loading=lazy(네이티브) 지연
-idleLoad(()=>{ loadStripCandles(); }, 4);                                      // 지표 미니캔들(합성 프리뷰 이미 표시)
+idleLoad(()=>{ loadStripCandles(); loadYieldGap(); }, 4);                                      // 지표 미니캔들(합성 프리뷰 이미 표시)
 setupHeatmapLazy();
 setupRelStrLazy();                                                             // 지수 대비 주도주(뷰포트 진입 시)
 setInterval(loadDeep,120000);                    // 심층분석 2분(큐레이션·지표 갱신 반영)
@@ -1787,6 +1837,7 @@ setInterval(loadVideos,300000);                  // 영상 5분
 setInterval(loadCalendar,300000);                // 일정 5분
 setInterval(loadThemes,600000);                  // 테마 데스크 10분
 setInterval(loadFearGreed,600000);               // 공포탐욕 10분
+setInterval(loadYieldGap,1800000);               // 일드갭 30분(슬로무빙)
 setInterval(loadTrump,300000);                   // 트럼프 5분
 
 /* 창 리사이즈 중 가변 폰트(vw clamp)의 연속 리플로우 완화(특히 맥에서 버벅임) —
