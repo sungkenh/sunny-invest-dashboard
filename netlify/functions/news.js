@@ -87,18 +87,21 @@ exports.handler = async () => {
   items.forEach((n, i) => { n.hot = i < 6; });
 
   const data = { _updated: new Date().toISOString().slice(0, 19), count: items.length, items };
-  CACHE = { ts: Date.now(), data };
-  return ok(data);
+  // 전부 실패(0건)면 빈 결과를 10분 캐시하지 않음 → 60초 뒤 만료(다음 방문 재시도)
+  CACHE = { ts: items.length ? Date.now() : Date.now() - (TTL - 60000), data };
+  return ok(data, items.length === 0);
 };
 
-function ok(obj) {
+function ok(obj, empty) {
+  const mx = empty ? 60 : 120;     // 0건이면 짧게 캐시(다음 방문 재시도)
+  const sm = empty ? 60 : 600;
   return {
     statusCode: 200,
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
       'Access-Control-Allow-Origin': '*',
-      'Cache-Control': 'public, max-age=120',
-      'Netlify-CDN-Cache-Control': 'public, s-maxage=600, stale-while-revalidate=900',
+      'Cache-Control': 'public, max-age=' + mx,
+      'Netlify-CDN-Cache-Control': 'public, s-maxage=' + sm + ', stale-while-revalidate=900',
     },
     body: JSON.stringify(obj),
   };

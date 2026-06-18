@@ -1643,7 +1643,11 @@ async function loadWatch(){
 }
 /* ---- 실시간 뉴스: data/news.json (구글뉴스 RSS 수집) ---- */
 async function loadNewsLive(){
-  const d=await fetchLive('/api/news','data/news.json');
+  let d=await fetchLive('/api/news','data/news.json');
+  // 라이브가 비면(0건) 스냅샷 직접 사용 — 스냅샷 기사는 link가 있어 클릭이 동작함
+  if(!(d && d.items && d.items.length)){
+    try{ const r=await fetch('data/news.json?t='+Date.now(),{cache:'no-store'}); if(r.ok) d=await r.json(); }catch(e){}
+  }
   if(d && d.items && d.items.length){ SAMPLE_NEWS=d.items; renderNews(); }
 }
 /* ---- 비트코인 실시간 틱: Binance (CORS 개방, 24시간 거래) ---- */
