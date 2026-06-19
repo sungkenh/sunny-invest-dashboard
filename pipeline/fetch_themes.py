@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """테마별 전문가 데스크 스냅샷 → data/themes.json  (폴백·GitHub Actions용)
    큐레이션 thesis(durable) + 바스켓 라이브 등락(야후 chart) + 최신 촉매 뉴스(구글 RSS).
-   서버리스 netlify/functions/themes.js 와 동일 로직(데일리 갱신).
+   서버리스 functions/api/themes.js 와 동일 로직(데일리 갱신).
    실행: python fetch_themes.py
 """
 import os, sys, re, json, html, datetime, urllib.request, urllib.parse

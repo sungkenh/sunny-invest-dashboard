@@ -2,14 +2,14 @@
 // 관심종목(data/watchlist.json) ∪ 인기종목의 '심층분석(기업 생태계·투자지표·개요·리포트)'을
 // 사전 생성해 data/deep.json 에 병합한다. → 모든 사용자·기기에서 /api/deep 호출 없이 즉시 표시.
 //
-// 핵심: 서버리스 함수 netlify/functions/deep.js 의 생성 로직을 그대로 재사용(중복 없음).
+// 핵심: 서버리스 함수 functions/api/deep.js (Cloudflare) 의 생성 로직을 그대로 재사용(중복 없음).
 //      curated:true(손작성 큐레이션) 항목은 절대 덮어쓰지 않고 보존.
 // 실행: node pipeline/gen_deep.js   (GitHub Actions·로컬 공용. Node 18+ 전역 fetch 필요)
 // 테스트: GEN_DEEP_SYMS=AAPL,005930.KS DEEP_PATH=/tmp/deep.json node pipeline/gen_deep.js
 
 const fs = require('fs');
 const path = require('path');
-const deep = require(path.join(__dirname, '..', 'netlify', 'functions', 'deep.js'));
+const { pathToFileURL } = require('url');
 
 const ROOT = path.join(__dirname, '..');
 const DEEP_PATH = process.env.DEEP_PATH || path.join(ROOT, 'data', 'deep.json');
@@ -34,6 +34,8 @@ const baseSym = (s) => (s || '').replace(/\.(KS|KQ)$/, '');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 (async () => {
+  // Cloudflare Pages Function(ESM)을 동적 import — Cloudflare는 onRequest만 쓰지만 여기선 내부 핸들러 __cfHandler 재사용
+  const deep = await import(pathToFileURL(path.join(__dirname, '..', 'functions', 'api', 'deep.js')).href);
   let existing = {};
   try { existing = JSON.parse(fs.readFileSync(DEEP_PATH, 'utf8')); }
   catch (e) { console.log('· 기존 deep.json 없음 — 새로 생성'); }
@@ -54,7 +56,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     let ok = false;
     for (let attempt = 0; attempt < 2 && !ok; attempt++) {
       try {
-        const r = await deep.handler({ queryStringParameters: { sym } });
+        const r = await deep.__cfHandler({ queryStringParameters: { sym } });
         const d = JSON.parse(r.body);
         if (d && !d.error && Array.isArray(d.metrics) && d.metrics.length) {
           out[base] = d; made++; ok = true;

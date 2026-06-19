@@ -1,5 +1,5 @@
 // 종목 검색 — /api/search?q=...  (네이버 증권 한글검색 + 야후 폴백)
-// Node 18+ 전역 fetch 사용, 의존성 없음 (Netlify가 자동 번들)
+// Node 18+ 전역 fetch 사용, 의존성 없음
 async function __cfHandler(event) {
   const q = ((event.queryStringParameters || {}).q || '').trim();
   if (!q) return resp([]);

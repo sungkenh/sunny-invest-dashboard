@@ -324,3 +324,6 @@ export async function onRequest(context) {
   const r = await __cfHandler(event);
   return new Response(r.body, { status: r.statusCode || 200, headers: r.headers || { 'Content-Type': 'application/json' } });
 }
+
+// gen_deep.js(사전생성 스크립트)가 동일 로직을 재사용하도록 핸들러도 내보냄(Cloudflare는 onRequest만 호출).
+export { __cfHandler };
