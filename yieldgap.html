@@ -108,7 +108,20 @@
   .wbar i.real{background:var(--gold)} .wbar i.safe{background:var(--muted2)}
   .alloc-row .alv{flex:0 0 auto;min-width:64px;text-align:right;color:var(--text);font-weight:800;font-variant-numeric:tabular-nums}
   .alloc-row.best .alv{color:var(--up)}
-  .alloc-best{margin-top:12px;font-size:12.5px;color:var(--text);background:var(--panel2);border-left:3px solid var(--up);border-radius:0 8px 8px 0;padding:10px 13px;line-height:1.5}
+  .alloc-best{margin-top:14px;font-size:12.5px;color:var(--text);background:var(--panel2);border-left:3px solid var(--up);border-radius:0 8px 8px 0;padding:10px 13px;line-height:1.5}
+  .pies{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px}
+  @media(max-width:540px){.pies{grid-template-columns:1fr}}
+  .pie-wrap{text-align:center}
+  .pie-title{font-size:13px;font-weight:700;margin-bottom:11px;color:var(--text)}
+  .pie-title .rec{font-size:10.5px;color:#fff;background:var(--up);padding:1px 7px;border-radius:999px;margin-left:5px;font-weight:800}
+  .pie{width:128px;height:128px;border-radius:50%;position:relative;margin:0 auto}
+  .pie-hole{position:absolute;inset:27px;border-radius:50%;background:var(--panel);display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .pie-c-val{font-size:19px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+  .pie-c-lab{font-size:9.5px;color:var(--muted2);margin-top:2px}
+  .pie-bd{margin-top:13px;display:inline-block;text-align:left;font-size:12px}
+  .pie-bd .pl{display:flex;align-items:center;gap:7px;margin:3.5px 0;color:var(--muted);min-width:158px}
+  .pie-bd .pl i{width:10px;height:10px;border-radius:3px;flex:0 0 auto}
+  .pie-bd .pl b{margin-left:auto;color:var(--text);font-variant-numeric:tabular-nums;padding-left:12px;font-weight:700}
 
   footer{padding:22px;color:var(--muted2);font-size:11px;line-height:1.65;border-top:1px solid var(--border);margin-top:24px;max-width:1060px;margin-left:auto;margin-right:auto}
   footer b{color:var(--accent2)}
@@ -223,6 +236,26 @@ function fmtGap(m){ const gm=gapMeta(m.gap); return m.gap==null?'—':(m.gap>0?'
 /* 장기 수익률 차트 + 자산배분 추천 — longterm 데이터에서 계산 */
 const LT_BENCH={ stock:{us:'S&P 500',kr:'KOSPI',cls:'risk'}, nasdaq:{us:'NASDAQ100',kr:null,cls:'risk'}, bond:{us:'미국 국채',kr:'한국 국채',cls:'safe'}, real:{us:'미국 리츠',kr:'한국 리츠',cls:'real'} };
 function chRow(name,val,cls,scale){ const w=Math.max(3,Math.min(100,val/scale*100)); return `<div class="chrow"><div class="chlab">${name}</div><div class="chbar"><span class="${cls}" style="width:${w}%"></span></div><div class="chval">${val}%</div></div>`; }
+function pcts(parts){ const r=parts.map(p=>Math.round(p)); const diff=100-r.reduce((a,b)=>a+b,0); if(diff) r[r.length-1]+=diff; return r; }
+const SAFE_BOND_RATIO=2/3;   /* 안전자산 내 채권:현금 ≈ 2:1 */
+const PIE_CASH='#aab0b8';
+/* 자산배분 도넛(파이) — 위험/실물/안전(채권+현금) 합 100% */
+function donut(title, rec, wR, wF, wS, blended){
+  const wB=wS*SAFE_BOND_RATIO, wC=wS*(1-SAFE_BOND_RATIO);
+  const a1=wR, a2=wR+wF, a3=wR+wF+wB;
+  const grad=`conic-gradient(var(--accent) 0 ${a1}%, var(--gold) ${a1}% ${a2}%, var(--muted2) ${a2}% ${a3}%, ${PIE_CASH} ${a3}% 100%)`;
+  const dp=pcts([wR,wF,wB,wC]);
+  return `<div class="pie-wrap">
+    <div class="pie-title">${title}${rec?'<span class="rec">추천</span>':''}</div>
+    <div class="pie" style="background:${grad}"><div class="pie-hole"><span class="pie-c-val">${blended}%</span><span class="pie-c-lab">연 기대수익</span></div></div>
+    <div class="pie-bd">
+      <div class="pl"><i style="background:var(--accent)"></i>위험자산 · 주식<b>${dp[0]}%</b></div>
+      <div class="pl"><i style="background:var(--gold)"></i>실물자산 · 리츠<b>${dp[1]}%</b></div>
+      <div class="pl"><i style="background:var(--muted2)"></i>안전자산 · 채권<b>${dp[2]}%</b></div>
+      <div class="pl"><i style="background:${PIE_CASH}"></i>안전자산 · 현금<b>${dp[3]}%</b></div>
+    </div>
+  </div>`;
+}
 function renderCharts(lt){
   if(!lt.length) return;
   const r1=x=>Math.round(x*10)/10;
@@ -245,9 +278,11 @@ function renderCharts(lt){
   const balanced=(R+F+S)/3, sum=(R+F+S)||1, wR=R/sum, wF=F/sum, wS=S/sum, tilted=wR*R+wF*F+wS*S, pct=x=>Math.round(x*100);
   document.getElementById('alloc-intro').innerHTML=`전통적으로는 <b>위험 : 안전 : 실물 = 1 : 1 : 1</b> 균형 배분을 권합니다. 하지만 <b>장기 수익률만 보면</b> 위험자산(주식) <b>${r1(R)}%</b> &gt; 실물자산 <b>${r1(F)}%</b> &gt; 안전자산 <b>${r1(S)}%</b> 로 기대수익이 뚜렷이 다릅니다.`;
   document.getElementById('alloc-cmp').innerHTML=
-    `<div class="alloc-row"><span class="albl">균형 1:1:1</span><span class="wbar"><i class="risk" style="width:33.3%"></i><i class="real" style="width:33.3%"></i><i class="safe" style="width:33.4%"></i></span><span class="alv">${r1(balanced)}%/년</span></div>`
-    + `<div class="alloc-row best"><span class="albl">수익률 가중 <small>위험${pct(wR)}·실물${pct(wF)}·안전${pct(wS)}</small></span><span class="wbar"><i class="risk" style="width:${pct(wR)}%"></i><i class="real" style="width:${pct(wF)}%"></i><i class="safe" style="width:${pct(wS)}%"></i></span><span class="alv">${r1(tilted)}%/년</span></div>`
-    + `<div class="alloc-best">📌 수익률 극대화 관점 추천: <b>위험자산(주식) 비중 ↑</b> — 균형 1:1:1 대비 연 <b>+${r1(tilted-balanced)}%p</b> 더 기대할 수 있습니다(과거 평균 기준, 변동성 미반영).</div>`;
+    `<div class="pies">`
+    + donut('균형 1:1:1', false, 100/3, 100/3, 100/3, balanced.toFixed(1))
+    + donut('수익률 가중', true, wR*100, wF*100, wS*100, tilted.toFixed(1))
+    + `</div>`
+    + `<div class="alloc-best">📌 수익률 극대화 관점 추천: <b>위험자산(주식) 비중 ↑</b> — 균형 1:1:1 대비 연 <b>+${r1(tilted-balanced)}%p</b> 더 기대(과거 평균 기준, 변동성 미반영). 안전자산은 <b>채권·현금(저축)</b>으로 나눠 보유합니다(채권:현금 ≈ 2:1 가정, 현금은 유동성·대기자금).</div>`;
   document.getElementById('alloc-card').style.display='';
 }
 function renderYieldGap(){
