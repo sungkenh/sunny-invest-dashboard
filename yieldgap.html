@@ -170,7 +170,7 @@
 
 <main>
   <div class="sectit">📊 자산군 기대수익률 · 일드갭 <span class="cnt" id="asof"></span>
-    <span class="note">국채 · 주식 어닝일드 · 리츠 배당 — 한·미 비교</span></div>
+    <span class="note">국채 · 주식 어닝일드 · 리츠 배당 + 장기 연평균 수익률 병기 — 한·미 비교</span></div>
 
   <div class="intro" id="yg-intro">불러오는 중…</div>
 
@@ -258,13 +258,17 @@ function gapMeta(g){
   if(g<=-1) return {cls:'neg', lab:'주식 부담', hint:'주식 어닝일드가 국채금리보다 낮습니다 → 주식이 채권 대비 고평가(밸류 부담).'};
   return {cls:'flat', lab:'균형', hint:'주식과 채권의 기대수익률이 비슷한 균형 구간입니다.'};
 }
-function marketCard(flag,name,m,scale){
+/* 일드갭 자산키 → 장기 연평균 수익률(longterm) 키 매핑 */
+const LT_KEY={stock:'stock',nasdaq:'nasdaq',safe:'bond',reit:'real'};
+function ltCagr(k,mk){ const lt=(YG&&YG.longterm)||[]; const row=lt.find(r=>r.k===LT_KEY[k]); const v=row&&row[mk]; return (v!=null)?'~'+(Math.round(v*10)/10)+'%':null; }
+function marketCard(flag,name,m,scale,mk){
   const gm=gapMeta(m.gap);
   const gtxt=m.gap==null?'—':(m.gap>0?'+':'')+m.gap.toFixed(2)+'%p';
   const rows=ASSET_ORDER.filter(k=>m[k]).map(k=>{
     const [ic,cls,bar]=ASSET_META[k]; const o=m[k]; const w=(o.val!=null)?Math.max(2,Math.min(100,o.val/scale*100)):0;
+    const cg=ltCagr(k,mk);   // 장기 연평균 수익률 병기 (어닝일드=밸류, 연평균=실제 장기수익)
     return `<div class="arow">
-      <div class="al"><span class="nm">${ic} ${cls} · ${o.label||''}</span><span class="vv">${ygNum(o)}${o.est?'<span class="est"> ~</span>':''}</span></div>
+      <div class="al"><span class="nm">${ic} ${cls} · ${o.label||''}</span><span class="vv">${ygNum(o)}${o.est?'<span class="est"> ~</span>':''}${cg?` <span class="cagr" style="color:var(--muted2);font-weight:600;font-size:.8em">· 연평균 ${cg}</span>`:''}</span></div>
       <div class="bar ${bar}"><span style="width:${w}%"></span></div>
     </div>`;
   }).join('');
@@ -421,10 +425,11 @@ function renderYieldGap(){
   const d=YG; if(!d||!d.us||!d.kr) return;
   let mx=0; ['us','kr'].forEach(mk=>['stock','nasdaq','safe','reit'].forEach(k=>{const o=d[mk]&&d[mk][k]; const v=o&&o.val; if(v!=null&&v>mx)mx=v;}));
   const scale=Math.max(10,Math.ceil(mx));
-  document.getElementById('yg-grid').innerHTML = marketCard('🇺🇸','미국',d.us,scale)+marketCard('🇰🇷','한국',d.kr,scale);
+  document.getElementById('yg-grid').innerHTML = marketCard('🇺🇸','미국',d.us,scale,'us')+marketCard('🇰🇷','한국',d.kr,scale,'kr');
   document.getElementById('yg-intro').innerHTML =
     `<b>일드갭 = 주식 어닝일드(1/PER) − 국채 10년 금리.</b> 양(+)이면 주식이 채권보다 싸고(밸류 매력), 음(−)이면 비쌉니다(밸류 부담). `
-    + `현재 <b>🇺🇸 미국 ${fmtGap(d.us)}</b> · <b>🇰🇷 한국 ${fmtGap(d.kr)}</b>.`;
+    + `현재 <b>🇺🇸 미국 ${fmtGap(d.us)}</b> · <b>🇰🇷 한국 ${fmtGap(d.kr)}</b>. `
+    + `각 자산엔 <b>장기 연평균 수익률</b>도 함께 표시했습니다 — <b>어닝일드</b>는 ‘지금 밸류(채권 대비 싼지)’, <b>연평균</b>은 ‘실제 장기 수익’으로 서로 다른 개념입니다.`;
   renderCharts(d.longterm||[]);
   renderTactical(d);
   const ym=String(d._updated||'').match(/^(\d{4})-(\d{2})/);
