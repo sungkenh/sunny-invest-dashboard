@@ -1108,6 +1108,7 @@ function ygMarket(name, flag, m){
   return `<div class="yg-mk">
     <div class="yg-mkhead"><span>${flag} ${name}</span><span class="yg-gap ${cls}">${gtxt}</span></div>
     <div class="yg-row"><span>📈 위험자산 · ${m.stock.label}</span><span class="v">${ygVal(m.stock)}</span></div>
+    ${m.nasdaq?`<div class="yg-row"><span>📈 위험자산 · ${m.nasdaq.label}</span><span class="v">${ygVal(m.nasdaq)}</span></div>`:''}
     <div class="yg-row"><span>🏦 안전자산 · ${m.safe.label}</span><span class="v">${ygVal(m.safe)}</span></div>
     <div class="yg-row"><span>🏢 실물자산 · ${m.reit.label}</span><span class="v">${ygVal(m.reit)}</span></div>
     ${interp?`<div class="yg-note ${cls}">→ ${interp}</div>`:''}
@@ -1116,13 +1117,16 @@ function ygMarket(name, flag, m){
 function renderYieldGap(){
   const host=document.getElementById('yg-body'); if(!host) return;
   const d=YIELDGAP; if(!d||!d.us||!d.kr){ host.innerHTML='<div class="yg-loading">불러오는 중…</div>'; return; }
-  const lt=(d.longterm||[]).map(r=>`<tr><td class="l">${r.label}</td><td>~${r.us}%</td><td>~${r.kr}%</td></tr>`).join('');
+  const c=v=>(v==null?'—':'~'+v+'%');
+  const lt=(d.longterm||[]).map(r=>`<tr><td class="l">${r.label}</td><td>${c(r.us)}</td><td>${c(r.kr)}</td></tr>`).join('');
   host.innerHTML = ygMarket('미국','🇺🇸',d.us) + ygMarket('한국','🇰🇷',d.kr)
     + `<div class="yg-lt"><table><thead><tr><th class="l">장기 연평균 <span style="font-weight:400;color:var(--muted2)">(참고)</span></th><th>미국</th><th>한국</th></tr></thead><tbody>${lt}</tbody></table></div>`
     + `<div class="yg-foot">일드갭 = 주식 어닝일드(1/PER) − 국채 10년. <b style="color:var(--gold)">~</b> = 추정치(KOSPI·국내 리츠), 장기는 역사적 참고치(명목·배당/임대 포함). 투자 권유 아님.</div>`;
 }
 async function loadYieldGap(){
-  const d=await fetchLive('/api/yieldgap','data/yieldgap.json');
+  let d=null;   // 월 1회 갱신 지표 → 스냅샷 우선, 라이브 폴백
+  try{ const r=await fetch('data/yieldgap.json?t='+Date.now(),{cache:'no-store'}); if(r.ok) d=await r.json(); }catch(e){}
+  if(!(d&&d.us)) d=await fetchLive('/api/yieldgap','data/yieldgap.json');
   if(d && d.us && d.kr){ YIELDGAP=d; renderYieldGap(); }
 }
 /* ---- 트럼프 Truth Social — /api/trump(한국어 번역) → data/trump.json 폴백 ---- */

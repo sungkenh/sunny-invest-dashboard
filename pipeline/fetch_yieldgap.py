@@ -15,10 +15,13 @@ UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Sa
 KR_KOSPI_EY_EST = 8.7     # KOSPI 추정 PER ~11.5 → 어닝일드 ~8.7%
 KR_REIT_YIELD_EST = 6.0   # 국내 상장 리츠 평균 배당수익률 추정 ~6%
 US_REIT_YIELD_EST = 3.6   # VNQ 라이브 실패 시 폴백
+US_NASDAQ_EY_EST = 2.9    # QQQ(NASDAQ-100) 라이브 실패 시 폴백 (PER ~34)
+UPDATE_DAYS = 28          # 월 1회 정책: 스냅샷이 이보다 최근이면 갱신 스킵
 LONGTERM = [
-    {'k': 'stock', 'label': '주식', 'us': 10.0, 'kr': 8.0},
-    {'k': 'bond', 'label': '채권', 'us': 4.5, 'kr': 3.5},
-    {'k': 'real', 'label': '부동산', 'us': 8.5, 'kr': 5.0},
+    {'k': 'stock', 'label': '주식 (S&P500·KOSPI)', 'us': 10.0, 'kr': 8.0},
+    {'k': 'nasdaq', 'label': '주식 (NASDAQ100)', 'us': 13.0, 'kr': None},
+    {'k': 'bond', 'label': '채권 (국채)', 'us': 4.5, 'kr': 3.5},
+    {'k': 'real', 'label': '부동산 (리츠)', 'us': 8.5, 'kr': 5.0},
 ]
 
 
@@ -69,22 +72,62 @@ def vnq_yield():
     return None
 
 
+def qqq_earnings_yield():
+    # NASDAQ-100 어닝일드 = 100 / QQQ trailingPE
+    try:
+        import yfinance as yf
+        pe = yf.Ticker('QQQ').info.get('trailingPE')
+        if pe and float(pe) > 0:
+            return round(100 / float(pe), 2)
+    except Exception:
+        pass
+    return None
+
+
 def gapf(a, b):
     return None if (a is None or b is None) else round(a - b, 2)
 
 
 def main():
+    here = os.path.dirname(os.path.abspath(__file__))
+    pipe_snap = os.path.join(here, 'data', 'yieldgap.json')
+    root_snap = os.path.join(here, '..', 'data', 'yieldgap.json')
+    os.makedirs(os.path.join(here, 'data'), exist_ok=True)
+
+    # 월 1회 갱신: 기존 스냅샷이 UPDATE_DAYS 이내 + 새 구조(us.nasdaq 보유)면 그대로 유지
+    # (동일 내용을 pipeline/data 에 써서 cp 라운드트립이 git diff 0이 되도록 → 실제 갱신은 ~월 1회)
+    try:
+        with open(root_snap, encoding='utf-8') as f:
+            prev = json.load(f)
+        upd = (prev.get('_updated') or '').replace('Z', '+00:00')
+        dt = datetime.datetime.fromisoformat(upd) if upd else None
+        if dt is not None and dt.tzinfo is None:
+            dt = dt.replace(tzinfo=datetime.timezone.utc)
+        age = (datetime.datetime.now(datetime.timezone.utc) - dt).days if dt else 999
+        has_new = isinstance(prev.get('us'), dict) and 'nasdaq' in prev['us']
+        if has_new and age < UPDATE_DAYS:
+            with open(pipe_snap, 'w', encoding='utf-8') as f:
+                json.dump(prev, f, ensure_ascii=False, indent=1)
+            print('yieldgap: 최근 갱신 %d일 전 — 월 1회 정책으로 유지(스킵)' % age)
+            return
+    except Exception:
+        pass
+
     kr10 = naver_bond('KR10YT=RR')
     us10 = naver_bond('US10YT=RR')
     spx = spx_earnings_yield()
     vnq = vnq_yield()
+    ndx = qqq_earnings_yield()
     us_reit = vnq if vnq is not None else US_REIT_YIELD_EST
+    us_ndx = ndx if ndx is not None else US_NASDAQ_EY_EST
     us = {
         'safe': {'label': '국채 10년', 'val': r2(us10), 'est': us10 is None},
         'stock': {'label': '주식 어닝일드 (S&P500)', 'val': r2(spx), 'est': spx is None},
+        'nasdaq': {'label': '주식 어닝일드 (NASDAQ100)', 'val': r2(us_ndx), 'est': ndx is None},
         'reit': {'label': '리츠 배당 (VNQ)', 'val': r2(us_reit), 'est': vnq is None},
     }
     us['gap'] = gapf(us['stock']['val'], us['safe']['val'])
+    us['gapNdx'] = gapf(us['nasdaq']['val'], us['safe']['val'])
     kr = {
         'safe': {'label': '국채 10년', 'val': r2(kr10), 'est': kr10 is None},
         'stock': {'label': '주식 어닝일드 (KOSPI)', 'val': KR_KOSPI_EY_EST, 'est': True},
@@ -93,12 +136,10 @@ def main():
     kr['gap'] = gapf(kr['stock']['val'], kr['safe']['val'])
     data = {'_updated': datetime.datetime.now(datetime.timezone.utc).isoformat(timespec='seconds'),
             'us': us, 'kr': kr, 'longterm': LONGTERM}
-    here = os.path.dirname(os.path.abspath(__file__))
-    os.makedirs(os.path.join(here, 'data'), exist_ok=True)
-    with open(os.path.join(here, 'data', 'yieldgap.json'), 'w', encoding='utf-8') as f:
+    with open(pipe_snap, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=1)
-    print('yieldgap.json 저장: US gap=%s, KR gap=%s (us10=%s kr10=%s spx=%s vnq=%s)'
-          % (us['gap'], kr['gap'], us10, kr10, spx, vnq))
+    print('yieldgap.json 저장: US gap=%s(나스닥 %s), KR gap=%s (us10=%s kr10=%s spx=%s ndx=%s vnq=%s)'
+          % (us['gap'], us['gapNdx'], kr['gap'], us10, kr10, spx, ndx, vnq))
 
 
 if __name__ == '__main__':

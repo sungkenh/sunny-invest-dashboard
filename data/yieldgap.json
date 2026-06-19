@@ -1,5 +1,5 @@
 {
- "_updated": "2026-06-19T03:47:18+00:00",
+ "_updated": "2026-06-19T05:32:15+00:00",
  "us": {
   "safe": {
    "label": "국채 10년",
@@ -11,17 +11,23 @@
    "val": 3.1,
    "est": false
   },
+  "nasdaq": {
+   "label": "주식 어닝일드 (NASDAQ100)",
+   "val": 2.94,
+   "est": false
+  },
   "reit": {
    "label": "리츠 배당 (VNQ)",
    "val": 3.64,
    "est": false
   },
-  "gap": -1.36
+  "gap": -1.36,
+  "gapNdx": -1.52
  },
  "kr": {
   "safe": {
    "label": "국채 10년",
-   "val": 4.19,
+   "val": 4.2,
    "est": false
   },
   "stock": {
@@ -34,24 +40,30 @@
    "val": 6.0,
    "est": true
   },
-  "gap": 4.51
+  "gap": 4.5
  },
  "longterm": [
   {
    "k": "stock",
-   "label": "주식",
+   "label": "주식 (S&P500·KOSPI)",
    "us": 10.0,
    "kr": 8.0
   },
   {
+   "k": "nasdaq",
+   "label": "주식 (NASDAQ100)",
+   "us": 13.0,
+   "kr": null
+  },
+  {
    "k": "bond",
-   "label": "채권",
+   "label": "채권 (국채)",
    "us": 4.5,
    "kr": 3.5
   },
   {
    "k": "real",
-   "label": "부동산",
+   "label": "부동산 (리츠)",
    "us": 8.5,
    "kr": 5.0
   }

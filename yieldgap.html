@@ -74,6 +74,7 @@
   .bar{height:10px;border-radius:6px;background:var(--panel2);overflow:hidden}
   .bar > span{display:block;height:100%;border-radius:6px;transition:width .4s ease}
   .bar.stock > span{background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .bar.nasdaq > span{background:linear-gradient(90deg,var(--accent2),#a9c2ff)}
   .bar.safe > span{background:var(--muted2)}
   .bar.reit > span{background:var(--gold)}
 
@@ -114,7 +115,7 @@
   <div class="intro" id="yg-intro">불러오는 중…</div>
 
   <div class="legend">
-    <span><i style="background:linear-gradient(90deg,var(--accent),var(--accent2))"></i>위험자산 — 주식 어닝일드(1/PER)</span>
+    <span><i style="background:linear-gradient(90deg,var(--accent),var(--accent2))"></i>위험자산 — 주식 어닝일드(S&amp;P500·나스닥, 1/PER)</span>
     <span><i style="background:var(--muted2)"></i>안전자산 — 국채 10년</span>
     <span><i style="background:var(--gold)"></i>실물자산 — 리츠 배당</span>
   </div>
@@ -130,9 +131,9 @@
 
 <footer>
   <b>일드갭(Yield Gap)</b> = 주식 어닝일드(1/PER) − 국채 10년 금리. 주식과 안전자산(채권)의 기대수익률을 비교해 상대 밸류에이션을 가늠하는 고전 지표입니다. 양(+)일수록 주식이 채권 대비 매력적, 음(−)일수록 부담입니다.
-  데이터: 국채 10년 = Naver, 미국 주식 어닝일드(S&amp;P500) = multpl.com, 미국 리츠 = VNQ 배당수익률(Yahoo) — <b>라이브</b>.
+  데이터: 국채 10년 = Naver · 미국 주식 어닝일드(S&amp;P500 = multpl.com, NASDAQ100 = QQQ/Yahoo) · 미국 리츠 = VNQ 배당수익률(Yahoo).
   <b style="color:var(--gold)">~</b> 표시(한국 KOSPI 어닝일드·국내 리츠 배당)는 무료 라이브 소스가 없어 <b>추정치</b>입니다.
-  약 30분마다 갱신. 정보 제공 목적이며 투자 권유가 아닙니다.
+  지표 특성상 <b>약 한 달에 한 번</b> 갱신합니다. 정보 제공 목적이며 투자 권유가 아닙니다.
 </footer>
 
 <script>
@@ -154,7 +155,8 @@ function kstUpd(iso, withDate){
   return (withDate?g('month')+'-'+g('day')+' ':'')+g('hour')+':'+g('minute');
 }
 
-const ASSETS=[['stock','📈','위험자산'],['safe','🏦','안전자산'],['reit','🏢','실물자산']];
+const ASSET_META={ stock:['📈','위험자산','stock'], nasdaq:['📈','위험자산','nasdaq'], safe:['🏦','안전자산','safe'], reit:['🏢','실물자산','reit'] };
+const ASSET_ORDER=['stock','nasdaq','safe','reit'];
 function ygNum(o){ return (!o||o.val==null)?'—':o.val.toFixed(2)+'%'; }
 function gapMeta(g){
   if(g==null) return {cls:'flat', lab:'데이터 없음', hint:''};
@@ -165,11 +167,11 @@ function gapMeta(g){
 function marketCard(flag,name,m,scale){
   const gm=gapMeta(m.gap);
   const gtxt=m.gap==null?'—':(m.gap>0?'+':'')+m.gap.toFixed(2)+'%p';
-  const rows=ASSETS.map(([k,ic,cls])=>{
-    const o=m[k]||{}; const w=(o.val!=null)?Math.max(2,Math.min(100,o.val/scale*100)):0;
+  const rows=ASSET_ORDER.filter(k=>m[k]).map(k=>{
+    const [ic,cls,bar]=ASSET_META[k]; const o=m[k]; const w=(o.val!=null)?Math.max(2,Math.min(100,o.val/scale*100)):0;
     return `<div class="arow">
       <div class="al"><span class="nm">${ic} ${cls} · ${o.label||''}</span><span class="vv">${ygNum(o)}${o.est?'<span class="est"> ~</span>':''}</span></div>
-      <div class="bar ${k}"><span style="width:${w}%"></span></div>
+      <div class="bar ${bar}"><span style="width:${w}%"></span></div>
     </div>`;
   }).join('');
   return `<div class="mkcard">
@@ -184,28 +186,30 @@ function marketCard(flag,name,m,scale){
 function fmtGap(m){ const gm=gapMeta(m.gap); return m.gap==null?'—':(m.gap>0?'+':'')+m.gap.toFixed(2)+'%p('+gm.lab+')'; }
 function renderYieldGap(){
   const d=YG; if(!d||!d.us||!d.kr) return;
-  let mx=0; ['us','kr'].forEach(mk=>['stock','safe','reit'].forEach(k=>{const v=d[mk][k]&&d[mk][k].val; if(v!=null&&v>mx)mx=v;}));
+  let mx=0; ['us','kr'].forEach(mk=>['stock','nasdaq','safe','reit'].forEach(k=>{const o=d[mk]&&d[mk][k]; const v=o&&o.val; if(v!=null&&v>mx)mx=v;}));
   const scale=Math.max(10,Math.ceil(mx));
   document.getElementById('yg-grid').innerHTML = marketCard('🇺🇸','미국',d.us,scale)+marketCard('🇰🇷','한국',d.kr,scale);
   document.getElementById('yg-intro').innerHTML =
     `<b>일드갭 = 주식 어닝일드(1/PER) − 국채 10년 금리.</b> 양(+)이면 주식이 채권보다 싸고(밸류 매력), 음(−)이면 비쌉니다(밸류 부담). `
     + `현재 <b>🇺🇸 미국 ${fmtGap(d.us)}</b> · <b>🇰🇷 한국 ${fmtGap(d.kr)}</b>.`;
-  const lt=d.longterm||[];
-  if(lt.length){ document.getElementById('lt-body').innerHTML=lt.map(r=>`<tr><td class="l">${r.label}</td><td>~${r.us}%</td><td>~${r.kr}%</td></tr>`).join(''); document.getElementById('lt-card').style.display=''; }
-  const a=document.getElementById('asof'); if(a&&d._updated) a.textContent=kstUpd(d._updated,true)+' 기준';
-  const u=document.getElementById('upd'); if(u&&d._updated) u.textContent='● '+kstUpd(d._updated)+' 갱신';
+  const lt=d.longterm||[]; const cell=v=>(v==null?'<span style="color:var(--muted2)">—</span>':'~'+v+'%');
+  if(lt.length){ document.getElementById('lt-body').innerHTML=lt.map(r=>`<tr><td class="l">${r.label}</td><td>${cell(r.us)}</td><td>${cell(r.kr)}</td></tr>`).join(''); document.getElementById('lt-card').style.display=''; }
+  const ym=String(d._updated||'').match(/^(\d{4})-(\d{2})/);
+  const a=document.getElementById('asof'); if(a&&ym) a.textContent=ym[1]+'년 '+(+ym[2])+'월 기준 · 월 1회 갱신';
+  const u=document.getElementById('upd'); if(u&&ym) u.textContent='● '+ym[1]+'.'+ym[2]+' 기준';
 }
 async function loadYieldGap(){
   let d=null;
-  try{ const r=await fetch('/api/yieldgap',{cache:'default'}); if(r.ok) d=await r.json(); }catch(e){}
-  if(!d||!d.us){ try{ const r=await fetch('data/yieldgap.json?t='+Date.now(),{cache:'no-store'}); if(r.ok) d=await r.json(); }catch(e){} }
+  // 월 1회 갱신 지표 → 스냅샷(data/yieldgap.json) 우선, 라이브는 폴백
+  try{ const r=await fetch('data/yieldgap.json?t='+Date.now(),{cache:'no-store'}); if(r.ok) d=await r.json(); }catch(e){}
+  if(!d||!d.us){ try{ const r=await fetch('/api/yieldgap',{cache:'default'}); if(r.ok) d=await r.json(); }catch(e){} }
   if(d&&d.us&&d.kr){ YG=d; renderYieldGap(); }
 }
 /* 라이트/다크 (페이지 간 공유) */
 function setThemeClass(mode){var light=mode==='light';document.body.classList.toggle('light',light);var b=document.getElementById('themeToggle');if(b)b.textContent=light?'☀️ 라이트':'🌙 다크';}
 (function(){var t=document.getElementById('themeToggle');if(t)t.addEventListener('click',function(){var m=document.body.classList.contains('light')?'dark':'light';setThemeClass(m);try{localStorage.setItem('alphadesk.theme',m)}catch(e){}});setThemeClass(localStorage.getItem('alphadesk.theme')||'dark');})();
 fmtClock(); loadYieldGap();
-setInterval(fmtClock,1000); setInterval(loadYieldGap,1800000);
+setInterval(fmtClock,1000);   /* 월 1회 갱신 지표라 데이터 폴링 없음 */
 </script>
 </body>
 </html>
