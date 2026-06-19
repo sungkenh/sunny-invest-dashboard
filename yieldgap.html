@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>일드갭 · 자산군 기대수익률 · 써니의 투자 인사이트</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css"></noscript>
+<link rel="prefetch" href="index.html">
+<style>
+  :root{
+    --bg:#0a0b0d; --panel:#16181c; --panel2:#1c1f25; --border:#2a2d34;
+    --text:#f5f7fa; --muted:#a8acb3; --muted2:#7c828a;
+    --accent:#1268ff; --accent2:#5b8cff; --gold:#f4b000;
+    --up:#f6465d; --down:#3b82f6; --chip:#1c1f25;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);
+    font-family:"Pretendard Variable","Pretendard","Inter","Segoe UI",-apple-system,"Malgun Gothic",sans-serif;
+    font-size:14px;line-height:1.5;letter-spacing:-0.01em}
+  body.light{
+    --bg:#f5f6f8; --panel:#ffffff; --panel2:#f2f3f5; --border:#dee1e6;
+    --text:#0a0b0d; --muted:#5b616e; --muted2:#8a909a;
+    --accent:#0052ff; --accent2:#3d7bff; --gold:#a8780a;
+    --up:#d4243a; --down:#2f6bdb; --chip:#eef0f3;
+  }
+  body.light header.topbar{background:rgba(255,255,255,.85)}
+  .btn{cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--text);padding:7px 14px;border-radius:999px;font-size:12px;font-weight:600}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  a{color:inherit;text-decoration:none}
+  .mono{font-variant-numeric:tabular-nums}
+
+  header.topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+    padding:10px 22px;background:rgba(10,11,13,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.5px}
+  .brand .logo{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));
+    display:grid;place-items:center;color:#fff;font-weight:900;font-size:13px}
+  .brand small{color:var(--muted);font-weight:600;font-size:11px;letter-spacing:0}
+  nav.mainnav{display:flex;gap:4px;flex-wrap:wrap}
+  nav.mainnav a{padding:7px 13px;border-radius:8px;font-size:13px;font-weight:700;color:var(--muted);border:1px solid transparent}
+  nav.mainnav a:hover{color:var(--text);border-color:var(--border)}
+  nav.mainnav a.active{color:#fff;background:var(--accent)}
+  .spacer{flex:1}
+  .clock{font-size:13px;color:var(--muted);font-weight:600}
+  .upd{font-size:10.5px;font-weight:800;color:#22c55e;border:1px solid #14532d;background:#06210f;padding:4px 8px;border-radius:6px}
+  body.light .upd{background:#e7f7ee;border-color:#a7e3c4;color:#0a7c43}
+
+  main{padding:18px 22px 50px;max-width:1060px;margin:0 auto}
+  .sectit{display:flex;align-items:center;gap:9px;margin:4px 2px 12px;font-size:15px;font-weight:800;flex-wrap:wrap}
+  .sectit .cnt{font-size:11px;color:var(--muted);font-weight:600;border:1px solid var(--border);padding:1px 7px;border-radius:6px}
+  .sectit .note{font-size:11px;color:var(--muted2);font-weight:500;margin-left:auto}
+  .intro{font-size:13.5px;color:var(--muted);line-height:1.65;margin:2px 2px 16px;padding:12px 15px;border:1px solid var(--border);border-radius:12px;background:var(--panel)}
+  .intro b{color:var(--text)}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);margin:0 2px 14px}
+  .legend i{width:12px;height:12px;border-radius:3px;display:inline-block;margin-right:5px;vertical-align:-1px}
+
+  .yg-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:760px){.yg-grid{grid-template-columns:1fr}}
+  .mkcard{border:1px solid var(--border);border-radius:16px;background:var(--panel);padding:18px 20px}
+  .mkhead{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2px}
+  .mkname{font-size:18px;font-weight:800;display:flex;align-items:center;gap:8px}
+  .gapbig{text-align:right;line-height:1.1}
+  .gapbig .gv{font-size:25px;font-weight:900;font-variant-numeric:tabular-nums}
+  .gapbig .gl{font-size:11px;font-weight:800;margin-top:2px}
+  .gv.pos,.gl.pos{color:var(--up)} .gv.neg,.gl.neg{color:var(--down)} .gv.flat,.gl.flat{color:var(--muted)}
+  .gaphint{font-size:12px;color:var(--muted);margin:8px 0 16px;padding:9px 12px;border-radius:10px;background:var(--panel2);line-height:1.5}
+  .gaphint.pos{border-left:3px solid var(--up)} .gaphint.neg{border-left:3px solid var(--down)} .gaphint.flat{border-left:3px solid var(--muted2)}
+  .arow{margin:13px 0}
+  .arow .al{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:13px;margin-bottom:5px}
+  .arow .al .nm{color:var(--text);font-weight:600}
+  .arow .al .vv{font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .arow .al .vv .est{color:var(--gold)}
+  .bar{height:10px;border-radius:6px;background:var(--panel2);overflow:hidden}
+  .bar > span{display:block;height:100%;border-radius:6px;transition:width .4s ease}
+  .bar.stock > span{background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .bar.safe > span{background:var(--muted2)}
+  .bar.reit > span{background:var(--gold)}
+
+  .lt-card{margin-top:20px;border:1px solid var(--border);border-radius:16px;background:var(--panel);padding:16px 20px}
+  .lt-card h3{margin:0 0 10px;font-size:15px;font-weight:800}
+  .lt-table{width:100%;border-collapse:collapse;font-size:13.5px}
+  .lt-table th,.lt-table td{padding:8px 6px;text-align:right;font-variant-numeric:tabular-nums;border-bottom:1px solid var(--border)}
+  .lt-table th.l,.lt-table td.l{text-align:left;color:var(--text);font-weight:700}
+  .lt-table thead th{color:var(--muted);font-weight:700;font-size:12px}
+  .lt-table tbody tr:last-child td{border-bottom:none}
+  .lt-note{font-size:11.5px;color:var(--muted2);margin-top:9px;line-height:1.55}
+
+  footer{padding:22px;color:var(--muted2);font-size:11px;line-height:1.65;border-top:1px solid var(--border);margin-top:24px;max-width:1060px;margin-left:auto;margin-right:auto}
+  footer b{color:var(--accent2)}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand"><div class="logo">S</div>써니의&nbsp;투자&nbsp;인사이트<small>일드갭 · 기대수익률</small></div>
+  <nav class="mainnav">
+    <a href="index.html">대시보드</a>
+    <a href="news.html">실시간 뉴스</a>
+    <a href="schedule.html">일정</a>
+    <a href="videos.html">추천 영상</a>
+    <a href="yieldgap.html" class="active">일드갭</a>
+  </nav>
+  <div class="spacer"></div>
+  <button class="btn" id="themeToggle">🌙 다크</button>
+  <span class="clock mono" id="clock">--:--:--</span>
+  <span class="upd" id="upd">● 갱신</span>
+</header>
+
+<main>
+  <div class="sectit">📊 자산군 기대수익률 · 일드갭 <span class="cnt" id="asof"></span>
+    <span class="note">국채 · 주식 어닝일드 · 리츠 배당 — 한·미 비교</span></div>
+
+  <div class="intro" id="yg-intro">불러오는 중…</div>
+
+  <div class="legend">
+    <span><i style="background:linear-gradient(90deg,var(--accent),var(--accent2))"></i>위험자산 — 주식 어닝일드(1/PER)</span>
+    <span><i style="background:var(--muted2)"></i>안전자산 — 국채 10년</span>
+    <span><i style="background:var(--gold)"></i>실물자산 — 리츠 배당</span>
+  </div>
+
+  <div class="yg-grid" id="yg-grid"></div>
+
+  <div class="lt-card" id="lt-card" style="display:none">
+    <h3>장기 연평균 수익률 <span style="font-weight:400;color:var(--muted2);font-size:12px">(역사적 참고 · 명목 · 배당/임대 포함)</span></h3>
+    <table class="lt-table"><thead><tr><th class="l">자산군</th><th>미국</th><th>한국</th></tr></thead><tbody id="lt-body"></tbody></table>
+    <div class="lt-note">장기 평균은 과거 추세 기반의 대략적 참고치입니다(미국 주식 S&amp;P500 ~10%, 한국 KOSPI ~8%, 채권은 장기 평균 금리, 부동산은 미국 리츠 총수익·한국 주택가격+임대수익 기준). 미래 수익을 보장하지 않습니다.</div>
+  </div>
+</main>
+
+<footer>
+  <b>일드갭(Yield Gap)</b> = 주식 어닝일드(1/PER) − 국채 10년 금리. 주식과 안전자산(채권)의 기대수익률을 비교해 상대 밸류에이션을 가늠하는 고전 지표입니다. 양(+)일수록 주식이 채권 대비 매력적, 음(−)일수록 부담입니다.
+  데이터: 국채 10년 = Naver, 미국 주식 어닝일드(S&amp;P500) = multpl.com, 미국 리츠 = VNQ 배당수익률(Yahoo) — <b>라이브</b>.
+  <b style="color:var(--gold)">~</b> 표시(한국 KOSPI 어닝일드·국내 리츠 배당)는 무료 라이브 소스가 없어 <b>추정치</b>입니다.
+  약 30분마다 갱신. 정보 제공 목적이며 투자 권유가 아닙니다.
+</footer>
+
+<script>
+let YG=null;
+function fmtClock(){
+  try{ const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Seoul',hourCycle:'h23',weekday:'short',year:'2-digit',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'}).formatToParts(new Date());
+    const o={}; p.forEach(x=>o[x.type]=x.value);
+    const wk=['일','월','화','수','목','금','토'][{Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6}[o.weekday]];
+    document.getElementById('clock').textContent=o.year+'년 '+(+o.month)+'월 '+(+o.day)+'일('+wk+') '+o.hour+':'+o.minute+':'+o.second; }catch(e){}
+}
+/* _updated(UTC) → 한국시간(KST) 표시. 오프셋 없으면 UTC로 간주. */
+function kstUpd(iso, withDate){
+  if(!iso) return '';
+  const s=String(iso).replace(' ','T');
+  const d=new Date(/[Zz]|[+\-]\d\d:?\d\d$/.test(s)?s:s+'Z');
+  if(isNaN(d)) return s.replace('T',' ').slice(withDate?5:11,16);
+  const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Seoul',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(d);
+  const g=t=>(p.find(x=>x.type===t)||{}).value||'';
+  return (withDate?g('month')+'-'+g('day')+' ':'')+g('hour')+':'+g('minute');
+}
+
+const ASSETS=[['stock','📈','위험자산'],['safe','🏦','안전자산'],['reit','🏢','실물자산']];
+function ygNum(o){ return (!o||o.val==null)?'—':o.val.toFixed(2)+'%'; }
+function gapMeta(g){
+  if(g==null) return {cls:'flat', lab:'데이터 없음', hint:''};
+  if(g>=1)  return {cls:'pos', lab:'주식 매력', hint:'주식 어닝일드가 국채금리보다 높습니다 → 주식이 채권 대비 저평가(밸류 매력).'};
+  if(g<=-1) return {cls:'neg', lab:'주식 부담', hint:'주식 어닝일드가 국채금리보다 낮습니다 → 주식이 채권 대비 고평가(밸류 부담).'};
+  return {cls:'flat', lab:'균형', hint:'주식과 채권의 기대수익률이 비슷한 균형 구간입니다.'};
+}
+function marketCard(flag,name,m,scale){
+  const gm=gapMeta(m.gap);
+  const gtxt=m.gap==null?'—':(m.gap>0?'+':'')+m.gap.toFixed(2)+'%p';
+  const rows=ASSETS.map(([k,ic,cls])=>{
+    const o=m[k]||{}; const w=(o.val!=null)?Math.max(2,Math.min(100,o.val/scale*100)):0;
+    return `<div class="arow">
+      <div class="al"><span class="nm">${ic} ${cls} · ${o.label||''}</span><span class="vv">${ygNum(o)}${o.est?'<span class="est"> ~</span>':''}</span></div>
+      <div class="bar ${k}"><span style="width:${w}%"></span></div>
+    </div>`;
+  }).join('');
+  return `<div class="mkcard">
+    <div class="mkhead">
+      <div class="mkname">${flag} ${name}</div>
+      <div class="gapbig"><div class="gv ${gm.cls}">${gtxt}</div><div class="gl ${gm.cls}">일드갭 · ${gm.lab}</div></div>
+    </div>
+    ${gm.hint?`<div class="gaphint ${gm.cls}">${gm.hint}</div>`:''}
+    ${rows}
+  </div>`;
+}
+function fmtGap(m){ const gm=gapMeta(m.gap); return m.gap==null?'—':(m.gap>0?'+':'')+m.gap.toFixed(2)+'%p('+gm.lab+')'; }
+function renderYieldGap(){
+  const d=YG; if(!d||!d.us||!d.kr) return;
+  let mx=0; ['us','kr'].forEach(mk=>['stock','safe','reit'].forEach(k=>{const v=d[mk][k]&&d[mk][k].val; if(v!=null&&v>mx)mx=v;}));
+  const scale=Math.max(10,Math.ceil(mx));
+  document.getElementById('yg-grid').innerHTML = marketCard('🇺🇸','미국',d.us,scale)+marketCard('🇰🇷','한국',d.kr,scale);
+  document.getElementById('yg-intro').innerHTML =
+    `<b>일드갭 = 주식 어닝일드(1/PER) − 국채 10년 금리.</b> 양(+)이면 주식이 채권보다 싸고(밸류 매력), 음(−)이면 비쌉니다(밸류 부담). `
+    + `현재 <b>🇺🇸 미국 ${fmtGap(d.us)}</b> · <b>🇰🇷 한국 ${fmtGap(d.kr)}</b>.`;
+  const lt=d.longterm||[];
+  if(lt.length){ document.getElementById('lt-body').innerHTML=lt.map(r=>`<tr><td class="l">${r.label}</td><td>~${r.us}%</td><td>~${r.kr}%</td></tr>`).join(''); document.getElementById('lt-card').style.display=''; }
+  const a=document.getElementById('asof'); if(a&&d._updated) a.textContent=kstUpd(d._updated,true)+' 기준';
+  const u=document.getElementById('upd'); if(u&&d._updated) u.textContent='● '+kstUpd(d._updated)+' 갱신';
+}
+async function loadYieldGap(){
+  let d=null;
+  try{ const r=await fetch('/api/yieldgap',{cache:'default'}); if(r.ok) d=await r.json(); }catch(e){}
+  if(!d||!d.us){ try{ const r=await fetch('data/yieldgap.json?t='+Date.now(),{cache:'no-store'}); if(r.ok) d=await r.json(); }catch(e){} }
+  if(d&&d.us&&d.kr){ YG=d; renderYieldGap(); }
+}
+/* 라이트/다크 (페이지 간 공유) */
+function setThemeClass(mode){var light=mode==='light';document.body.classList.toggle('light',light);var b=document.getElementById('themeToggle');if(b)b.textContent=light?'☀️ 라이트':'🌙 다크';}
+(function(){var t=document.getElementById('themeToggle');if(t)t.addEventListener('click',function(){var m=document.body.classList.contains('light')?'dark':'light';setThemeClass(m);try{localStorage.setItem('alphadesk.theme',m)}catch(e){}});setThemeClass(localStorage.getItem('alphadesk.theme')||'dark');})();
+fmtClock(); loadYieldGap();
+setInterval(fmtClock,1000); setInterval(loadYieldGap,1800000);
+</script>
+</body>
+</html>
