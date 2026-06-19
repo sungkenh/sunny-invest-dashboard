@@ -122,6 +122,7 @@
   .pie-bd .pl{display:flex;align-items:center;gap:7px;margin:3.5px 0;color:var(--muted);min-width:158px}
   .pie-bd .pl i{width:10px;height:10px;border-radius:3px;flex:0 0 auto}
   .pie-bd .pl b{margin-left:auto;color:var(--text);font-variant-numeric:tabular-nums;padding-left:12px;font-weight:700}
+  .pie-bd .ppick{color:var(--accent2);font-weight:600;font-size:11px;margin-left:4px}
   .tac-card{box-shadow:inset 3px 0 0 var(--accent)}
   .tac-sub{font-size:11.5px;color:var(--muted2);margin:-4px 0 11px}
   .tac-lead{font-size:13px;color:var(--muted);line-height:1.6;margin:0 0 13px}
@@ -260,7 +261,7 @@ function pcts(parts){ const r=parts.map(p=>Math.round(p)); const diff=100-r.redu
 const SAFE_BOND_RATIO=2/3;   /* 안전자산 내 채권:현금 ≈ 2:1 */
 const PIE_CASH='#aab0b8';
 /* 자산배분 도넛(파이) — 위험/실물/안전(채권+현금) 합 100% */
-function donut(title, rec, wR, wF, wS, blended){
+function donut(title, rec, wR, wF, wS, blended, picks){
   const wB=wS*SAFE_BOND_RATIO, wC=wS*(1-SAFE_BOND_RATIO);
   const a1=wR, a2=wR+wF, a3=wR+wF+wB;
   const grad=`conic-gradient(var(--accent) 0 ${a1}%, var(--gold) ${a1}% ${a2}%, var(--muted2) ${a2}% ${a3}%, ${PIE_CASH} ${a3}% 100%)`;
@@ -269,10 +270,10 @@ function donut(title, rec, wR, wF, wS, blended){
     <div class="pie-title">${title}${rec?'<span class="rec">추천</span>':''}</div>
     <div class="pie" style="background:${grad}"><div class="pie-hole"><span class="pie-c-val">${blended}%</span><span class="pie-c-lab">연 기대수익</span></div></div>
     <div class="pie-bd">
-      <div class="pl"><i style="background:var(--accent)"></i>위험자산 · 주식<b>${dp[0]}%</b></div>
-      <div class="pl"><i style="background:var(--gold)"></i>실물자산 · 리츠<b>${dp[1]}%</b></div>
-      <div class="pl"><i style="background:var(--muted2)"></i>안전자산 · 채권<b>${dp[2]}%</b></div>
-      <div class="pl"><i style="background:${PIE_CASH}"></i>안전자산 · 현금<b>${dp[3]}%</b></div>
+      <div class="pl"><i style="background:var(--accent)"></i>위험자산 · 주식<span class="ppick">${picks&&picks.risk?'('+picks.risk+')':''}</span><b>${dp[0]}%</b></div>
+      <div class="pl"><i style="background:var(--gold)"></i>실물자산 · 리츠<span class="ppick">${picks&&picks.real?'('+picks.real+')':''}</span><b>${dp[1]}%</b></div>
+      <div class="pl"><i style="background:var(--muted2)"></i>안전자산 · 채권<span class="ppick">${picks&&picks.safe?'('+picks.safe+')':''}</span><b>${dp[2]}%</b></div>
+      <div class="pl"><i style="background:${PIE_CASH}"></i>안전자산 · 현금<span class="ppick">(예금·MMF)</span><b>${dp[3]}%</b></div>
     </div>
   </div>`;
 }
@@ -285,6 +286,8 @@ function renderCharts(lt){
     if(r.us!=null) bench.push({name:m.us,val:r.us,cls:m.cls});
     if(r.kr!=null&&m.kr) bench.push({name:m.kr,val:r.kr,cls:m.cls}); });
   bench.sort((a,b)=>b.val-a.val);
+  const bestOf=cls=>{ const c=bench.find(b=>b.cls===cls); return c?c.name:''; };   // 자산군 내 수익률 1순위
+  const picks={ risk:bestOf('risk'), real:bestOf('real'), safe:bestOf('safe') };
   const s1=Math.ceil(Math.max.apply(null,bench.map(b=>b.val).concat(1))+1);
   document.getElementById('bench-chart').innerHTML=bench.map(b=>chRow(b.name,b.val,b.cls,s1)).join('');
   document.getElementById('lt-card').style.display='';
@@ -299,10 +302,10 @@ function renderCharts(lt){
   document.getElementById('alloc-intro').innerHTML=`전통적으로는 <b>위험 : 안전 : 실물 = 1 : 1 : 1</b> 균형 배분을 권합니다. 하지만 <b>장기 수익률만 보면</b> 위험자산(주식) <b>${r1(R)}%</b> &gt; 실물자산 <b>${r1(F)}%</b> &gt; 안전자산 <b>${r1(S)}%</b> 로 기대수익이 뚜렷이 다릅니다.`;
   document.getElementById('alloc-cmp').innerHTML=
     `<div class="pies">`
-    + donut('균형 1:1:1', false, 100/3, 100/3, 100/3, balanced.toFixed(1))
-    + donut('수익률 가중', true, wR*100, wF*100, wS*100, tilted.toFixed(1))
+    + donut('균형 1:1:1', false, 100/3, 100/3, 100/3, balanced.toFixed(1), picks)
+    + donut('수익률 가중', true, wR*100, wF*100, wS*100, tilted.toFixed(1), picks)
     + `</div>`
-    + `<div class="alloc-best">📌 수익률 극대화 관점 추천: <b>위험자산(주식) 비중 ↑</b> — 균형 1:1:1 대비 연 <b>+${r1(tilted-balanced)}%p</b> 더 기대(과거 평균 기준, 변동성 미반영). 안전자산은 <b>채권·현금(저축)</b>으로 나눠 보유합니다(채권:현금 ≈ 2:1 가정, 현금은 유동성·대기자금).</div>`;
+    + `<div class="alloc-best">📌 수익률 극대화 관점 추천: <b>위험자산(주식) 비중 ↑</b> — 균형 1:1:1 대비 연 <b>+${r1(tilted-balanced)}%p</b> 더 기대(과거 평균 기준, 변동성 미반영). 안전자산은 <b>채권·현금(저축)</b>으로 나눠 보유합니다(채권:현금 ≈ 2:1 가정, 현금은 유동성·대기자금). 괄호 안은 각 자산군 내 <b>장기 수익률 1순위</b> 선택지입니다.</div>`;
   document.getElementById('alloc-card').style.display='';
 }
 /* 이번 달 시점(전술) 코멘트 — 현재 일드갭 기반, 월 1회 자동 갱신. 추정 게이팅·기존 ±1%p·색상규약 계승 */

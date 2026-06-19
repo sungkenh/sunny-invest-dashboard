@@ -356,7 +356,7 @@ function feedHTML(mk){
     const dl=dayLabel(ds);
     const rows=byDay[ds].map(e=>e.type==='earnings'?earnHTML(e):econHTML(e)).join('');
     return `<div class="daygrp">
-      <div class="dayhd ${dl.today?'today':''}">${dl.lab} <span class="dow">${dl.md}(${dl.dow})</span><span class="n">${byDay[ds].length}건</span></div>
+      <div class="dayhd ${dl.today?'today':''}" data-d="${ds}">${dl.lab} <span class="dow">${dl.md}(${dl.dow})</span><span class="n">${byDay[ds].length}건</span></div>
       ${rows}</div>`;
   }).join('');
   return {n:list.length, html};
@@ -399,10 +399,31 @@ function highlights(){   // 지난주~이번주(±7일) 최상위 지표·대형
   }).join('');
 }
 
+let _scrolledToday=false;
+/* 첫 데이터 로드 후 한 번, 양쪽 피드를 오늘 날짜로 스크롤(기본 위치=오늘) */
+function scrollToToday(){
+  if(_scrolledToday) return;
+  const today=TODAY||'';
+  let done=false;
+  ['kr-feed','us-feed'].forEach(id=>{
+    const feed=document.getElementById(id); if(!feed) return;
+    let td=feed.querySelector('.dayhd.today');
+    if(!td && today){   // 오늘 일정이 없는 시장은 '오늘 이후 첫 날'로
+      const hds=feed.querySelectorAll('.dayhd[data-d]');
+      for(let i=0;i<hds.length;i++){ if(hds[i].dataset.d>=today){ td=hds[i]; break; } }
+    }
+    if(!td) return;
+    feed.scrollTop += td.getBoundingClientRect().top - feed.getBoundingClientRect().top;
+    done=true;
+  });
+  if(done) _scrolledToday=true;
+}
 function renderAll(){
   const kr=feedHTML('kr'), us=feedHTML('us');
-  document.getElementById('kr-feed').innerHTML=kr.html;
-  document.getElementById('us-feed').innerHTML=us.html;
+  const kf=document.getElementById('kr-feed'), uf=document.getElementById('us-feed');
+  const ksc=kf?kf.scrollTop:0, usc=uf?uf.scrollTop:0;   // 재렌더 시 스크롤 위치 보존(자동 갱신·필터 시 튐 방지)
+  kf.innerHTML=kr.html; uf.innerHTML=us.html;
+  kf.scrollTop=ksc; uf.scrollTop=usc;
   document.getElementById('kr-cnt').textContent=kr.n+'건';
   document.getElementById('us-cnt').textContent=us.n+'건';
   highlights();
@@ -455,6 +476,7 @@ async function loadCalendar(){
   EVENTS=events; TODAY=(snap&&snap.today)||(live&&live.today)||todayKST();
   document.getElementById('offline').style.display='none';
   renderAll();
+  scrollToToday();
   const fresh=(live&&live._updated)?live:base;
   const u=document.getElementById('upd'); if(u) u.textContent='● '+kstUpd(fresh._updated,true)+' 갱신';
 }
