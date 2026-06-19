@@ -122,6 +122,18 @@
   .pie-bd .pl{display:flex;align-items:center;gap:7px;margin:3.5px 0;color:var(--muted);min-width:158px}
   .pie-bd .pl i{width:10px;height:10px;border-radius:3px;flex:0 0 auto}
   .pie-bd .pl b{margin-left:auto;color:var(--text);font-variant-numeric:tabular-nums;padding-left:12px;font-weight:700}
+  .tac-card{box-shadow:inset 3px 0 0 var(--accent)}
+  .tac-sub{font-size:11.5px;color:var(--muted2);margin:-4px 0 11px}
+  .tac-lead{font-size:13px;color:var(--muted);line-height:1.6;margin:0 0 13px}
+  .tac-mk{margin:10px 0;padding:11px 13px;background:var(--panel2);border-radius:11px}
+  .tac-mk .tmh{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;margin-bottom:5px}
+  .tac-mk .tgap{font-variant-numeric:tabular-nums;font-weight:800}
+  .tac-mk .tlab{font-size:11px;font-weight:800;padding:1px 8px;border-radius:999px}
+  .tlab.pos{color:#fff;background:var(--up)} .tlab.neg{color:#fff;background:var(--down)} .tlab.flat{color:var(--text);background:var(--border)}
+  .tac-mk .ttone{font-size:12.5px;color:var(--text);line-height:1.5}
+  .tac-mk .tnote{font-size:11.5px;color:var(--muted);margin-top:6px;line-height:1.5}
+  .est-badge{font-size:10px;color:var(--gold);font-weight:700;border:1px solid var(--gold);border-radius:5px;padding:0 5px;margin-left:2px}
+  .tac-rel{margin:12px 0 2px;padding:11px 13px;border-radius:11px;background:var(--panel2);border-left:3px solid var(--gold);font-size:13px;color:var(--text);line-height:1.55}
 
   footer{padding:22px;color:var(--muted2);font-size:11px;line-height:1.65;border-top:1px solid var(--border);margin-top:24px;max-width:1060px;margin-left:auto;margin-right:auto}
   footer b{color:var(--accent2)}
@@ -175,6 +187,14 @@
     <div id="bucket-chart"></div>
     <div class="alloc-cmp" id="alloc-cmp"></div>
     <div class="lt-note">수익률만 본 단순 비교입니다 — <b style="color:var(--up)">변동성(손실 위험)은 반영하지 않았습니다</b>. 위험자산일수록 기대수익도 변동성도 큽니다. 분산투자를 기본으로, 본인의 투자기간·위험성향에 맞춰 조정하세요. 투자 권유가 아닙니다.</div>
+  </div>
+
+  <div class="lt-card tac-card" id="tactical-card" style="display:none">
+    <h3 id="tac-head">이번 달 시점 코멘트</h3>
+    <p class="tac-sub">장기 전략 배분과 별개 · 현재 일드갭 기준 · 월 1회 자동 갱신</p>
+    <p class="tac-lead">아래는 장기 배분과 별개로 <b>지금 시점의 밸류 위치</b>를 점검하는 전술적 참고입니다. 시장 방향을 맞히려는 것이 아닙니다.</p>
+    <div id="tac-body"></div>
+    <div class="lt-note" id="tac-caveat"></div>
   </div>
 </main>
 
@@ -285,6 +305,37 @@ function renderCharts(lt){
     + `<div class="alloc-best">📌 수익률 극대화 관점 추천: <b>위험자산(주식) 비중 ↑</b> — 균형 1:1:1 대비 연 <b>+${r1(tilted-balanced)}%p</b> 더 기대(과거 평균 기준, 변동성 미반영). 안전자산은 <b>채권·현금(저축)</b>으로 나눠 보유합니다(채권:현금 ≈ 2:1 가정, 현금은 유동성·대기자금).</div>`;
   document.getElementById('alloc-card').style.display='';
 }
+/* 이번 달 시점(전술) 코멘트 — 현재 일드갭 기반, 월 1회 자동 갱신. 추정 게이팅·기존 ±1%p·색상규약 계승 */
+function tacStance(g){
+  if(g==null) return {lab:'데이터 없음',cls:'flat',tone:''};
+  if(g>=1) return {lab:'밸류 우호',cls:'pos',tone:'채권 대비 싼 편이라 위험자산에 우호적인 환경입니다(변동성은 별개).'};
+  if(g<=-1) return {lab:'밸류 부담',cls:'neg',tone:'채권 대비 비싼 편이라 신규 진입은 분할 적립이 무난합니다.'};
+  return {lab:'균형',cls:'flat',tone:'주식·채권 기대수익이 비슷해 기존 비중 유지가 무난합니다.'};
+}
+function gapTxt(g){ return g==null?'—':(g>0?'+':'')+g.toFixed(2)+'%p'; }
+function renderTactical(d){
+  if(!document.getElementById('tactical-card')||!d.us||!d.kr) return;
+  const ym=String(d._updated||'').match(/^(\d{4})-(\d{2})/);
+  document.getElementById('tac-head').textContent='📅 이번 달'+(ym?' ('+ym[1]+'년 '+(+ym[2])+'월)':'')+' 시점 코멘트';
+  const us=d.us, kr=d.kr, uS=tacStance(us.gap), kS=tacStance(kr.gap);
+  let html=`<div class="tac-mk"><div class="tmh"><span>🇺🇸 미국</span><span class="tgap">${gapTxt(us.gap)}</span><span class="tlab ${uS.cls}">${uS.lab}</span></div><div class="ttone">${uS.tone}</div>`;
+  if(us.gapNdx!=null&&us.gapNdx<=-1) html+=`<div class="tnote">나스닥(${gapTxt(us.gapNdx)})은 밸류 부담이 더 큰 편 — 대형 기술주는 분할 접근을 함께 고려하세요.</div>`;
+  html+=`</div>`;
+  const krEst=kr.stock&&kr.stock.est;
+  html+=`<div class="tac-mk"><div class="tmh"><span>🇰🇷 한국</span><span class="tgap">${gapTxt(kr.gap)}</span><span class="tlab ${kS.cls}">${kS.lab}</span>${krEst?'<span class="est-badge">추정</span>':''}</div><div class="ttone">${kS.tone}</div>`;
+  if(krEst&&kr.gap!=null&&kr.gap>=1) html+=`<div class="tnote">단, KOSPI 어닝일드(${kr.stock.val}%)는 <b style="color:var(--gold)">추정치</b>라 실제 이익전망·환율·수급에 따라 격차가 좁혀질 수 있어 확정 저평가로 단정하지 않습니다.</div>`;
+  html+=`</div>`;
+  if(us.gap!=null&&kr.gap!=null){
+    const sp=kr.gap-us.gap, a=Math.abs(sp), win=sp>0?'한국':'미국', winEst=sp>0?(kr.stock&&kr.stock.est):(us.stock&&us.stock.est);
+    let body;
+    if(a<1) body=`한·미 밸류가 비슷합니다(차이 ${a.toFixed(1)}%p) — 지역보다 종목 단에서 성장성으로 선별하는 편이 낫습니다.`;
+    else { const st=a>=3?'뚜렷이':'소폭'; body=`한·미 일드갭 차이 ${(sp>0?'+':'')+sp.toFixed(1)}%p — 밸류 관점에선 <b>${win} 주식</b>이 ${st} 저평가 쪽입니다. 성장주 신규 자금은 ${win} 비중을 상대적으로 약간 높게 두는 것을 고려해볼 수 있습니다.`; if(winEst) body+=` 단, ${win} 수치는 추정 기반이라 해석에 여유를 두세요.`; }
+    html+=`<div class="tac-rel">↔ ${body}</div>`;
+  }
+  document.getElementById('tac-body').innerHTML=html;
+  document.getElementById('tac-caveat').innerHTML='일드갭은 밸류의 한 단면일 뿐 <b>변동성·손실위험·환율·실적 방향을 반영하지 않으며</b>, 단기 타이밍 지표가 아닙니다. <b style="color:var(--gold)">추정</b> 표시 시장은 더 보수적으로 해석하세요. 보유 자산 청산 신호가 아니며, 투자 권유가 아닙니다.';
+  document.getElementById('tactical-card').style.display='';
+}
 function renderYieldGap(){
   const d=YG; if(!d||!d.us||!d.kr) return;
   let mx=0; ['us','kr'].forEach(mk=>['stock','nasdaq','safe','reit'].forEach(k=>{const o=d[mk]&&d[mk][k]; const v=o&&o.val; if(v!=null&&v>mx)mx=v;}));
@@ -294,6 +345,7 @@ function renderYieldGap(){
     `<b>일드갭 = 주식 어닝일드(1/PER) − 국채 10년 금리.</b> 양(+)이면 주식이 채권보다 싸고(밸류 매력), 음(−)이면 비쌉니다(밸류 부담). `
     + `현재 <b>🇺🇸 미국 ${fmtGap(d.us)}</b> · <b>🇰🇷 한국 ${fmtGap(d.kr)}</b>.`;
   renderCharts(d.longterm||[]);
+  renderTactical(d);
   const ym=String(d._updated||'').match(/^(\d{4})-(\d{2})/);
   const a=document.getElementById('asof'); if(a&&ym) a.textContent=ym[1]+'년 '+(+ym[2])+'월 기준 · 월 1회 갱신';
   const u=document.getElementById('upd'); if(u&&ym) u.textContent='● '+ym[1]+'.'+ym[2]+' 기준';
