@@ -304,8 +304,14 @@ function match(n){
 }
 function sortFn(a,b){ return state.sort==='popular' ? b.pop-a.pop : a.min-b.min; }
 
+/* 구글뉴스 RSS 링크는 클릭 시 'Google 뉴스' 중간 페이지에 머물러 원문이 늦게 열림 →
+   /api/go 로 보내 실제 기사 URL로 즉시 302 리다이렉트. 이미 실제 URL이면 그대로 사용. */
+function articleHref(link){
+  if(!link) return '#';
+  return /news\.google\.com\/rss\/articles/.test(link) ? '/api/go?u='+encodeURIComponent(link) : link;
+}
 function itemHTML(n,i){
-  return `<a class="nitem ${n.breaking?'isbrk':''}" href="${n.link||'#'}" ${n.link?'target="_blank" rel="noopener"':'onclick="return false"'}>
+  return `<a class="nitem ${n.breaking?'isbrk':''}" href="${articleHref(n.link)}" ${n.link?'target="_blank" rel="noopener"':'onclick="return false"'}>
     <span class="rk mono">${i+1}</span>
     <span style="min-width:0">
       <div class="ti">${n.ti}</div>
@@ -325,7 +331,7 @@ function renderCols(){
 function renderHot(){
   const hot=SAMPLE_NEWS.filter(n=>n.hot&&match(n)).sort((a,b)=>a.min-b.min).slice(0,4);
   document.getElementById('hotrow').innerHTML = hot.map(n=>`
-    <a class="hotcard" href="${n.link||'#'}" ${n.link?'target="_blank" rel="noopener"':'onclick="return false"'} style="display:block">
+    <a class="hotcard" href="${articleHref(n.link)}" ${n.link?'target="_blank" rel="noopener"':'onclick="return false"'} style="display:block">
       <span class="badge">🔥 HOT</span> <span style="font-size:11px;color:var(--muted)">${n.mk==='kr'?'🇰🇷 한국':'🇺🇸 미국'} · ${n.cat}</span>
       <h4>${n.ti}</h4>
       ${n.sum?`<div class="sum">${n.sum}</div>`:''}
@@ -343,7 +349,7 @@ function renderBreakingStrip(){
   if(!f.length){ strip.style.display='none'; return; }
   strip.style.display='';
   strip.innerHTML='<div class="lab"><span class="dot"></span>🚨 속보</div><div class="items">'
-    + f.map(n=>`<a class="bi" href="${n.link||'#'}" ${n.link?'target="_blank" rel="noopener"':'onclick="return false"'} title="${(n.ti||'').replace(/"/g,'&quot;')}">${n.ti}<span class="tm">${n.tm}</span></a>`).join('')
+    + f.map(n=>`<a class="bi" href="${articleHref(n.link)}" ${n.link?'target="_blank" rel="noopener"':'onclick="return false"'} title="${(n.ti||'').replace(/"/g,'&quot;')}">${n.ti}<span class="tm">${n.tm}</span></a>`).join('')
     + '</div>';
 }
 function renderAll(){ renderBreakingStrip(); renderHot(); renderCols(); }

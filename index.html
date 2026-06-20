@@ -1352,6 +1352,11 @@ function renderDeep(){
 /* ---- 종목 최신 뉴스: /api/stocknews?q=종목명 (구글뉴스 RSS) · 없으면 로드된 뉴스에서 매칭 ---- */
 const STOCKNEWS={};   // base심볼 -> {ts, items}
 function baseSym(s){ return (s||'').replace(/\.(KS|KQ)$/,''); }
+/* 구글뉴스 RSS 링크는 클릭 시 중간 페이지에 머물러 → /api/go 로 실제 기사 즉시 리다이렉트. 그 외 링크는 그대로. */
+function articleHref(link){
+  if(!link) return '#';
+  return /news\.google\.com\/rss\/articles/.test(link) ? '/api/go?u='+encodeURIComponent(link) : link;
+}
 function renderStockNews(sym, row){
   const pane=document.getElementById('pane-news'); if(!pane) return;
   const base=baseSym(sym), c=STOCKNEWS[base], name=(row?row.name:sym)||sym;
@@ -1360,7 +1365,7 @@ function renderStockNews(sym, row){
   pane.dataset.key=key;
   if(c && c.items && c.items.length){
     pane.innerHTML=`<div class="snews">${c.items.slice(0,8).map((n,i)=>
-      `<a href="${n.link||'#'}" ${n.link?'target="_blank" rel="noopener"':'onclick="return false"'}>
+      `<a href="${articleHref(n.link)}" ${n.link?'target="_blank" rel="noopener"':'onclick="return false"'}>
         <span class="sn-rk mono">${i+1}</span>
         <span style="min-width:0"><span class="st">${n.ti}</span><div class="sm">${n.src||''}${n.tm?' · '+n.tm:''}</div></span>
       </a>`).join('')}</div>`;
@@ -1427,7 +1432,7 @@ function renderThemes(){
       ? t.picks.map(p=>`<b>${p.name}</b>${typeof p.pct==='number'?` <span class="${cls(p.pct)} mono">${sign(p.pct)}%</span>`:''}`).join('  ')
       : `<b>${t.picks||''}</b>`;
     const catHtml = (t.cat && typeof t.cat==='object')
-      ? `<a href="${t.cat.link||'#'}" ${t.cat.link?'target="_blank" rel="noopener"':'onclick="return false"'} style="color:inherit">📰 ${t.cat.ti}</a> <small style="color:var(--muted2)">${[t.cat.src,t.cat.tm].filter(Boolean).join(' · ')}</small>`
+      ? `<a href="${articleHref(t.cat.link)}" ${t.cat.link?'target="_blank" rel="noopener"':'onclick="return false"'} style="color:inherit">📰 ${t.cat.ti}</a> <small style="color:var(--muted2)">${[t.cat.src,t.cat.tm].filter(Boolean).join(' · ')}</small>`
       : (t.cat||'');
     return `<div class="theme">
       <div class="t-top"><span class="opinion ${t.op}">${t.opTxt}</span>
@@ -1445,7 +1450,7 @@ function renderNews(){
   const items = SAMPLE_NEWS.filter(n=> newsFilter==='all' || n.mk===newsFilter);
   const c=document.getElementById('news-count'); if(c) c.textContent = items.length+'건';
   document.getElementById('news').innerHTML = items.map((n,i)=>`
-    <a class="item" href="${n.link||'#'}" ${n.link?'target="_blank" rel="noopener"':'onclick="return false"'}>
+    <a class="item" href="${articleHref(n.link)}" ${n.link?'target="_blank" rel="noopener"':'onclick="return false"'}>
       <span class="rk mono">${i+1}</span>
       <span><span class="ti">${n.ti}</span>
         <span class="meta">${n.hot?'<span class="hot">HOT</span>':''}<span class="flag">${n.mk==='kr'?'🇰🇷':'🇺🇸'}</span><span class="ctag">${n.cat}</span>${n.src} · ${n.tm}</span></span>
