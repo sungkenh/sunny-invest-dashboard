@@ -2,12 +2,28 @@
 """구글뉴스 RSS → data/news.json  (한국/미국, 카테고리별 실시간 헤드라인)
    실행: py fetch_news.py
 """
-import json, os, datetime, urllib.request, urllib.parse, html
+import json, os, re, datetime, urllib.request, urllib.parse, html
 import xml.etree.ElementTree as ET
 from email.utils import parsedate_to_datetime
 
+# 속보 마커: [속보] <속보> 속보: [긴급] [1보] BREAKING JUST IN URGENT 등 (제목 기준)
+BRK_RE = re.compile(r'\[?\s*(속보|긴급|\d{1,2}\s*보)\s*[\]\)>:.]|^\s*속보|BREAKING|JUST IN|URGENT|DEVELOPING|LIVE:', re.I)
+# 속보 전용 쿼리 기사 → 제목으로 실제 카테고리 분류
+def classify(t):
+    if re.search(r'전쟁|이란|이스라엘|우크라|러시아|미사일|휴전|호르무즈|중동|북한|하마스|헤즈볼라', t): return '전쟁·지정학'
+    if re.search(r'반도체|삼성전자|하이닉스|HBM|D램|낸드|파운드리|마이크론|TSMC|엔비디아|필라델피아', t): return '반도체'
+    if re.search(r'코스피|코스닥|증시|외국인|순매수', t): return '국내증시'
+    if re.search(r'금리|연준|FOMC|환율|국채|물가|인플레|수출물가', t): return '매크로'
+    if re.search(r'유가|원유|WTI|기름값|정유', t): return '원자재'
+    if re.search(r'비트코인|코인|가상자산|이더리움', t): return '코인'
+    return '속보'
+
 # (mk, cat, query) — 섹터별 수집 → 카테고리 칩은 당일 기사 수 기준 동적 표시. news.js 와 동일.
+# 전쟁·지정학·속보를 맨 앞에 둬 분류·중복제거에서 우선권을 갖게 함.
 QUERIES = [
+    ('kr', '전쟁·지정학', '이스라엘 이란 OR 우크라이나 전쟁 OR 중동 정세 OR 휴전 OR 호르무즈 OR 북한 미사일'),
+    ('us', '전쟁·지정학', 'Israel Iran OR Ukraine Russia war OR Middle East conflict OR ceasefire OR Hormuz'),
+    ('kr', '속보',       '속보 코스피 OR 속보 금리 OR 속보 환율 OR 속보 유가 OR 속보 전쟁 OR 속보 이란 OR 속보 반도체'),
     ('kr', '반도체',    '삼성전자 OR SK하이닉스 OR HBM 반도체'),
     ('kr', 'AI',        'AI 반도체 OR 생성형 AI OR 네이버 카카오 AI'),
     ('kr', '2차전지',   '2차전지 OR 에코프로 OR LG에너지솔루션'),
@@ -78,6 +94,8 @@ items, seen = [], set()
 for mk, cat, q in QUERIES:
     try:
         for n in fetch(mk, cat, q):
+            if cat == '속보':                 # 속보 전용 쿼리 → 제목으로 실제 카테고리 재분류
+                n['cat'] = classify(n['ti'])
             k = n['ti'][:28]
             if k in seen:
                 continue
@@ -95,9 +113,14 @@ for n in items:
             n['ti_en'] = en
             n['sum'] = en
 
+# 속보 플래그(제목 마커 기준) — 미국 기사는 원문(ti_en)도 함께 검사
+for n in items:
+    n['breaking'] = bool(BRK_RE.search((n.get('ti') or '') + ' ' + (n.get('ti_en') or '')))
+
 items.sort(key=lambda x: x['min'])
 for i, n in enumerate(items):       # 최신 6건은 HOT
     n['hot'] = i < 6
+brk = sum(1 for x in items if x.get('breaking'))
 
 data = {'_updated': datetime.datetime.now(datetime.timezone.utc).isoformat(timespec='seconds'),
         'count': len(items), 'items': items}
@@ -105,5 +128,6 @@ here = os.path.dirname(os.path.abspath(__file__))
 os.makedirs(os.path.join(here, 'data'), exist_ok=True)
 with open(os.path.join(here, 'data', 'news.json'), 'w', encoding='utf-8') as f:
     json.dump(data, f, ensure_ascii=False, indent=1)
-print('news.json 저장: %d건 (KR %d / US %d)' % (
-    len(items), sum(x['mk'] == 'kr' for x in items), sum(x['mk'] == 'us' for x in items)))
+print('news.json 저장: %d건 (KR %d / US %d · 속보 %d · 전쟁 %d)' % (
+    len(items), sum(x['mk'] == 'kr' for x in items), sum(x['mk'] == 'us' for x in items),
+    brk, sum(x.get('cat') == '전쟁·지정학' for x in items)))

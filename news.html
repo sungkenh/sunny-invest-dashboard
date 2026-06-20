@@ -103,6 +103,27 @@
   .src{color:var(--muted)}
   .empty{padding:30px;text-align:center;color:var(--muted2);font-size:13px}
 
+  /* 🚨 속보 */
+  .brk-toggle{cursor:pointer;border:1px solid var(--up);background:rgba(246,70,93,.12);color:var(--up);padding:5px 12px;border-radius:999px;font-size:12px;font-weight:800;display:inline-flex;align-items:center;flex:none}
+  .brk-toggle:hover{filter:brightness(1.1)}
+  .brk-toggle.on{background:var(--up);color:#fff}
+  .brk-toggle .cn{margin-left:5px;font-size:10px;background:rgba(255,255,255,.18);border-radius:8px;padding:0 5px;min-width:15px;text-align:center}
+  .chip.war{border-color:var(--up);color:var(--up)}
+  .chip.war .cn{color:var(--up)}
+  .chip.war.on{background:var(--up);border-color:var(--up);color:#fff}
+  .chip.war.on .cn{color:#fff;background:rgba(255,255,255,.22)}
+  .brk{color:#fff;background:var(--up);font-weight:800;border-radius:4px;padding:0 5px;font-size:10px;letter-spacing:.2px}
+  .nitem.isbrk{box-shadow:inset 3px 0 0 var(--up)}
+  .brk-strip{display:flex;align-items:center;gap:12px;border:1px solid var(--up);background:rgba(246,70,93,.08);border-radius:12px;padding:10px 14px;margin-bottom:18px}
+  .brk-strip .lab{flex:none;font-size:12.5px;font-weight:900;color:var(--up);display:flex;align-items:center;gap:7px}
+  .brk-strip .lab .dot{width:8px;height:8px;border-radius:50%;background:var(--up);box-shadow:0 0 0 3px rgba(246,70,93,.22);animation:brkpulse 1.4s infinite}
+  @keyframes brkpulse{0%,100%{opacity:1}50%{opacity:.3}}
+  .brk-strip .items{display:flex;gap:8px;overflow-x:auto;flex:1;scrollbar-width:none}
+  .brk-strip .items::-webkit-scrollbar{display:none}
+  .brk-strip .bi{flex:none;font-size:12.5px;font-weight:600;color:var(--text);border:1px solid var(--border);background:var(--panel);border-radius:999px;padding:5px 12px;max-width:360px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .brk-strip .bi:hover{border-color:var(--up)}
+  .brk-strip .bi .tm{color:var(--muted2);font-size:10.5px;margin-left:5px}
+
   footer{padding:22px;color:var(--muted2);font-size:11px;line-height:1.6;border-top:1px solid var(--border);margin-top:24px}
   footer b{color:var(--accent2)}
 
@@ -130,6 +151,7 @@
 <section class="filterbar">
   <div class="fb-row">
     <span class="fb-tag">분야</span>
+    <span class="brk-toggle" id="brk-toggle" title="속보만 모아보기">🚨 속보<span class="cn" id="brk-cn">0</span></span>
     <div class="chips" id="cat-chips"></div>
     <div class="search">
       <div class="seg" id="sort-seg">
@@ -146,6 +168,8 @@
 </section>
 
 <main>
+  <section class="brk-strip" id="brk-strip" style="display:none"></section>
+
   <div class="sectit">🔥 HOT 헤드라인 <span class="rank-note">추천 기준: 출처 신뢰도 × 발행 속도(시간당 조회·언급) × 관심종목 관련도</span></div>
   <section class="hotrow" id="hotrow"></section>
 
@@ -171,6 +195,10 @@
    각 항목 필드: mk(kr|us) cat src tm min(분전) pop(인기점수) sum hot
    ============================================================ */
 let SAMPLE_NEWS = [
+  // 🚨 속보·전쟁(예시) — 실데이터(news.json) 로드 전 폴백
+  {mk:'kr',cat:'전쟁·지정학',src:'연합뉴스',tm:'7분 전',min:7,pop:99,hot:true,breaking:true,ti:'[속보] 이란, 이스라엘 본토에 탄도미사일 발사… 호르무즈 긴장 고조',sum:'중동 지정학 리스크 재부각. 국제유가 급등 우려로 정유·방산주 단기 변동성 확대 전망.'},
+  {mk:'kr',cat:'국내증시',src:'한국경제',tm:'14분 전',min:14,pop:96,hot:true,breaking:true,ti:'[속보] 코스피, 美반도체 랠리에 장중 사상 첫 9300선 돌파',sum:'필라델피아 반도체지수 급등에 삼성전자·SK하이닉스 강세. 외국인·개인 동반 매수세.'},
+  {mk:'us',cat:'전쟁·지정학',src:'Reuters',tm:'20분 전',min:20,pop:94,breaking:true,ti:'[속보] 미·이란 종전 합의 서명식 돌연 연기… 백악관 "물류 미해결"',ti_en:'BREAKING: US-Iran ceasefire signing postponed, White House cites logistics',sum:'합의 불확실성 부각. 유가·안전자산 변동성 확대 가능성.'},
   // 🇰🇷 한국
   {mk:'kr',cat:'반도체',src:'전자신문',tm:'38분 전',min:38,pop:95,hot:true,ti:'SK하이닉스 HBM4 샘플 출하 임박… 엔비디아 퀄 통과 관측',sum:'차세대 고대역폭 메모리 HBM4 샘플을 주요 고객사에 공급하며 연내 양산 채비. 엔비디아 차세대 가속기 탑재 여부가 관전 포인트.'},
   {mk:'kr',cat:'반도체',src:'서울경제',tm:'45분 전',min:45,pop:90,hot:true,ti:'삼성전자, HBM3E 엔비디아 공급 승인 임박 관측',sum:'엔비디아 품질 인증 막바지 단계라는 관측이 잇따르며 메모리 사업 반등 기대. 파운드리 가동률 회복도 동반.'},
@@ -217,18 +245,22 @@ function kstUpd(iso, withDate){
   return (withDate?g('month')+'-'+g('day')+' ':'')+g('hour')+':'+g('minute');
 }
 
-let state={cat:'전체', q:'', sort:'latest'};
+let state={cat:'전체', q:'', sort:'latest', breaking:false};
 
-/* 섹터 칩 — 당일 수집된 기사 수 기준 동적 정렬·건수 표시·빈 섹터 자동 숨김(고정 목록 아님) */
+/* 섹터 칩 — 당일 수집된 기사 수 기준 동적 정렬·건수 표시·빈 섹터 자동 숨김(고정 목록 아님).
+   전쟁·지정학은 중요도가 높아 '전체' 다음에 고정 노출(붉은 강조). */
 function categoryCounts(){
   const m={};
   SAMPLE_NEWS.forEach(n=>{ if(n.cat) m[n.cat]=(m[n.cat]||0)+1; });
   const arr=Object.entries(m).map(([c,n])=>({c,n})).sort((a,b)=>b.n-a.n || a.c.localeCompare(b.c,'ko'));
-  return [{c:'전체', n:SAMPLE_NEWS.length}, ...arr];
+  const war=arr.filter(x=>x.c==='전쟁·지정학'), rest=arr.filter(x=>x.c!=='전쟁·지정학');
+  return [{c:'전체', n:SAMPLE_NEWS.length}, ...war, ...rest];
 }
 function renderChips(){
-  document.getElementById('cat-chips').innerHTML = categoryCounts().map(({c,n})=>
-    `<span class="chip ${c===state.cat?'on':''}" data-c="${c}">${c}<span class="cn">${n}</span></span>`).join('');
+  document.getElementById('cat-chips').innerHTML = categoryCounts().map(({c,n})=>{
+    const war=c==='전쟁·지정학';
+    return `<span class="chip ${c===state.cat?'on':''} ${war?'war':''}" data-c="${c}">${war?'🔴 ':''}${c}<span class="cn">${n}</span></span>`;
+  }).join('');
   document.querySelectorAll('#cat-chips .chip').forEach(ch=>ch.addEventListener('click',()=>{
     state.cat=ch.dataset.c; renderChips(); renderAll();
   }));
@@ -243,7 +275,8 @@ const KW_DICT=['엔비디아','HBM','SK하이닉스','삼성전자','TSMC','마�
  '팔란티어','오픈AI','챗GPT','방산','한화에어로스페이스','LIG넥스원','수주',
  '원전','SMR','두산에너빌리티','전력','조선','HD현대','한화오션','삼성중공업',
  '바이오','셀트리온','삼성바이오','신약','비만치료제','일라이릴리',
- '코스피','코스닥','외국인','순매수','실적','어닝','트럼프','현대차','기아','네이버','카카오','크래프톤'];
+ '코스피','코스닥','외국인','순매수','실적','어닝','트럼프','현대차','기아','네이버','카카오','크래프톤',
+ '전쟁','이란','이스라엘','우크라이나','러시아','중동','호르무즈','휴전','유가','지정학','북한'];
 function trendingKeywords(){
   return KW_DICT.map(kw=>{
     const low=kw.toLowerCase(); let n=0;
@@ -264,6 +297,7 @@ function renderTrending(){
   }));
 }
 function match(n){
+  if(state.breaking && !n.breaking) return false;
   if(state.cat!=='전체' && n.cat!==state.cat) return false;
   if(state.q){ const q=state.q.toLowerCase(); if(!(n.ti.toLowerCase().includes(q)||n.sum.toLowerCase().includes(q)||n.cat.toLowerCase().includes(q))) return false; }
   return true;
@@ -271,12 +305,12 @@ function match(n){
 function sortFn(a,b){ return state.sort==='popular' ? b.pop-a.pop : a.min-b.min; }
 
 function itemHTML(n,i){
-  return `<a class="nitem" href="${n.link||'#'}" ${n.link?'target="_blank" rel="noopener"':'onclick="return false"'}>
+  return `<a class="nitem ${n.breaking?'isbrk':''}" href="${n.link||'#'}" ${n.link?'target="_blank" rel="noopener"':'onclick="return false"'}>
     <span class="rk mono">${i+1}</span>
     <span style="min-width:0">
       <div class="ti">${n.ti}</div>
       ${n.sum?`<div class="sum">${n.sum}</div>`:''}
-      <div class="meta">${n.hot?'<span class="hot">HOT</span>':''}<span class="ctag">${n.cat}</span><span class="src">${n.src} · ${n.tm}</span></div>
+      <div class="meta">${n.breaking?'<span class="brk">속보</span>':''}${n.hot?'<span class="hot">HOT</span>':''}<span class="ctag">${n.cat}</span><span class="src">${n.src} · ${n.tm}</span></div>
     </span>
   </a>`;
 }
@@ -298,18 +332,38 @@ function renderHot(){
       <div class="meta"><span class="src">${n.src} · ${n.tm}</span></div>
     </a>`).join('') || '<div class="empty" style="grid-column:1/-1">HOT 뉴스 없음</div>';
 }
-function renderAll(){ renderHot(); renderCols(); }
+/* 🚨 속보 띠 — 분야/검색 필터는 따르되 속보토글과 무관하게 최신 속보를 상단에 노출 */
+function renderBreakingStrip(){
+  const strip=document.getElementById('brk-strip'); if(!strip) return;
+  const cn=document.getElementById('brk-cn'); if(cn) cn.textContent=SAMPLE_NEWS.filter(n=>n.breaking).length;
+  const f=SAMPLE_NEWS.filter(n=>{ if(!n.breaking) return false;
+    if(state.cat!=='전체'&&n.cat!==state.cat) return false;
+    if(state.q){const q=state.q.toLowerCase(); if(!((n.ti||'').toLowerCase().includes(q)||(n.sum||'').toLowerCase().includes(q))) return false;}
+    return true; }).sort((a,b)=>a.min-b.min).slice(0,10);
+  if(!f.length){ strip.style.display='none'; return; }
+  strip.style.display='';
+  strip.innerHTML='<div class="lab"><span class="dot"></span>🚨 속보</div><div class="items">'
+    + f.map(n=>`<a class="bi" href="${n.link||'#'}" ${n.link?'target="_blank" rel="noopener"':'onclick="return false"'} title="${(n.ti||'').replace(/"/g,'&quot;')}">${n.ti}<span class="tm">${n.tm}</span></a>`).join('')
+    + '</div>';
+}
+function renderAll(){ renderBreakingStrip(); renderHot(); renderCols(); }
 
 document.querySelectorAll('#sort-seg button').forEach(b=>b.addEventListener('click',()=>{
   document.querySelectorAll('#sort-seg button').forEach(x=>x.classList.remove('on'));
   b.classList.add('on'); state.sort=b.dataset.s; renderAll();
 }));
 document.getElementById('q').addEventListener('input',e=>{ state.q=e.target.value.trim(); renderTrending(); renderAll(); });
+document.getElementById('brk-toggle').addEventListener('click',()=>{
+  state.breaking=!state.breaking;
+  document.getElementById('brk-toggle').classList.toggle('on',state.breaking);
+  renderAll();
+});
 
 document.getElementById('disc').innerHTML =
   '✅ <b>실시간</b> · 구글뉴스 RSS에서 헤드라인·출처·링크를 수집해 한국/미국·섹터별로 정리합니다(본문 복제 안 함, 클릭 시 원문으로 이동). ' +
   '<b>분야 칩</b>은 고정 목록이 아니라 <b>당일 수집된 기사 수 기준으로 정렬·표시</b>되며(기사 없는 섹터는 숨김, 옆 숫자=건수), ' +
   '<b>🔥 오늘의 키워드</b>는 그날 기사 제목에 자주 등장한 종목·테마를 자동 추출해 보여줍니다(클릭 시 해당 키워드로 필터). ' +
+  '<b>🚨 속보</b>는 제목의 [속보]·긴급·BREAKING 표시를 자동 감지해 상단 띠와 토글로 따로 모아 보여주고, <b>🔴 전쟁·지정학</b> 분야를 상시 노출합니다. ' +
   '약 3분마다 갱신. 정보 제공 목적이며 투자 권유가 아닙니다. HOT은 발행 최신순으로 선별합니다.';
 
 /* /api/news(서버리스) + 트럼프 Truth Social(/api/trump, 한국어 번역) 병합 */

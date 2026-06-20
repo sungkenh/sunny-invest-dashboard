@@ -3,7 +3,11 @@
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36';
 
 // (mk, cat, query) — fetch_news.py와 동일. 섹터별로 수집 → 카테고리 칩은 당일 기사 수 기준 동적 표시.
+// 전쟁·지정학·속보를 맨 앞에 둬 분류·중복제거 우선권을 가짐.
 const QUERIES = [
+  ['kr', '전쟁·지정학', '이스라엘 이란 OR 우크라이나 전쟁 OR 중동 정세 OR 휴전 OR 호르무즈 OR 북한 미사일'],
+  ['us', '전쟁·지정학', 'Israel Iran OR Ukraine Russia war OR Middle East conflict OR ceasefire OR Hormuz'],
+  ['kr', '속보', '속보 코스피 OR 속보 금리 OR 속보 환율 OR 속보 유가 OR 속보 전쟁 OR 속보 이란 OR 속보 반도체'],
   ['kr', '반도체', '삼성전자 OR SK하이닉스 OR HBM 반도체'],
   ['kr', 'AI', 'AI 반도체 OR 생성형 AI OR 네이버 카카오 AI'],
   ['kr', '2차전지', '2차전지 OR 에코프로 OR LG에너지솔루션'],
@@ -26,6 +30,19 @@ const QUERIES = [
 const PER_QUERY = 7;
 let CACHE = { ts: 0, data: null };
 const TTL = 10 * 60 * 1000;
+
+// 속보 마커: [속보] <속보> 속보: [긴급] [1보] BREAKING JUST IN URGENT 등 (제목 기준)
+const BRK_RE = /\[?\s*(속보|긴급|\d{1,2}\s*보)\s*[\]\)>:.]|^\s*속보|BREAKING|JUST IN|URGENT|DEVELOPING|LIVE:/i;
+// 속보 전용 쿼리 기사 → 제목으로 실제 카테고리 분류
+function classify(t) {
+  if (/전쟁|이란|이스라엘|우크라|러시아|미사일|휴전|호르무즈|중동|북한|하마스|헤즈볼라/.test(t)) return '전쟁·지정학';
+  if (/반도체|삼성전자|하이닉스|HBM|D램|낸드|파운드리|마이크론|TSMC|엔비디아|필라델피아/.test(t)) return '반도체';
+  if (/코스피|코스닥|증시|외국인|순매수/.test(t)) return '국내증시';
+  if (/금리|연준|FOMC|환율|국채|물가|인플레|수출물가/.test(t)) return '매크로';
+  if (/유가|원유|WTI|기름값|정유/.test(t)) return '원자재';
+  if (/비트코인|코인|가상자산|이더리움/.test(t)) return '코인';
+  return '속보';
+}
 
 function decode(s) {
   return (s || '')
@@ -95,6 +112,7 @@ async function __cfHandler(event) {
   const lists = await runPool(QUERIES.map(([mk, cat, q]) => () => fetchQuery(mk, cat, q)), 6);
   const items = [], seen = new Set();
   for (const list of lists) for (const n of list) {
+    if (n.cat === '속보') n.cat = classify(n.ti);   // 속보 전용 쿼리 → 실제 카테고리 재분류
     const k = n.ti.slice(0, 28);
     if (seen.has(k)) continue;
     seen.add(k); items.push(n);
@@ -104,6 +122,8 @@ async function __cfHandler(event) {
     const en = n.ti, ko = await translate(en);
     if (ko && ko !== en) { n.ti = ko; n.ti_en = en; n.sum = en; }
   }));
+  // 속보 플래그(제목 마커) — 미국 기사는 원문(ti_en)도 검사
+  items.forEach((n) => { n.breaking = BRK_RE.test((n.ti || '') + ' ' + (n.ti_en || '')); });
   items.sort((a, b) => a.min - b.min);
   items.forEach((n, i) => { n.hot = i < 6; });
 
