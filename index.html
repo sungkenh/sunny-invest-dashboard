@@ -303,6 +303,18 @@
   .ov-box{background:var(--panel2);border:1px solid var(--border);border-left:3px solid var(--accent);
     border-radius:10px;padding:11px 13px;margin-bottom:12px;font-size:0.8438rem;line-height:1.65;color:#cdd8e8}
   .ov-box b{color:var(--text);font-weight:800;margin-right:6px}
+  /* 동종 비교 테이블(PER·PBR·PSR) */
+  .cmp-wrap{margin-top:14px}
+  .cmp-title{font-size:0.8125rem;font-weight:800;color:var(--muted);margin-bottom:7px}
+  .cmp{width:100%;border-collapse:collapse;font-size:0.8125rem}
+  .cmp th{text-align:right;color:var(--muted2);font-weight:600;font-size:0.6875rem;padding:5px 8px;border-bottom:1px solid var(--border);white-space:nowrap}
+  .cmp th.l{text-align:left}
+  .cmp td{text-align:right;padding:7px 8px;border-bottom:1px solid #141d31;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .cmp td.l{text-align:left;color:var(--text)}
+  .cmp tr.self{background:rgba(18,104,255,.10)}
+  .cmp tr.self td.l b{color:var(--accent2)}
+  .cmp-note{font-size:0.6562rem;color:var(--muted2);margin-top:8px;line-height:1.5}
+  body.light .cmp tr.self{background:rgba(0,82,255,.07)}
 
   /* 밸류체인 */
   .chain{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
@@ -580,14 +592,12 @@
         <div class="tab on" data-t="m">개요 · 투자지표</div>
         <div class="tab" data-t="c">기업 생태계</div>
         <div class="tab" data-t="r">연관 종목</div>
-        <div class="tab" data-t="rep">전문가 리포트</div>
         <div class="tab" data-t="news">최신 뉴스</div>
         <div class="tab" data-t="report">증권사 리포트</div>
       </div>
       <div class="tabpane on" id="pane-m"></div>
       <div class="tabpane" id="pane-c"></div>
       <div class="tabpane" id="pane-r"></div>
-      <div class="tabpane" id="pane-rep"></div>
       <div class="tabpane" id="pane-news"></div>
       <div class="tabpane" id="pane-report"></div>
     </div>
@@ -1438,6 +1448,18 @@ function setupRelStrLazy(){
   if('IntersectionObserver' in window){ const io=new IntersectionObserver(es=>{ if(es.some(e=>e.isIntersecting)){ io.disconnect(); go(); } },{rootMargin:'250px'}); io.observe(card); setTimeout(go,7000); }
   else setTimeout(go,1500);
 }
+/* 동종 비교 테이블(PER·PBR·PSR) — d.peers[0]=본종목, 나머지=연관종목. 값 없으면 '–' */
+function cmpFmt(v){ if(v==null||isNaN(v)) return '–'; return v>=100?Math.round(v).toLocaleString('en-US'):(+v).toFixed(v>=10?1:2); }
+function cmpTableHtml(d){
+  const ps=Array.isArray(d.peers)?d.peers.filter(p=>p&&(p.name||p.sym)):[];
+  if(ps.length<2) return '';   // 본종목 + 비교대상 1개 이상일 때만
+  const rows=ps.map(p=>{ const nm=memoEsc(p.name||p.sym);
+    return `<tr class="${p.self?'self':''}"><td class="l">${p.self?'<b>'+nm+'</b>':nm}</td><td class="mono">${cmpFmt(p.per)}</td><td class="mono">${cmpFmt(p.pbr)}</td><td class="mono">${cmpFmt(p.psr)}</td></tr>`;
+  }).join('');
+  return `<div class="cmp-wrap"><div class="cmp-title">동종 비교 · PER · PBR · PSR</div>
+    <table class="cmp"><thead><tr><th class="l">종목</th><th>PER</th><th>PBR</th><th>PSR</th></tr></thead><tbody>${rows}</tbody></table>
+    <div class="cmp-note">PER 주가수익 · PBR 주가순자산 · PSR 주가매출 — 낮을수록 저평가(업종 따라 상이) · 데이터: 야후 · 한국 종목 일부 미제공(–)</div></div>`;
+}
 function renderDeep(){
   const row = WL.find(x=>x.sym===SEL);
   const d = deepFor(SEL,row);
@@ -1460,7 +1482,7 @@ function renderDeep(){
   document.getElementById('pane-m').innerHTML = ov + `<div class="metrics">${
     d.metrics.map(m=>`<div class="metric"><div class="k">${m.k}</div><div class="v mono">${m.v}</div>
       <div class="x">${m.x||''}</div>${m.bar?`<div class="vbar"><i style="width:${m.bar}%"></i></div>`:''}</div>`).join('')
-  }</div>`;
+  }</div>` + cmpTableHtml(d);
 
   // 밸류체인
   document.getElementById('pane-c').innerHTML = d.chain.length ? `<div class="chain">${
@@ -1476,25 +1498,6 @@ function renderDeep(){
     <div class="rel-grp"><h5>${g}</h5>${
       d.rel[g].map(t=>`<span class="reltag" onclick="searchAndAdd('${t[0]}')">${t[0]}${t[1]?` · ${t[1]}`:''} <span class="add">＋</span></span>`).join('')
     }</div>`).join('') : '<p style="color:var(--muted)">연관 종목 데이터 생성 대기.</p>';
-
-  // 전문가 리포트
-  const r=d.rep;
-  document.getElementById('pane-rep').innerHTML = `<div class="report">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-      <span class="opinion ${r.op}">${r.opTxt}</span>
-      <span style="font-size:0.7188rem;color:var(--muted)">${r.desk||'리서치 데스크'}${(r.asof||d.asof)?' · 업데이트 '+(r.asof||d.asof):''}</span>
-    </div>
-    <p><b>투자 논거</b><br>${r.thesis}</p>
-    <div class="blk">
-      <div><h5 class="up">▲ 강세 요인</h5><ul>${r.bull.map(x=>`<li>${x}</li>`).join('')}</ul></div>
-      <div><h5 class="down">▼ 약세 요인</h5><ul>${r.bear.map(x=>`<li>${x}</li>`).join('')}</ul></div>
-    </div>
-    <div class="blk">
-      <div><h5 style="color:var(--gold)">예정 촉매(Catalyst)</h5><ul>${r.cat.map(x=>`<li>${x}</li>`).join('')}</ul></div>
-      <div><h5 style="color:var(--accent)">리스크 관리</h5><p style="margin:6px 0">${r.risk}</p></div>
-    </div>
-    <div class="src">생성: <b>리서치 데스크 큐레이션</b> + 실시간 펀더멘털(야후) · 정보 제공용이며 투자 권유가 아닙니다.</div>
-  </div>`;
 
   // 최신 뉴스(종목명 기준 구글뉴스)
   renderStockNews(SEL, row);

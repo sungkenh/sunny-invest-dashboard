@@ -118,6 +118,7 @@ function num(x, suf = '', mul = 1, dec = 1) { if (x == null || isNaN(x)) return 
 function rangePos(p, lo, hi) { if (p == null || lo == null || hi == null || hi <= lo) return null; return Math.max(0, Math.min(100, Math.round((p - lo) / (hi - lo) * 100))); }
 function perNote(p) { if (p == null) return ''; if (p < 0) return '적자(N/A)'; if (p < 12) return '저평가 구간'; if (p < 25) return '시장 평균권'; if (p < 45) return '성장 프리미엄'; return '고평가 구간'; }
 function pbrNote(p) { if (p == null) return ''; if (p < 1) return '순자산 이하'; if (p < 2) return '낮은 편'; if (p < 5) return '보통'; return '높은 편'; }
+function psrNote(p) { if (p == null) return '주가매출비율'; if (p < 1) return '매출 대비 저평가'; if (p < 4) return '보통'; if (p < 10) return '높은 편'; return '고성장 프리미엄'; }
 
 async function translate(text) {
   if (!text) return '';
@@ -220,6 +221,7 @@ async function __cfHandler(event) {
   if (per == null && raw(ks.forwardPE) != null) { per = raw(ks.forwardPE); perFwd = true; }
   let pbr = raw(ks.priceToBook) || raw(sd.priceToBook);
   if (pbr == null) { const bv = raw(ks.bookValue); if (bv && px) pbr = px / bv; }
+  const psr = raw(sd.priceToSalesTrailing12Months);                     // 주가매출비율(PSR)
   let eps = raw(ks.trailingEps), epsFwd = false;                          // 주당순이익(EPS)
   if (eps == null && raw(ks.forwardEps) != null) { eps = raw(ks.forwardEps); epsFwd = true; }
   if (eps == null && per && px) eps = px / per;                           // 폴백: 주가 ÷ PER
@@ -242,6 +244,7 @@ async function __cfHandler(event) {
     { k: perFwd ? 'PER (Fwd)' : 'PER (TTM)', v: num(per, '', 1, 1), x: perNote(per) },
     { k: epsFwd ? 'EPS (Fwd)' : 'EPS (TTM)', v: eps != null ? fmtPx(eps, kr) : '-', x: '주당순이익' },
     { k: 'PBR', v: num(pbr, '', 1, 2), x: pbrNote(pbr) },
+    { k: 'PSR', v: num(psr, '', 1, 2), x: psrNote(psr) },
     { k: 'ROE', v: num(roe, '%', 100), x: '자기자본이익률' },
     { k: '매출성장(YoY)', v: num(rg, '%', 100), x: '연간 매출 증가율' },
     { k: '영업이익률', v: num(opm, '%', 100), x: '수익성' },
@@ -263,6 +266,22 @@ async function __cfHandler(event) {
 
   // 연관종목(추천 유사종목) — 위에서 병렬로 시작한 결과 수거(밸류체인·연관종목 공용)
   const recs = await recsP;
+
+  // 동종 비교(PER·PBR·PSR) — 연관종목 상위 4개의 지표를 병렬 quoteSummary로 수집
+  const peerSyms = (recs || []).map((r) => r[0]).filter((s) => s && s.toUpperCase() !== sym.toUpperCase()).slice(0, 4);
+  const peerRows = (await Promise.all(peerSyms.map(async (ps) => {
+    try {
+      const pq = await quoteSummary(ps, cr);
+      if (!pq) return null;
+      const psd = pq.summaryDetail || {}, pks = pq.defaultKeyStatistics || {}, ppr = pq.price || {};
+      let pper = raw(psd.trailingPE); if (pper == null) pper = raw(pks.forwardPE);
+      let ppbr = raw(pks.priceToBook) || raw(psd.priceToBook);
+      if (ppbr == null) { const bv = raw(pks.bookValue), p2 = raw(ppr.regularMarketPrice); if (bv && p2) ppbr = p2 / bv; }
+      const ppsr = raw(psd.priceToSalesTrailing12Months);
+      return { sym: ps, name: ppr.shortName || ppr.longName || baseSym(ps), per: pper, pbr: ppbr, psr: ppsr };
+    } catch (e) { return null; }
+  }))).filter(Boolean);
+  const peers = [{ sym, name, per, pbr, psr, self: true }].concat(peerRows);
 
   // 밸류체인 — 산업별 구체 노드 + 실제 동종/경쟁 종목 주입
   const chain = buildChain(sector, industry, name, recs);
@@ -293,7 +312,7 @@ async function __cfHandler(event) {
   const data = {
     name, mk: kr ? 'KR' : 'US', sym,
     px: px || 0, pct, asof: ASOF, curated: false,
-    overview, metrics, chain, rel, rep,
+    overview, metrics, chain, rel, rep, peers,
   };
   DCACHE[ck] = { ts: Date.now(), data };
   return resp(data);
