@@ -376,12 +376,19 @@ document.getElementById('disc').innerHTML =
 /* /api/news(서버리스) + 트럼프 Truth Social(/api/trump, 한국어 번역) 병합 */
 let TRUMP_ITEMS=[];
 function mergeTrump(){ SAMPLE_NEWS=SAMPLE_NEWS.filter(n=>n.cat!=='트럼프').concat(TRUMP_ITEMS); renderChips(); renderTrending(); renderAll(); }
+/* 직전 뉴스 스캔을 브라우저에 보관(대시보드와 키 공유) → 라이브·스냅샷 모두 실패 시 최신본 유지 */
+const NEWS_LS='alphadesk.newscache';
+function newsCacheRead(){ try{ return JSON.parse(localStorage.getItem(NEWS_LS)||'null'); }catch(e){ return null; } }
+function newsCacheWrite(items){ try{ localStorage.setItem(NEWS_LS, JSON.stringify({_updated:new Date().toISOString().slice(0,19), items})); }catch(e){} }
+function seedNewsFromCache(){ const c=newsCacheRead(); if(c && Array.isArray(c.items) && c.items.length){ SAMPLE_NEWS=c.items; } }
 async function loadNews(){
   let d=null;
   try{ const r=await fetch('/api/news',{cache:'default'}); if(r.ok) d=await r.json(); }catch(e){}
   // 라이브가 없거나 0건이면 스냅샷 사용 — 스냅샷 기사는 link가 있어 클릭이 동작함
   if(!d || !d.items || !d.items.length){ try{ const r=await fetch('data/news.json?t='+Date.now(),{cache:'no-store'}); if(r.ok) d=await r.json(); }catch(e){} }
+  if(!(d && d.items && d.items.length)) d=newsCacheRead();   // 마지막 안전망: 보관한 직전 스캔
   if(d && d.items && d.items.length){
+    newsCacheWrite(d.items.filter(n=>n.cat!=='트럼프'));     // 뉴스 스캔만 보관(트럼프는 /api/trump 별도)
     SAMPLE_NEWS=d.items; mergeTrump();
     const u=document.getElementById('upd'); if(u) u.textContent='● '+kstUpd(d._updated)+' 갱신';
   }
@@ -402,7 +409,7 @@ async function loadTrump(){
 
 function setThemeClass(mode){var light=mode==='light';document.body.classList.toggle('light',light);var b=document.getElementById('themeToggle');if(b)b.textContent=light?'☀️ 라이트':'🌙 다크';}
 (function(){var t=document.getElementById('themeToggle');if(t)t.addEventListener('click',function(){var m=document.body.classList.contains('light')?'dark':'light';setThemeClass(m);try{localStorage.setItem('alphadesk.theme',m)}catch(e){}});setThemeClass(localStorage.getItem('alphadesk.theme')||'dark');})();
-renderChips(); renderTrending(); renderAll(); fmtClock(); loadNews(); loadTrump();
+seedNewsFromCache(); renderChips(); renderTrending(); renderAll(); fmtClock(); loadNews(); loadTrump();
 setInterval(fmtClock,1000); setInterval(loadNews,180000); setInterval(loadTrump,300000);
 </script>
 </body>

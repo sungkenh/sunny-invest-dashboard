@@ -58,6 +58,26 @@ const PER_QUERY = 7;
 let CACHE = { ts: 0, data: null };
 const TTL = 10 * 60 * 1000;
 
+// ── last-good 보관(엣지 Cache API) ──
+// 모듈 캐시는 아이솔레이트 재활용 시 사라짐 → 직전 '양호한 스캔'을 Cache API에 보관해,
+// 새 스캔이 빈약(0건/번역실패)할 때 6시간 스냅샷 대신 '직전 최신본'을 유지한다.
+const MIN_GOOD = 20;                       // 이 미만이면 빈약한 스캔으로 간주
+function lgKey(event) {
+  let origin = 'https://sunny-invest-dashboard.pages.dev';
+  try { origin = new URL(event.rawUrl).origin; } catch (e) {}
+  return origin + '/__news_lastgood';      // 실경로 아님 — Cache API 키로만 사용
+}
+async function readLastGood(event) {
+  try { const r = await caches.default.match(new Request(lgKey(event))); if (r) return await r.json(); } catch (e) {}
+  return null;
+}
+async function writeLastGood(event, data) {
+  try {
+    await caches.default.put(new Request(lgKey(event)),
+      new Response(JSON.stringify(data), { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=86400' } }));
+  } catch (e) {}
+}
+
 // 속보 마커: [속보] <속보> 속보: [긴급] [1보] BREAKING JUST IN URGENT 등 (제목 기준)
 const BRK_RE = /\[?\s*(속보|긴급|\d{1,2}\s*보)\s*[\]\)>:.]|^\s*속보|BREAKING|JUST IN|URGENT|DEVELOPING|LIVE:/i;
 // 속보 전용 쿼리 기사 → 제목으로 실제 카테고리 분류
@@ -230,10 +250,17 @@ async function __cfHandler(event) {
   items.forEach((n, i) => { n.hot = i < 6; });
 
   const data = { _updated: new Date().toISOString().slice(0, 19), count: items.length, items };
-  // 0건이거나 번역 실패분이 있으면 10분 캐시하지 않음 → 60초 뒤 만료(다음 방문 재시도)
-  const shortCache = items.length === 0 || trFailed > 0;
-  CACHE = { ts: shortCache ? Date.now() - (TTL - 60000) : Date.now(), data };
-  return ok(data, shortCache);
+  // 충분히 많고(≥MIN_GOOD) 번역도 다 성공 → '양호한 스캔': last-good 으로 보관 + 10분 캐시
+  if (items.length >= MIN_GOOD && trFailed === 0) {
+    await writeLastGood(event, data);
+    CACHE = { ts: Date.now(), data };
+    return ok(data, false);
+  }
+  // 빈약/부분실패 스캔 → 보관해 둔 직전 양호본(last-good)이 더 풍부하면 그 최신본을 유지
+  const lg = await readLastGood(event);
+  const serve = (lg && (lg.items ? lg.items.length : 0) >= items.length) ? lg : data;
+  CACHE = { ts: Date.now() - (TTL - 60000), data: serve };   // 짧게 캐시(다음 방문 재시도)
+  return ok(serve, true);
 };
 
 function ok(obj, empty) {
