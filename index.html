@@ -407,6 +407,25 @@
     .card.fill{flex:1 1 0;min-height:0;display:flex;flex-direction:column}
     .card.fill > .scroll{flex:1;min-height:0;max-height:none}
   }
+  /* ===== 메모 · 체크리스트 ===== */
+  .memo-body{padding:10px 14px 12px}
+  .memo-add{display:flex;gap:6px;margin-bottom:8px}
+  .memo-add input{flex:1;min-width:0;background:#0a1120;border:1px solid var(--border);color:var(--text);padding:7px 9px;border-radius:8px;font-size:0.75rem;font-family:inherit}
+  .memo-add input:focus{outline:none;border-color:var(--accent)}
+  .memo-add button{flex:none;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:0 13px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit}
+  .memo-add button:hover{background:var(--accent2)}
+  .memo-list{list-style:none;margin:0 0 9px;padding:0;display:flex;flex-direction:column;gap:1px;max-height:220px;overflow:auto}
+  .memo-li{display:flex;align-items:flex-start;gap:8px;padding:6px 3px;border-bottom:1px solid #141d31}
+  .memo-li:last-child{border-bottom:none}
+  .memo-ck{flex:none;width:15px;height:15px;margin-top:2px;cursor:pointer;accent-color:var(--accent)}
+  .memo-tx{flex:1;font-size:0.8125rem;line-height:1.45;word-break:break-word;cursor:pointer}
+  .memo-li.done .memo-tx{text-decoration:line-through;color:var(--muted2)}
+  .memo-del{flex:none;color:var(--muted2);font-size:0.8125rem;cursor:pointer;background:none;border:none;padding:0 3px;line-height:1.4;font-family:inherit}
+  .memo-del:hover{color:var(--up)}
+  .memo-empty{color:var(--muted2);font-size:0.72rem;padding:6px 2px}
+  .memo-note{display:block;width:100%;min-height:62px;resize:vertical;background:#0a1120;border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 9px;font-size:0.78rem;font-family:inherit;line-height:1.5}
+  .memo-note:focus{outline:none;border-color:var(--accent)}
+  body.light .memo-add input,body.light .memo-note{background:#fff}
   /* ===== 페이지 전환 부드럽게 — Cross-Document View Transitions(지원 브라우저). 미지원 시 일반 이동으로 무해 폴백 ===== */
   @view-transition{ navigation:auto; }
   ::view-transition-old(root){ animation:vt-out .14s ease both; }
@@ -477,6 +496,18 @@
         <div class="fng-track"><div class="fng-marker" id="fng-marker" style="left:50%"></div></div>
         <div class="fng-scale"><span>극공포 0</span><span>50</span><span>100 극탐욕</span></div>
         <div class="fng-hist" id="fng-hist"></div>
+      </div>
+    </div>
+
+    <div class="card memo-card">
+      <div class="head"><h3>📝 메모 · 체크리스트</h3><span class="tag" id="memo-status">자동 저장</span></div>
+      <div class="memo-body">
+        <div class="memo-add">
+          <input id="memo-input" placeholder="체크할 항목 추가 — 예: FOMC 6/18 결과 확인" autocomplete="off" />
+          <button id="memo-addbtn" type="button">추가</button>
+        </div>
+        <ul class="memo-list" id="memo-list"></ul>
+        <textarea id="memo-note" class="memo-note" placeholder="자유 메모… (자동 저장)"></textarea>
       </div>
     </div>
 
@@ -1847,13 +1878,41 @@ function setupHeatmapLazy(){
     io.observe(card); setTimeout(go,5000);   // 안전망
   } else setTimeout(go,1500);
 }
+/* 메모 · 체크리스트 — 브라우저(localStorage)에 자동 저장. 새로고침·재방문해도 유지(이 브라우저 한정). */
+const MEMO_LS='alphadesk.memo';
+let MEMO={items:[], note:''};
+function memoEsc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function memoLoad(){ try{ const o=JSON.parse(localStorage.getItem(MEMO_LS)||'null'); if(o&&typeof o==='object'){ MEMO={items:Array.isArray(o.items)?o.items:[], note:typeof o.note==='string'?o.note:''}; } }catch(e){} }
+function memoSave(){ try{ localStorage.setItem(MEMO_LS, JSON.stringify(MEMO)); }catch(e){}
+  const s=document.getElementById('memo-status'); if(s){ s.textContent='저장됨'; clearTimeout(memoSave._t); memoSave._t=setTimeout(()=>{ s.textContent='자동 저장'; },1200); } }
+function memoRender(){
+  const list=document.getElementById('memo-list'); if(!list) return;
+  list.innerHTML = MEMO.items.length
+    ? MEMO.items.map((it,i)=>`<li class="memo-li${it.done?' done':''}" data-i="${i}"><input type="checkbox" class="memo-ck" ${it.done?'checked':''}><span class="memo-tx">${memoEsc(it.text)}</span><button class="memo-del" type="button" title="삭제" aria-label="삭제">✕</button></li>`).join('')
+    : '<li class="memo-empty">체크할 항목을 추가하세요</li>';
+  const note=document.getElementById('memo-note'); if(note && note.value!==MEMO.note) note.value=MEMO.note;
+}
+function memoAdd(text){ text=(text||'').trim(); if(!text) return; MEMO.items.push({text:text.slice(0,200), done:false}); memoSave(); memoRender(); }
+function memoInit(){
+  memoLoad(); memoRender();
+  const input=document.getElementById('memo-input'), add=document.getElementById('memo-addbtn'), list=document.getElementById('memo-list'), note=document.getElementById('memo-note');
+  if(add) add.addEventListener('click',()=>{ memoAdd(input.value); input.value=''; input.focus(); });
+  if(input) input.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); memoAdd(input.value); input.value=''; } });
+  if(list) list.addEventListener('click',e=>{
+    const li=e.target.closest('.memo-li'); if(!li) return; const i=+li.dataset.i; if(!MEMO.items[i]&&MEMO.items[i]!==0) return;
+    if(e.target.classList.contains('memo-del')){ MEMO.items.splice(i,1); memoSave(); memoRender(); }
+    else if(e.target.classList.contains('memo-ck')||e.target.classList.contains('memo-tx')){ MEMO.items[i].done=!MEMO.items[i].done; memoSave(); memoRender(); }
+  });
+  if(note) note.addEventListener('input',()=>{ MEMO.note=note.value; clearTimeout(memoInit._nt); memoInit._nt=setTimeout(memoSave,400); });
+}
+
 /* 초기화 — ① 동기 렌더(샘플/캐시) 즉시 ② 임계 데이터 먼저 ③ 무거운·비임계는 유휴/뷰포트 진입 시 */
 const idleLoad=(fn,n=1)=>{ if(window.requestIdleCallback) requestIdleCallback(fn,{timeout:600*n+800}); else setTimeout(fn,250*n); };
 seedDeepFromCache();                                                            // 저장된 심층분석을 즉시 시드(재방문 빠른 로딩)
 if(!seedNewsFromCache()) SAMPLE_NEWS=[];                                        // 보관본 즉시 시드, 없으면 가짜 예시 대신 '불러오는 중'
 seedMarketFromCache();                                                          // 데모값 대신 직전 시세 즉시 시드(과거값 깜빡임 방지)
 seedCalFromCache();                                                             // 빈 일정 대신 직전 일정 즉시 시드
-renderStrip(); renderWL(); renderSched(); renderDeep(); renderThemes(); renderNews(); renderVideos(); renderTrump(); bindNewsTabs(); renderFooter(); tick();
+renderStrip(); renderWL(); renderSched(); renderDeep(); renderThemes(); renderNews(); renderVideos(); renderTrump(); bindNewsTabs(); renderFooter(); tick(); memoInit();
 renderHmDataset();
 loadWatchlistBaseline();                                                       // 저장본 없으면 data/watchlist.json 시드
 loadMarket(); loadWatch(); loadBTC(); loadDeep();                              // 임계(상단 시세·관심종목·심층)
