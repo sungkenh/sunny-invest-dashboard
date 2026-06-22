@@ -1055,6 +1055,7 @@ async function loadCalendar(){
     });
   }
   CAL_EVENTS=events; CAL_TODAY=(snap&&snap.today)||(live&&live.today)||calToday(); renderSched();
+  lsWrite(CAL_LS, {events:events, today:CAL_TODAY});   // 직전 일정 보관(다음 진입 즉시 시드)
 }
 /* ---- 테마별 전문가 데스크 — /api/themes (없으면 data/themes.json, 둘 다 없으면 큐레이션 폴백) ---- */
 async function loadThemes(){
@@ -1576,6 +1577,27 @@ async function fetchLive(api, file){
   try{ const r=await fetch(file+'?t='+Date.now(),{cache:'no-store'}); if(r.ok) return await r.json(); }catch(e){}
   return null;
 }
+/* ── 캐시 우선 시드 + 신선도 가드 ──
+   ① 페이지 진입 시 직전 데이터를 즉시 표시(데모값·빈 화면·로딩 깜빡임 제거 → 빠른 체감)
+   ② 새 결과의 _updated 가 직전보다 과거면 적용 거부(라이브 일시실패→옛 스냅샷 폴백으로 값이 과거로 점프하는 것 방지) */
+function lsRead(k){ try{ return JSON.parse(localStorage.getItem(k)||'null'); }catch(e){ return null; } }
+function lsWrite(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+const LAST_FRESH={};
+function freshGate(key, updated){
+  const d=parseUTC(updated); if(!d) return true;                 // 시간정보 없으면 통과
+  const t=d.getTime();
+  if(LAST_FRESH[key]!=null && t < LAST_FRESH[key]) return false; // 직전보다 과거 → 거부
+  LAST_FRESH[key]=t; return true;
+}
+const MKT_LS='alphadesk.marketcache', CAL_LS='alphadesk.calcache';
+function seedMarketFromCache(){                  // 데모값 대신 직전 시세를 즉시 표시
+  const c=lsRead(MKT_LS); if(!c||!c.q) return;
+  SAMPLE_INDEX.forEach(d=>{ const q=c.q[d.key]; if(q){ if(d.key!=='btc'){ d.val=q.val; d.chg=q.chg; d.pct=q.pct; } if(Array.isArray(q.sp)&&q.sp.length>1) d.sp=q.sp; } });
+  if(c._updated) marketTime=c._updated;
+}
+function seedCalFromCache(){                      // 빈 일정 대신 직전 일정을 즉시 표시
+  const c=lsRead(CAL_LS); if(c && Array.isArray(c.events) && c.events.length){ CAL_EVENTS=c.events; CAL_TODAY=calToday(); }
+}
 /* ---- 거의 실시간 시세: /api/market(CNBC·네이버 실시간) → data/market.json(yfinance 스냅샷 폴백) ----
    가격·등락은 실시간 소스, 스파크라인은 스냅샷(장중 5분봉)으로 시드한 뒤 실시간 틱을 누적. */
 let marketTime='';
@@ -1617,7 +1639,8 @@ async function loadMarket(){
   await seedSpark();
   const m = await fetchLive('/api/market','data/market.json');
   if(!m){ updateLiveBadge(0); return; }
-  let n=0;
+  if(!freshGate('market', m._updated)) return;     // 더 오래된 데이터면 무시(시세·배지 과거 회귀 방지)
+  let n=0; const cacheQ={};
   SAMPLE_INDEX.forEach(d=>{
     const q=m[d.key];
     if(q && typeof q.price==='number'){
@@ -1626,12 +1649,14 @@ async function loadMarket(){
       else if(d.key!=='btc') pushSpark(d, q.price);                  // 실시간(CNBC/네이버): 틱 누적
       n++;
     }
+    cacheQ[d.key]={val:d.val,chg:d.chg,pct:d.pct,sp:(d.sp||[]).slice(-48)};   // 다음 진입 즉시 시드용 보관
   });
   marketTime=m._updated||'';                       // 원본 ISO(UTC) 보존 → 배지에서 KST로 변환
   renderStrip();
   const fx=document.getElementById('fx');
   if(m.usdkrw && typeof m.usdkrw.price==='number') fx.textContent=m.usdkrw.price.toLocaleString('ko-KR',{minimumFractionDigits:1,maximumFractionDigits:1});
   updateLiveBadge(n);
+  if(n>0) lsWrite(MKT_LS, {_updated:marketTime, q:cacheQ});   // 직전 시세 보관
 }
 // 수집 시각 표시: _updated(UTC ISO)를 KST로 변환 + 상대 시간('N초 전')
 function parseUTC(iso){
@@ -1812,6 +1837,8 @@ function setupHeatmapLazy(){
 const idleLoad=(fn,n=1)=>{ if(window.requestIdleCallback) requestIdleCallback(fn,{timeout:600*n+800}); else setTimeout(fn,250*n); };
 seedDeepFromCache();                                                            // 저장된 심층분석을 즉시 시드(재방문 빠른 로딩)
 seedNewsFromCache();                                                            // 보관한 직전 뉴스 스캔을 즉시 시드(빈 화면·샘플 방지)
+seedMarketFromCache();                                                          // 데모값 대신 직전 시세 즉시 시드(과거값 깜빡임 방지)
+seedCalFromCache();                                                             // 빈 일정 대신 직전 일정 즉시 시드
 renderStrip(); renderWL(); renderSched(); renderDeep(); renderThemes(); renderNews(); renderVideos(); renderTrump(); bindNewsTabs(); renderFooter(); tick();
 renderHmDataset();
 loadWatchlistBaseline();                                                       // 저장본 없으면 data/watchlist.json 시드

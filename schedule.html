@@ -456,6 +456,11 @@ function evKey(e){
     ? 'e|'+e.mk+'|'+e.date+'|'+(e.ticker||e.title)
     : 'c|'+e.mk+'|'+e.date+'|'+(e.time||'')+'|'+e.title;
 }
+/* 직전 일정을 브라우저에 보관(대시보드와 키 공유) → 페이지 진입 시 즉시 표시(빈 화면·예시 깜빡임 방지) */
+const CAL_LS='alphadesk.calcache';
+function lsRead(k){ try{ return JSON.parse(localStorage.getItem(k)||'null'); }catch(e){ return null; } }
+function lsWrite(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+function seedCalFromCache(){ const c=lsRead(CAL_LS); if(c && Array.isArray(c.events) && c.events.length){ EVENTS=c.events; TODAY=todayKST(); } }
 async function loadCalendar(){
   let live=null, snap=null;
   try{ const r=await fetch('/api/calendar',{cache:'default'}); if(r.ok) live=await r.json(); }catch(e){}
@@ -475,6 +480,7 @@ async function loadCalendar(){
     });
   }
   EVENTS=events; TODAY=(snap&&snap.today)||(live&&live.today)||todayKST();
+  lsWrite(CAL_LS, {events:events, today:TODAY});   // 직전 일정 보관(다음 진입 즉시 시드)
   document.getElementById('offline').style.display='none';
   renderAll();
   scrollToToday();
@@ -484,7 +490,7 @@ async function loadCalendar(){
 
 function setThemeClass(mode){var light=mode==='light';document.body.classList.toggle('light',light);var b=document.getElementById('themeToggle');if(b)b.textContent=light?'☀️ 라이트':'🌙 다크';}
 (function(){var t=document.getElementById('themeToggle');if(t)t.addEventListener('click',function(){var m=document.body.classList.contains('light')?'dark':'light';setThemeClass(m);try{localStorage.setItem('alphadesk.theme',m)}catch(e){}});setThemeClass(localStorage.getItem('alphadesk.theme')||'dark');})();
-TODAY=todayKST();
+TODAY=todayKST(); seedCalFromCache();   // 직전 일정을 즉시 시드(첫 화면 빈/예시 방지)
 renderAll(); fmtClock(); loadCalendar();
 setInterval(fmtClock,1000); setInterval(loadCalendar,300000);
 </script>
