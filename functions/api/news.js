@@ -38,6 +38,22 @@ const US_TICKERS = {
   '금리': '^TNX,^TYX,TLT',
   '매크로': '^GSPC,^IXIC,^DJI',
 };
+// 한국 뉴스: 네이버 검색 API(originallink=직접 기사 URL). 카테고리 → 집중 키워드(공백=AND).
+const KR_NAVER = {
+  '전쟁·지정학': '이스라엘 이란',
+  '속보': '속보 증시',
+  '반도체': '반도체 삼성전자',
+  'AI': 'AI 반도체',
+  '2차전지': '2차전지 배터리',
+  '방산': '방산 수출',
+  '원전·전력': '원전 전력',
+  '조선': '조선업 수주',
+  '자동차': '현대차 자동차',
+  '바이오': '제약 바이오',
+  '코인': '비트코인 가상자산',
+  '국내증시': '코스피 증시',
+  '매크로': '기준금리 환율',
+};
 const PER_QUERY = 7;
 let CACHE = { ts: 0, data: null };
 const TTL = 10 * 60 * 1000;
@@ -132,6 +148,29 @@ async function fetchYahoo(cat, syms) {
   for (let i = 0; i < 3; i++) { try { return await fetchYahooOnce(cat, syms); } catch (e) { await sleep(250 * (i + 1)); } }
   return [];
 }
+// 한국 — 네이버 뉴스 검색 API(originallink=직접 기사 URL). 키는 CF 환경변수(context.env).
+async function fetchNaverOnce(cat, query, id, secret) {
+  const url = 'https://openapi.naver.com/v1/search/news.json?query=' + encodeURIComponent(query) + '&display=8&sort=date';
+  const r = await fetch(url, { headers: { 'X-Naver-Client-Id': id, 'X-Naver-Client-Secret': secret, 'User-Agent': UA } });
+  if (!r.ok) throw new Error('naver ' + r.status);
+  const d = await r.json();
+  const now = Date.now();
+  return (d.items || []).slice(0, PER_QUERY).map((it) => {
+    const title = decode((it.title || '').replace(/<[^>]+>/g, ''));
+    const link = it.originallink || it.link || '';
+    if (!title || !/^https?:\/\//.test(link)) return null;
+    const src = (link.match(/^https?:\/\/(?:www\.)?([^\/]+)/) || [, ''])[1];
+    let mins = 999;
+    const t = Date.parse(it.pubDate);
+    if (!isNaN(t)) mins = Math.max(0, Math.floor((now - t) / 60000));
+    return { mk: 'kr', cat, src, ti: title, link, min: mins, tm: reltime(mins), sum: '', pop: Math.max(1, 100000 - mins) };
+  }).filter(Boolean);
+}
+// 네이버 2회 재시도(429 백오프). 끝내 실패면 [] (해당 카테고리만 비고 나머지는 살림)
+async function fetchNaver(cat, query, id, secret) {
+  for (let i = 0; i < 3; i++) { try { return await fetchNaverOnce(cat, query, id, secret); } catch (e) { await sleep(300 * (i + 1)); } }
+  return [];
+}
 // 동시 실행 수 제한 풀 — 18개를 한꺼번에 안 때리고 limit개씩(구글 레이트리밋·차단 회피)
 async function runPool(thunks, limit) {
   const out = new Array(thunks.length);
@@ -144,8 +183,13 @@ async function runPool(thunks, limit) {
 async function __cfHandler(event) {
   if (CACHE.data && Date.now() - CACHE.ts < TTL) return ok(CACHE.data);
 
-  const lists = await runPool(QUERIES.map(([mk, cat, q]) =>
-    (mk === 'us' && US_TICKERS[cat]) ? (() => fetchYahoo(cat, US_TICKERS[cat])) : (() => fetchQuery(mk, cat, q))), 6);
+  const NID = (event && event.env && event.env.NAVER_ID) || '';
+  const NSEC = (event && event.env && event.env.NAVER_SECRET) || '';
+  const lists = await runPool(QUERIES.map(([mk, cat, q]) => {
+    if (mk === 'us' && US_TICKERS[cat]) return () => fetchYahoo(cat, US_TICKERS[cat]);
+    if (mk === 'kr' && NID && NSEC && KR_NAVER[cat]) return () => fetchNaver(cat, KR_NAVER[cat], NID, NSEC);
+    return () => fetchQuery(mk, cat, q);
+  }), 6);
   const items = [], seen = new Set();
   for (const list of lists) for (const n of list) {
     if (n.cat === '속보') n.cat = classify(n.ti);   // 속보 전용 쿼리 → 실제 카테고리 재분류
@@ -188,7 +232,7 @@ function ok(obj, empty) {
 // ── Cloudflare Pages Function 어댑터 (자동 변환) ──
 export async function onRequest(context) {
   const url = new URL(context.request.url);
-  const event = { queryStringParameters: Object.fromEntries(url.searchParams), rawUrl: context.request.url };
+  const event = { queryStringParameters: Object.fromEntries(url.searchParams), rawUrl: context.request.url, env: context.env };
   if (context.request.method === 'OPTIONS') {
     return new Response('', { status: 204, headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': '*', 'Access-Control-Allow-Methods': 'GET,OPTIONS' } });
   }

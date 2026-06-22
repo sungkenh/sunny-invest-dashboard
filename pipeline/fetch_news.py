@@ -54,6 +54,36 @@ US_TICKERS = {
     '금리': '^TNX,^TYX,TLT',
     '매크로': '^GSPC,^IXIC,^DJI',
 }
+# 한국 뉴스: 네이버 검색 API(originallink=직접 기사 URL). 카테고리 → 집중 키워드(공백=AND).
+KR_NAVER = {
+    '전쟁·지정학': '이스라엘 이란',
+    '속보': '속보 증시',
+    '반도체': '반도체 삼성전자',
+    'AI': 'AI 반도체',
+    '2차전지': '2차전지 배터리',
+    '방산': '방산 수출',
+    '원전·전력': '원전 전력',
+    '조선': '조선업 수주',
+    '자동차': '현대차 자동차',
+    '바이오': '제약 바이오',
+    '코인': '비트코인 가상자산',
+    '국내증시': '코스피 증시',
+    '매크로': '기준금리 환율',
+}
+
+
+def naver_keys():
+    cid = os.environ.get('NAVER_ID') or os.environ.get('NAVER_CLIENT_ID')
+    csec = os.environ.get('NAVER_SECRET') or os.environ.get('NAVER_CLIENT_SECRET')
+    if cid and csec:
+        return cid, csec
+    try:   # 로컬 폴백: 투자/api_key.json (repo 바깥 — 깃에 안 올라감)
+        p = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'api_key.json')
+        with open(p, encoding='utf-8') as f:
+            d = json.load(f)
+        return d.get('naver_client_id'), d.get('naver_client_secret')
+    except Exception:
+        return None, None
 
 
 def reltime(mins):
@@ -158,10 +188,40 @@ def fetch_yahoo(cat, syms):
     return out
 
 
+def fetch_naver(cat, query, cid, csec):
+    """한국 — 네이버 뉴스 검색 API(originallink=직접 기사 URL)."""
+    url = 'https://openapi.naver.com/v1/search/news.json?query=%s&display=8&sort=date' % urllib.parse.quote(query)
+    req = urllib.request.Request(url, headers={'X-Naver-Client-Id': cid, 'X-Naver-Client-Secret': csec, 'User-Agent': 'Mozilla/5.0'})
+    d = json.loads(urllib.request.urlopen(req, timeout=15).read())
+    now = datetime.datetime.now(datetime.timezone.utc)
+    out = []
+    for it in (d.get('items') or [])[:8]:
+        title = html.unescape(re.sub(r'<[^>]+>', '', it.get('title', ''))).strip()
+        link = it.get('originallink') or it.get('link') or ''
+        if not title or not link.startswith('http'):
+            continue
+        m = re.match(r'https?://(?:www\.)?([^/]+)', link)
+        src = m.group(1) if m else ''
+        try:
+            mins = max(0, int((now - parsedate_to_datetime(it.get('pubDate'))).total_seconds() // 60))
+        except Exception:
+            mins = 999
+        out.append({'mk': 'kr', 'cat': cat, 'src': src, 'ti': title, 'link': link,
+                    'min': mins, 'tm': reltime(mins), 'sum': '', 'pop': max(1, 100000 - mins)})
+    return out
+
+
+NAVER_ID, NAVER_SECRET = naver_keys()
+print('네이버 키:', '있음' if NAVER_ID else '없음(구글 폴백)')
 items, seen = [], set()
 for mk, cat, q in QUERIES:
     try:
-        rows = fetch_yahoo(cat, US_TICKERS[cat]) if (mk == 'us' and cat in US_TICKERS) else fetch(mk, cat, q)
+        if mk == 'us' and cat in US_TICKERS:
+            rows = fetch_yahoo(cat, US_TICKERS[cat])
+        elif mk == 'kr' and NAVER_ID and cat in KR_NAVER:
+            rows = fetch_naver(cat, KR_NAVER[cat], NAVER_ID, NAVER_SECRET)
+        else:
+            rows = fetch(mk, cat, q)
         for n in rows:
             if cat == '속보':                 # 속보 전용 쿼리 → 제목으로 실제 카테고리 재분류
                 n['cat'] = classify(n['ti'])
