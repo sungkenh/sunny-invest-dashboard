@@ -137,6 +137,15 @@
 
   @media(max-width:1100px){ .hirow{grid-template-columns:repeat(2,1fr)} }
   @media(max-width:840px){ .cols{grid-template-columns:1fr} }
+  /* ===== 페이지 전환 부드럽게 — Cross-Document View Transitions(지원 브라우저). 미지원 시 일반 이동으로 무해 폴백 ===== */
+  @view-transition{ navigation:auto; }
+  ::view-transition-old(root){ animation:vt-out .14s ease both; }
+  ::view-transition-new(root){ animation:vt-in .18s ease both; }
+  @keyframes vt-out{ to{ opacity:0 } }
+  @keyframes vt-in{ from{ opacity:0 } }
+  header.topbar{ view-transition-name:topbar; }                 /* 상단바는 전환 내내 고정(깜빡임 방지) */
+  ::view-transition-old(topbar),::view-transition-new(topbar){ animation:none; }
+  @media (prefers-reduced-motion:reduce){ ::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){ animation:none!important; } }
 </style>
 </head>
 <body>
