@@ -27,6 +27,17 @@ const QUERIES = [
   ['us', '금리', 'Treasury yields OR Fed rate cut'],
   ['us', '매크로', 'Federal Reserve OR US jobs report OR inflation'],
 ];
+// 미국 뉴스: 구글뉴스(클릭 시 원문 연결 깨짐·CF 차단) 대신 Yahoo Finance RSS(직접 기사 URL·CF 동작).
+// 카테고리 → 종목군 매핑. 전쟁·지정학은 야후가 커버 못해 구글 유지.
+const US_TICKERS = {
+  '반도체': 'NVDA,TSM,AVGO,AMD,MU,ASML,SMCI',
+  '빅테크': 'AAPL,MSFT,AMZN,GOOGL,META',
+  'AI': 'PLTR,SMCI,NVDA,MSFT',
+  '전기차': 'TSLA,RIVN,LCID,NIO',
+  '코인': 'COIN,MSTR,MARA,RIOT',
+  '금리': '^TNX,^TYX,TLT',
+  '매크로': '^GSPC,^IXIC,^DJI',
+};
 const PER_QUERY = 7;
 let CACHE = { ts: 0, data: null };
 const TTL = 10 * 60 * 1000;
@@ -97,6 +108,30 @@ async function fetchQuery(mk, cat, q) {
   }
   return [];
 }
+// 미국 — Yahoo Finance RSS(직접 기사 URL, CF서 동작). 종목군 기반 헤드라인. 출처는 링크 도메인.
+async function fetchYahooOnce(cat, syms) {
+  const url = 'https://feeds.finance.yahoo.com/rss/2.0/headline?s=' + encodeURIComponent(syms) + '&region=US&lang=en-US';
+  const r = await fetch(url, { headers: { 'User-Agent': UA } });
+  if (!r.ok) throw new Error('yf ' + r.status);
+  const xml = await r.text();
+  const blocks = xml.match(/<item\b[\s\S]*?<\/item>/g) || [];
+  if (!blocks.length) throw new Error('empty');
+  const now = Date.now();
+  return blocks.slice(0, PER_QUERY).map((b) => {
+    const title = decode(tag(b, 'title'));
+    const link = decode(tag(b, 'link'));
+    if (!title || !/^https?:\/\//.test(link)) return null;
+    const src = (link.match(/^https?:\/\/(?:www\.)?([^\/]+)/) || [, ''])[1];
+    let mins = 999;
+    const pd = tag(b, 'pubDate');
+    if (pd) { const t = Date.parse(pd); if (!isNaN(t)) mins = Math.max(0, Math.floor((now - t) / 60000)); }
+    return { mk: 'us', cat, src, ti: title, link, min: mins, tm: reltime(mins), sum: '', pop: Math.max(1, 100000 - mins) };
+  }).filter(Boolean);
+}
+async function fetchYahoo(cat, syms) {
+  for (let i = 0; i < 3; i++) { try { return await fetchYahooOnce(cat, syms); } catch (e) { await sleep(250 * (i + 1)); } }
+  return [];
+}
 // 동시 실행 수 제한 풀 — 18개를 한꺼번에 안 때리고 limit개씩(구글 레이트리밋·차단 회피)
 async function runPool(thunks, limit) {
   const out = new Array(thunks.length);
@@ -109,7 +144,8 @@ async function runPool(thunks, limit) {
 async function __cfHandler(event) {
   if (CACHE.data && Date.now() - CACHE.ts < TTL) return ok(CACHE.data);
 
-  const lists = await runPool(QUERIES.map(([mk, cat, q]) => () => fetchQuery(mk, cat, q)), 6);
+  const lists = await runPool(QUERIES.map(([mk, cat, q]) =>
+    (mk === 'us' && US_TICKERS[cat]) ? (() => fetchYahoo(cat, US_TICKERS[cat])) : (() => fetchQuery(mk, cat, q))), 6);
   const items = [], seen = new Set();
   for (const list of lists) for (const n of list) {
     if (n.cat === '속보') n.cat = classify(n.ti);   // 속보 전용 쿼리 → 실제 카테고리 재분류

@@ -44,6 +44,18 @@ QUERIES = [
     ('us', '매크로',    'Federal Reserve OR US jobs report OR inflation'),
 ]
 
+# 미국 뉴스: 구글뉴스 대신 Yahoo Finance RSS(직접 기사 URL·CF 동작). 카테고리 → 종목군. 전쟁·지정학은 구글 유지.
+US_TICKERS = {
+    '반도체': 'NVDA,TSM,AVGO,AMD,MU,ASML,SMCI',
+    '빅테크': 'AAPL,MSFT,AMZN,GOOGL,META',
+    'AI': 'PLTR,SMCI,NVDA,MSFT',
+    '전기차': 'TSLA,RIVN,LCID,NIO',
+    '코인': 'COIN,MSTR,MARA,RIOT',
+    '금리': '^TNX,^TYX,TLT',
+    '매크로': '^GSPC,^IXIC,^DJI',
+}
+
+
 def reltime(mins):
     if mins < 1:  return '방금'
     if mins < 60: return '%d분 전' % mins
@@ -123,10 +135,34 @@ def fetch(mk, cat, q):
                         'min': mins, 'tm': reltime(mins), 'sum': '', 'pop': max(1, 100000 - mins)})
     return out
 
+def fetch_yahoo(cat, syms):
+    """미국 — Yahoo Finance RSS(직접 기사 URL). 종목군 기반 헤드라인."""
+    url = 'https://feeds.finance.yahoo.com/rss/2.0/headline?s=%s&region=US&lang=en-US' % urllib.parse.quote(syms)
+    req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+    root = ET.fromstring(urllib.request.urlopen(req, timeout=20).read())
+    now = datetime.datetime.now(datetime.timezone.utc)
+    out = []
+    for it in list(root.iter('item'))[:8]:
+        title = html.unescape((it.findtext('title') or '').strip())
+        link = it.findtext('link') or ''
+        if not title or not link.startswith('http'):
+            continue
+        m = re.match(r'https?://(?:www\.)?([^/]+)', link)
+        src = m.group(1) if m else ''
+        try:
+            mins = max(0, int((now - parsedate_to_datetime(it.findtext('pubDate'))).total_seconds() // 60))
+        except Exception:
+            mins = 999
+        out.append({'mk': 'us', 'cat': cat, 'src': src, 'ti': title, 'link': link,
+                    'min': mins, 'tm': reltime(mins), 'sum': '', 'pop': max(1, 100000 - mins)})
+    return out
+
+
 items, seen = [], set()
 for mk, cat, q in QUERIES:
     try:
-        for n in fetch(mk, cat, q):
+        rows = fetch_yahoo(cat, US_TICKERS[cat]) if (mk == 'us' and cat in US_TICKERS) else fetch(mk, cat, q)
+        for n in rows:
             if cat == '속보':                 # 속보 전용 쿼리 → 제목으로 실제 카테고리 재분류
                 n['cat'] = classify(n['ti'])
             k = n['ti'][:28]
