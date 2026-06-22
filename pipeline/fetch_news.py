@@ -64,6 +64,39 @@ def translate_en_ko(text):
     except Exception:
         return text
 
+def resolve_gnews(u):
+    """구글뉴스 RSS 링크(CBMi…) → 실제 기사 URL (batchexecute). 실패 시 원본 반환.
+       클릭 시 중간 구글뉴스 페이지에 머무는 문제를 없애기 위해 스냅샷 단계에서 미리 해석한다.
+       (Cloudflare 런타임에선 구글이 막아 안 되므로, 차단 안 되는 GitHub Actions/로컬에서 해 둔다.)"""
+    m = re.search(r'/articles/([^?]+)', u or '')
+    if not m:
+        return u
+    art = m.group(1)
+    try:
+        req = urllib.request.Request('https://news.google.com/rss/articles/' + art,
+                                     headers={'User-Agent': 'Mozilla/5.0'})
+        page = urllib.request.urlopen(req, timeout=12).read().decode('utf-8', 'ignore')
+        sg = re.search(r'data-n-a-sg="([^"]+)"', page)
+        ts = re.search(r'data-n-a-ts="([^"]+)"', page)
+        if not sg or not ts:
+            return u
+        inner = json.dumps(['garturlreq', [['X', 'X', ['X', 'X'], None, None, 1, 1, 'US:en', None, 1,
+                            None, None, None, None, None, 0, 1], 'X', 'X', 1, [1, 1, 1], 1, 1, None, 0, 0, None, 0],
+                            art, int(ts.group(1)), sg.group(1)])
+        body = ('f.req=' + urllib.parse.quote(json.dumps([[['Fbv4je', inner, None, '1']]]))).encode()
+        req2 = urllib.request.Request('https://news.google.com/_/DotsSplashUi/data/batchexecute', data=body,
+                                      headers={'User-Agent': 'Mozilla/5.0',
+                                               'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'})
+        t = urllib.request.urlopen(req2, timeout=12).read().decode('utf-8', 'ignore')
+        arr = json.loads(t.split('\n\n')[1])
+        real = json.loads(arr[0][2])[1]
+        if real and real.startswith('http'):
+            return real
+    except Exception:
+        pass
+    return u
+
+
 def fetch(mk, cat, q):
     hl, gl, ceid = ('ko', 'KR', 'KR:ko') if mk == 'kr' else ('en-US', 'US', 'US:en')
     url = 'https://news.google.com/rss/search?q=%s&hl=%s&gl=%s&ceid=%s' % (
@@ -121,6 +154,21 @@ items.sort(key=lambda x: x['min'])
 for i, n in enumerate(items):       # 최신 6건은 HOT
     n['hot'] = i < 6
 brk = sum(1 for x in items if x.get('breaking'))
+
+# 구글뉴스 링크 → 실제 기사 URL 미리 해석(클릭 시 원문 바로 연결). 병렬 + 실패 시 원본 유지.
+try:
+    from concurrent.futures import ThreadPoolExecutor
+    gn = [n for n in items if 'news.google.com/rss/articles' in (n.get('link') or '')]
+    with ThreadPoolExecutor(max_workers=6) as ex:
+        reals = list(ex.map(lambda n: resolve_gnews(n['link']), gn))
+    ok = 0
+    for n, real in zip(gn, reals):
+        if real and real != n['link']:
+            n['link'] = real
+            ok += 1
+    print('링크 해석: %d/%d 성공' % (ok, len(gn)))
+except Exception as e:
+    print('[링크 해석 스킵] ' + str(e)[:80])
 
 data = {'_updated': datetime.datetime.now(datetime.timezone.utc).isoformat(timespec='seconds'),
         'count': len(items), 'items': items}
