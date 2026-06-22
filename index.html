@@ -407,25 +407,40 @@
     .card.fill{flex:1 1 0;min-height:0;display:flex;flex-direction:column}
     .card.fill > .scroll{flex:1;min-height:0;max-height:none}
   }
-  /* ===== 메모 · 체크리스트 ===== */
-  .memo-body{padding:10px 14px 12px}
+  /* ===== 오늘의 메모 (최상단) ===== */
+  .memo-card{margin:16px 20px 0}
+  .memo-card > .head{align-items:center}
+  #memo-status:empty{display:none}
+  .memo-actions{margin-left:auto;display:flex;gap:6px}
+  .memo-btn{cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--text);padding:5px 13px;border-radius:999px;font-size:0.72rem;font-weight:700;font-family:inherit}
+  .memo-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .memo-btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .memo-btn.primary:hover{background:var(--accent2);color:#fff}
+  .memo-body{padding:12px 14px 14px}
+  .memo-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:stretch}
+  @media(max-width:760px){.memo-grid{grid-template-columns:1fr}}
+  .memo-col{min-width:0;display:flex;flex-direction:column}
   .memo-add{display:flex;gap:6px;margin-bottom:8px}
   .memo-add input{flex:1;min-width:0;background:#0a1120;border:1px solid var(--border);color:var(--text);padding:7px 9px;border-radius:8px;font-size:0.75rem;font-family:inherit}
   .memo-add input:focus{outline:none;border-color:var(--accent)}
   .memo-add button{flex:none;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:0 13px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit}
   .memo-add button:hover{background:var(--accent2)}
-  .memo-list{list-style:none;margin:0 0 9px;padding:0;display:flex;flex-direction:column;gap:1px;max-height:220px;overflow:auto}
-  .memo-li{display:flex;align-items:flex-start;gap:8px;padding:6px 3px;border-bottom:1px solid #141d31}
-  .memo-li:last-child{border-bottom:none}
-  .memo-ck{flex:none;width:15px;height:15px;margin-top:2px;cursor:pointer;accent-color:var(--accent)}
-  .memo-tx{flex:1;font-size:0.8125rem;line-height:1.45;word-break:break-word;cursor:pointer}
+  .memo-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1px;max-height:220px;overflow:auto}
+  .memo-li,.memo-li-edit{display:flex;align-items:center;gap:8px;padding:5px 3px;border-bottom:1px solid #141d31}
+  .memo-li:last-child,.memo-li-edit:last-child{border-bottom:none}
+  .memo-ck{flex:none;width:15px;height:15px;cursor:pointer;accent-color:var(--accent)}
+  .memo-tx{flex:1;font-size:0.8125rem;line-height:1.45;word-break:break-word}
   .memo-li.done .memo-tx{text-decoration:line-through;color:var(--muted2)}
+  .memo-editin{flex:1;min-width:0;background:#0a1120;border:1px solid var(--border);color:var(--text);padding:5px 8px;border-radius:6px;font-size:0.8rem;font-family:inherit}
+  .memo-editin:focus{outline:none;border-color:var(--accent)}
   .memo-del{flex:none;color:var(--muted2);font-size:0.8125rem;cursor:pointer;background:none;border:none;padding:0 3px;line-height:1.4;font-family:inherit}
   .memo-del:hover{color:var(--up)}
-  .memo-empty{color:var(--muted2);font-size:0.72rem;padding:6px 2px}
-  .memo-note{display:block;width:100%;min-height:62px;resize:vertical;background:#0a1120;border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 9px;font-size:0.78rem;font-family:inherit;line-height:1.5}
+  .memo-empty{color:var(--muted2);font-size:0.78rem;padding:10px 2px;line-height:1.6}
+  .memo-note{display:block;width:100%;min-height:110px;height:100%;resize:vertical;background:#0a1120;border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 10px;font-size:0.8rem;font-family:inherit;line-height:1.55}
   .memo-note:focus{outline:none;border-color:var(--accent)}
-  body.light .memo-add input,body.light .memo-note{background:#fff}
+  .memo-noteview{font-size:0.82rem;line-height:1.6;color:#cdd8e8;white-space:pre-wrap;word-break:break-word;background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:9px 11px}
+  body.light .memo-noteview{color:var(--text)}
+  body.light .memo-add input,body.light .memo-note,body.light .memo-editin{background:#fff}
   /* ===== 페이지 전환 부드럽게 — Cross-Document View Transitions(지원 브라우저). 미지원 시 일반 이동으로 무해 폴백 ===== */
   @view-transition{ navigation:auto; }
   ::view-transition-old(root){ animation:vt-out .14s ease both; }
@@ -454,6 +469,34 @@
     <button class="btn" id="colorToggle">색상: 한국식</button>
   </div>
 </header>
+
+<!-- 오늘의 메모 (최상단 고정 — 매일 중요 포인트 기록) -->
+<section class="card memo-card" id="memo-card">
+  <div class="head">
+    <h3>📝 오늘의 메모 · 중요 포인트</h3>
+    <span class="tag" id="memo-status"></span>
+    <div class="memo-actions">
+      <button class="memo-btn" id="memo-edit-btn" type="button">✏️ 편집</button>
+      <button class="memo-btn primary" id="memo-save-btn" type="button" style="display:none">💾 저장</button>
+      <button class="memo-btn" id="memo-cancel-btn" type="button" style="display:none">취소</button>
+    </div>
+  </div>
+  <div class="memo-body">
+    <div class="memo-view" id="memo-view"></div>
+    <div class="memo-edit" id="memo-edit" style="display:none">
+      <div class="memo-grid">
+        <div class="memo-col">
+          <div class="memo-add">
+            <input id="memo-input" placeholder="체크 항목 추가 — 예: FOMC 결과 확인" autocomplete="off" />
+            <button id="memo-addbtn" type="button">추가</button>
+          </div>
+          <ul class="memo-list" id="memo-list"></ul>
+        </div>
+        <textarea id="memo-note" class="memo-note" placeholder="오늘의 중요 포인트를 적어두세요… (‘저장’을 눌러 보관)"></textarea>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- 시장 스트립 -->
 <div class="strip-head">
@@ -496,18 +539,6 @@
         <div class="fng-track"><div class="fng-marker" id="fng-marker" style="left:50%"></div></div>
         <div class="fng-scale"><span>극공포 0</span><span>50</span><span>100 극탐욕</span></div>
         <div class="fng-hist" id="fng-hist"></div>
-      </div>
-    </div>
-
-    <div class="card memo-card">
-      <div class="head"><h3>📝 메모 · 체크리스트</h3><span class="tag" id="memo-status">자동 저장</span></div>
-      <div class="memo-body">
-        <div class="memo-add">
-          <input id="memo-input" placeholder="체크할 항목 추가 — 예: FOMC 6/18 결과 확인" autocomplete="off" />
-          <button id="memo-addbtn" type="button">추가</button>
-        </div>
-        <ul class="memo-list" id="memo-list"></ul>
-        <textarea id="memo-note" class="memo-note" placeholder="자유 메모… (자동 저장)"></textarea>
       </div>
     </div>
 
@@ -1878,32 +1909,61 @@ function setupHeatmapLazy(){
     io.observe(card); setTimeout(go,5000);   // 안전망
   } else setTimeout(go,1500);
 }
-/* 메모 · 체크리스트 — 브라우저(localStorage)에 자동 저장. 새로고침·재방문해도 유지(이 브라우저 한정). */
+/* 오늘의 메모 · 중요 포인트 — 보기/편집 모드(편집·저장·취소 버튼). 브라우저(localStorage)에 저장, 재방문 유지(이 브라우저 한정). */
 const MEMO_LS='alphadesk.memo';
 let MEMO={items:[], note:''};
+let memoEditing=false;
 function memoEsc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function memoLoad(){ try{ const o=JSON.parse(localStorage.getItem(MEMO_LS)||'null'); if(o&&typeof o==='object'){ MEMO={items:Array.isArray(o.items)?o.items:[], note:typeof o.note==='string'?o.note:''}; } }catch(e){} }
+function memoLoad(){ try{ const o=JSON.parse(localStorage.getItem(MEMO_LS)||'null'); if(o&&typeof o==='object'){ MEMO={items:Array.isArray(o.items)?o.items.map(it=>({text:String(it&&it.text||''),done:!!(it&&it.done)})):[], note:typeof o.note==='string'?o.note:''}; } else MEMO={items:[],note:''}; }catch(e){ MEMO={items:[],note:''}; } }
 function memoSave(){ try{ localStorage.setItem(MEMO_LS, JSON.stringify(MEMO)); }catch(e){}
-  const s=document.getElementById('memo-status'); if(s){ s.textContent='저장됨'; clearTimeout(memoSave._t); memoSave._t=setTimeout(()=>{ s.textContent='자동 저장'; },1200); } }
-function memoRender(){
-  const list=document.getElementById('memo-list'); if(!list) return;
-  list.innerHTML = MEMO.items.length
-    ? MEMO.items.map((it,i)=>`<li class="memo-li${it.done?' done':''}" data-i="${i}"><input type="checkbox" class="memo-ck" ${it.done?'checked':''}><span class="memo-tx">${memoEsc(it.text)}</span><button class="memo-del" type="button" title="삭제" aria-label="삭제">✕</button></li>`).join('')
-    : '<li class="memo-empty">체크할 항목을 추가하세요</li>';
-  const note=document.getElementById('memo-note'); if(note && note.value!==MEMO.note) note.value=MEMO.note;
+  const s=document.getElementById('memo-status'); if(s){ s.textContent='저장됨 ✓'; clearTimeout(memoSave._t); memoSave._t=setTimeout(()=>{ s.textContent=''; },1600); } }
+// 보기 모드 렌더(읽기 전용 — 체크박스만 빠른 완료 토글)
+function memoRenderView(){
+  const v=document.getElementById('memo-view'); if(!v) return;
+  const hasItems=MEMO.items.length, hasNote=MEMO.note&&MEMO.note.trim();
+  if(!hasItems && !hasNote){ v.innerHTML='<div class="memo-empty">‘✏️ 편집’을 눌러 오늘의 중요 포인트·체크 항목을 적어보세요. (이 브라우저에 보관)</div>'; return; }
+  const parts=[];
+  if(hasItems) parts.push('<ul class="memo-list">'+MEMO.items.map((it,i)=>`<li class="memo-li${it.done?' done':''}" data-i="${i}"><input type="checkbox" class="memo-ck" ${it.done?'checked':''}><span class="memo-tx">${memoEsc(it.text)}</span></li>`).join('')+'</ul>');
+  if(hasNote) parts.push(`<div class="memo-noteview">${memoEsc(MEMO.note)}</div>`);
+  v.innerHTML = parts.length===2 ? '<div class="memo-grid">'+parts.map(p=>'<div class="memo-col">'+p+'</div>').join('')+'</div>' : parts[0];
 }
-function memoAdd(text){ text=(text||'').trim(); if(!text) return; MEMO.items.push({text:text.slice(0,200), done:false}); memoSave(); memoRender(); }
+// 편집 모드 렌더(항목 텍스트 직접 수정 + 추가/삭제/체크 + 메모)
+function memoRenderEdit(){
+  const list=document.getElementById('memo-list'); if(!list) return;
+  list.innerHTML = MEMO.items.map((it,i)=>`<li class="memo-li-edit" data-i="${i}"><input type="checkbox" class="memo-ck" ${it.done?'checked':''}><input type="text" class="memo-editin" maxlength="200" value="${memoEsc(it.text)}"><button class="memo-del" type="button" title="삭제" aria-label="삭제">✕</button></li>`).join('');
+  const note=document.getElementById('memo-note'); if(note) note.value=MEMO.note;
+}
+// 편집 폼의 현재 입력값을 MEMO로 동기화(추가/삭제 재렌더·저장 직전에 호출 → 미저장 입력 보존)
+function memoSyncFromDOM(){
+  const items=[];
+  document.querySelectorAll('#memo-list .memo-li-edit').forEach(li=>{ items.push({text:li.querySelector('.memo-editin').value, done:li.querySelector('.memo-ck').checked}); });
+  MEMO.items=items;
+  const note=document.getElementById('memo-note'); if(note) MEMO.note=note.value;
+}
+function memoSetMode(editing){
+  memoEditing=editing;
+  const show=(id,on)=>{ const e=document.getElementById(id); if(e) e.style.display=on?'':'none'; };
+  show('memo-view',!editing); show('memo-edit',editing);
+  show('memo-edit-btn',!editing); show('memo-save-btn',editing); show('memo-cancel-btn',editing);
+  if(editing) memoRenderEdit(); else memoRenderView();
+}
 function memoInit(){
-  memoLoad(); memoRender();
-  const input=document.getElementById('memo-input'), add=document.getElementById('memo-addbtn'), list=document.getElementById('memo-list'), note=document.getElementById('memo-note');
-  if(add) add.addEventListener('click',()=>{ memoAdd(input.value); input.value=''; input.focus(); });
-  if(input) input.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); memoAdd(input.value); input.value=''; } });
-  if(list) list.addEventListener('click',e=>{
-    const li=e.target.closest('.memo-li'); if(!li) return; const i=+li.dataset.i; if(!MEMO.items[i]&&MEMO.items[i]!==0) return;
-    if(e.target.classList.contains('memo-del')){ MEMO.items.splice(i,1); memoSave(); memoRender(); }
-    else if(e.target.classList.contains('memo-ck')||e.target.classList.contains('memo-tx')){ MEMO.items[i].done=!MEMO.items[i].done; memoSave(); memoRender(); }
-  });
-  if(note) note.addEventListener('input',()=>{ MEMO.note=note.value; clearTimeout(memoInit._nt); memoInit._nt=setTimeout(memoSave,400); });
+  if(!document.getElementById('memo-card')) return;
+  memoLoad(); memoSetMode(false);
+  document.getElementById('memo-edit-btn').onclick=()=>memoSetMode(true);
+  document.getElementById('memo-cancel-btn').onclick=()=>{ memoLoad(); memoSetMode(false); };   // 변경 취소 → 저장본으로 되돌림
+  document.getElementById('memo-save-btn').onclick=()=>{
+    memoSyncFromDOM();
+    MEMO.items=MEMO.items.filter(it=>(it.text||'').trim()).map(it=>({text:it.text.trim().slice(0,200), done:!!it.done}));   // 빈 항목 정리
+    memoSave(); memoSetMode(false);
+  };
+  const input=document.getElementById('memo-input');
+  const doAdd=()=>{ const t=(input.value||'').trim(); if(!t) return; memoSyncFromDOM(); MEMO.items.push({text:t.slice(0,200), done:false}); input.value=''; memoRenderEdit(); input.focus(); };
+  document.getElementById('memo-addbtn').onclick=doAdd;
+  input.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); doAdd(); } });
+  document.getElementById('memo-list').addEventListener('click',e=>{ if(e.target.classList.contains('memo-del')){ const li=e.target.closest('.memo-li-edit'); if(!li) return; memoSyncFromDOM(); MEMO.items.splice(+li.dataset.i,1); memoRenderEdit(); } });
+  // 보기 모드 체크박스: 빠른 완료 체크(즉시 저장)
+  document.getElementById('memo-view').addEventListener('click',e=>{ if(e.target.classList.contains('memo-ck')){ const li=e.target.closest('.memo-li'); if(!li) return; const i=+li.dataset.i; if(MEMO.items[i]){ MEMO.items[i].done=e.target.checked; memoSave(); memoRenderView(); } } });
 }
 
 /* 초기화 — ① 동기 렌더(샘플/캐시) 즉시 ② 임계 데이터 먼저 ③ 무거운·비임계는 유휴/뷰포트 진입 시 */
