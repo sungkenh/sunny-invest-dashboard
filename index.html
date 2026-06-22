@@ -1467,6 +1467,7 @@ let newsFilter='all';   // all | kr | us
 function renderNews(){
   const items = SAMPLE_NEWS.filter(n=> newsFilter==='all' || n.mk===newsFilter);
   const c=document.getElementById('news-count'); if(c) c.textContent = items.length+'건';
+  if(!items.length){ document.getElementById('news').innerHTML = '<div style="padding:14px 6px;color:var(--muted2);font-size:0.75rem">'+(NEWS_LOADED?'표시할 뉴스가 없습니다.':'실시간 뉴스를 불러오는 중…')+'</div>'; return; }
   document.getElementById('news').innerHTML = items.map((n,i)=>`
     <a class="item" href="${articleHref(n.link)}" ${n.link?'target="_blank" rel="noopener"':'onclick="return false"'}>
       <span class="rk mono">${i+1}</span>
@@ -1717,17 +1718,21 @@ async function loadWatch(){
 }
 /* ---- 실시간 뉴스: /api/news(라이브, last-good 보관) → data/news.json 스냅샷 → 브라우저 보관본 ---- */
 const NEWS_LS='alphadesk.newscache';
+const DEMO_NEWS=SAMPLE_NEWS.slice();        // 완전 오프라인일 때만 쓰는 예시(진짜 뉴스엔 절대 안 섞임)
+let NEWS_LOADED=false;
 function newsCacheRead(){ try{ return JSON.parse(localStorage.getItem(NEWS_LS)||'null'); }catch(e){ return null; } }
 function newsCacheWrite(items){ try{ localStorage.setItem(NEWS_LS, JSON.stringify({_updated:new Date().toISOString().slice(0,19), items})); }catch(e){} }
-function seedNewsFromCache(){ const c=newsCacheRead(); if(c && Array.isArray(c.items) && c.items.length) SAMPLE_NEWS=c.items; }  // 첫 화면을 직전 스캔으로 즉시 표시
+function seedNewsFromCache(){ const c=newsCacheRead(); if(c && Array.isArray(c.items) && c.items.length){ SAMPLE_NEWS=c.items; return true; } return false; }  // 첫 화면을 직전 스캔으로 즉시 표시
+function newsTs(d){ let s=((d&&d._updated)||'').trim().replace(' ','T'); if(!s) return 0; if(!/[zZ]$|[+\-]\d\d:?\d\d$/.test(s)) s+='Z'; const t=Date.parse(s); return isNaN(t)?0:t; }
 async function loadNewsLive(){
-  let d=await fetchLive('/api/news','data/news.json');
-  // 라이브가 비면(0건) 스냅샷 직접 사용 — 스냅샷 기사는 link가 있어 클릭이 동작함
-  if(!(d && d.items && d.items.length)){
-    try{ const r=await fetch('data/news.json?t='+Date.now(),{cache:'no-store'}); if(r.ok) d=await r.json(); }catch(e){}
-  }
-  if(!(d && d.items && d.items.length)) d=newsCacheRead();   // 마지막 안전망: 브라우저에 보관한 직전 스캔
-  if(d && d.items && d.items.length){ SAMPLE_NEWS=d.items; newsCacheWrite(d.items); renderNews(); }
+  let live=null, snap=null;
+  try{ const r=await fetch('/api/news',{cache:'default'}); if(r.ok) live=await r.json(); }catch(e){}
+  try{ const r=await fetch('data/news.json?t='+Date.now(),{cache:'no-store'}); if(r.ok) snap=await r.json(); }catch(e){}
+  // 라이브·스냅샷 중 더 최신(_updated) 선택 → '예전 데이터로 되돌아감' 방지. 스냅샷 기사는 link가 있어 클릭 동작.
+  const cand=[live,snap].filter(x=>x&&x.items&&x.items.length).sort((a,b)=>newsTs(b)-newsTs(a));
+  let d = cand[0] || newsCacheRead();        // 둘 다 실패면 브라우저에 보관한 직전 수집분
+  if(d && d.items && d.items.length){ NEWS_LOADED=true; SAMPLE_NEWS=d.items; newsCacheWrite(d.items); renderNews(); }
+  else if(!SAMPLE_NEWS.length){ SAMPLE_NEWS=DEMO_NEWS.slice(); NEWS_LOADED=true; renderNews(); }   // 완전 오프라인 → 예시
 }
 /* ---- 비트코인 실시간 틱: Binance (CORS 개방, 24시간 거래) ---- */
 async function loadBTC(){
@@ -1845,7 +1850,7 @@ function setupHeatmapLazy(){
 /* 초기화 — ① 동기 렌더(샘플/캐시) 즉시 ② 임계 데이터 먼저 ③ 무거운·비임계는 유휴/뷰포트 진입 시 */
 const idleLoad=(fn,n=1)=>{ if(window.requestIdleCallback) requestIdleCallback(fn,{timeout:600*n+800}); else setTimeout(fn,250*n); };
 seedDeepFromCache();                                                            // 저장된 심층분석을 즉시 시드(재방문 빠른 로딩)
-seedNewsFromCache();                                                            // 보관한 직전 뉴스 스캔을 즉시 시드(빈 화면·샘플 방지)
+if(!seedNewsFromCache()) SAMPLE_NEWS=[];                                        // 보관본 즉시 시드, 없으면 가짜 예시 대신 '불러오는 중'
 seedMarketFromCache();                                                          // 데모값 대신 직전 시세 즉시 시드(과거값 깜빡임 방지)
 seedCalFromCache();                                                             // 빈 일정 대신 직전 일정 즉시 시드
 renderStrip(); renderWL(); renderSched(); renderDeep(); renderThemes(); renderNews(); renderVideos(); renderTrump(); bindNewsTabs(); renderFooter(); tick();
