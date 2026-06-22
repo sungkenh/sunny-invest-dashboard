@@ -1,5 +1,5 @@
-// 실시간 뉴스 — /api/news  (구글뉴스 RSS, 카테고리별 + 미국기사 한국어 번역)
-// 방문 시점 수집. 모듈 캐시(10분) + 엣지 캐시. 미국 기사 번역은 병렬 처리.
+// 실시간 뉴스 — /api/news  (한국=네이버 검색 API, 미국=Yahoo Finance RSS, 전쟁·지정학=구글뉴스 · 직접 기사 URL)
+// 방문 시점 수집. 모듈 캐시(10분) + 엣지 캐시. 미국 기사 번역 병렬. 네이버 키=context.env.NAVER_ID/NAVER_SECRET.
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36';
 
 // (mk, cat, query) — fetch_news.py와 동일. 섹터별로 수집 → 카테고리 칩은 당일 기사 수 기준 동적 표시.
