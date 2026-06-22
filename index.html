@@ -411,6 +411,11 @@
   .memo-card{margin:16px 20px 0}
   .memo-card > .head{align-items:center}
   #memo-status:empty{display:none}
+  .sync-chip{margin-left:8px;cursor:pointer;font-size:0.62rem;font-weight:700;border:1px solid var(--border);background:var(--panel);color:var(--muted);border-radius:999px;padding:3px 9px;font-family:inherit;white-space:nowrap}
+  .sync-chip:hover{border-color:var(--accent);color:var(--accent)}
+  .sync-chip.on{color:#22c55e;border-color:#14532d;background:#06210f}
+  .sync-chip.warn{color:var(--gold);border-color:#4a3a12;background:#1c1607}
+  body.light .sync-chip.on{color:#0a7c43;border-color:#a7e3c4;background:#e7f7ee}
   .memo-actions{margin-left:auto;display:flex;gap:6px}
   .memo-btn{cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--text);padding:5px 13px;border-radius:999px;font-size:0.72rem;font-weight:700;font-family:inherit}
   .memo-btn:hover{border-color:var(--accent);color:var(--accent)}
@@ -475,6 +480,7 @@
   <div class="head">
     <h3>📝 오늘의 메모 · 중요 포인트</h3>
     <span class="tag" id="memo-status"></span>
+    <button class="sync-chip" id="sync-chip" type="button" style="display:none" title="기기 간 동기화 설정 (클릭) — 메모·관심종목을 서버에 저장"></button>
     <div class="memo-actions">
       <button class="memo-btn" id="memo-edit-btn" type="button">✏️ 편집</button>
       <button class="memo-btn primary" id="memo-save-btn" type="button" style="display:none">💾 저장</button>
@@ -978,10 +984,78 @@ function renderStrip(){
 }
 
 /* 관심종목 — 저장본(localStorage) 우선, 없으면 data/watchlist.json(편집 가능한 영구 기본값) → DEFAULT_WL */
+/* ===== 클라우드 동기화(선택) — /api/store(Cloudflare KV)에 메모·관심종목 저장 =====
+   → 새로고침·재배포·브라우저 청소·다른 기기에서도 자동 유지. 서버에 KV 바인딩(변수명 KV)이 있어야 동작.
+   미설정(503)이면 localStorage 만으로 동작(기존과 동일, 무중단). 토큰(STORE_TOKEN) 설정 시 일치 필요. */
+const SYNC_TOKEN_LS='alphadesk.synctoken';
+let CLOUD_OK=null;                       // null=미확인 · true=KV 동작 · false=미바인딩/오류
+function syncToken(){ try{ return localStorage.getItem(SYNC_TOKEN_LS)||''; }catch(e){ return ''; } }
+async function cloudGet(key){
+  try{
+    const h={}; const t=syncToken(); if(t) h['X-Store-Token']=t;
+    const r=await fetch('/api/store?key='+key,{headers:h,cache:'no-store'});
+    if(r.status===503){ CLOUD_OK=false; syncChipRender(); return undefined; }
+    if(r.status===401){ CLOUD_OK=true; syncChipRender('auth'); return undefined; }
+    if(!r.ok) return undefined;
+    CLOUD_OK=true; syncChipRender(); const d=await r.json(); return d.value;     // null=서버에 값 없음
+  }catch(e){ return undefined; }
+}
+async function cloudPut(key,value){
+  if(CLOUD_OK===false) return;           // KV 미설정이면 시도 안 함(요청 절약)
+  try{
+    const h={'Content-Type':'application/json'}; const t=syncToken(); if(t) h['X-Store-Token']=t;
+    const r=await fetch('/api/store?key='+key,{method:'PUT',headers:h,body:JSON.stringify(value)});
+    if(r.status===503){ CLOUD_OK=false; syncChipRender(); }
+    else if(r.status===401){ CLOUD_OK=true; syncChipRender('auth'); }
+    else if(r.ok){ CLOUD_OK=true; syncChipRender(); }
+  }catch(e){}
+}
+function syncChipRender(state){
+  const c=document.getElementById('sync-chip'); if(!c) return;
+  if(state==='auth'){ c.textContent='🔒 토큰 필요'; c.className='sync-chip warn'; c.style.display=''; return; }
+  if(CLOUD_OK===true){ c.textContent='☁️ 동기화 켜짐'; c.className='sync-chip on'; c.style.display=''; }
+  else if(CLOUD_OK===false){ c.textContent='💾 로컬 저장'; c.className='sync-chip'; c.style.display=''; }
+  else { c.style.display='none'; }
+}
+function syncConfigure(){
+  const t=prompt('기기 간 동기화 토큰\n• 서버(Cloudflare)에 STORE_TOKEN 을 설정했다면 같은 값을 입력하세요.\n• 토큰을 안 썼다면 비워두세요(공개 저장).', syncToken());
+  if(t===null) return;
+  try{ localStorage.setItem(SYNC_TOKEN_LS, t.trim()); }catch(e){}
+  cloudInit();
+}
+async function memoCloudLoad(){
+  const v=await cloudGet('memo');
+  if(v && typeof v==='object'){
+    MEMO={items:Array.isArray(v.items)?v.items.map(it=>({text:String(it&&it.text||''),done:!!(it&&it.done)})):[], note:typeof v.note==='string'?v.note:''};
+    try{ localStorage.setItem(MEMO_LS, JSON.stringify(MEMO)); }catch(e){}
+    if(!memoEditing) memoSetMode(false);
+    return true;
+  }
+  return false;
+}
+async function watchCloudLoad(){
+  const v=await cloudGet('watchlist');
+  if(Array.isArray(v) && v.length){
+    WL=v.filter(x=>x&&x.sym).map(normWL); SEL=WL.length?WL[0].sym:null; WL_HAS_STORAGE=true;
+    try{ localStorage.setItem('alphadesk.wl2', JSON.stringify(WL.map(x=>({sym:x.sym,name:x.name,mk:x.mk})))); }catch(e){}
+    renderWL(); renderDeep(); loadWatch(); if(typeof rsMaybeReload==='function') rsMaybeReload();
+    return true;
+  }
+  return false;
+}
+async function cloudInit(){
+  const hadMemo=await memoCloudLoad();
+  const hadWatch=await watchCloudLoad();
+  if(CLOUD_OK===true){                    // KV 동작 시 서버가 비어 있던 항목은 현재 로컬값으로 시드(첫 동기화)
+    if(!hadMemo && typeof MEMO==='object') cloudPut('memo', MEMO);
+    if(!hadWatch) cloudPut('watchlist', WL.map(x=>({sym:x.sym,name:x.name,mk:x.mk})));
+  }
+}
+
 let WL = JSON.parse(localStorage.getItem('alphadesk.wl2')||'null') || DEFAULT_WL.slice();
 let WL_HAS_STORAGE = !!localStorage.getItem('alphadesk.wl2');
 let SEL = WL.length?WL[0].sym:null;
-const saveWL = ()=>localStorage.setItem('alphadesk.wl2', JSON.stringify(WL.map(x=>({sym:x.sym,name:x.name,mk:x.mk}))));
+const saveWL = ()=>{ const v=WL.map(x=>({sym:x.sym,name:x.name,mk:x.mk})); try{ localStorage.setItem('alphadesk.wl2', JSON.stringify(v)); }catch(e){} cloudPut('watchlist', v); };   // localStorage + 클라우드(KV) 동기화
 function normWL(x){ return {sym:x.sym, name:x.name||x.sym, mk:x.mk||(/\.(KS|KQ)$/.test(x.sym)?'kr':'us'), px:null, pct:null}; }
 function setWL(arr){ WL=arr.filter(x=>x&&x.sym).map(normWL); SEL=WL.length?WL[0].sym:null; saveWL(); renderWL(); renderDeep(); loadWatch(); rsMaybeReload(); }
 /* 저장본이 없을 때만 배포 파일(data/watchlist.json)을 기본값으로 시드 → 모든 기기·재배포에서 동일 */
@@ -1916,6 +1990,7 @@ let memoEditing=false;
 function memoEsc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function memoLoad(){ try{ const o=JSON.parse(localStorage.getItem(MEMO_LS)||'null'); if(o&&typeof o==='object'){ MEMO={items:Array.isArray(o.items)?o.items.map(it=>({text:String(it&&it.text||''),done:!!(it&&it.done)})):[], note:typeof o.note==='string'?o.note:''}; } else MEMO={items:[],note:''}; }catch(e){ MEMO={items:[],note:''}; } }
 function memoSave(){ try{ localStorage.setItem(MEMO_LS, JSON.stringify(MEMO)); }catch(e){}
+  cloudPut('memo', MEMO);   // 서버(KV) 동기화
   const s=document.getElementById('memo-status'); if(s){ s.textContent='저장됨 ✓'; clearTimeout(memoSave._t); memoSave._t=setTimeout(()=>{ s.textContent=''; },1600); } }
 // 보기 모드 렌더(읽기 전용 — 체크박스만 빠른 완료 토글)
 function memoRenderView(){
@@ -1964,6 +2039,7 @@ function memoInit(){
   document.getElementById('memo-list').addEventListener('click',e=>{ if(e.target.classList.contains('memo-del')){ const li=e.target.closest('.memo-li-edit'); if(!li) return; memoSyncFromDOM(); MEMO.items.splice(+li.dataset.i,1); memoRenderEdit(); } });
   // 보기 모드 체크박스: 빠른 완료 체크(즉시 저장)
   document.getElementById('memo-view').addEventListener('click',e=>{ if(e.target.classList.contains('memo-ck')){ const li=e.target.closest('.memo-li'); if(!li) return; const i=+li.dataset.i; if(MEMO.items[i]){ MEMO.items[i].done=e.target.checked; memoSave(); memoRenderView(); } } });
+  const sc=document.getElementById('sync-chip'); if(sc) sc.onclick=syncConfigure;   // 동기화 설정(토큰)
 }
 
 /* 초기화 — ① 동기 렌더(샘플/캐시) 즉시 ② 임계 데이터 먼저 ③ 무거운·비임계는 유휴/뷰포트 진입 시 */
@@ -1975,6 +2051,7 @@ seedCalFromCache();                                                             
 renderStrip(); renderWL(); renderSched(); renderDeep(); renderThemes(); renderNews(); renderVideos(); renderTrump(); bindNewsTabs(); renderFooter(); tick(); memoInit();
 renderHmDataset();
 loadWatchlistBaseline();                                                       // 저장본 없으면 data/watchlist.json 시드
+cloudInit();                                                                   // 서버(KV) 동기화 — 있으면 서버값 우선, 없으면 무중단 폴백
 loadMarket(); loadWatch(); loadBTC(); loadDeep();                              // 임계(상단 시세·관심종목·심층)
 idleLoad(()=>{ loadCalendar(); loadFearGreed(); }, 1);
 idleLoad(()=>{ loadNewsLive(); loadThemes(); }, 2);
