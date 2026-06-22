@@ -2,7 +2,7 @@
 """구글뉴스 RSS → data/news.json  (한국/미국, 카테고리별 실시간 헤드라인)
    실행: py fetch_news.py
 """
-import json, os, re, datetime, urllib.request, urllib.parse, html
+import json, os, re, time, datetime, urllib.request, urllib.parse, html
 import xml.etree.ElementTree as ET
 from email.utils import parsedate_to_datetime
 
@@ -93,18 +93,29 @@ def reltime(mins):
     if h < 24:    return '%d시간 전' % h
     return '%d일 전' % (h // 24)
 
+def has_ko(s):
+    return any('가' <= c <= '힣' for c in (s or ''))
+
 def translate_en_ko(text):
-    """영문 → 한국어 (구글 번역 무료 엔드포인트). 실패 시 원문 반환."""
+    """영문 → 한국어 (구글 번역 무료 엔드포인트). 3회 재시도·한국어 검출. 실패 시 원문 반환."""
     if not text:
         return text
-    try:
-        u = ('https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ko&dt=t&q='
-             + urllib.parse.quote(text))
-        req = urllib.request.Request(u, headers={'User-Agent': 'Mozilla/5.0'})
-        data = json.loads(urllib.request.urlopen(req, timeout=8).read())
-        return ''.join(seg[0] for seg in data[0] if seg and seg[0]) or text
-    except Exception:
-        return text
+    s = text[:900]
+    for i in range(3):
+        try:
+            u = ('https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ko&dt=t&q='
+                 + urllib.parse.quote(s))
+            req = urllib.request.Request(u, headers={'User-Agent': 'Mozilla/5.0'})
+            data = json.loads(urllib.request.urlopen(req, timeout=8).read())
+            out = ''.join(seg[0] for seg in data[0] if seg and seg[0])
+            if has_ko(out):                       # 번역 성공(한국어 포함)일 때만 채택
+                if re.search(r'Anthropic', text, re.I):   # gtx 고유명사 오역 보정
+                    out = out.replace('인류주식', '앤트로픽')
+                return out
+        except Exception:
+            pass
+        time.sleep(0.3 * (i + 1))
+    return text
 
 def resolve_gnews(u):
     """구글뉴스 RSS 링크(CBMi…) → 실제 기사 URL (batchexecute). 실패 시 원본 반환.

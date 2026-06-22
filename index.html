@@ -119,6 +119,10 @@
   .idx .val{font-size:1.0625rem;font-weight:800;margin-top:3px}
   .idx .chg{font-size:0.7188rem;font-weight:700;margin-top:1px}
   .idx svg{display:block;margin-top:6px}
+  /* 시장 스트립 헤더(수집 시각 표시) */
+  .strip-head{display:flex;align-items:center;gap:10px;padding:14px 20px 0;flex-wrap:wrap}
+  .strip-title{font-size:0.8125rem;font-weight:800;color:var(--muted);letter-spacing:.3px}
+  .strip-head .live-ind{margin-left:auto}
 
   /* ===== 시가총액 히트맵 ===== */
   .heatmap-card{margin:6px 20px 4px}
@@ -424,6 +428,10 @@
 </header>
 
 <!-- 시장 스트립 -->
+<div class="strip-head">
+  <span class="strip-title">시장 지표</span>
+  <span class="live-ind" id="live-ind">시세 불러오는 중…</span>
+</div>
 <section class="strip" id="strip"></section>
 
 <!-- 시가총액 히트맵 (TradingView · 시장 직접 선택, 국내/미국 구분 없음) -->
@@ -1619,16 +1627,43 @@ async function loadMarket(){
       n++;
     }
   });
-  marketTime=(m._updated||'').replace('T',' ').slice(0,16);
+  marketTime=m._updated||'';                       // 원본 ISO(UTC) 보존 → 배지에서 KST로 변환
   renderStrip();
   const fx=document.getElementById('fx');
   if(m.usdkrw && typeof m.usdkrw.price==='number') fx.textContent=m.usdkrw.price.toLocaleString('ko-KR',{minimumFractionDigits:1,maximumFractionDigits:1});
   updateLiveBadge(n);
 }
+// 수집 시각 표시: _updated(UTC ISO)를 KST로 변환 + 상대 시간('N초 전')
+function parseUTC(iso){
+  if(!iso) return null;
+  let s=String(iso).trim().replace(' ','T');
+  if(!/[zZ]$|[+\-]\d\d:?\d\d$/.test(s)) s+='Z';      // 타임존 없으면 UTC로 간주
+  const d=new Date(s); return isNaN(d)?null:d;
+}
+function fmtCollected(iso){
+  const d=parseUTC(iso); if(!d) return '';
+  const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Seoul',hourCycle:'h23',
+    month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'}).formatToParts(d);
+  const o={}; p.forEach(x=>o[x.type]=x.value);
+  return o.month+'.'+o.day+' '+o.hour+':'+o.minute+':'+o.second;
+}
+function agoText(iso){
+  const d=parseUTC(iso); if(!d) return '';
+  const s=Math.max(0,Math.floor((Date.now()-d.getTime())/1000));
+  if(s<60) return s+'초 전';
+  const m=Math.floor(s/60); if(m<60) return m+'분 전';
+  return Math.floor(m/60)+'시간 전';
+}
 function updateLiveBadge(n){
   const el=document.getElementById('live-ind'); if(!el) return;
-  if(n>0){ el.className='live-ind on'; el.innerHTML='● 시세 LIVE '+n+'/13 · '+marketTime+' <span style="opacity:.7">yfinance</span>'; }
-  else { el.className='live-ind'; el.textContent='시세 연결 대기 — fetch_market.py 실행 필요'; }
+  if(n>0){
+    el.className='live-ind on';
+    const kst=fmtCollected(marketTime), ago=agoText(marketTime);
+    el.innerHTML='● 실시간 시세 '+n+'개 지표 · 수집 '+kst+(ago?' ('+ago+')':'')+' <span style="opacity:.65;font-weight:600">KST</span>';
+  } else {
+    el.className='live-ind';
+    el.textContent='시세 불러오는 중…';
+  }
 }
 
 /* ---- 관심종목 실시간 시세: data/quotes.json ---- */

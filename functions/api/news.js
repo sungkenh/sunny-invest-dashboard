@@ -82,17 +82,34 @@ function decode(s) {
 function tag(block, name) { const m = block.match(new RegExp('<' + name + '[^>]*>([\\s\\S]*?)<\\/' + name + '>')); return m ? m[1] : ''; }
 function reltime(mins) { if (mins < 1) return '방금'; if (mins < 60) return mins + '분 전'; const h = Math.floor(mins / 60); if (h < 24) return h + '시간 전'; return Math.floor(h / 24) + '일 전'; }
 
-async function translate(text) {
-  if (!text) return text;
-  try {
-    const u = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ko&dt=t&q=' + encodeURIComponent(text);
-    const r = await fetch(u, { headers: { 'User-Agent': UA } });
-    const d = await r.json();
-    return (d[0] || []).map((seg) => seg[0]).filter(Boolean).join('') || text;
-  } catch (e) { return text; }
-}
-
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+function hasKo(s) { return /[가-힣]/.test(s || ''); }
+// gtx가 깨는 고유명사 보정(원문에 그 브랜드가 있을 때만 — 오작동 방지)
+function fixBrands(en, ko) {
+  if (/\bAnthropic\b/i.test(en)) ko = ko.replace(/인류\s*주식/g, '앤트로픽');
+  return ko;
+}
+// gtx 1회 — 여러 헤드라인을 줄바꿈으로 묶어 한 번에 번역(서브리퀘스트·레이트리밋 최소화).
+// 반환=번역된 줄 배열. HTTP오류·줄수 불일치·미번역(한국어 없음)이면 throw → 재시도.
+async function gtxLines(texts) {
+  const joined = texts.map((t) => (t || '').replace(/\s*\n\s*/g, ' ')).join('\n');
+  const u = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ko&dt=t&q=' + encodeURIComponent(joined.slice(0, 1800));
+  const r = await fetch(u, { headers: { 'User-Agent': UA, 'Accept': 'application/json' } });
+  if (!r.ok) throw new Error('gtx ' + r.status);
+  const d = await r.json();
+  const out = (d[0] || []).map((seg) => seg[0]).filter(Boolean).join('');
+  const lines = out.split('\n');
+  if (lines.length !== texts.length || !hasKo(out)) throw new Error('mismatch');
+  return lines.map((ko, i) => fixBrands(texts[i], ko.trim()));
+}
+// 헤드라인 묶음 번역 — 3회 재시도(백오프). 끝내 실패 시 원문(영어) 유지 + ok:false
+async function translateChunk(texts) {
+  for (let i = 0; i < 3; i++) {
+    try { return { kos: await gtxLines(texts), ok: true }; }
+    catch (e) { await sleep(150 * (i + 1)); }
+  }
+  return { kos: texts.slice(), ok: false };
+}
 
 // 단일 쿼리 1회 — HTTP 오류·빈 RSS(차단·레이트리밋 징후)면 throw
 async function fetchQueryOnce(mk, cat, q) {
@@ -197,20 +214,26 @@ async function __cfHandler(event) {
     if (seen.has(k)) continue;
     seen.add(k); items.push(n);
   }
-  // 미국 기사 → 한국어 번역(병렬), 원문은 ti_en/sum 보존
-  await Promise.all(items.filter((n) => n.mk === 'us').map(async (n) => {
-    const en = n.ti, ko = await translate(en);
-    if (ko && ko !== en) { n.ti = ko; n.ti_en = en; n.sum = en; }
-  }));
+  // 미국 기사 → 한국어 번역. 8건씩 줄바꿈 배치(서브리퀘스트·레이트리밋 최소화)·재시도. 원문은 ti_en/sum 보존
+  const usItems = items.filter((n) => n.mk === 'us');
+  const CHUNK = 8, chunks = [];
+  for (let i = 0; i < usItems.length; i += CHUNK) chunks.push(usItems.slice(i, i + CHUNK));
+  let trFailed = 0;
+  await runPool(chunks.map((grp) => async () => {
+    const { kos, ok } = await translateChunk(grp.map((n) => n.ti));
+    grp.forEach((n, j) => { const en = n.ti; n.ti = kos[j] || en; n.ti_en = en; n.sum = en; });
+    if (!ok) trFailed++;
+  }), 3);
   // 속보 플래그(제목 마커) — 미국 기사는 원문(ti_en)도 검사
   items.forEach((n) => { n.breaking = BRK_RE.test((n.ti || '') + ' ' + (n.ti_en || '')); });
   items.sort((a, b) => a.min - b.min);
   items.forEach((n, i) => { n.hot = i < 6; });
 
   const data = { _updated: new Date().toISOString().slice(0, 19), count: items.length, items };
-  // 전부 실패(0건)면 빈 결과를 10분 캐시하지 않음 → 60초 뒤 만료(다음 방문 재시도)
-  CACHE = { ts: items.length ? Date.now() : Date.now() - (TTL - 60000), data };
-  return ok(data, items.length === 0);
+  // 0건이거나 번역 실패분이 있으면 10분 캐시하지 않음 → 60초 뒤 만료(다음 방문 재시도)
+  const shortCache = items.length === 0 || trFailed > 0;
+  CACHE = { ts: shortCache ? Date.now() - (TTL - 60000) : Date.now(), data };
+  return ok(data, shortCache);
 };
 
 function ok(obj, empty) {
