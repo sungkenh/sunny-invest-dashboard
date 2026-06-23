@@ -18,15 +18,14 @@ NAVER_CODE = {'kospi': 'KOSPI', 'kosdaq': 'KOSDAQ'}
 NAVER_HDR = {'User-Agent': 'Mozilla/5.0', 'Referer': 'https://finance.naver.com/sise/'}
 
 def naver_index(code):
-    """네이버 실시간 지수 → (price, chg, pct, delay분). 등락 부호는 코드(1·2 상승 / 4·5 하락)로."""
+    """네이버 실시간 지수 → (price, chg, pct, delay분). Raw 등락 필드는 이미 부호 포함."""
     u = 'https://polling.finance.naver.com/api/realtime/domestic/index/%s' % code
     d = json.loads(urllib.request.urlopen(urllib.request.Request(u, headers=NAVER_HDR), timeout=8).read())
     row = d['datas'][0]
-    c = (row.get('compareToPreviousPrice') or {}).get('code', '3')
-    sign = -1 if c in ('4', '5') else (0 if c == '3' else 1)
+    # ⚠️ 네이버 Raw 필드는 이미 부호 포함(하락이면 음수) — 부호를 또 곱하면 하락장에서 뒤집힌다. 그대로 사용.
     price = float(row['closePriceRaw'])
-    chg = float(row['compareToPreviousClosePriceRaw']) * sign
-    pct = float(row['fluctuationsRatioRaw']) * sign
+    chg = float(row['compareToPreviousClosePriceRaw'])
+    pct = float(row['fluctuationsRatioRaw'])
     delay = int((row.get('stockExchangeType') or {}).get('delayTime', 0))
     return price, chg, pct, delay
 

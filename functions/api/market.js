@@ -35,11 +35,11 @@ async function naverIndex(code) {
     { headers: { 'User-Agent': UA, 'Referer': 'https://finance.naver.com/sise/' } });
   if (!r.ok) throw new Error('naver ' + r.status);
   const j = await r.json(); const row = j.datas[0];
-  const c = (row.compareToPreviousPrice || {}).code || '3';
-  const sign = (c === '4' || c === '5') ? -1 : (c === '3' ? 0 : 1);
+  // ⚠️ 네이버 Raw 필드(compareToPreviousClosePriceRaw·fluctuationsRatioRaw)는 이미 부호 포함(하락이면 음수).
+  //    별도 부호를 곱하면 하락장에서 +/−가 뒤집힘 → 그대로 사용한다.
   return {
-    price: round(+row.closePriceRaw, 4), chg: round(+row.compareToPreviousClosePriceRaw * sign, 4),
-    pct: round(+row.fluctuationsRatioRaw * sign, 2), delay: +((row.stockExchangeType || {}).delayTime || 0),
+    price: round(+row.closePriceRaw, 4), chg: round(+row.compareToPreviousClosePriceRaw, 4),
+    pct: round(+row.fluctuationsRatioRaw, 2), delay: +((row.stockExchangeType || {}).delayTime || 0),
   };
 }
 
