@@ -127,6 +127,8 @@
   .myport-btn:hover{border-color:var(--accent);color:var(--accent)}
   .myport-tbl input{width:58px;background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:3px 6px;font-size:12px;font-weight:700;text-align:right;font-family:inherit;font-variant-numeric:tabular-nums}
   .myport-tbl input.mp-amt{width:96px}
+  .myport-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .myport-wrap .myport-tbl{min-width:600px}
   .myport-tbl input:focus{outline:none;border-color:var(--accent)}
   .myport-tbl select.mp-cls{background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:2px 4px;font-size:11px;font-family:inherit}
   .myport-tbl .mp-del{cursor:pointer;background:none;border:none;color:var(--muted2);font-size:13px;font-family:inherit;line-height:1}
@@ -248,7 +250,7 @@
       <button class="myport-btn" id="myport-load" type="button">↩ 추천 불러오기</button>
       <button class="myport-btn" id="myport-clear" type="button">전체 비우기</button>
     </div>
-    <table class="pen-tbl myport-tbl" id="myport-tbl"></table>
+    <div class="myport-wrap"><table class="pen-tbl myport-tbl" id="myport-tbl"></table></div>
     <div id="myport-summary"></div>
   </div>
 
@@ -438,11 +440,11 @@ const PEN_ETF_LIST=PEN_ETF_UNIVERSE.map(e=>({nm:e.nm, code:e.code, cls:e.cls, re
 function etfMeta(code){ return PEN_ETF_UNIVERSE.find(x=>x.code===code)||null; }   // 코드→{cagr,yrs} 조회
 const MYPORT_LS='alphadesk.penport';
 let MYPORT=[];
-const MYPORT_NOTE='<div class="lt-note" style="margin-top:8px">‘예상수익률’ 기본값은 각 ETF의 <b>실현 연평균 수익률(CAGR)</b>(야후 수정종가=배당 포함 총수익, 입력칸에 마우스 올리면 산정기간 표시)입니다 — <b>과거 실적</b>이며 미래 보장이 아니니(상장기간이 짧거나 최근 강세장이면 과대) 보수적으로 직접 낮춰 입력하세요. <b>위험자산(주식+리츠) 합계 70% 초과 시 퇴직연금 규정 위반</b>입니다. ETF 코드·명칭은 <b>네이버 증권 검증</b>(레버리지/인버스 제외). 정보 제공용이며 투자 권유가 아닙니다.</div>';
+const MYPORT_NOTE='<div class="lt-note" style="margin-top:8px"><b>‘현재 수익률’</b>은 내 계좌의 평가손익률(매입 대비 ±%)을 적으면 평가금액·평가손익을 계산합니다(선택). <b>‘예상수익률’</b> 기본값은 각 ETF의 <b>실현 연평균 수익률(CAGR)</b>(야후 수정종가=배당 포함 총수익, 입력칸에 마우스 올리면 산정기간 표시)입니다 — <b>과거 실적</b>이며 미래 보장이 아니니(상장기간이 짧거나 최근 강세장이면 과대) 보수적으로 직접 낮춰 입력하세요. <b>위험자산(주식+리츠) 합계 70% 초과 시 퇴직연금 규정 위반</b>입니다. ETF 코드·명칭은 <b>네이버 증권 검증</b>(레버리지/인버스 제외). 정보 제공용이며 투자 권유가 아닙니다.</div>';
 function penEsc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function penAmt(){ const a=document.getElementById('pen-amount'); const v=parseInt((a&&a.value||'').replace(/[^0-9]/g,''),10); return (isNaN(v)||v<0)?0:v; }
 const penWonF=v=>Math.round(v).toLocaleString('ko-KR');
-function myportLoad(){ try{ const a=JSON.parse(localStorage.getItem(MYPORT_LS)||'null'); if(Array.isArray(a)) MYPORT=a.map(h=>({nm:String(h&&h.nm||''), code:String(h&&h.code||''), cls:CLS_LAB[h&&h.cls]?h.cls:'stock', amount:Math.max(0,Math.round(+(h&&h.amount)||0)), ret:+(h&&h.ret)||0})); }catch(e){} }
+function myportLoad(){ try{ const a=JSON.parse(localStorage.getItem(MYPORT_LS)||'null'); if(Array.isArray(a)) MYPORT=a.map(h=>({nm:String(h&&h.nm||''), code:String(h&&h.code||''), cls:CLS_LAB[h&&h.cls]?h.cls:'stock', amount:Math.max(0,Math.round(+(h&&h.amount)||0)), ret:+(h&&h.ret)||0, cur:+(h&&h.cur)||0})); }catch(e){} }
 function myportSave(){ try{ localStorage.setItem(MYPORT_LS, JSON.stringify(MYPORT)); }catch(e){} }
 function myportSelectInit(){
   const sel=document.getElementById('myport-select'); if(!sel) return;
@@ -455,10 +457,10 @@ function myportSelectInit(){
 }
 function myportAdd(val){
   if(val==='custom'){ const nm=prompt('ETF 이름(또는 코드)을 입력하세요:'); if(!nm||!nm.trim()) return;
-    MYPORT.push({nm:nm.trim().slice(0,40), code:'', cls:'stock', amount:0, ret:PEN_EXP.stock}); }
+    MYPORT.push({nm:nm.trim().slice(0,40), code:'', cls:'stock', amount:0, ret:PEN_EXP.stock, cur:0}); }
   else { const e=PEN_ETF_LIST[+val]; if(!e) return;
     if(MYPORT.some(h=>h.code===e.code && h.nm===e.nm)) return;     // 중복 방지
-    MYPORT.push({nm:e.nm, code:e.code, cls:e.cls, amount:0, ret:e.ret}); }
+    MYPORT.push({nm:e.nm, code:e.code, cls:e.cls, amount:0, ret:e.ret, cur:0}); }
   myportSave(); renderMyPort();
 }
 function myportLoadRec(){
@@ -467,7 +469,7 @@ function myportLoadRec(){
   const ai=document.getElementById('pen-amount'); if(ai && !penAmt()) ai.value=base.toLocaleString('ko-KR');
   MYPORT=['stock','reit','bond','cash'].filter(k=>lastRecW[k]>0.001).map(k=>{
     const e=PEN_PICKS[k].etfs[0], m=etfMeta(e.c);
-    return {nm:e.nm, code:e.c, cls:k, amount:Math.round(lastRecW[k]*base), ret:(m&&typeof m.cagr==='number'?m.cagr:PEN_EXP[k])};
+    return {nm:e.nm, code:e.c, cls:k, amount:Math.round(lastRecW[k]*base), ret:(m&&typeof m.cagr==='number'?m.cagr:PEN_EXP[k]), cur:0};
   });
   myportSave(); renderMyPort();
 }
@@ -475,15 +477,21 @@ function myportTotals(){
   const total=MYPORT.reduce((s,h)=>s+(+h.amount||0),0);
   const wret=total>0?MYPORT.reduce((s,h)=>s+(+h.amount||0)*(+h.ret||0),0)/total:0;
   const riskAmt=MYPORT.filter(h=>h.cls==='stock'||h.cls==='reit').reduce((s,h)=>s+(+h.amount||0),0);
-  return {total, wret, riskW:total>0?riskAmt/total*100:0};
+  const curVal=MYPORT.reduce((s,h)=>s+(+h.amount||0)*(1+(+h.cur||0)/100),0);   // 현재 평가금액
+  const profit=curVal-total;                                                    // 평가손익
+  const anyCur=MYPORT.some(h=>(+h.cur||0)!==0);                                  // 현재 수익률 입력 여부
+  return {total, wret, riskW:total>0?riskAmt/total*100:0, curVal, profit, curRet:total>0?profit/total*100:0, anyCur};
 }
 function myportSummaryHtml(){
-  const r1=x=>Math.round(x*10)/10, t=myportTotals(), total=t.total, wret=t.wret, riskW=t.riskW;
-  const riskWarn=riskW>70.5, diff=wret-lastRecExp;
+  const r1=x=>Math.round(x*10)/10, t=myportTotals();
+  const riskWarn=t.riskW>70.5, diff=t.wret-lastRecExp;
+  const pc=t.profit>=0?'var(--up)':'var(--down)';   // 손익 색(KR: 이익 빨강/손실 파랑)
   return `<div class="mp-sum">`
-    +`<span>총 투자금액 <b>₩${penWonF(total)}</b></span>`
-    +`<span>위험자산(주식+리츠) <b class="${riskWarn?'warnv':''}">${r1(riskW)}%</b>${riskWarn?` <small style="color:var(--up)">규정 70% 초과!</small>`:''}</span>`
-    +`<span>연 기대수익 <b style="color:var(--gold)">${wret.toFixed(2)}%</b>${total>0?` <small style="color:var(--muted2)">≈ 연 ₩${penWonF(total*wret/100)}</small>`:''}</span>`
+    +`<span>총 투자금액(원금) <b>₩${penWonF(t.total)}</b></span>`
+    +(t.anyCur?`<span>현재 평가금액 <b>₩${penWonF(t.curVal)}</b></span>`
+       +`<span>평가손익 <b style="color:${pc}">${t.profit>=0?'+':'−'}₩${penWonF(Math.abs(t.profit))} (${t.curRet>=0?'+':''}${t.curRet.toFixed(2)}%)</b></span>`:'')
+    +`<span>위험자산(주식+리츠) <b class="${riskWarn?'warnv':''}">${r1(t.riskW)}%</b>${riskWarn?` <small style="color:var(--up)">규정 70% 초과!</small>`:''}</span>`
+    +`<span>연 기대수익 <b style="color:var(--gold)">${t.wret.toFixed(2)}%</b>${t.total>0?` <small style="color:var(--muted2)">≈ 연 ₩${penWonF(t.total*t.wret/100)}</small>`:''}</span>`
     +`<span style="color:var(--muted2)">추천(${lastRecExp.toFixed(1)}%) 대비 <b style="color:${diff>=0?'var(--up)':'var(--down)'}">${diff>=0?'+':''}${diff.toFixed(2)}%p</b></span>`
     +`</div>`;
 }
@@ -498,11 +506,12 @@ function renderMyPort(){
       +`<td class="l"><b style="color:${col}">${penEsc(h.nm)}</b>${h.code?` <span style="color:var(--muted2)">${h.code}</span>`:''}</td>`
       +`<td class="l"><select class="mp-cls" data-i="${i}">${['stock','reit','bond','cash'].map(c=>`<option value="${c}" ${c===h.cls?'selected':''}>${CLS_LAB[c]}</option>`).join('')}</select></td>`
       +`<td><input class="mp-amt" data-i="${i}" inputmode="numeric" value="${(+h.amount||0).toLocaleString('ko-KR')}">원</td>`
+      +`<td><input class="mp-cur" data-i="${i}" type="number" step="0.1" value="${h.cur||0}" title="현재 평가손익률(매입 대비 ±%) — 내 계좌 수익률 입력">%</td>`
       +`<td><input class="mp-r" data-i="${i}" type="number" step="0.1" value="${h.ret}" title="${(()=>{const m=etfMeta(h.code);return m&&typeof m.cagr==='number'?`실현 연평균(배당 포함) ${m.cagr>=0?'+':''}${m.cagr}% · 최근 ${m.yrs}년 기준`:'직접 입력 값';})()}">%</td>`
       +`<td class="hi mp-wcell">${Math.round(w*10)/10}%</td>`
       +`<td><button class="mp-del" data-i="${i}" type="button" title="삭제" aria-label="삭제">✕</button></td></tr>`;
   });
-  tbl.innerHTML=`<thead><tr><th class="l">ETF</th><th class="l">자산군</th><th>투자금액</th><th>예상수익률</th><th>비중</th><th></th></tr></thead><tbody>${rows}</tbody>`;
+  tbl.innerHTML=`<thead><tr><th class="l">ETF</th><th class="l">자산군</th><th>투자금액</th><th>현재 수익률</th><th>예상수익률</th><th>비중</th><th></th></tr></thead><tbody>${rows}</tbody>`;
   sum.innerHTML=myportSummaryHtml()+MYPORT_NOTE;
 }
 function myportRecalcLight(){   // 입력 중 테이블 재렌더 없이 비중·요약만 갱신(커서 유지)
@@ -519,6 +528,7 @@ function myportInit(){
   if(tbl){
     tbl.addEventListener('input',e=>{ const t=e.target, i=+t.dataset.i; if(isNaN(i)||!MYPORT[i]) return;
       if(t.classList.contains('mp-amt')){ MYPORT[i].amount=Math.max(0,parseInt((t.value||'').replace(/[^0-9]/g,''),10)||0); myportSave(); myportRecalcLight(); }
+      else if(t.classList.contains('mp-cur')){ MYPORT[i].cur=+t.value||0; myportSave(); myportRecalcLight(); }
       else if(t.classList.contains('mp-r')){ MYPORT[i].ret=+t.value||0; myportSave(); myportRecalcLight(); } });
     tbl.addEventListener('change',e=>{ const t=e.target, i=+t.dataset.i; if(isNaN(i)||!MYPORT[i]) return;
       if(t.classList.contains('mp-amt')){ t.value=(+MYPORT[i].amount||0).toLocaleString('ko-KR'); }   // 블러 시 콤마 포맷
