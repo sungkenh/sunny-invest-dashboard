@@ -252,6 +252,17 @@
   .srow .art{font-size:0.625rem;color:var(--accent2);font-weight:700;text-decoration:none;white-space:nowrap}
   .srow .art:hover{text-decoration:underline}
   .sched-empty{color:var(--muted2);font-size:0.7188rem;padding:8px 2px}
+  /* 연기금 매매동향 */
+  .nps-cols{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px}
+  @media(max-width:1180px){ .nps-cols{grid-template-columns:1fr 1fr} }
+  .nps-col h6{margin:0 0 4px;font-size:0.6875rem;font-weight:800;letter-spacing:.2px}
+  .nps-col h6.up{color:var(--up)} .nps-col h6.down{color:var(--down)}
+  .nps-row{display:flex;justify-content:space-between;align-items:baseline;gap:6px;padding:4px 1px;border-bottom:1px solid #141d31;cursor:pointer}
+  .nps-row:last-child{border-bottom:none}
+  .nps-row:hover{background:#101a2e}
+  .nps-row .nm{font-size:0.75rem;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .nps-row .amt{font-size:0.7188rem;font-weight:700;flex:none;font-variant-numeric:tabular-nums}
+  .nps-empty{color:var(--muted2);font-size:0.7188rem;padding:6px 2px;line-height:1.6}
 
   /* 심층 분석 패널 */
   .deep .head{align-items:flex-start}
@@ -580,6 +591,11 @@
         <a href="schedule.html" style="font-size:0.6875rem;color:var(--accent);font-weight:700;margin-left:auto">전체 →</a>
       </div>
       <div class="body" style="padding:8px 12px" id="sched"></div>
+    </div>
+
+    <div class="card nps-card">
+      <div class="head" style="flex-wrap:wrap;gap:6px"><h3>🏛️ 연기금 매매동향</h3><span class="tag" id="nps-when">일별</span></div>
+      <div class="body" id="nps-body" style="padding:8px 12px"></div>
     </div>
   </div>
 
@@ -1655,6 +1671,26 @@ async function loadVideos(){
   const d=await fetchLive('/api/videos','data/videos.json');
   if(d && d.items && d.items.length){ SAMPLE_VIDEOS=d.items; renderVideos(); }
 }
+/* ---- 연기금(국민연금 등) 일일 순매수/순매도 — data/nps.json (pykrx·GitHub Actions 수집) ---- */
+let NPS=null;
+function renderNps(){
+  const host=document.getElementById('nps-body'); if(!host) return;
+  const d=NPS, has=d&&((d.buy&&d.buy.length)||(d.sell&&d.sell.length));
+  if(!has){
+    host.innerHTML='<div class="nps-empty">연기금 매매 데이터를 준비 중입니다.<br><a href="http://data.krx.co.kr/contents/MDC/MDI/mdiLoader/index.cmd?menuId=MDC0201020404" target="_blank" rel="noopener" style="color:var(--accent2);font-weight:700">KRX에서 직접 보기 ↗</a> <span style="color:var(--muted2);font-size:0.625rem">(평일 장 마감 후 갱신)</span></div>';
+    return;
+  }
+  const when=document.getElementById('nps-when');
+  if(when&&d.date) when.textContent=d.date.slice(0,4)+'.'+d.date.slice(4,6)+'.'+d.date.slice(6,8);
+  const row=(x,c)=>`<div class="nps-row" onclick="searchAndAdd('${(x.name||'').replace(/['\\]/g,'')}')" title="관심종목 담기"><span class="nm">${x.name||x.ticker}</span><span class="amt mono" style="color:${c}">${fmt(Math.round(Math.abs(x.amt)))}억</span></div>`;
+  host.innerHTML=`<div class="nps-cols">
+    <div class="nps-col"><h6 class="up">▲ 순매수 TOP</h6>${(d.buy||[]).slice(0,8).map(x=>row(x,'var(--up)')).join('')||'<div class="nps-empty">없음</div>'}</div>
+    <div class="nps-col"><h6 class="down">▼ 순매도 TOP</h6>${(d.sell||[]).slice(0,8).map(x=>row(x,'var(--down)')).join('')||'<div class="nps-empty">없음</div>'}</div>
+  </div>`;
+}
+async function loadNps(){
+  try{ const r=await fetch('data/nps.json?t='+Date.now(),{cache:'no-store'}); if(r.ok){ NPS=await r.json(); renderNps(); } }catch(e){}
+}
 function bindNewsTabs(){
   document.querySelectorAll('#news-tabs button').forEach(b=>b.addEventListener('click',()=>{
     document.querySelectorAll('#news-tabs button').forEach(x=>x.classList.remove('on'));
@@ -2051,14 +2087,14 @@ seedDeepFromCache();                                                            
 if(!seedNewsFromCache()) SAMPLE_NEWS=[];                                        // 보관본 즉시 시드, 없으면 가짜 예시 대신 '불러오는 중'
 seedMarketFromCache();                                                          // 데모값 대신 직전 시세 즉시 시드(과거값 깜빡임 방지)
 seedCalFromCache();                                                             // 빈 일정 대신 직전 일정 즉시 시드
-renderStrip(); renderWL(); renderSched(); renderDeep(); renderThemes(); renderNews(); renderVideos(); renderTrump(); bindNewsTabs(); renderFooter(); tick(); memoInit();
+renderStrip(); renderWL(); renderSched(); renderDeep(); renderThemes(); renderNews(); renderVideos(); renderTrump(); bindNewsTabs(); renderFooter(); tick(); memoInit(); renderNps();
 renderHmDataset();
 loadWatchlistBaseline();                                                       // 저장본 없으면 data/watchlist.json 시드
 cloudInit();                                                                   // 서버(KV) 동기화 — 있으면 서버값 우선, 없으면 무중단 폴백
 loadMarket(); loadWatch(); loadBTC(); loadDeep();                              // 임계(상단 시세·관심종목·심층)
 idleLoad(()=>{ loadCalendar(); loadFearGreed(); }, 1);
 idleLoad(()=>{ loadNewsLive(); loadThemes(); }, 2);
-idleLoad(()=>{ loadVideos(); loadTrump(); }, 3);                               // 영상 썸네일은 loading=lazy(네이티브) 지연
+idleLoad(()=>{ loadVideos(); loadTrump(); loadNps(); }, 3);                     // 영상 썸네일은 loading=lazy(네이티브) 지연 · 연기금 매매동향
 idleLoad(()=>{ loadStripCandles(); }, 4);                                      // 지표 미니캔들(합성 프리뷰 이미 표시)
 setupHeatmapLazy();
 setupRelStrLazy();                                                             // 지수 대비 주도주(뷰포트 진입 시)
@@ -2074,6 +2110,7 @@ setInterval(loadCalendar,300000);                // 일정 5분
 setInterval(loadThemes,600000);                  // 테마 데스크 10분
 setInterval(loadFearGreed,600000);               // 공포탐욕 10분
 setInterval(loadTrump,300000);                   // 트럼프 5분
+setInterval(loadNps,600000);                     // 연기금 매매동향 10분(일별 데이터 · 재배포 반영용)
 
 /* 창 리사이즈 중 가변 폰트(vw clamp)의 연속 리플로우 완화(특히 맥에서 버벅임) —
    드래그 중엔 루트 글씨를 고정해 매 프레임 텍스트 재배치를 막고, 크기가 확정(180ms 안정)되면 한 번에 적용.
