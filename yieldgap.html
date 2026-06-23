@@ -119,6 +119,20 @@
   .pen-tbl thead th{color:var(--muted);font-weight:600;font-size:11px}
   .pen-tbl tbody tr:last-child td{border-bottom:none}
   .pen-tbl td.hi{color:var(--accent2);font-weight:800}
+  .pen-sub{font-size:13.5px;font-weight:800;color:var(--text);margin:6px 0 9px;padding-top:4px}
+  .pen-sub small{font-weight:400;font-size:11.5px;color:var(--muted2)}
+  .myport-ctl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:2px 0 10px}
+  .myport-ctl select{background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:5px 8px;font-size:12px;font-family:inherit;max-width:260px}
+  .myport-btn{cursor:pointer;border:1px solid var(--border);background:var(--panel2);color:var(--muted);border-radius:7px;padding:5px 11px;font-size:11.5px;font-weight:700;font-family:inherit}
+  .myport-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .myport-tbl input{width:58px;background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:3px 6px;font-size:12px;font-weight:700;text-align:right;font-family:inherit;font-variant-numeric:tabular-nums}
+  .myport-tbl input:focus{outline:none;border-color:var(--accent)}
+  .myport-tbl select.mp-cls{background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:2px 4px;font-size:11px;font-family:inherit}
+  .myport-tbl .mp-del{cursor:pointer;background:none;border:none;color:var(--muted2);font-size:13px;font-family:inherit;line-height:1}
+  .myport-tbl .mp-del:hover{color:var(--up)}
+  .mp-sum{display:flex;flex-wrap:wrap;gap:7px 18px;font-size:12.5px;color:var(--muted);margin-top:11px;padding:9px 12px;background:var(--panel2);border:1px solid var(--border);border-radius:9px}
+  .mp-sum b{color:var(--text);font-variant-numeric:tabular-nums}
+  .mp-sum b.warnv{color:var(--gold)}
   .pen-warn{color:var(--up);font-weight:700}
   .pies{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px}
   @media(max-width:540px){.pies{grid-template-columns:1fr}}
@@ -216,14 +230,25 @@
     <h3>퇴직연금 ETF 포트폴리오 <span style="font-weight:400;color:var(--muted2);font-size:12px">(한국 상장 ETF만 · 장기 검증 · 연 기대수익 ↑)</span></h3>
     <p class="alloc-intro" id="pen-intro"></p>
     <div class="pen-inputs">
-      <span>위험자산 비중 <input type="number" id="pen-risk" value="70" min="0" max="70" step="5">% <small style="color:var(--muted2)">(규정상 최대 70)</small></span>
+      <span>위험자산(주식+리츠) 비중 <input type="number" id="pen-risk" value="70" min="0" max="70" step="5">% <small style="color:var(--muted2)">(현금 30% 고정 · 나머지는 채권)</small></span>
       <span>총 투자금액 <input type="text" id="pen-amount" inputmode="numeric" placeholder="예: 30,000,000" style="width:120px;text-align:right">원 <small style="color:var(--muted2)">(입력 시 비중별 금액 자동 배분)</small></span>
     </div>
+
+    <div class="pen-sub">📌 추천 포트폴리오 <small>— 현금 30% + 위험·안전 배분, 장기 검증 ETF 1순위</small></div>
     <div class="pen-grid">
       <div id="pen-donut"></div>
       <table class="pen-tbl" id="pen-tbl"></table>
     </div>
     <div class="lt-note" id="pen-note"></div>
+
+    <div class="pen-sub" style="margin-top:18px">🧮 내 운영 포트폴리오 <small>— 살 ETF를 추가해 직접 구성하고 예상수익률을 계산 (이 브라우저에 저장)</small></div>
+    <div class="myport-ctl">
+      <select id="myport-select"></select>
+      <button class="myport-btn" id="myport-load" type="button">↩ 추천 불러오기</button>
+      <button class="myport-btn" id="myport-clear" type="button">전체 비우기</button>
+    </div>
+    <table class="pen-tbl myport-tbl" id="myport-tbl"></table>
+    <div id="myport-summary"></div>
   </div>
 
   <div class="lt-card tac-card" id="tactical-card" style="display:none">
@@ -346,9 +371,12 @@ function renderPension(){
   card.style.display='';
   const r1=x=>Math.round(x*10)/10;
   let risk=parseFloat(document.getElementById('pen-risk').value); if(isNaN(risk))risk=70; risk=Math.min(70,Math.max(0,risk))/100;
-  const safe=1-risk;
-  const w={ stock:risk*PEN_RISK_SPLIT, reit:risk*(1-PEN_RISK_SPLIT), bond:safe*(2/3), cash:safe*(1/3) };
+  const CASH=0.30;                              // 현금 30% 고정(안전 베이스) — 70% 비중에서 제외
+  const bondW=Math.max(0, 0.70-risk);           // 70% 액티브 중 위험(주식+리츠) 제외 나머지 = 채권
+  const safe=bondW+CASH;
+  const w={ stock:risk*PEN_RISK_SPLIT, reit:risk*(1-PEN_RISK_SPLIT), bond:bondW, cash:CASH };
   const exp=w.stock*PEN_EXP.stock+w.reit*PEN_EXP.reit+w.bond*PEN_EXP.bond+w.cash*PEN_EXP.cash;
+  lastRecW=w; lastRecExp=exp;                   // 운영 포트폴리오 '추천 불러오기'·비교용
   const order=['stock','reit','bond','cash'];
   // 총 투자금액 → 비중별 할당 금액
   const ainp=document.getElementById('pen-amount');
@@ -374,8 +402,102 @@ function renderPension(){
   });
   const amtHead=amt?`총 ₩${wonF(amt)} 배분`:'할당 금액';
   document.getElementById('pen-tbl').innerHTML=`<thead><tr><th class="l">자산(비중)</th><th>${amtHead}</th><th class="l">한국 상장 ETF · 코드</th><th>실현 CAGR</th><th class="l">검증 · 설명</th></tr></thead><tbody>`+rows+'</tbody>';
-  document.getElementById('pen-intro').innerHTML=`퇴직연금(DC·IRP)은 <b>한국 상장 ETF만</b> 살 수 있고 <b>위험자산 최대 70%</b> 규정이 있습니다. 리츠 ETF도 위험자산이라 70% 안에 담을 수 있어 <b>위험 ${r1(risk*100)}%(주식+리츠) · 안전 ${r1(safe*100)}%(채권+현금)</b>로 구성했습니다. 각 칸은 <b>장기 수익률이 검증된</b> 대표 ETF를 1순위로 제시합니다.`;
-  document.getElementById('pen-note').innerHTML=`<b style="color:var(--gold)">연 기대수익 ${exp.toFixed(1)}%</b>는 장기 보수적 가정(주식 ${PEN_EXP.stock}·리츠 ${PEN_EXP.reit}·채권 ${PEN_EXP.bond}·현금 ${PEN_EXP.cash}%)으로 계산했습니다 — 표의 '실현 CAGR'(최근 강세장 20%+)는 <b>과거 실적</b>이며 미래 보장이 아닙니다. <b style="color:var(--accent2)">수익 ↑ 팁</b>: ① 위험 70%를 나스닥100 등 성장주에 더 싣기 ② 안전 30%를 'S&P500 채권혼합형'(주식30:채권70 — 규정상 안전자산) ETF로 채우면 안전 규정을 지키면서 주식 노출을 ~9%p 더 높일 수 있습니다. 레버리지·인버스는 연금 매수 불가. 투자 권유가 아닙니다.`;
+  document.getElementById('pen-intro').innerHTML=`퇴직연금(DC·IRP)은 <b>한국 상장 ETF만</b> 살 수 있고 <b>위험자산(주식+리츠) 최대 70%</b> 규정이 있습니다. <b>현금 30%</b>를 안전 베이스로 고정하고, 나머지 <b>70%</b>를 <b>위험 ${r1(risk*100)}%(주식+리츠) · 채권 ${r1(bondW*100)}%</b>로 배분했습니다. 각 칸은 <b>장기 수익률이 검증된</b> 대표 ETF를 1순위로 제시합니다.`;
+  renderMyPort();   // 내 운영 포트폴리오도 함께 갱신(금액 등)
+  document.getElementById('pen-note').innerHTML=`<b style="color:var(--gold)">연 기대수익 ${exp.toFixed(1)}%</b>는 장기 보수적 가정(주식 ${PEN_EXP.stock}·리츠 ${PEN_EXP.reit}·채권 ${PEN_EXP.bond}·현금 ${PEN_EXP.cash}%)으로 계산했습니다 — 표의 '실현 CAGR'(최근 강세장 20%+)는 <b>과거 실적</b>이며 미래 보장이 아닙니다. <b style="color:var(--accent2)">수익 ↑ 팁</b>: ① 위험 70%를 나스닥100 등 성장주에 더 싣기 ② 채권 자리를 'S&P500 채권혼합형'(주식30:채권70 — 규정상 안전자산) ETF로 채우면 안전 규정을 지키면서 주식 노출을 더 높일 수 있습니다. 레버리지·인버스는 연금 매수 불가. 투자 권유가 아닙니다.`;
+}
+
+/* ── 내 운영 퇴직연금 포트폴리오(직접 구성 + 예상수익률 계산) — 이 브라우저에 저장 ── */
+let lastRecW=null, lastRecExp=0;                 // 추천 가중치·연기대수익(renderPension이 채움)
+const CLS_LAB={stock:'위험·주식', reit:'위험·리츠', bond:'안전·채권', cash:'안전·현금'};
+const PEN_ETF_LIST=[];                            // 퇴직연금에서 살 수 있는 ETF(추천 풀 평탄화)
+['stock','reit','bond','cash'].forEach(cls=>PEN_PICKS[cls].etfs.forEach(e=>{
+  const m=(''+e.cagr).match(/(\d+(?:\.\d+)?)/);
+  PEN_ETF_LIST.push({nm:e.nm, code:e.c, cls, ret:m?parseFloat(m[1]):PEN_EXP[cls]});
+}));
+const MYPORT_LS='alphadesk.penport';
+let MYPORT=[];
+const MYPORT_NOTE='<div class="lt-note" style="margin-top:8px">‘예상수익률’ 기본값은 각 ETF의 <b>과거 실현 CAGR</b>(최근 강세장 반영 — 낙관적)입니다. 보수적으로 보려면 직접 낮춰 입력하세요. <b>위험자산(주식+리츠) 합계 70% 초과 시 퇴직연금 규정 위반</b>입니다. 정보 제공용이며 투자 권유가 아닙니다.</div>';
+function penEsc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function penAmt(){ const a=document.getElementById('pen-amount'); const v=parseInt((a&&a.value||'').replace(/[^0-9]/g,''),10); return (isNaN(v)||v<0)?0:v; }
+const penWonF=v=>Math.round(v).toLocaleString('ko-KR');
+function myportLoad(){ try{ const a=JSON.parse(localStorage.getItem(MYPORT_LS)||'null'); if(Array.isArray(a)) MYPORT=a.map(h=>({nm:String(h&&h.nm||''), code:String(h&&h.code||''), cls:CLS_LAB[h&&h.cls]?h.cls:'stock', weight:Math.max(0,+(h&&h.weight)||0), ret:+(h&&h.ret)||0})); }catch(e){} }
+function myportSave(){ try{ localStorage.setItem(MYPORT_LS, JSON.stringify(MYPORT)); }catch(e){} }
+function myportSelectInit(){
+  const sel=document.getElementById('myport-select'); if(!sel) return;
+  let h='<option value="">＋ ETF 추가…</option>';
+  ['stock','reit','bond','cash'].forEach(cls=>{ h+=`<optgroup label="${CLS_LAB[cls]}">`;
+    PEN_ETF_LIST.forEach((e,gi)=>{ if(e.cls===cls) h+=`<option value="${gi}">${penEsc(e.nm)} (${e.code})</option>`; });
+    h+='</optgroup>'; });
+  h+='<optgroup label="기타"><option value="custom">직접 입력…</option></optgroup>';
+  sel.innerHTML=h;
+}
+function myportAdd(val){
+  if(val==='custom'){ const nm=prompt('ETF 이름(또는 코드)을 입력하세요:'); if(!nm||!nm.trim()) return;
+    MYPORT.push({nm:nm.trim().slice(0,40), code:'', cls:'stock', weight:0, ret:PEN_EXP.stock}); }
+  else { const e=PEN_ETF_LIST[+val]; if(!e) return;
+    if(MYPORT.some(h=>h.code===e.code && h.nm===e.nm)) return;     // 중복 방지
+    MYPORT.push({nm:e.nm, code:e.code, cls:e.cls, weight:0, ret:e.ret}); }
+  myportSave(); renderMyPort();
+}
+function myportLoadRec(){
+  if(!lastRecW) return;
+  MYPORT=['stock','reit','bond','cash'].filter(k=>lastRecW[k]>0.001).map(k=>{
+    const e=PEN_PICKS[k].etfs[0]; const m=(''+e.cagr).match(/(\d+(?:\.\d+)?)/);
+    return {nm:e.nm, code:e.c, cls:k, weight:Math.round(lastRecW[k]*1000)/10, ret:m?parseFloat(m[1]):PEN_EXP[k]};
+  });
+  myportSave(); renderMyPort();
+}
+function myportSummaryHtml(){
+  const amt=penAmt(), r1=x=>Math.round(x*10)/10;
+  const tw=MYPORT.reduce((s,h)=>s+(+h.weight||0),0);
+  const wret=tw>0?MYPORT.reduce((s,h)=>s+(+h.weight||0)*(+h.ret||0),0)/tw:0;
+  const riskW=MYPORT.filter(h=>h.cls==='stock'||h.cls==='reit').reduce((s,h)=>s+(+h.weight||0),0);
+  const twWarn=Math.abs(tw-100)>0.5, riskWarn=riskW>70.5, diff=wret-lastRecExp;
+  return `<div class="mp-sum">`
+    +`<span>총 비중 <b class="${twWarn?'warnv':''}">${r1(tw)}%</b>${twWarn?` <small style="color:var(--gold)">(100%로 맞춰주세요)</small>`:''}</span>`
+    +`<span>위험자산(주식+리츠) <b class="${riskWarn?'warnv':''}">${r1(riskW)}%</b>${riskWarn?` <small style="color:var(--up)">규정 70% 초과!</small>`:''}</span>`
+    +`<span>연 기대수익 <b style="color:var(--gold)">${wret.toFixed(2)}%</b></span>`
+    +`<span style="color:var(--muted2)">추천(${lastRecExp.toFixed(1)}%) 대비 <b style="color:${diff>=0?'var(--up)':'var(--down)'}">${diff>=0?'+':''}${diff.toFixed(2)}%p</b></span>`
+    +(amt?`<span style="color:var(--muted2)">투입액 <b>₩${penWonF(tw/100*amt)}</b></span>`:'')
+    +`</div>`;
+}
+function renderMyPort(){
+  const tbl=document.getElementById('myport-tbl'), sum=document.getElementById('myport-summary'); if(!tbl||!sum) return;
+  const amt=penAmt();
+  if(!MYPORT.length){ tbl.innerHTML=''; sum.innerHTML='<div class="lt-note">위에서 ETF를 추가하거나 <b>↩ 추천 불러오기</b>를 눌러 내 포트폴리오를 구성하세요. 비중·예상수익률을 직접 수정할 수 있습니다.</div>'; return; }
+  let rows='';
+  MYPORT.forEach((h,i)=>{ const col=PEN_PICKS[h.cls]?PEN_PICKS[h.cls].col:'var(--text)';
+    rows+=`<tr>`
+      +`<td class="l"><b style="color:${col}">${penEsc(h.nm)}</b>${h.code?` <span style="color:var(--muted2)">${h.code}</span>`:''}</td>`
+      +`<td class="l"><select class="mp-cls" data-i="${i}">${['stock','reit','bond','cash'].map(c=>`<option value="${c}" ${c===h.cls?'selected':''}>${CLS_LAB[c]}</option>`).join('')}</select></td>`
+      +`<td><input class="mp-w" data-i="${i}" type="number" min="0" max="100" step="1" value="${h.weight}">%</td>`
+      +`<td><input class="mp-r" data-i="${i}" type="number" step="0.1" value="${h.ret}">%</td>`
+      +`<td class="hi">${amt?'₩'+penWonF((+h.weight||0)/100*amt):''}</td>`
+      +`<td><button class="mp-del" data-i="${i}" type="button" title="삭제" aria-label="삭제">✕</button></td></tr>`;
+  });
+  tbl.innerHTML=`<thead><tr><th class="l">ETF</th><th class="l">자산군</th><th>비중</th><th>예상수익률</th><th>${amt?'금액':''}</th><th></th></tr></thead><tbody>${rows}</tbody>`;
+  sum.innerHTML=myportSummaryHtml()+MYPORT_NOTE;
+}
+function myportRecalcLight(){   // 입력 중 테이블 재렌더 없이 요약·금액만 갱신(커서 유지)
+  const amt=penAmt();
+  document.querySelectorAll('#myport-tbl tbody tr').forEach((tr,i)=>{ const h=MYPORT[i]; if(!h) return; const c=tr.querySelector('td.hi'); if(c) c.textContent=amt?'₩'+penWonF((+h.weight||0)/100*amt):''; });
+  const sum=document.getElementById('myport-summary'); if(sum) sum.innerHTML=myportSummaryHtml()+MYPORT_NOTE;
+}
+function myportInit(){
+  myportLoad(); myportSelectInit(); renderMyPort();
+  const sel=document.getElementById('myport-select'); if(sel) sel.addEventListener('change',()=>{ if(sel.value){ myportAdd(sel.value); sel.value=''; } });
+  const lb=document.getElementById('myport-load'); if(lb) lb.addEventListener('click',myportLoadRec);
+  const cb=document.getElementById('myport-clear'); if(cb) cb.addEventListener('click',()=>{ if(MYPORT.length&&confirm('내 운영 포트폴리오를 모두 비울까요?')){ MYPORT=[]; myportSave(); renderMyPort(); } });
+  const tbl=document.getElementById('myport-tbl');
+  if(tbl){
+    tbl.addEventListener('input',e=>{ const t=e.target, i=+t.dataset.i; if(isNaN(i)||!MYPORT[i]) return;
+      if(t.classList.contains('mp-w')){ MYPORT[i].weight=Math.max(0,+t.value||0); myportSave(); myportRecalcLight(); }
+      else if(t.classList.contains('mp-r')){ MYPORT[i].ret=+t.value||0; myportSave(); myportRecalcLight(); } });
+    tbl.addEventListener('change',e=>{ const t=e.target, i=+t.dataset.i; if(isNaN(i)||!MYPORT[i]) return;
+      if(t.classList.contains('mp-cls')){ MYPORT[i].cls=t.value; myportSave(); renderMyPort(); } });
+    tbl.addEventListener('click',e=>{ if(e.target.classList.contains('mp-del')){ const i=+e.target.dataset.i; if(!isNaN(i)){ MYPORT.splice(i,1); myportSave(); renderMyPort(); } } });
+  }
 }
 function renderCharts(lt){
   if(!lt.length) return;
@@ -466,7 +588,7 @@ async function loadYieldGap(){
 /* 라이트/다크 (페이지 간 공유) */
 function setThemeClass(mode){var light=mode==='light';document.body.classList.toggle('light',light);var b=document.getElementById('themeToggle');if(b)b.textContent=light?'☀️ 라이트':'🌙 다크';}
 (function(){var t=document.getElementById('themeToggle');if(t)t.addEventListener('click',function(){var m=document.body.classList.contains('light')?'dark':'light';setThemeClass(m);try{localStorage.setItem('alphadesk.theme',m)}catch(e){}});setThemeClass(localStorage.getItem('alphadesk.theme')||'dark');})();
-fmtClock(); loadYieldGap();
+fmtClock(); loadYieldGap(); myportInit();
 ['pen-risk','pen-amount'].forEach(id=>{ const el=document.getElementById(id); if(el) el.addEventListener('input', renderPension); });   // 퇴직연금 입력 변경 시 재계산
 setInterval(fmtClock,1000);   /* 월 1회 갱신 지표라 데이터 폴링 없음 */
 </script>
