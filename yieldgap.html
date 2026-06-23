@@ -130,9 +130,10 @@
   .pie-c-val{font-size:19px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
   .pie-c-lab{font-size:9.5px;color:var(--muted2);margin-top:2px}
   .pie-bd{margin-top:13px;display:inline-block;text-align:left;font-size:12px}
-  .pie-bd .pl{display:flex;align-items:center;gap:7px;margin:3.5px 0;color:var(--muted);min-width:158px}
+  .pie-bd .pl{display:flex;align-items:center;gap:7px;margin:3.5px 0;color:var(--muted);min-width:200px}
   .pie-bd .pl i{width:10px;height:10px;border-radius:3px;flex:0 0 auto}
   .pie-bd .pl b{margin-left:auto;color:var(--text);font-variant-numeric:tabular-nums;padding-left:12px;font-weight:700}
+  .pie-bd .pl-won{color:var(--muted2);font-size:11px;font-weight:600;margin-left:6px;font-variant-numeric:tabular-nums;white-space:nowrap}
   .pie-bd .ppick{color:var(--accent2);font-weight:600;font-size:11px;margin-left:4px}
   .tac-card{box-shadow:inset 3px 0 0 var(--accent)}
   .tac-sub{font-size:11.5px;color:var(--muted2);margin:-4px 0 11px}
@@ -216,6 +217,7 @@
     <p class="alloc-intro" id="pen-intro"></p>
     <div class="pen-inputs">
       <span>위험자산 비중 <input type="number" id="pen-risk" value="70" min="0" max="70" step="5">% <small style="color:var(--muted2)">(규정상 최대 70)</small></span>
+      <span>총 투자금액 <input type="text" id="pen-amount" inputmode="numeric" placeholder="예: 30,000,000" style="width:120px;text-align:right">원 <small style="color:var(--muted2)">(입력 시 비중별 금액 자동 배분)</small></span>
     </div>
     <div class="pen-grid">
       <div id="pen-donut"></div>
@@ -348,22 +350,30 @@ function renderPension(){
   const w={ stock:risk*PEN_RISK_SPLIT, reit:risk*(1-PEN_RISK_SPLIT), bond:safe*(2/3), cash:safe*(1/3) };
   const exp=w.stock*PEN_EXP.stock+w.reit*PEN_EXP.reit+w.bond*PEN_EXP.bond+w.cash*PEN_EXP.cash;
   const order=['stock','reit','bond','cash'];
+  // 총 투자금액 → 비중별 할당 금액
+  const ainp=document.getElementById('pen-amount');
+  let amt=parseInt((ainp.value||'').replace(/[^0-9]/g,''),10); if(isNaN(amt)||amt<0) amt=0;
+  if(amt>0){ const f=amt.toLocaleString('ko-KR'); if(ainp.value!==f) ainp.value=f; }   // 입력값 콤마 포맷
+  const wonF=v=>Math.round(v).toLocaleString('ko-KR');                                  // 풀(콤마)
+  const wonC=v=>{ v=Math.round(v); if(v>=1e8) return (Math.round(v/1e7)/10).toLocaleString()+'억'; if(v>=1e4) return Math.round(v/1e4).toLocaleString()+'만'; return v.toLocaleString(); };
   // 도넛
   let acc=0; const stops=order.map(k=>{ const a=acc,b=acc+w[k]*100; acc=b; return `${PEN_PICKS[k].col} ${a}% ${b}%`; });
   document.getElementById('pen-donut').innerHTML=`<div class="pies" style="grid-template-columns:1fr"><div class="pie-wrap">
     <div class="pie-title">퇴직연금 100%<span class="rec">추천</span></div>
     <div class="pie" style="background:conic-gradient(${stops.join(',')})"><div class="pie-hole"><span class="pie-c-val">${exp.toFixed(1)}%</span><span class="pie-c-lab">연 기대수익</span></div></div>
-    <div class="pie-bd">${order.map(k=>`<div class="pl"><i style="background:${PEN_PICKS[k].col}"></i>${PEN_PICKS[k].lab}<b>${r1(w[k]*100)}%</b></div>`).join('')}</div>
+    <div class="pie-bd">${order.map(k=>`<div class="pl"><i style="background:${PEN_PICKS[k].col}"></i>${PEN_PICKS[k].lab}<b>${r1(w[k]*100)}%</b>${amt?`<small class="pl-won">₩${wonC(w[k]*amt)}</small>`:''}</div>`).join('')}</div>
   </div></div>`;
   // 슬리브별 추천 ETF 표
   let rows='';
   order.forEach(k=>{ const p=PEN_PICKS[k];
     p.etfs.forEach((e,i)=>{ rows+=`<tr>`
       +`<td class="l">${i===0?`<b style="color:${p.col}">${p.lab}</b> <span style="color:var(--muted2);font-size:11px">${r1(w[k]*100)}%</span>`:''}</td>`
+      +`<td class="hi">${i===0&&amt?'₩'+wonF(w[k]*amt):''}</td>`
       +`<td class="l">${e.nm} <span style="color:var(--muted2)">${e.c}</span>${i===0?' <span class="rec">1순위</span>':''}</td>`
       +`<td>${e.cagr}</td><td class="l" style="color:var(--muted2)">${e.meta}</td></tr>`; });
   });
-  document.getElementById('pen-tbl').innerHTML='<thead><tr><th class="l">자산(비중)</th><th class="l">한국 상장 ETF · 코드</th><th>실현 CAGR</th><th class="l">검증 · 설명</th></tr></thead><tbody>'+rows+'</tbody>';
+  const amtHead=amt?`총 ₩${wonF(amt)} 배분`:'할당 금액';
+  document.getElementById('pen-tbl').innerHTML=`<thead><tr><th class="l">자산(비중)</th><th>${amtHead}</th><th class="l">한국 상장 ETF · 코드</th><th>실현 CAGR</th><th class="l">검증 · 설명</th></tr></thead><tbody>`+rows+'</tbody>';
   document.getElementById('pen-intro').innerHTML=`퇴직연금(DC·IRP)은 <b>한국 상장 ETF만</b> 살 수 있고 <b>위험자산 최대 70%</b> 규정이 있습니다. 리츠 ETF도 위험자산이라 70% 안에 담을 수 있어 <b>위험 ${r1(risk*100)}%(주식+리츠) · 안전 ${r1(safe*100)}%(채권+현금)</b>로 구성했습니다. 각 칸은 <b>장기 수익률이 검증된</b> 대표 ETF를 1순위로 제시합니다.`;
   document.getElementById('pen-note').innerHTML=`<b style="color:var(--gold)">연 기대수익 ${exp.toFixed(1)}%</b>는 장기 보수적 가정(주식 ${PEN_EXP.stock}·리츠 ${PEN_EXP.reit}·채권 ${PEN_EXP.bond}·현금 ${PEN_EXP.cash}%)으로 계산했습니다 — 표의 '실현 CAGR'(최근 강세장 20%+)는 <b>과거 실적</b>이며 미래 보장이 아닙니다. <b style="color:var(--accent2)">수익 ↑ 팁</b>: ① 위험 70%를 나스닥100 등 성장주에 더 싣기 ② 안전 30%를 'S&P500 채권혼합형'(주식30:채권70 — 규정상 안전자산) ETF로 채우면 안전 규정을 지키면서 주식 노출을 ~9%p 더 높일 수 있습니다. 레버리지·인버스는 연금 매수 불가. 투자 권유가 아닙니다.`;
 }
@@ -457,7 +467,7 @@ async function loadYieldGap(){
 function setThemeClass(mode){var light=mode==='light';document.body.classList.toggle('light',light);var b=document.getElementById('themeToggle');if(b)b.textContent=light?'☀️ 라이트':'🌙 다크';}
 (function(){var t=document.getElementById('themeToggle');if(t)t.addEventListener('click',function(){var m=document.body.classList.contains('light')?'dark':'light';setThemeClass(m);try{localStorage.setItem('alphadesk.theme',m)}catch(e){}});setThemeClass(localStorage.getItem('alphadesk.theme')||'dark');})();
 fmtClock(); loadYieldGap();
-['pen-risk'].forEach(id=>{ const el=document.getElementById(id); if(el) el.addEventListener('input', renderPension); });   // 퇴직연금 입력 변경 시 재계산
+['pen-risk','pen-amount'].forEach(id=>{ const el=document.getElementById(id); if(el) el.addEventListener('input', renderPension); });   // 퇴직연금 입력 변경 시 재계산
 setInterval(fmtClock,1000);   /* 월 1회 갱신 지표라 데이터 폴링 없음 */
 </script>
 </body>
