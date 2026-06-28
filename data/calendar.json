@@ -1,115 +1,31 @@
 {
- "_updated": "2026-06-28T08:46:21+00:00",
+ "_updated": "2026-06-28T13:26:02+00:00",
  "today": "2026-06-28",
  "window": {
   "from": "2026-06-21",
   "to": "2026-07-28"
  },
- "count": 191,
+ "count": 193,
  "events": [
   {
-   "date": "2026-06-22",
-   "time": "21:15",
-   "et": "08:15",
-   "mk": "us",
+   "date": "2026-06-23",
+   "time": "06:00",
+   "et": "17:00",
+   "mk": "kr",
    "type": "econ",
-   "title": "ADP Employment Change Weekly",
-   "title_en": "ADP Employment Change Weekly",
+   "title": "Consumer Confidence",
+   "title_en": "Consumer Confidence",
    "importance": 2,
    "forecast": "",
-   "previous": "26.50K",
-   "actual": "30.75K",
+   "previous": "106.1",
+   "actual": "106.6",
    "category": "지표",
    "articles": [
     {
-     "t": "United States ADP Employment Change 4-week average increases to 29K",
-     "u": "https://news.google.com/rss/articles/CBMizgFBVV95cUxQS25kTDM3cDNIQ2hFNS02LXRfc08ydXhETHNVVjkweWluUl9KMkIyUmhvLUw0V3ZSRHc1MGhHWXF1R1JfNUNINU9zdEVKU25QelhqWXh4dUp6UmlDcVg1cVI0b1lzQ0QyMWZTTGxHeEpMZW9IVUQyTWx4R2xCNHFLOTBkNl9LWFBBSDludW1hVzAtSmtTYXJWUGJlaU0yeGZ5X1AzclVTWDk5cm4weHhHN19iekFUOFZsQ0xrQlZrXy1hWHpzUUt4Q3p1UkwxUQ?oc=5",
-     "s": "TMGM",
-     "d": "2026-06-09"
-    }
-   ]
-  },
-  {
-   "date": "2026-06-22",
-   "time": "22:45",
-   "et": "09:45",
-   "mk": "us",
-   "type": "econ",
-   "title": "제조업 PMI(S&P)",
-   "title_en": "S&P Global Manufacturing PMI",
-   "importance": 2,
-   "forecast": "54.6",
-   "previous": "55.1",
-   "actual": "55.7",
-   "category": "지표",
-   "articles": [
-    {
-     "t": "美 제조업 PMI는 최고인데 일자리는 최악…엇갈린 신호 보내는 미국 경제",
-     "u": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE8xaklJQzQ3ckk4b1VDaERLVlA4eE5uUDh6NTVzN3IxZ0JNUktndkFpZzQ0dFNLcXNnZU1aWHB2Mm1DUmNvLTl4TTU2S2FuTXVPeEtPc3JkYkNCNmFMa0FiZWJobjRsdzA?oc=5",
-     "s": "세종의소리",
-     "d": "2026-06-23"
-    },
-    {
-     "t": "美 6월 제조업 PMI 55.7…예상치 상회하며 확장세 지속",
-     "u": "https://news.google.com/rss/articles/CBMiUEFVX3lxTFBvWjlxbm9fcUowVDdqbnBmenNpMmNMcjNQN3ZqZ3Z3Umh3VjgwTDF0akRCeUNMdlR3LVl0ZjgtTENHMHJtVE1YZ2ozdHdzOWM1?oc=5",
-     "s": "블루밍비트",
-     "d": "2026-06-23"
-    }
-   ]
-  },
-  {
-   "date": "2026-06-22",
-   "time": "22:45",
-   "et": "09:45",
-   "mk": "us",
-   "type": "econ",
-   "title": "S&P 종합 PMI",
-   "title_en": "S&P Global Composite PMI",
-   "importance": 2,
-   "forecast": "",
-   "previous": "51.5",
-   "actual": "52.2",
-   "category": "지표",
-   "articles": [
-    {
-     "t": "美 제조업 PMI는 최고인데 일자리는 최악…엇갈린 신호 보내는 미국 경제",
-     "u": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE8xaklJQzQ3ckk4b1VDaERLVlA4eE5uUDh6NTVzN3IxZ0JNUktndkFpZzQ0dFNLcXNnZU1aWHB2Mm1DUmNvLTl4TTU2S2FuTXVPeEtPc3JkYkNCNmFMa0FiZWJobjRsdzA?oc=5",
-     "s": "세종의소리",
-     "d": "2026-06-23"
-    },
-    {
-     "t": "美 6월 제조업 PMI 55.7…예상치 상회하며 확장세 지속",
-     "u": "https://news.google.com/rss/articles/CBMiUEFVX3lxTFBvWjlxbm9fcUowVDdqbnBmenNpMmNMcjNQN3ZqZ3Z3Umh3VjgwTDF0akRCeUNMdlR3LVl0ZjgtTENHMHJtVE1YZ2ozdHdzOWM1?oc=5",
-     "s": "블루밍비트",
-     "d": "2026-06-23"
-    }
-   ]
-  },
-  {
-   "date": "2026-06-22",
-   "time": "22:45",
-   "et": "09:45",
-   "mk": "us",
-   "type": "econ",
-   "title": "S&P 서비스업 PMI",
-   "title_en": "S&P Global Services PMI",
-   "importance": 2,
-   "forecast": "51.1",
-   "previous": "50.7",
-   "actual": "51.3",
-   "category": "지표",
-   "articles": [
-    {
-     "t": "美 제조업 PMI는 최고인데 일자리는 최악…엇갈린 신호 보내는 미국 경제",
-     "u": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE8xaklJQzQ3ckk4b1VDaERLVlA4eE5uUDh6NTVzN3IxZ0JNUktndkFpZzQ0dFNLcXNnZU1aWHB2Mm1DUmNvLTl4TTU2S2FuTXVPeEtPc3JkYkNCNmFMa0FiZWJobjRsdzA?oc=5",
-     "s": "세종의소리",
-     "d": "2026-06-23"
-    },
-    {
-     "t": "美 6월 제조업 PMI 55.7…예상치 상회하며 확장세 지속",
-     "u": "https://news.google.com/rss/articles/CBMiUEFVX3lxTFBvWjlxbm9fcUowVDdqbnBmenNpMmNMcjNQN3ZqZ3Z3Umh3VjgwTDF0akRCeUNMdlR3LVl0ZjgtTENHMHJtVE1YZ2ozdHdzOWM1?oc=5",
-     "s": "블루밍비트",
-     "d": "2026-06-23"
+     "t": "Consumer Confidence",
+     "u": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE02aks4QWNSc05aVjlOMjluSVFGeFdwLVprcG9wZ2ttUVU5emM1WDNVRFZzRFlSbFk1dlRaYmdseE1ObzlZWXpfRU03dUVjdGtUcVVzb0g1a0Zvb3NCMXlHXw?oc=5",
+     "s": "네이트",
+     "d": "2026-06-26"
     }
    ]
   },
@@ -358,9 +274,9 @@
      "d": "2026-06-19"
     },
     {
-     "t": "대미 흑자 줄어도 전체 경상흑자 확대…美 주식투자 900억불 돌파 - 머니투데이",
-     "u": "https://news.google.com/rss/articles/CBMia0FVX3lxTE5nZzlKOU1qWDNEelZ2YmxOSklSc01JWWtKZHhLckpYUE1HN3V6ZTFwdWhUcmZvUlBOX1oxTUFqU0oydURKUndYUGJzSHBtaWdVeWNRNFdCRE5PSVAtMk92VW44eXhJM0YxbHo00gFwQVVfeXFMTW95UE9WZ3hGdnhvUU1UYUlzZkpQaFZOZ1JRa1JQUVVUSndWYjZ5M2xHSy02aDdRWmNMOVduWG9CRDJyYXhTXzY4a25HTnM3Zy0yQ3F4S3N2NGU4Um9mMWpIejhyc29NdHJrN0htUllZSA?oc=5",
-     "s": "머니투데이",
+     "t": "지난해 미국 대상 경상수지 흑자 규모 6년 만에 줄어, 중국 대상은 4년째 적자",
+     "u": "https://news.google.com/rss/articles/CBMic0FVX3lxTE95YkFGaXhIaXR4U0R3TnRfeXpfNW50eWxTd2hyUWxjcGJlR01nOXp5a1VjaFdJZnRQenkzTnZkcnE2UE1tYzJyMWNXYWhyVkItQlYtc2NHM0tadkZhM2xQUVM3VVEwRUViOG8tTDJlNEVUUEE?oc=5",
+     "s": "비즈니스포스트",
      "d": "2026-06-19"
     }
    ]
@@ -445,8 +361,8 @@
      "d": "2026-06-24"
     },
     {
-     "t": "마이크론 3Q 실적 발표, 美기술주 전반 급락 탓 관심 초집중",
-     "u": "https://news.google.com/rss/articles/CBMicEFVX3lxTFB0QTRCQm9pQUxOZVJKOFdZOHNLbWF3ckI2bGpMQllXSmxNNzBPNHFKeHZ3d2N0VjNuSVl2NzJRWmNZUWhydEdOZnZObHdzeVQ5ZTZTN292X1dBTThrT29BSmFib0NjcWlVSk1JLTh6SEM?oc=5",
+     "t": "마이크론, 실적 호조에 가이던스도 예상치 상회…시간외서 13% 급등(상보)",
+     "u": "https://news.google.com/rss/articles/CBMicEFVX3lxTE1iV3VnOHFlUGFtNXZsc0dIVFZLZ1ZWUWhZTXdFRDd2X1BCeURfLU8xOFR0R0RNbkg0MmlBQmdJMXlLOTVMLTFXRTUwSFdWeDhUZ1JMWUZYUWFIbnBzYTJVQlROcjNnMVBVdmNDdUJBZjA?oc=5",
      "s": "연합인포맥스",
      "d": "2026-06-24"
     }
@@ -476,10 +392,10 @@
      "d": "2026-06-20"
     },
     {
-     "t": "Paychex Inc(PAYX) 실적 예측: 미래 EPS 및 수익 성장 추정치",
-     "u": "https://news.google.com/rss/articles/CBMic0FVX3lxTE5xejJPRnhuODdhQnJ3WS12YWJ0cVdhYU9DOWxibWhrRHROMWU0Y2JQSzZFVGpqODZsWkEtS1pUN0haVWJJbE9NZ20tcGdmVi1GM1NSV1RKUzJvT2thSGplLUVxdWxLM0hZeWlYMWxiMFdYNTA?oc=5",
-     "s": "TradingKey",
-     "d": "2026-06-18"
+     "t": "2026년 호실적 이후 제시된 2027년 성장 전망치가 둔화된 것이 Paychex(PAYX)에 대한 낙관적 전망에 변화를 가져올까?",
+     "u": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOd3BkajZUSkN5TlMwRGlKZGVUR1UtYVFzdmxFTHpsZHRHRGhJNllLVmxkb1F5SFNYTzV4bzFxQ2wycE5sZE53anI3a2JDWGZ2ZDRsU05sRmVhd29ZN0NtdEVHT1Q2NDdSSlZLd3llcVVVTjdvcHhRVG12aDJpLXNLMGxtUzZZMTJzYUFEWnVhTHdLQXBFcWJ5dF85a0U?oc=5",
+     "s": "simplywall.st",
+     "d": "2026-06-28"
     }
    ]
   },
@@ -784,10 +700,10 @@
      "d": "2026-06-27"
     },
     {
-     "t": "美 5월 핵심 자본재 주문 반등…AI 투자에 설비 수요 확대",
-     "u": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE5BZVE4LWh2a1djOG9FNjBybHk0WmNOWnhrNXZraVphTDJTYnM3Z2FPTjBfNzBZTDZ6TlBHSTNhOW13aUJ3UkVUeXBzRzdUVnNPSXJibjdxb1lPS0ZSeldrUw?oc=5",
-     "s": "더구루",
-     "d": "2026-06-25"
+     "t": "[뉴욕증시-주간전망] 또 닫힌 호르무즈…美 인플레·마이크론 실적 주목",
+     "u": "https://news.google.com/rss/articles/CBMiW0FVX3lxTFBRc04yZVV5MkQ2U3ZPcVVKNHNsMWtVWkY1NUpseWNtOVpDelVsbDRWMjZlSER2Mm1iM25ERkJnellqUHQxRXlmWHhUWk5YLXQzc2w2Rzc2dVFzZjDSAWBBVV95cUxQQTJqTEFyQWUzckR1ZjRDYzZmX3lnbXhWWlhEdXZteFZrODhndmhUSlBRcm1vWEw0aE9UZmZSd0psVW1tZlhMWktMeVN2azVLSzBfdGhRc3JQVFhFWUw0VUk?oc=5",
+     "s": "연합뉴스",
+     "d": "2026-06-20"
     }
    ]
   },
@@ -812,10 +728,10 @@
      "d": "2026-06-27"
     },
     {
-     "t": "美 5월 핵심 자본재 주문 반등…AI 투자에 설비 수요 확대",
-     "u": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE5BZVE4LWh2a1djOG9FNjBybHk0WmNOWnhrNXZraVphTDJTYnM3Z2FPTjBfNzBZTDZ6TlBHSTNhOW13aUJ3UkVUeXBzRzdUVnNPSXJibjdxb1lPS0ZSeldrUw?oc=5",
-     "s": "더구루",
-     "d": "2026-06-25"
+     "t": "[뉴욕증시-주간전망] 또 닫힌 호르무즈…美 인플레·마이크론 실적 주목",
+     "u": "https://news.google.com/rss/articles/CBMiW0FVX3lxTFBRc04yZVV5MkQ2U3ZPcVVKNHNsMWtVWkY1NUpseWNtOVpDelVsbDRWMjZlSER2Mm1iM25ERkJnellqUHQxRXlmWHhUWk5YLXQzc2w2Rzc2dVFzZjDSAWBBVV95cUxQQTJqTEFyQWUzckR1ZjRDYzZmX3lnbXhWWlhEdXZteFZrODhndmhUSlBRcm1vWEw0aE9UZmZSd0psVW1tZlhMWktMeVN2azVLSzBfdGhRc3JQVFhFWUw0VUk?oc=5",
+     "s": "연합뉴스",
+     "d": "2026-06-20"
     }
    ]
   },
@@ -869,9 +785,9 @@
     },
     {
      "t": "미국 5월 콘퍼런스 보드 경기 선행 지수 2달 연속 상승",
-     "u": "https://news.google.com/rss/articles/CBMidkFVX3lxTE9CRUpjOWFJS0FLZ2FydzZab1Zqbm56cUd1LXhjWVFZblRldnpwUVI3dDRmRFhxS2VTUGRWSWc5QWpWcXdZT3E5Y09MU0stUF9Sd3NJN2RHNS1ZRW4tYk5sdlpfQ3NWMk04ajhpcy1MczdheEFjVEE?oc=5",
+     "u": "https://news.google.com/rss/articles/CBMiXkFVX3lxTFBDY0h1ekpURjcyaVJ0eWR1cmNwR1Q3VjBaM0V2VkNyMXZVM0NsSVBhbzBvTk1LRFFvQjdDQmZaUU9MWVZ3OUcwU1o5OGN1R1FMRlkxRTl6RVJsMzhlVVE?oc=5",
      "s": "YTN",
-     "d": "2026-06-18"
+     "d": "2026-06-19"
     }
    ]
   },
@@ -927,8 +843,8 @@
      "d": "2026-06-26"
     },
     {
-     "t": "다든 레스토랑 주가, 4분기 실적 호조에도 개장 전 하락",
-     "u": "https://news.google.com/rss/articles/CBMicEFVX3lxTE9SUTd4MU9OVzdScUFET1hyRFBueDhhdWJnSVlYWDFITU9abTllR2R2bTlvWUE2TnYyaWZwbDV3VnltdkQwdGdOcUxJRXAyVUtsbW5iR29oN0ZXM2tOenVYQTc3aWdvRmF2b2UxdlMxRzM?oc=5",
+     "t": "다든 레스토랑 Q4 실적 예상치를 넘어, 수익 에상치보다 저조",
+     "u": "https://news.google.com/rss/articles/CBMiZEFVX3lxTFBhbHNYNzZ4bmhkYm1acmZubUl1UVNfZXhfcUFvNVlDbGN1dDFQWWtvMGl1T1hKR2ZvR0ZDWjRxenB6cVVyUURvNmtsaVZLTVN5OFFRdVphSXlya3hySkExRlJ6QzI?oc=5",
      "s": "Investing.com 한국어",
      "d": "2026-06-25"
     }
@@ -1168,10 +1084,10 @@
      "d": "2026-06-13"
     },
     {
-     "t": "소비자 심리, 경제 현실과 괴리",
-     "u": "https://news.google.com/rss/articles/CBMiYEFVX3lxTFBWdC01bk5VWURpQTlLdEFIbVFvUm9mZ2pncmlyYVdnNEZuUGhESE9XRDdNcHNpSVFyNGlubUZ2SjBGalRZc3NDNGlJVGh3cjJJbk5vYjJwNUNxU3VqM1pPUg?oc=5",
-     "s": "Investing.com 한국어",
-     "d": "2026-06-21"
+     "t": "[다음주 경제일정] 美 6월 고용보고서 관건…美·中 제조업 PMI도 주목",
+     "u": "https://news.google.com/rss/articles/CBMiRkFVX3lxTE1pSHdjeHdKRVhrNTR6OTN3YVdsY2ZPdGQ3VDEwVU9wUG9ybkVqeHBQVFZJUXNBV3BjVThsaDBRTGtDb19vaUE?oc=5",
+     "s": "v.daum.net",
+     "d": "2026-06-26"
     }
    ]
   },
@@ -1252,14 +1168,14 @@
    "importance": 2,
    "articles": [
     {
-     "t": "Coca-Cola Europacific Partners PLC(CCEP) 실적 예측: 미래 EPS 및 수익 성장 추정치",
-     "u": "https://news.google.com/rss/articles/CBMic0FVX3lxTE5OeUdsemQ0bzhmd3ZDNUJXT1pNLWQ0cWhER2RuZlA4MW1KbW5ReEg4WDVQeVduWERLWjRXeG01MEhIbll6c0xkZTU5UXdxTWhsSEJMcWNtMk5fTkxZbGQ3U2trY05HSFdMYjNHa3hiVWxlMVE?oc=5",
+     "t": "Coca-Cola Europacific Partners PLC(CCEP) 기관 신뢰도",
+     "u": "https://news.google.com/rss/articles/CBMidEFVX3lxTE5iVU5QdEMyUjVlNzItR09BcmUzSUFKWnJaMGpmVGU5VThXMFp2Y3JLUGpoUDFBck1hSnFXTVVPRi0xMm1OUkNLTlRoVEpNeFZ5Q0FxRjY1b0V0YXBGMFdIWi1KSzN6NFVwbkwzMXlwQktweHNV?oc=5",
      "s": "TradingKey",
      "d": "2026-06-18"
     },
     {
-     "t": "Coca-Cola Europacific Partners PLC(CCEP) 기관 신뢰도",
-     "u": "https://news.google.com/rss/articles/CBMidEFVX3lxTE5iVU5QdEMyUjVlNzItR09BcmUzSUFKWnJaMGpmVGU5VThXMFp2Y3JLUGpoUDFBck1hSnFXTVVPRi0xMm1OUkNLTlRoVEpNeFZ5Q0FxRjY1b0V0YXBGMFdIWi1KSzN6NFVwbkwzMXlwQktweHNV?oc=5",
+     "t": "Coca-Cola Europacific Partners PLC(CCEP) 수익 분석: 사업 부문, 지역 수익 및 이익 기여도",
+     "u": "https://news.google.com/rss/articles/CBMickFVX3lxTE5kWFNRVlp1NzNYbDR5WEpmQVhUVlltck5INWZCY0xJR2R2TW1oMlBoTXNPLTFxNXdhWUFzTk9aX0pFb1l3eE5YTlgwWU9CODN3eTMyODFxb0NwN0hkSDllOXpzWEpLQmZIMDd4NGRmbmVLdw?oc=5",
      "s": "TradingKey",
      "d": "2026-06-18"
     }
@@ -1283,16 +1199,16 @@
    "importance": 2,
    "articles": [
     {
-     "t": "Constellation Brands Inc(STZ) 실적 예측: 미래 EPS 및 수익 성장 추정치",
-     "u": "https://news.google.com/rss/articles/CBMickFVX3lxTE9BMEpNSGR3NDhGcHI1bkpQaUNadDFhc3pwXzNxUmpvU1pJYVI4Y2hNdlloaF9WbGgxTEhaSTJ0aHpXa3o2b1NoYW9Kd1Uza2ZwTnZKcHVONk5JVG9xdThPcmpSVF80OE1uQlpkVmU4SUF6UQ?oc=5",
-     "s": "TradingKey",
-     "d": "2026-06-23"
-    },
-    {
      "t": "Boston Beer Company Inc(SAM) 실적 예측: 미래 EPS 및 수익 성장 추정치",
      "u": "https://news.google.com/rss/articles/CBMickFVX3lxTE93cV9ZTGpGLVhOcjZsdEFtdERMZjRWcm9GekR4X0IxdGxvdjdCc21FOWZtZGpXYU80eGZ1YXo0ZWpadXdXVXZPdWpjLUNQVUprSzR4U1cyejhkVnZtYmRBdXlldmI2VWZxSklWUGpVRlhsQQ?oc=5",
      "s": "TradingKey",
      "d": "2026-06-23"
+    },
+    {
+     "t": "Molson Coors Beverage Co(TAP) 실적 예측: 미래 EPS 및 수익 성장 추정치",
+     "u": "https://news.google.com/rss/articles/CBMickFVX3lxTE5Kakk1N0dvRTFWQjhrRjNBYjhsdzJ6SWt6MGtxZkx5RlduN0NCOUplaUNlaW1RNkxFSU9mZGpYc0ZZTTg3SmlrVDM2d3hZUzNnai1sTmFiTkRNS2luY0dWYmR5VXBlaThfczRkQlJ1ZnFQUQ?oc=5",
+     "s": "TradingKey",
+     "d": "2026-06-21"
     }
    ]
   },
@@ -1367,16 +1283,16 @@
    "category": "지표",
    "articles": [
     {
+     "t": "美 제조업 경기 확장세 지속…PMI 55.1 기록",
+     "u": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE1ISk1ILTBCRE5wUXRVWUZCQ2lqMTJ4YUNGRDVRR1RPZDBlZGxoaEdpQkRnVnBZelVHUlBaY01jb1d2TWhyUGNNeUkxUndEX3RxUEHSAVNBVV95cUxQUHlBZjNHOTk4Q0VESTZPVmJaWUZORlFfdlV1a1FqQy0xSFJjVmlMMEJqaFFQblRfV1BJNW1GODBiem1MRmFzNmdLX2F4LVpyYWZOZw?oc=5",
+     "s": "서울경제",
+     "d": "2026-06-01"
+    },
+    {
      "t": "美 5월 제조업 PMI 54.0…5개월 연속 경기 확장",
      "u": "https://news.google.com/rss/articles/CBMiYEFVX3lxTFBsZUpLY1dteTVPUnBIRmhNbkU0dFBHMTZfbDNFN1ZkSWNyMDBmU1d5RFo4MmRObS0wZ3pBSW1vWFlmT201eWIwdHc5aC1Pek82NlZiRWdYMVYxYlBmSk9BTQ?oc=5",
      "s": "아시아경제",
      "d": "2026-06-02"
-    },
-    {
-     "t": "베트남, 5월 제조업 PMI 52.8 11개월 연속 경기 확장 국면…중동 분쟁 이후 최고치",
-     "u": "https://news.google.com/rss/articles/CBMibEFVX3lxTFBnQU9MYUgtNWJuLWxEeGp5UDVtOUxfd3FHaHFzODF4N1plS0hTREhadVBldVdyU1Nodmd3R1RxdEJpdHNudkRSdTA0dVFLQmhGaEN4cTJqWHlSSElBYVFuRlpTUW53RndycjZUWQ?oc=5",
-     "s": "인사이드비나",
-     "d": "2026-06-08"
     }
    ]
   },
@@ -1864,6 +1780,146 @@
    "previous": "426.99B",
    "actual": "",
    "category": "지표"
+  },
+  {
+   "date": "2026-07-06",
+   "time": "22:45",
+   "et": "09:45",
+   "mk": "us",
+   "type": "econ",
+   "title": "S&P 종합 PMI",
+   "title_en": "S&P Global Composite PMI",
+   "importance": 2,
+   "forecast": "",
+   "previous": "52.2",
+   "actual": "",
+   "category": "지표",
+   "articles": [
+    {
+     "t": "美 제조업 PMI는 최고인데 일자리는 최악…엇갈린 신호 보내는 미국 경제",
+     "u": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE8xaklJQzQ3ckk4b1VDaERLVlA4eE5uUDh6NTVzN3IxZ0JNUktndkFpZzQ0dFNLcXNnZU1aWHB2Mm1DUmNvLTl4TTU2S2FuTXVPeEtPc3JkYkNCNmFMa0FiZWJobjRsdzA?oc=5",
+     "s": "세종의소리",
+     "d": "2026-06-23"
+    },
+    {
+     "t": "美 6월 제조업 PMI 55.7…예상치 상회하며 확장세 지속",
+     "u": "https://news.google.com/rss/articles/CBMiUEFVX3lxTFBvWjlxbm9fcUowVDdqbnBmenNpMmNMcjNQN3ZqZ3Z3Umh3VjgwTDF0akRCeUNMdlR3LVl0ZjgtTENHMHJtVE1YZ2ozdHdzOWM1?oc=5",
+     "s": "블루밍비트",
+     "d": "2026-06-23"
+    }
+   ]
+  },
+  {
+   "date": "2026-07-06",
+   "time": "22:45",
+   "et": "09:45",
+   "mk": "us",
+   "type": "econ",
+   "title": "S&P 서비스업 PMI",
+   "title_en": "S&P Global Services PMI",
+   "importance": 2,
+   "forecast": "",
+   "previous": "51.3",
+   "actual": "",
+   "category": "지표",
+   "articles": [
+    {
+     "t": "美 제조업 PMI는 최고인데 일자리는 최악…엇갈린 신호 보내는 미국 경제",
+     "u": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE8xaklJQzQ3ckk4b1VDaERLVlA4eE5uUDh6NTVzN3IxZ0JNUktndkFpZzQ0dFNLcXNnZU1aWHB2Mm1DUmNvLTl4TTU2S2FuTXVPeEtPc3JkYkNCNmFMa0FiZWJobjRsdzA?oc=5",
+     "s": "세종의소리",
+     "d": "2026-06-23"
+    },
+    {
+     "t": "美 6월 제조업 PMI 55.7…예상치 상회하며 확장세 지속",
+     "u": "https://news.google.com/rss/articles/CBMiUEFVX3lxTFBvWjlxbm9fcUowVDdqbnBmenNpMmNMcjNQN3ZqZ3Z3Umh3VjgwTDF0akRCeUNMdlR3LVl0ZjgtTENHMHJtVE1YZ2ozdHdzOWM1?oc=5",
+     "s": "블루밍비트",
+     "d": "2026-06-23"
+    }
+   ]
+  },
+  {
+   "date": "2026-07-06",
+   "time": "23:00",
+   "et": "10:00",
+   "mk": "us",
+   "type": "econ",
+   "title": "ISM 서비스업 PMI",
+   "title_en": "ISM Non-Manufacturing PMI",
+   "importance": 3,
+   "forecast": "",
+   "previous": "54.5",
+   "actual": "",
+   "category": "지표",
+   "articles": [
+    {
+     "t": "美 5월 ISM 서비스업 PMI 54.5…예상 웃돌며 23개월째 확장(상보)",
+     "u": "https://news.google.com/rss/articles/CBMicEFVX3lxTE1ZOG02UnRtal8zSUZKNTJwd3EtRUJFYVJTRGUxWGNyQVVTNzFub1FGTV8zZ3Z2YmVxOTRDeTdnazVONC1sblgzN05fMjlyU2VfMnpuRGJSRU5laVNhVGVUXzBrYktFMElPMXlyWUZ1R28?oc=5",
+     "s": "연합인포맥스",
+     "d": "2026-06-04"
+    },
+    {
+     "t": "미국 5월 서비스업 활동 반등...이란 전쟁 발 물가 상승 대비 영향",
+     "u": "https://news.google.com/rss/articles/CBMiXkFVX3lxTFAtZC14d2dQZWRiYi1wYW1FaVp5T2wxOFZLRHhBc0w0TU5XTlMzTGxnMUs3NXBtekxzOG9tU25XU21mLXlLM3pKR0dwMkg2RFQ2czA3bjRrMk5zSDlxaEE?oc=5",
+     "s": "YTN",
+     "d": "2026-06-04"
+    }
+   ]
+  },
+  {
+   "date": "2026-07-07",
+   "time": "21:30",
+   "et": "08:30",
+   "mk": "us",
+   "type": "econ",
+   "title": "무역수지",
+   "title_en": "Trade Balance",
+   "importance": 2,
+   "forecast": "",
+   "previous": "-55.90B",
+   "actual": "",
+   "category": "지표",
+   "articles": [
+    {
+     "t": "美 4월 무역적자 559억달러…시장 전망치보다 적어(상보)",
+     "u": "https://news.google.com/rss/articles/CBMicEFVX3lxTE5zcG1KOUlIUUN5bDZ4ZWZZakJTdVlBOU1lVUttSW9QLUpqMjBWUktJd1VwTmpLVW9adVEtSC1FWnVCUWRNX1RIdmxoRmFibFN1TTgxS0x2ZDUtTUNXazQ3VjMzMWpzR3FQRDdQWDVubVE?oc=5",
+     "s": "연합인포맥스",
+     "d": "2026-06-10"
+    },
+    {
+     "t": "미국 4월 무역적자 559억 달러…전년 대비 크게 감소",
+     "u": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE5aQ1FHQnJBbnp6ZV96QW93c1lNczNOT0o0R2ozSkdDTDZIbjROcUZ2a05lRFRud3A0OFhWOG9WUnJTdFZsMUNkc2t3TGd4SHJ1dXpLei1XejU1MUo1LUprWEI1amwzbmc?oc=5",
+     "s": "뉴스비전e",
+     "d": "2026-06-09"
+    }
+   ]
+  },
+  {
+   "date": "2026-07-08",
+   "time": "08:00",
+   "et": "19:00",
+   "mk": "kr",
+   "type": "econ",
+   "title": "경상수지",
+   "title_en": "Current Account",
+   "importance": 2,
+   "forecast": "",
+   "previous": "28.29B",
+   "actual": "",
+   "category": "지표",
+   "articles": [
+    {
+     "t": "한국 경상수지, 4월에도 '역대 2위' 흑자 냈다... 반도체 수출 171% 증가",
+     "u": "https://news.google.com/rss/articles/CBMid0FVX3lxTE9UVVpwVEFpU29SbklmTzhER2lWaERSWTl3Z3ZHS1E0SGoyb0NhU1pmVl9RNHVSRldONVpaaTNFQkZyaExFbERIelZDLXBLekZSVGVIVG1KYVo2Vzh5VHRNdmoxR0k5T2NiYWFrbWhyM3dvM1djQThj?oc=5",
+     "s": "오마이뉴스",
+     "d": "2026-06-05"
+    },
+    {
+     "t": "4월 경상수지 흑자 282.9억弗·역대 2위…전월 대비 25%↓",
+     "u": "https://news.google.com/rss/articles/CBMicEFVX3lxTE9qblRiZVZObUZjemc3N2dlTHB6NVFucjZyR3BWQ3BxdGZveGZnVnVWSHhERmZ0WkVpMjRyaGItdXZQR3FNck9lQ0VvQmFJSXZsREtqd2t2Vm50UWNjc0JOR2ZaR3k0QjloN0dfWUl6R2c?oc=5",
+     "s": "연합인포맥스",
+     "d": "2026-06-05"
+    }
+   ]
   },
   {
    "date": "2026-07-09",
