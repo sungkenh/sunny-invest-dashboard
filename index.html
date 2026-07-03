@@ -336,6 +336,13 @@
   .ic-tg.on{background:#0e7490;border-color:#0e7490;color:#eafcff}
   /* 볼린저·일목 밴드 배경 채우기 캔버스 */
   #px-fill{position:absolute;inset:0;pointer-events:none;z-index:2}
+  /* 보조지표 높이 조절 구분선(드래그) */
+  /* 구분선 라인은 비상호작용(전폭), 중앙 그립만 드래그 — 팬/크로스헤어/그리기 클릭 통과 */
+  #osc-divider{position:absolute;left:0;right:0;height:10px;z-index:4;pointer-events:none;display:none}
+  #osc-divider::before{content:'';position:absolute;left:0;right:0;top:4px;height:1px;background:var(--border)}
+  #osc-divider .osc-grip{position:absolute;left:50%;top:0;width:46px;height:10px;margin-left:-23px;cursor:ns-resize;pointer-events:auto;touch-action:none;display:flex;align-items:center;justify-content:center}
+  #osc-divider .osc-grip::after{content:'';width:38px;height:6px;border-radius:3px;background:var(--muted2);opacity:.6}
+  #osc-divider .osc-grip:hover::after{opacity:1;background:var(--accent)}
   /* 차트 위 범례·밴드 라벨 오버레이 */
   #px-labels{position:absolute;inset:0;pointer-events:none;z-index:3;overflow:hidden;font-variant-numeric:tabular-nums}
   #px-labels .chart-legend{position:absolute;top:4px;left:7px;display:flex;flex-wrap:wrap;gap:4px 8px;max-width:70%}
@@ -1380,6 +1387,10 @@ function hexA(hex,a){ const h=(hex||'#000').replace('#',''); const r=parseInt(h.
 let PANES=[];   // relayoutPanes가 채우는 하단 밴드 목록(범례·상하단값 표시용)
 let lblResizeObs=null, _lblRAF=0;   // 범례 오버레이 리사이즈 감시
 let FILLDATA=null, _fillRAF=0, _cfgDebounce=0;   // 밴드 채우기용 지표값 캐시(applyIndicators에서만 재계산) + 스크롤 rAF 스로틀 + 설정 디바운스
+// 보조지표(RSI·MACD·거래량) 밴드 높이 — 드래그로 조절, localStorage 저장
+let OSC_BANDH=(()=>{ try{ const v=parseFloat(localStorage.getItem('alphadesk.oscbandh')); if(v>=0.07&&v<=0.30) return v; }catch(e){} return 0.18; })();
+function saveOscBandH(){ try{ localStorage.setItem('alphadesk.oscbandh', String(OSC_BANDH)); }catch(e){} }
+let oscDivFrac=null, oscBandCount=0;   // relayoutPanes가 계산: 구분선 위치(위에서의 비율)·밴드 개수
 let indSeries={}, drawSeries=[], drawPriceLines=[], drawMode=null, pendingTrend=null;
 let drawStore=(()=>{ try{ return JSON.parse(localStorage.getItem('alphadesk.draw')||'{}'); }catch(e){ return {}; } })();
 function saveDraw(){ try{ localStorage.setItem('alphadesk.draw', JSON.stringify(drawStore)); }catch(e){} }
@@ -1459,6 +1470,19 @@ async function renderChart(sym){
   const canvasEl=host.querySelector('#px-canvas');
   const fillCv=document.createElement('canvas'); fillCv.id='px-fill'; canvasEl.appendChild(fillCv);   // 밴드 배경 채우기 캔버스(라벨보다 아래)
   const lblBox=document.createElement('div'); lblBox.id='px-labels'; canvasEl.appendChild(lblBox);  // 범례·밴드값 오버레이
+  const divEl=document.createElement('div'); divEl.id='osc-divider';
+  const grip=document.createElement('div'); grip.className='osc-grip'; divEl.appendChild(grip); canvasEl.appendChild(divEl);   // 중앙 그립만 상호작용(나머지 폭은 클릭 통과)
+  let _oscDrag=false;
+  const _endOscDrag=(e)=>{ if(_oscDrag){ _oscDrag=false; try{grip.releasePointerCapture(e.pointerId)}catch(_){} saveOscBandH(); } };
+  grip.addEventListener('pointerdown',(e)=>{ if(oscDivFrac==null) return; _oscDrag=true; try{grip.setPointerCapture(e.pointerId)}catch(_){} e.preventDefault(); });
+  grip.addEventListener('pointermove',(e)=>{ if(!_oscDrag||!lwc) return;
+    if(!(e.buttons&1)){ _endOscDrag(e); return; }        // 버튼 안 눌린 hover 이동이면 종료(캡처 유실 시 고착 방지)
+    const rect=canvasEl.getBoundingClientRect(); let taH=28; try{ taH=lwc.timeScale().height()||28; }catch(_){}
+    const paneH=Math.max(1,rect.height-taH); let y=Math.max(paneH*0.26, Math.min(paneH*0.93, e.clientY-rect.top));   // 가격영역 최소 26% 보장
+    OSC_BANDH=Math.max(0.07,Math.min(0.30, ((paneH-y)/paneH)/(oscBandCount||1)));
+    relayoutPanes(); renderChartLegend();
+  });
+  grip.addEventListener('pointerup',_endOscDrag); grip.addEventListener('pointercancel',_endOscDrag);
   lwc.timeScale().subscribeVisibleLogicalRangeChange(()=>{ if(_fillRAF) return; _fillRAF=requestAnimationFrame(()=>{ _fillRAF=0; renderChartLegend(); }); });   // 스크롤·줌 rAF 코얼레싱(프레임당 1회)
   // 캔버스 크기 변경(창 리사이즈·사이드바·브레이크포인트·툴바 줄바꿈) 시에도 라벨 위치·값 갱신
   if(lblResizeObs){ try{lblResizeObs.disconnect()}catch(e){} lblResizeObs=null; }
@@ -1580,7 +1604,7 @@ function applyIndicators(){
    각 밴드 메타를 PANES에 기록해 범례·상하단 숫자 라벨에 사용. */
 function relayoutPanes(){
   if(!lwc) return;
-  PANES=[];
+  PANES=[]; oscDivFrac=null; oscBandCount=0;
   const osc=[]; if(IND.rsi) osc.push('rsi'); if(IND.macd) osc.push('macd');
   if(lwcVol) lwcVol.applyOptions({visible:!!IND.vol});
   const rsiSeries=()=>Array.isArray(indSeries.rsi)?indSeries.rsi[0]:indSeries.rsi;
@@ -1596,7 +1620,8 @@ function relayoutPanes(){
     return;
   }
   const bands=osc.concat(IND.vol?['vol']:[]);            // 위→아래 순서
-  const n=bands.length, bandH=Math.min(0.18,0.54/n), total=bandH*n;
+  const n=bands.length, bandH=Math.max(0.07,Math.min(OSC_BANDH,0.74/n)), total=bandH*n;   // 사용자 조절 높이(가격영역 최소 26% 보장)
+  oscDivFrac=1-total; oscBandCount=n;                    // 구분선 위치(위에서의 비율)·밴드 개수
   try{lwc.priceScale('right').applyOptions({scaleMargins:{top:0.05,bottom:total+0.03}});}catch(e){}
   bands.forEach((b,i)=>{
     const topF=(1-total)+i*bandH, m={top:topF+0.006,bottom:1-(topF+bandH)+0.006};
@@ -1694,6 +1719,8 @@ function renderChartLegend(){
   const paneH=Math.max(1,H-taH);
   let axisW=54; try{ axisW=lwc.priceScale('right').width()||54; }catch(e){}
   const rightPx=Math.round(axisW+4);
+  const dv=document.getElementById('osc-divider');   // 보조지표 높이 조절 구분선 위치/표시
+  if(dv){ if(oscDivFrac!=null){ dv.style.display='block'; dv.style.top=Math.round(oscDivFrac*paneH-5)+'px'; } else dv.style.display='none'; }
   PANES.forEach(pn=>{
     const topPx=pn.top*paneH, botPx=(1-pn.bottom)*paneH;
     html+=`<div class="band-lbl" style="top:${(topPx+2).toFixed(0)}px;left:6px">${pn.label}</div>`;
