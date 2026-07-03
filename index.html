@@ -306,8 +306,8 @@
   .px-lbl{font-size:0.625rem;color:var(--muted2);align-self:center;margin-left:2px}
   .px-sep{width:1px;height:16px;background:var(--border);margin:0 5px}
   .px-tf.ind.on{background:#0e7490;border-color:#0e7490;color:#eafcff}
-  .px-tf.ma-gear{padding:3px 7px;font-size:0.75rem;line-height:1}
-  .px-tf.ma-gear.on{background:#0e7490;border-color:#0e7490;color:#eafcff}
+  .px-tf.ma-gear,.px-tf.cfg-gear{padding:3px 7px;font-size:0.75rem;line-height:1}
+  .px-tf.ma-gear.on,.px-tf.cfg-gear.on{background:#0e7490;border-color:#0e7490;color:#eafcff}
   .px-tf.draw.on{background:#b45309;border-color:#b45309;color:#fff}
   .px-tf.draw.danger{color:#ef5350}
   .px-tf.draw.danger:hover{border-color:#ef5350;color:#ef5350}
@@ -323,6 +323,19 @@
   .ma-row .ma-del:hover{border-color:#ef5350}
   .ma-add{width:100%;margin-top:2px;background:var(--panel2);border:1px dashed var(--border);color:var(--muted);border-radius:6px;padding:5px;cursor:pointer;font-family:inherit;font-size:0.75rem}
   .ma-add:hover{color:var(--accent);border-color:var(--accent)}
+  /* 지표(볼린저·RSI) 설정 패널 필드 — .ma-config 재사용 */
+  #ind-config{min-width:264px}
+  .ic-row{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+  .ic-row .ic-l{font-size:0.6875rem;color:var(--muted);min-width:82px}
+  .ic-num{width:64px;margin-left:auto;background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:3px 6px;font-family:inherit;font-size:0.75rem;text-align:right}
+  .ic-color{width:26px;height:24px;padding:0;border:1px solid var(--border);border-radius:6px;background:none;cursor:pointer}
+  .ic-color.mla{margin-left:auto}
+  .ic-w{width:42px;background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:3px 5px;font-family:inherit;font-size:0.72rem;text-align:right}
+  .ic-unit{font-size:0.65rem;color:var(--muted2)}
+  .ic-tg{width:38px;height:22px;border:1px solid var(--border);background:var(--panel2);color:var(--muted2);border-radius:11px;cursor:pointer;font-size:0.6rem;font-weight:800}
+  .ic-tg.on{background:#0e7490;border-color:#0e7490;color:#eafcff}
+  /* 볼린저·일목 밴드 배경 채우기 캔버스 */
+  #px-fill{position:absolute;inset:0;pointer-events:none;z-index:2}
   /* 차트 위 범례·밴드 라벨 오버레이 */
   #px-labels{position:absolute;inset:0;pointer-events:none;z-index:3;overflow:hidden;font-variant-numeric:tabular-nums}
   #px-labels .chart-legend{position:absolute;top:4px;left:7px;display:flex;flex-wrap:wrap;gap:4px 8px;max-width:70%}
@@ -1313,10 +1326,11 @@ async function loadTrump(){
 /* 관심종목 인터랙티브 주가차트 — Lightweight Charts(오픈소스) + 야후 데이터(/api/chart).
    한국(.KS/.KQ)·미국 모두 동작. 기본 일봉. 타임프레임 버튼으로 기간 전환. */
 const CHART_RANGES=[
-  ['1일','1d','5m'],['1주','5d','15m'],['1개월','1mo','1d'],['3개월','3mo','1d'],
-  ['6개월','6mo','1d'],['1년','1y','1d'],['5년','5y','1wk']
+  ['1분','1d','1m'],['5분','5d','5m'],['15분','1mo','15m'],['30분','1mo','30m'],['60분','3mo','60m'],
+  ['일','6mo','1d'],['주','2y','1wk'],['월','10y','1mo']
 ];
-let lwc=null,lwcCandle=null,lwcVol=null,curChartSym=null,curRange='6mo',curInterval='1d';
+const isIntraday=iv=>/^\d+(m|h)$/.test(iv);   // 분/시간봉 판별('1mo'·'1wk'·'1d' 제외 — 'm' 오탐 방지)
+let lwc=null,lwcCandle=null,lwcVol=null,curChartSym=null,curRange='6mo',curInterval='1d',chartTimer=null,lastChartSig=null;
 /* ── 보조지표·그리기 상태 ── */
 let curOHLC=[],curVOL=[];
 const IND_DEFS=[
@@ -1337,8 +1351,35 @@ let MA_LINES=(()=>{ try{ const a=JSON.parse(localStorage.getItem('alphadesk.mali
   if(Array.isArray(a)&&a.length) return a.map(x=>({p:Math.max(1,Math.min(480,+x.p||1)),c:x.c||'#f0b90b'})); }catch(e){}
   return MA_DEFAULT.map(x=>({...x})); })();
 function saveMALines(){ try{ localStorage.setItem('alphadesk.malines', JSON.stringify(MA_LINES)); }catch(e){} }
+/* 지표 세부 설정(볼린저·RSI·일목) — 기간·색상·굵기·토글·배경 (localStorage 저장) */
+const INDCFG_DEFAULT={
+  boll:{ period:20, stddev:2, upC:'#f0b90b', upW:1, upOn:true, midC:'#22c55e', midW:1, midOn:true, loC:'#f0b90b', loW:1, loOn:true, fillOn:true, fillC:'#f0b90b' },
+  rsi:{ period:14, signal:14, upper:70, mid:50, lower:30, lineC:'#f0b90b', sigC:'#3b82f6' },
+  ich:{ fillOn:true },
+};
+const INDCFG_SCHEMA={
+  boll:[ {k:'period',t:'num',label:'이동평균 기간'},{k:'stddev',t:'num',label:'표준편차',step:0.1},
+    {k:'up',t:'line',label:'상한선'},{k:'mid',t:'line',label:'중간선'},{k:'lo',t:'line',label:'하한선'},{k:'fill',t:'fill',label:'배경색'} ],
+  rsi:[ {k:'period',t:'num',label:'기간'},{k:'signal',t:'num',label:'시그널'},{k:'upper',t:'num',label:'상한선'},{k:'mid',t:'num',label:'중간선'},{k:'lower',t:'num',label:'하한선'},
+    {k:'lineC',t:'color',label:'RSI 색상'},{k:'sigC',t:'color',label:'시그널 색상'} ],
+};
+const INDCFG_TITLE={ boll:'볼린저 밴드 설정', rsi:'RSI 설정' };
+let INDCFG=(()=>{ const d=JSON.parse(JSON.stringify(INDCFG_DEFAULT));
+  try{ const s=JSON.parse(localStorage.getItem('alphadesk.indcfg')||'{}');
+    for(const k in d) if(s[k]) Object.assign(d[k], s[k]); }catch(e){}
+  return d; })();
+function saveIndCfg(){ try{ localStorage.setItem('alphadesk.indcfg', JSON.stringify(INDCFG)); }catch(e){} }
+function clampNum(k,v){ if(!isFinite(v)) v=0;
+  if(k==='period'||k==='signal') return Math.max(1,Math.min(400,Math.round(v)));
+  if(k==='stddev') return Math.max(0.1,Math.min(6,Math.round(v*10)/10));
+  if(k==='upper'||k==='mid'||k==='lower') return Math.max(0,Math.min(100,Math.round(v)));
+  return v; }
+/* null을 만나면 리셋하는 단순이동평균(RSI 시그널선용 — 선행 null 스킵) */
+function smaSparse(a,p){ const o=new Array(a.length).fill(null); let q=[],sum=0; for(let i=0;i<a.length;i++){ const x=a[i]; if(x==null){ q=[]; sum=0; continue; } q.push(x); sum+=x; if(q.length>p){ sum-=q.shift(); } if(q.length===p) o[i]=sum/p; } return o; }
+function hexA(hex,a){ const h=(hex||'#000').replace('#',''); const r=parseInt(h.slice(0,2),16)||0,g=parseInt(h.slice(2,4),16)||0,b=parseInt(h.slice(4,6),16)||0; return 'rgba('+r+','+g+','+b+','+a+')'; }
 let PANES=[];   // relayoutPanes가 채우는 하단 밴드 목록(범례·상하단값 표시용)
 let lblResizeObs=null, _lblRAF=0;   // 범례 오버레이 리사이즈 감시
+let FILLDATA=null, _fillRAF=0, _cfgDebounce=0;   // 밴드 채우기용 지표값 캐시(applyIndicators에서만 재계산) + 스크롤 rAF 스로틀 + 설정 디바운스
 let indSeries={}, drawSeries=[], drawPriceLines=[], drawMode=null, pendingTrend=null;
 let drawStore=(()=>{ try{ return JSON.parse(localStorage.getItem('alphadesk.draw')||'{}'); }catch(e){ return {}; } })();
 function saveDraw(){ try{ localStorage.setItem('alphadesk.draw', JSON.stringify(drawStore)); }catch(e){} }
@@ -1384,13 +1425,14 @@ async function renderChart(sym){
   const okLib=await ensureLWC();
   if(sym!==curChartSym) return;            // 로딩 중 다른 종목 선택되면 취소
   if(!okLib||!window.LightweightCharts){ host.innerHTML='<div class="tv-loading">차트 라이브러리를 불러오지 못했습니다</div>'; return; }
+  stopChartTimer(); lastChartSig=null;
   if(lwc){ try{lwc.remove()}catch(e){} lwc=null; }
   host.innerHTML='<div class="px-bar" id="px-bar"></div>'+
     '<div class="px-bar px-bar2" id="px-bar2"></div>'+
     '<div class="px-canvas" id="px-canvas"></div>'+
     '<div class="px-info"><span id="px-sym"></span><span id="px-meta"></span></div>';
   const bar=host.querySelector('#px-bar');
-  bar.innerHTML=CHART_RANGES.map((r,i)=>`<button class="px-tf${r[1]===curRange?' on':''}" data-i="${i}">${r[0]}</button>`).join('');
+  bar.innerHTML=CHART_RANGES.map((r,i)=>`<button class="px-tf${(r[1]===curRange&&r[2]===curInterval)?' on':''}" data-i="${i}">${r[0]}</button>`).join('');
   bar.querySelectorAll('.px-tf').forEach(b=>b.onclick=()=>{
     const r=CHART_RANGES[+b.dataset.i]; curRange=r[1]; curInterval=r[2];
     bar.querySelectorAll('.px-tf').forEach(x=>x.classList.remove('on')); b.classList.add('on');
@@ -1405,7 +1447,7 @@ async function renderChart(sym){
     layout:{background:{color:col.bg},textColor:col.text,fontFamily:'inherit'},
     grid:{vertLines:{color:col.grid},horzLines:{color:col.grid}},
     rightPriceScale:{borderColor:col.border},
-    timeScale:{borderColor:col.border,timeVisible:/[mh]/.test(curInterval),secondsVisible:false},
+    timeScale:{borderColor:col.border,timeVisible:isIntraday(curInterval),secondsVisible:false},
     crosshair:{mode:LightweightCharts.CrosshairMode.Normal},
     localization:{priceFormatter:priceFmt}
   });
@@ -1415,8 +1457,9 @@ async function renderChart(sym){
   indSeries={}; drawSeries=[]; drawPriceLines=[]; pendingTrend=null; PANES=[];   // 종목 바뀌면 지표·그림 핸들 초기화
   lwc.subscribeClick(onChartClick);                                       // 그리기용 클릭 구독
   const canvasEl=host.querySelector('#px-canvas');
+  const fillCv=document.createElement('canvas'); fillCv.id='px-fill'; canvasEl.appendChild(fillCv);   // 밴드 배경 채우기 캔버스(라벨보다 아래)
   const lblBox=document.createElement('div'); lblBox.id='px-labels'; canvasEl.appendChild(lblBox);  // 범례·밴드값 오버레이
-  lwc.timeScale().subscribeVisibleLogicalRangeChange(()=>renderChartLegend());   // 스크롤·줌 시 상하단값 갱신
+  lwc.timeScale().subscribeVisibleLogicalRangeChange(()=>{ if(_fillRAF) return; _fillRAF=requestAnimationFrame(()=>{ _fillRAF=0; renderChartLegend(); }); });   // 스크롤·줌 rAF 코얼레싱(프레임당 1회)
   // 캔버스 크기 변경(창 리사이즈·사이드바·브레이크포인트·툴바 줄바꿈) 시에도 라벨 위치·값 갱신
   if(lblResizeObs){ try{lblResizeObs.disconnect()}catch(e){} lblResizeObs=null; }
   // setTimeout 디바운스(백그라운드 탭에서도 실행 — rAF는 지연될 수 있음)
@@ -1424,35 +1467,49 @@ async function renderChart(sym){
   document.getElementById('px-sym').textContent=((WL.find(x=>x.sym===sym)||{}).name||sym)+' · 주가차트';
   loadChartData(sym);
 }
-async function loadChartData(sym){
+async function loadChartData(sym, silent){
   if(!lwcCandle) return;
   const meta=document.getElementById('px-meta');
-  if(meta) meta.textContent='불러오는 중…';
+  const reqInterval=curInterval, reqRange=curRange;   // 요청 시점 기간 캡처(비동기 응답 레이스 방지)
+  if(meta && !silent) meta.textContent='불러오는 중…';
   try{
-    const r=await fetch(`/api/chart?sym=${encodeURIComponent(sym)}&range=${curRange}&interval=${curInterval}`,{cache:'default'});
+    const bust = silent ? ('&_='+Date.now()) : '';   // 실시간 갱신은 브라우저 캐시 우회(서버는 ~60초 캐시)
+    const r=await fetch(`/api/chart?sym=${encodeURIComponent(sym)}&range=${reqRange}&interval=${reqInterval}${bust}`,{cache: silent?'no-store':'default'});
     if(!r.ok) throw new Error('http');
     const d=await r.json();
     if(d.error||!d.ohlc||!d.ohlc.length) throw new Error(d.error||'no data');
-    if(sym!==curChartSym) return;          // 응답 사이 종목 바뀌면 무시
+    if(sym!==curChartSym || reqInterval!==curInterval) return;   // 종목·기간 바뀌면 stale 응답 무시
     const col=chartColors();
-    lwc.applyOptions({timeScale:{timeVisible:/[mh]/.test(curInterval)}});
+    lwc.applyOptions({timeScale:{timeVisible:isIntraday(curInterval)}});
     lwcCandle.setData(d.ohlc);
     lwcVol.setData(d.vol.map(v=>({time:v.time,value:v.value,color:(v.up?col.up:col.down)+'55'})));
     curOHLC=d.ohlc; curVOL=d.vol;
-    applyIndicators(); redrawDrawings();       // 보조지표 재계산 + 저장된 그림 복원
-    lwc.timeScale().fitContent();
-    if(meta) meta.textContent=(d.currency?d.currency+' · ':'')+d.ohlc.length+'봉 · '+curInterval;
+    applyIndicators();                          // 보조지표 재계산(동기 → 깜빡임 없음)
+    if(!silent){ redrawDrawings(); lwc.timeScale().fitContent(); }   // 최초/전환 때만 그림 복원·뷰 맞춤(실시간 갱신은 뷰 유지)
+    // 데이터가 실제로 바뀐 경우에만 '갱신' 시각 전진(정지·캐시 데이터에 실시간 오인 방지)
+    const lb=d.ohlc[d.ohlc.length-1], sig=d.ohlc.length+'|'+lb.time+'|'+lb.close;
+    if(meta && (!silent || sig!==lastChartSig)){ const now=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      meta.innerHTML=(d.currency?d.currency+' · ':'')+d.ohlc.length+'봉 · '+curInterval+' · <span style="color:#f6465d" title="시세 변동 시 자동 갱신 · 야후 기준(KR 약 15분 지연)">●</span> '+now+' 갱신'; }
+    lastChartSig=sig;
+    if(!silent) startChartTimer();              // 자동 갱신 타이머 (전환 때 재시작)
   }catch(e){
-    if(meta) meta.textContent='데이터를 불러올 수 없습니다 (로컬 서버/배포 환경에서 표시)';
+    if(meta && !silent) meta.textContent='데이터를 불러올 수 없습니다 (로컬 서버/배포 환경에서 표시)';
   }
+}
+function stopChartTimer(){ if(chartTimer){ clearInterval(chartTimer); chartTimer=null; } }
+function startChartTimer(){ stopChartTimer();
+  const ms=isIntraday(curInterval)?20000:30000;   // 분/시간봉 20초, 일봉 이상 30초(야후 지연·서버 캐시 감안)
+  chartTimer=setInterval(()=>{ if(curChartSym && !document.hidden) loadChartData(curChartSym, true); }, ms);
 }
 
 /* ── 보조지표·그리기 툴바 ── */
 function buildIndBar(host){
   const bar=host.querySelector('#px-bar2'); if(!bar) return;
-  // 이동평균 버튼 뒤에 설정(⚙) 버튼 삽입
-  const inds=IND_DEFS.map(d=>{ const btn=`<button class="px-tf ind${IND[d.k]?' on':''}" data-ind="${d.k}" title="${d.tip}">${d.label}</button>`;
-    return d.k==='ma' ? btn+'<button class="px-tf ma-gear" title="이동평균선 기간·색상 설정">⚙</button>' : btn; }).join('');
+  // 지표 버튼 뒤에 설정(⚙) 버튼 삽입 — MA는 전용 패널, 볼린저·RSI는 공용 설정 패널
+  const inds=IND_DEFS.map(d=>{ let btn=`<button class="px-tf ind${IND[d.k]?' on':''}" data-ind="${d.k}" title="${d.tip}">${d.label}</button>`;
+    if(d.k==='ma') btn+='<button class="px-tf ma-gear" title="이동평균선 기간·색상 설정">⚙</button>';
+    else if(d.k==='boll'||d.k==='rsi') btn+=`<button class="px-tf cfg-gear" data-cfg="${d.k}" title="${d.label} 설정">⚙</button>`;
+    return btn; }).join('');
   bar.innerHTML='<span class="px-lbl">지표</span>'+inds+
     '<span class="px-sep"></span><span class="px-lbl">그리기</span>'+
     '<button class="px-tf draw" data-draw="hline" title="클릭 지점 가격에 수평선">수평선</button>'+
@@ -1462,10 +1519,12 @@ function buildIndBar(host){
     const k=b.dataset.ind; IND[k]=!IND[k]; b.classList.toggle('on',IND[k]); saveIndState(); applyIndicators();
   });
   const gear=bar.querySelector('.ma-gear'); if(gear) gear.onclick=(e)=>{ e.stopPropagation(); toggleMAConfig(); };
-  if(!window.__maOutside){ window.__maOutside=1; document.addEventListener('click',(e)=>{
-    const h=document.getElementById('tv-chart'); if(!h) return; const p=h.querySelector('#ma-config');
-    if(!p||p.style.display==='none') return;
-    if(!p.contains(e.target)&&!(e.target.classList&&e.target.classList.contains('ma-gear'))) toggleMAConfig(false);
+  bar.querySelectorAll('.cfg-gear').forEach(g=>g.onclick=(e)=>{ e.stopPropagation(); toggleIndCfg(g.dataset.cfg); });
+  // 패널들은 내부 클릭 stopPropagation → 문서에 도달하는 클릭은 항상 '바깥' → 열린 설정 패널 닫기
+  if(!window.__cfgOutside){ window.__cfgOutside=1; document.addEventListener('click',()=>{
+    const h=document.getElementById('tv-chart'); if(!h) return;
+    const p1=h.querySelector('#ma-config'); if(p1&&p1.style.display!=='none'){ p1.style.display='none'; const g=h.querySelector('.ma-gear'); if(g) g.classList.remove('on'); }
+    const p2=h.querySelector('#ind-config'); if(p2&&p2.style.display!=='none'){ p2.style.display='none'; h.querySelectorAll('.cfg-gear').forEach(g=>g.classList.remove('on')); }
   }); }
   bar.querySelectorAll('.draw').forEach(b=>b.onclick=()=>{
     const a=b.dataset.draw;
@@ -1485,25 +1544,36 @@ function clearIndSeries(){
 function applyIndicators(){
   if(!lwc||!lwcCandle) return;
   clearIndSeries();
-  const o=curOHLC; if(!o||!o.length){ relayoutPanes(); renderChartLegend(); return; }
+  const o=curOHLC; if(!o||!o.length){ FILLDATA=null; relayoutPanes(); renderChartLegend(); return; }
   const times=o.map(d=>d.time), closes=o.map(d=>d.close), col=chartColors();
+  let _bB=null,_iB=null;                            // 밴드 채우기용 지표값 캐시(스크롤 시 재계산 방지)
   const lineOpt=c=>({color:c,lineWidth:1,priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false});
   const addLine=(c,arr)=>{ const s=lwc.addLineSeries(lineOpt(c)); s.setData(lineData(times,arr)); return s; };
+  const addLineW=(c,w,arr)=>{ const s=lwc.addLineSeries(Object.assign(lineOpt(c),{lineWidth:Math.max(1,Math.min(5,w||1))})); s.setData(lineData(times,arr)); return s; };
   if(IND.ma){ indSeries.ma=MA_LINES.map(m=>addLine(m.c,smaArr(closes,m.p))); }
-  if(IND.boll){ const b=bollArr(closes,20,2); indSeries.boll=[addLine('#8b98a9',b.mid),addLine('#26c6da',b.up),addLine('#26c6da',b.lo)]; indSeries.boll[0].applyOptions({lineStyle:LightweightCharts.LineStyle.Dashed}); }
-  if(IND.ich){ const k=ichimoku(o,9,26,52);
+  if(IND.boll){ const cf=INDCFG.boll, b=bollArr(closes,cf.period,cf.stddev), arr=[]; _bB=b;
+    if(cf.midOn){ const s=addLineW(cf.midC,cf.midW,b.mid); s.applyOptions({lineStyle:LightweightCharts.LineStyle.Dashed}); arr.push(s); }
+    if(cf.upOn) arr.push(addLineW(cf.upC,cf.upW,b.up));
+    if(cf.loOn) arr.push(addLineW(cf.loC,cf.loW,b.lo));
+    indSeries.boll=arr; }                          // 밴드 내부 배경은 renderChartFills(오버레이 캔버스)에서 채움
+  if(IND.ich){ const k=ichimoku(o,9,26,52); _iB=k;
     indSeries.ich=[addLine('#2196f3',k.tenkan),addLine('#e53935',k.kijun),addLine('#66bb6a',k.spanA),addLine('#ef5350',k.spanB),addLine('#ab47bc',k.chikou)]; }
-  if(IND.rsi){ const s=lwc.addLineSeries(Object.assign(lineOpt('#f0b90b'),{priceScaleId:'rsi',autoscaleInfoProvider:()=>({priceRange:{minValue:0,maxValue:100}})}));
-    s.setData(lineData(times,rsiArr(closes,14)));
-    s.createPriceLine({price:70,color:'#ef535066',lineWidth:1,lineStyle:LightweightCharts.LineStyle.Dashed,axisLabelVisible:false});
-    s.createPriceLine({price:30,color:'#26a69a66',lineWidth:1,lineStyle:LightweightCharts.LineStyle.Dashed,axisLabelVisible:false});
-    s.priceScale().applyOptions({visible:false}); indSeries.rsi=s; }
+  if(IND.rsi){ const cf=INDCFG.rsi, rv=rsiArr(closes,cf.period);
+    const s=lwc.addLineSeries(Object.assign(lineOpt(cf.lineC),{priceScaleId:'rsi',autoscaleInfoProvider:()=>({priceRange:{minValue:0,maxValue:100}})}));
+    s.setData(lineData(times,rv));
+    const ss=lwc.addLineSeries(Object.assign(lineOpt(cf.sigC),{priceScaleId:'rsi'})); ss.setData(lineData(times,smaSparse(rv,cf.signal)));   // 시그널선(RSI의 이동평균)
+    [[cf.upper,'#ef5350'],[cf.mid,'#8b98a9'],[cf.lower,'#26a69a']].forEach(([lv,cc])=>
+      s.createPriceLine({price:lv,color:cc+'66',lineWidth:1,lineStyle:LightweightCharts.LineStyle.Dashed,axisLabelVisible:false}));
+    s.priceScale().applyOptions({visible:false}); indSeries.rsi=[s,ss]; }
   if(IND.macd){ const m=macdArr(closes);
     const h=lwc.addHistogramSeries({priceScaleId:'macd',priceLineVisible:false,lastValueVisible:false});
     h.setData(times.map((t,i)=>m.hist[i]==null?null:({time:t,value:r4(m.hist[i]),color:(m.hist[i]>=0?col.up:col.down)+'88'})).filter(Boolean));
     const ml=lwc.addLineSeries(Object.assign(lineOpt('#2196f3'),{priceScaleId:'macd'})); ml.setData(lineData(times,m.macd));
     const sl=lwc.addLineSeries(Object.assign(lineOpt('#e53935'),{priceScaleId:'macd'})); sl.setData(lineData(times,m.signal));
     ml.priceScale().applyOptions({visible:false}); indSeries.macd=[h,ml,sl]; }
+  // 밴드 채우기 값 캐시(스크롤·줌 때 재계산 없이 좌표변환만)
+  FILLDATA={ times, boll:(IND.boll&&INDCFG.boll.fillOn&&_bB)?{up:_bB.up,lo:_bB.lo}:null,
+    ich:(IND.ich&&INDCFG.ich.fillOn&&_iB)?{spanA:_iB.spanA,spanB:_iB.spanB}:null, fillC:INDCFG.boll.fillC };
   relayoutPanes(); renderChartLegend();
 }
 /* 오실레이터(RSI·MACD)·거래량 하단 밴드 배치 — v4는 패널이 없어 scaleMargins로 구획.
@@ -1513,8 +1583,9 @@ function relayoutPanes(){
   PANES=[];
   const osc=[]; if(IND.rsi) osc.push('rsi'); if(IND.macd) osc.push('macd');
   if(lwcVol) lwcVol.applyOptions({visible:!!IND.vol});
+  const rsiSeries=()=>Array.isArray(indSeries.rsi)?indSeries.rsi[0]:indSeries.rsi;
   const META={
-    rsi:{label:'RSI(14)', series:()=>indSeries.rsi, fmt:v=>String(Math.round(v)), fixed:{t:100,b:0}},   // RSI 스케일 0~100 고정
+    rsi:{label:'RSI('+INDCFG.rsi.period+')', series:rsiSeries, fmt:v=>String(Math.round(v)), fixed:{t:100,b:0}},   // RSI 스케일 0~100 고정
     macd:{label:'MACD(12·26·9)', series:()=>Array.isArray(indSeries.macd)?indSeries.macd[1]:null, fmt:v=>(v>=0?'+':'')+v.toFixed(2)},
     vol:{label:'거래량', series:()=>lwcVol, fmt:fmtVol},
   };
@@ -1530,7 +1601,7 @@ function relayoutPanes(){
   bands.forEach((b,i)=>{
     const topF=(1-total)+i*bandH, m={top:topF+0.006,bottom:1-(topF+bandH)+0.006};
     if(b==='vol'){ if(lwcVol) try{lwcVol.priceScale().applyOptions({scaleMargins:m});}catch(e){} }
-    else { const sc=(b==='rsi')?indSeries.rsi:(Array.isArray(indSeries.macd)?indSeries.macd[0]:null); if(sc) try{sc.priceScale().applyOptions({scaleMargins:m});}catch(e){} }
+    else { const sc=(b==='rsi')?rsiSeries():(Array.isArray(indSeries.macd)?indSeries.macd[0]:null); if(sc) try{sc.priceScale().applyOptions({scaleMargins:m});}catch(e){} }
     pushPane(b,m);
   });
 }
@@ -1561,10 +1632,53 @@ function redrawDrawings(){
 }
 function clearDrawings(){ drawStore[drawKey()]={h:[],t:[]}; pendingTrend=null; redrawDrawings(); saveDraw(); }
 
+/* ── 밴드 배경 채우기(볼린저·일목 구름) — LWC v4는 밴드 채움이 없어 오버레이 캔버스에 직접 그림 ── */
+function renderChartFills(){
+  const cv=document.getElementById('px-fill'), host=document.getElementById('px-canvas');
+  if(!cv||!host||!lwc||!lwcCandle) return;
+  const W=host.clientWidth, H=host.clientHeight, dpr=window.devicePixelRatio||1;
+  if(cv.width!==Math.round(W*dpr)) cv.width=Math.round(W*dpr);
+  if(cv.height!==Math.round(H*dpr)) cv.height=Math.round(H*dpr);
+  cv.style.width=W+'px'; cv.style.height=H+'px';
+  const ctx=cv.getContext('2d'); if(!ctx) return;
+  ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,W,H);
+  const fd=FILLDATA; if(!fd||!fd.times) return;    // 캐시된 지표값 사용(스크롤 시 재계산 없음)
+  const ts=lwc.timeScale();
+  const X=t=>{ try{ return ts.timeToCoordinate(t); }catch(e){ return null; } };
+  const Yp=v=>{ try{ return lwcCandle.priceToCoordinate(v); }catch(e){ return null; } };
+  try{
+    if(fd.boll) fillBetween(ctx,fd.times,fd.boll.up,fd.boll.lo,X,Yp,hexA(fd.fillC,0.10));
+    if(fd.ich) fillCloud(ctx,fd.times,fd.ich.spanA,fd.ich.spanB,X,Yp,hexA('#66bb6a',0.14),hexA('#ef5350',0.14));
+  }catch(e){}
+}
+function fillBetween(ctx,times,up,lo,X,Yp,color){
+  const pts=[]; for(let i=0;i<times.length;i++){ if(up[i]==null||lo[i]==null) continue; const x=X(times[i]); if(x==null) continue; const yu=Yp(up[i]),yl=Yp(lo[i]); if(yu==null||yl==null) continue; pts.push([x,yu,yl]); }
+  if(pts.length<2) return;
+  ctx.beginPath(); ctx.moveTo(pts[0][0],pts[0][1]);
+  for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i][0],pts[i][1]);
+  for(let i=pts.length-1;i>=0;i--) ctx.lineTo(pts[i][0],pts[i][2]);
+  ctx.closePath(); ctx.fillStyle=color; ctx.fill();
+}
+function fillCloud(ctx,times,a,b,X,Yp,colUp,colDn){   // 세그먼트별 색(선행A≥선행B 초록) + 교차(쿠모 전환) 시 교차점 분할
+  const tri=(p,q,r,col)=>{ ctx.beginPath(); ctx.moveTo(p[0],p[1]); ctx.lineTo(q[0],q[1]); ctx.lineTo(r[0],r[1]); ctx.closePath(); ctx.fillStyle=col; ctx.fill(); };
+  for(let i=0;i<times.length-1;i++){ if(a[i]==null||b[i]==null||a[i+1]==null||b[i+1]==null) continue;
+    const x0=X(times[i]),x1=X(times[i+1]); if(x0==null||x1==null) continue;
+    const a0=Yp(a[i]),b0=Yp(b[i]),a1=Yp(a[i+1]),b1=Yp(b[i+1]); if(a0==null||b0==null||a1==null||b1==null) continue;
+    const d0=a[i]-b[i], d1=a[i+1]-b[i+1];
+    if(d0===0 || d1===0 || (d0>0)===(d1>0)){        // 교차 없음 → 사다리꼴(삼각형 2개로 안전하게)
+      const col=(d0>=0)?colUp:colDn; tri([x0,a0],[x1,a1],[x1,b1],col); tri([x0,a0],[x1,b1],[x0,b0],col);
+    } else {                                         // 교차 → 교차점에서 분할(나비형 방지·색 반전 방지)
+      const den=(a0-b0)-(a1-b1), t=den?(a0-b0)/den:0.5, xc=x0+t*(x1-x0), yc=a0+t*(a1-a0);
+      tri([x0,a0],[xc,yc],[x0,b0],(d0>=0)?colUp:colDn); tri([xc,yc],[x1,a1],[x1,b1],(d1>=0)?colUp:colDn);
+    }
+  }
+}
+
 /* ── 차트 위 범례 + 밴드 상/하단 숫자 라벨 ── */
 function fmtVol(v){ if(v==null||!isFinite(v)) return '-'; v=Math.max(0,v);
   if(v>=1e8) return (v/1e8).toFixed(v>=1e9?0:1)+'억'; if(v>=1e4) return Math.round(v/1e4).toLocaleString('en-US')+'만'; return Math.round(v).toLocaleString('en-US'); }
 function renderChartLegend(){
+  renderChartFills();          // 밴드 배경 채우기도 같은 트리거(토글·스크롤·줌·리사이즈)에서 갱신
   const canvas=document.getElementById('px-canvas'), box=document.getElementById('px-labels');
   if(!box) return;
   if(!canvas||!lwc){ box.innerHTML=''; return; }
@@ -1572,7 +1686,7 @@ function renderChartLegend(){
   // 가격 위 오버레이 범례(어느 선이 무슨 지표인지)
   const chips=[];
   if(IND.ma) MA_LINES.forEach(m=>{ if(curOHLC&&curOHLC.length>=m.p) chips.push({c:m.c,t:'MA'+m.p}); });   // 봉 수 부족해 선이 안 그려지는 MA는 칩도 숨김
-  if(IND.boll) chips.push({c:'#26c6da',t:'볼린저(20·2σ)'});
+  if(IND.boll) chips.push({c:INDCFG.boll.midC,t:'볼린저('+INDCFG.boll.period+'·'+INDCFG.boll.stddev+'σ)'});
   if(IND.ich) chips.push({c:'#66bb6a',t:'일목(9·26·52)'});
   if(chips.length) html+='<div class="chart-legend">'+chips.map(c=>`<span class="lg-chip"><i style="background:${c.c}"></i>${c.t}</span>`).join('')+'</div>';
   // 하단 밴드: 헤더 라벨 + 상/하단 실제 표시값(픽셀→가격 역산)
@@ -1602,7 +1716,7 @@ function renderMAConfig(){
     <button class="ma-del" data-i="${i}" title="삭제">×</button></div>`).join('');
   panel.innerHTML='<h5>이동평균선 설정</h5>'+rows+'<button class="ma-add">+ 이동평균선 추가</button>';
   panel.querySelectorAll('.ma-p').forEach(inp=>inp.onchange=()=>{ const i=+inp.dataset.i; const v=Math.max(1,Math.min(480,parseInt(inp.value,10)||1)); MA_LINES[i].p=v; inp.value=v; saveMALines(); applyIndicators(); });
-  panel.querySelectorAll('.ma-c').forEach(inp=>inp.oninput=()=>{ const i=+inp.dataset.i; MA_LINES[i].c=inp.value; saveMALines(); applyIndicators(); });
+  panel.querySelectorAll('.ma-c').forEach(inp=>inp.oninput=()=>{ const i=+inp.dataset.i; MA_LINES[i].c=inp.value; clearTimeout(_cfgDebounce); _cfgDebounce=setTimeout(()=>{ saveMALines(); applyIndicators(); },50); });   // 색상 드래그 디바운스
   panel.querySelectorAll('.ma-del').forEach(b=>b.onclick=()=>{ const i=+b.dataset.i; MA_LINES.splice(i,1); if(!MA_LINES.length) MA_LINES.push({p:20,c:MA_PALETTE[0]}); saveMALines(); renderMAConfig(); applyIndicators(); });
   panel.querySelector('.ma-add').onclick=()=>{ const used=MA_LINES.map(m=>m.c); const col=MA_PALETTE.find(c=>!used.includes(c))||MA_PALETTE[MA_LINES.length%MA_PALETTE.length];
     const per=[10,30,90,240].find(p=>!MA_LINES.some(m=>m.p===p))||((MA_LINES.length+1)*10); MA_LINES.push({p:per,c:col}); saveMALines(); renderMAConfig(); applyIndicators(); };
@@ -1611,11 +1725,51 @@ function toggleMAConfig(force){
   const host=document.getElementById('tv-chart'); if(!host) return;
   const bar=host.querySelector('#px-bar2'); if(!bar) return;
   let panel=host.querySelector('#ma-config');
-  if(!panel){ panel=document.createElement('div'); panel.id='ma-config'; panel.className='ma-config'; panel.style.display='none'; bar.appendChild(panel); }
+  if(!panel){ panel=document.createElement('div'); panel.id='ma-config'; panel.className='ma-config'; panel.style.display='none';
+    panel.addEventListener('click',e=>e.stopPropagation());   // 내부 클릭(추가/삭제)이 바깥클릭 리스너로 버블링돼 패널이 닫히던 버그 방지
+    bar.appendChild(panel); }
   const open=(force!=null)?force:(panel.style.display==='none');
   panel.style.display=open?'block':'none';
   const gear=host.querySelector('.ma-gear'); if(gear) gear.classList.toggle('on',open);
-  if(open){ if(!IND.ma){ IND.ma=true; saveIndState(); const mb=host.querySelector('.ind[data-ind="ma"]'); if(mb) mb.classList.add('on'); applyIndicators(); } renderMAConfig(); }
+  if(open){ const ic=host.querySelector('#ind-config'); if(ic){ ic.style.display='none'; host.querySelectorAll('.cfg-gear').forEach(g=>g.classList.remove('on')); }   // 지표 설정 패널과 배타
+    if(!IND.ma){ IND.ma=true; saveIndState(); const mb=host.querySelector('.ind[data-ind="ma"]'); if(mb) mb.classList.add('on'); applyIndicators(); } renderMAConfig(); }
+}
+/* ── 볼린저·RSI 공용 설정 패널(스키마 기반) ── */
+function renderIndCfg(key){
+  const host=document.getElementById('tv-chart'); if(!host) return;
+  const panel=host.querySelector('#ind-config'); if(!panel) return;
+  const cf=INDCFG[key], schema=INDCFG_SCHEMA[key]||[]; let rows='';
+  schema.forEach(f=>{
+    if(f.t==='num') rows+=`<div class="ic-row"><span class="ic-l">${f.label}</span><input class="ic-num" type="number" ${f.step?`step="${f.step}"`:''} value="${cf[f.k]}" data-k="${f.k}"></div>`;
+    else if(f.t==='color') rows+=`<div class="ic-row"><span class="ic-l">${f.label}</span><input class="ic-color mla" type="color" value="${cf[f.k]}" data-k="${f.k}"></div>`;
+    else if(f.t==='line') rows+=`<div class="ic-row"><span class="ic-l">${f.label}</span>`+
+      `<input class="ic-color mla" type="color" value="${cf[f.k+'C']}" data-k="${f.k}C">`+
+      `<input class="ic-w" type="number" min="1" max="5" value="${cf[f.k+'W']}" data-k="${f.k}W"><span class="ic-unit">px</span>`+
+      `<button class="ic-tg${cf[f.k+'On']?' on':''}" data-k="${f.k}On">${cf[f.k+'On']?'ON':'OFF'}</button></div>`;
+    else if(f.t==='fill') rows+=`<div class="ic-row"><span class="ic-l">${f.label}</span>`+
+      `<input class="ic-color mla" type="color" value="${cf[f.k+'C']}" data-k="${f.k}C">`+
+      `<button class="ic-tg${cf[f.k+'On']?' on':''}" data-k="${f.k}On">${cf[f.k+'On']?'ON':'OFF'}</button></div>`;
+  });
+  panel.innerHTML=`<h5>${INDCFG_TITLE[key]||key}</h5>`+rows;
+  const apply=()=>{ saveIndCfg(); applyIndicators(); };   // applyIndicators→renderChartLegend→renderChartFills 로 배경·범례까지 갱신
+  const applyDeb=()=>{ clearTimeout(_cfgDebounce); _cfgDebounce=setTimeout(apply,50); };   // 색상 드래그 등 연속 입력은 디바운스(전 지표 재생성 폭주 방지)
+  panel.querySelectorAll('.ic-num').forEach(inp=>inp.onchange=()=>{ cf[inp.dataset.k]=clampNum(inp.dataset.k,parseFloat(inp.value)); inp.value=cf[inp.dataset.k]; apply(); });
+  panel.querySelectorAll('.ic-color').forEach(inp=>inp.oninput=()=>{ cf[inp.dataset.k]=inp.value; applyDeb(); });
+  panel.querySelectorAll('.ic-w').forEach(inp=>inp.onchange=()=>{ cf[inp.dataset.k]=Math.max(1,Math.min(5,parseInt(inp.value,10)||1)); inp.value=cf[inp.dataset.k]; apply(); });
+  panel.querySelectorAll('.ic-tg').forEach(b=>b.onclick=()=>{ cf[b.dataset.k]=!cf[b.dataset.k]; b.classList.toggle('on',cf[b.dataset.k]); b.textContent=cf[b.dataset.k]?'ON':'OFF'; apply(); });
+}
+function toggleIndCfg(key){
+  const host=document.getElementById('tv-chart'); if(!host) return; const bar=host.querySelector('#px-bar2'); if(!bar) return;
+  let panel=host.querySelector('#ind-config');
+  if(!panel){ panel=document.createElement('div'); panel.id='ind-config'; panel.className='ma-config'; panel.style.display='none';
+    panel.addEventListener('click',e=>e.stopPropagation()); bar.appendChild(panel); }
+  const mc=host.querySelector('#ma-config'); if(mc){ mc.style.display='none'; const mg=host.querySelector('.ma-gear'); if(mg) mg.classList.remove('on'); }   // MA 패널과 배타
+  const same=(panel.dataset.key===key && panel.style.display!=='none');
+  if(same){ panel.style.display='none'; }
+  else { panel.dataset.key=key; panel.style.display='block';
+    if(!IND[key]){ IND[key]=true; saveIndState(); const b=host.querySelector('.ind[data-ind="'+key+'"]'); if(b) b.classList.add('on'); applyIndicators(); }
+    renderIndCfg(key); }
+  host.querySelectorAll('.cfg-gear').forEach(g=>g.classList.toggle('on', g.dataset.cfg===key && panel.style.display!=='none'));
 }
 
 /* ===================== 지수 대비 주도주 (상대강도) =====================

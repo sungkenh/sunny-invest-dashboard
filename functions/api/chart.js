@@ -32,7 +32,7 @@ async function __cfHandler(event) {
       return resp({ error: 'no data', sym });
     }
     const ts = res.timestamp, q = res.indicators.quote[0], meta = res.meta || {};
-    const intraday = /[mh]/.test(interval);   // 5m, 15m, 1h, 90m...
+    const intraday = /^\d+[mh]$/.test(interval);   // 1m·5m·15m·30m·60m·1h·90m만 (1mo·1wk·1d 제외 — 'm' 오탐 방지)
     const go = meta.gmtoffset || 0;
     const ohlc = [], vol = [];
     let last = null;
