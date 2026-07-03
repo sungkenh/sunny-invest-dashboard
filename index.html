@@ -302,13 +302,34 @@
   .px-tf:hover{color:var(--text)}
   .px-tf.on{background:var(--accent);color:#06121f;border-color:var(--accent);font-weight:800}
   /* 2번째 툴바: 보조지표 토글 + 그리기 */
-  .px-bar2{padding:5px 8px;row-gap:5px}
+  .px-bar2{padding:5px 8px;row-gap:5px;position:relative}
   .px-lbl{font-size:0.625rem;color:var(--muted2);align-self:center;margin-left:2px}
   .px-sep{width:1px;height:16px;background:var(--border);margin:0 5px}
   .px-tf.ind.on{background:#0e7490;border-color:#0e7490;color:#eafcff}
+  .px-tf.ma-gear{padding:3px 7px;font-size:0.75rem;line-height:1}
+  .px-tf.ma-gear.on{background:#0e7490;border-color:#0e7490;color:#eafcff}
   .px-tf.draw.on{background:#b45309;border-color:#b45309;color:#fff}
   .px-tf.draw.danger{color:#ef5350}
   .px-tf.draw.danger:hover{border-color:#ef5350;color:#ef5350}
+  /* 이동평균 설정 드롭다운 */
+  .ma-config{position:absolute;top:calc(100% + 3px);left:8px;z-index:8;background:var(--panel);border:1px solid var(--border);
+    border-radius:10px;padding:10px;box-shadow:0 8px 24px rgba(0,0,0,.45);min-width:236px}
+  .ma-config h5{margin:0 0 8px;font-size:0.75rem;color:var(--muted);font-weight:800}
+  .ma-row{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+  .ma-row .ma-p{width:56px;background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:3px 6px;font-family:inherit;font-size:0.75rem}
+  .ma-row .ma-c{width:26px;height:24px;padding:0;border:1px solid var(--border);border-radius:6px;background:none;cursor:pointer}
+  .ma-row .ma-unit{font-size:0.6875rem;color:var(--muted2)}
+  .ma-row .ma-del{margin-left:auto;background:none;border:1px solid var(--border);color:#ef5350;border-radius:6px;width:24px;height:24px;cursor:pointer;font-size:0.8125rem;line-height:1}
+  .ma-row .ma-del:hover{border-color:#ef5350}
+  .ma-add{width:100%;margin-top:2px;background:var(--panel2);border:1px dashed var(--border);color:var(--muted);border-radius:6px;padding:5px;cursor:pointer;font-family:inherit;font-size:0.75rem}
+  .ma-add:hover{color:var(--accent);border-color:var(--accent)}
+  /* 차트 위 범례·밴드 라벨 오버레이 */
+  #px-labels{position:absolute;inset:0;pointer-events:none;z-index:3;overflow:hidden;font-variant-numeric:tabular-nums}
+  #px-labels .chart-legend{position:absolute;top:4px;left:7px;display:flex;flex-wrap:wrap;gap:4px 8px;max-width:70%}
+  #px-labels .lg-chip{display:inline-flex;align-items:center;gap:4px;font-size:0.625rem;color:var(--muted);background:rgba(0,0,0,.32);padding:1px 5px;border-radius:4px;white-space:nowrap}
+  #px-labels .lg-chip i{width:11px;height:2px;border-radius:2px;display:inline-block}
+  #px-labels .band-lbl{position:absolute;font-size:0.625rem;font-weight:700;color:var(--muted);background:rgba(0,0,0,.32);padding:0 5px;border-radius:4px;white-space:nowrap}
+  #px-labels .band-val{position:absolute;font-size:0.6094rem;color:var(--muted2);background:rgba(0,0,0,.3);padding:0 4px;border-radius:3px;white-space:nowrap}
   .px-canvas{flex:1;min-height:0;position:relative}
   .px-info{font-size:0.6562rem;color:var(--muted2);padding:3px 9px;border-top:1px solid var(--border);display:flex;justify-content:space-between;gap:8px}
   .px-info #px-sym{color:var(--muted);font-weight:700}
@@ -1309,6 +1330,15 @@ const IND_DEFS=[
 let IND=(()=>{ const def={ma:false,boll:false,ich:false,vol:true,rsi:false,macd:false};
   try{ return Object.assign(def, JSON.parse(localStorage.getItem('alphadesk.ind')||'{}')); }catch(e){ return def; } })();
 function saveIndState(){ try{ localStorage.setItem('alphadesk.ind', JSON.stringify(IND)); }catch(e){} }
+/* 이동평균선: 색상별 기간을 사용자가 추가·수정·삭제 (localStorage 저장) */
+const MA_DEFAULT=[{p:5,c:'#f0b90b'},{p:20,c:'#3b82f6'},{p:60,c:'#a855f7'},{p:120,c:'#22c55e'}];
+const MA_PALETTE=['#f0b90b','#3b82f6','#a855f7','#22c55e','#ec4899','#14b8a6','#f97316','#eab308'];
+let MA_LINES=(()=>{ try{ const a=JSON.parse(localStorage.getItem('alphadesk.malines')||'null');
+  if(Array.isArray(a)&&a.length) return a.map(x=>({p:Math.max(1,Math.min(480,+x.p||1)),c:x.c||'#f0b90b'})); }catch(e){}
+  return MA_DEFAULT.map(x=>({...x})); })();
+function saveMALines(){ try{ localStorage.setItem('alphadesk.malines', JSON.stringify(MA_LINES)); }catch(e){} }
+let PANES=[];   // relayoutPanes가 채우는 하단 밴드 목록(범례·상하단값 표시용)
+let lblResizeObs=null, _lblRAF=0;   // 범례 오버레이 리사이즈 감시
 let indSeries={}, drawSeries=[], drawPriceLines=[], drawMode=null, pendingTrend=null;
 let drawStore=(()=>{ try{ return JSON.parse(localStorage.getItem('alphadesk.draw')||'{}'); }catch(e){ return {}; } })();
 function saveDraw(){ try{ localStorage.setItem('alphadesk.draw', JSON.stringify(drawStore)); }catch(e){} }
@@ -1382,8 +1412,15 @@ async function renderChart(sym){
   lwcCandle=lwc.addCandlestickSeries({upColor:col.up,downColor:col.down,borderVisible:false,wickUpColor:col.up,wickDownColor:col.down});
   lwcVol=lwc.addHistogramSeries({priceFormat:{type:'volume'},priceScaleId:''});
   lwcVol.priceScale().applyOptions({scaleMargins:{top:0.82,bottom:0}});
-  indSeries={}; drawSeries=[]; drawPriceLines=[]; pendingTrend=null;    // 종목 바뀌면 지표·그림 핸들 초기화
+  indSeries={}; drawSeries=[]; drawPriceLines=[]; pendingTrend=null; PANES=[];   // 종목 바뀌면 지표·그림 핸들 초기화
   lwc.subscribeClick(onChartClick);                                       // 그리기용 클릭 구독
+  const canvasEl=host.querySelector('#px-canvas');
+  const lblBox=document.createElement('div'); lblBox.id='px-labels'; canvasEl.appendChild(lblBox);  // 범례·밴드값 오버레이
+  lwc.timeScale().subscribeVisibleLogicalRangeChange(()=>renderChartLegend());   // 스크롤·줌 시 상하단값 갱신
+  // 캔버스 크기 변경(창 리사이즈·사이드바·브레이크포인트·툴바 줄바꿈) 시에도 라벨 위치·값 갱신
+  if(lblResizeObs){ try{lblResizeObs.disconnect()}catch(e){} lblResizeObs=null; }
+  // setTimeout 디바운스(백그라운드 탭에서도 실행 — rAF는 지연될 수 있음)
+  try{ lblResizeObs=new ResizeObserver(()=>{ clearTimeout(_lblRAF); _lblRAF=setTimeout(()=>renderChartLegend(),60); }); lblResizeObs.observe(canvasEl); }catch(e){}
   document.getElementById('px-sym').textContent=((WL.find(x=>x.sym===sym)||{}).name||sym)+' · 주가차트';
   loadChartData(sym);
 }
@@ -1413,7 +1450,9 @@ async function loadChartData(sym){
 /* ── 보조지표·그리기 툴바 ── */
 function buildIndBar(host){
   const bar=host.querySelector('#px-bar2'); if(!bar) return;
-  const inds=IND_DEFS.map(d=>`<button class="px-tf ind${IND[d.k]?' on':''}" data-ind="${d.k}" title="${d.tip}">${d.label}</button>`).join('');
+  // 이동평균 버튼 뒤에 설정(⚙) 버튼 삽입
+  const inds=IND_DEFS.map(d=>{ const btn=`<button class="px-tf ind${IND[d.k]?' on':''}" data-ind="${d.k}" title="${d.tip}">${d.label}</button>`;
+    return d.k==='ma' ? btn+'<button class="px-tf ma-gear" title="이동평균선 기간·색상 설정">⚙</button>' : btn; }).join('');
   bar.innerHTML='<span class="px-lbl">지표</span>'+inds+
     '<span class="px-sep"></span><span class="px-lbl">그리기</span>'+
     '<button class="px-tf draw" data-draw="hline" title="클릭 지점 가격에 수평선">수평선</button>'+
@@ -1422,6 +1461,12 @@ function buildIndBar(host){
   bar.querySelectorAll('.ind').forEach(b=>b.onclick=()=>{
     const k=b.dataset.ind; IND[k]=!IND[k]; b.classList.toggle('on',IND[k]); saveIndState(); applyIndicators();
   });
+  const gear=bar.querySelector('.ma-gear'); if(gear) gear.onclick=(e)=>{ e.stopPropagation(); toggleMAConfig(); };
+  if(!window.__maOutside){ window.__maOutside=1; document.addEventListener('click',(e)=>{
+    const h=document.getElementById('tv-chart'); if(!h) return; const p=h.querySelector('#ma-config');
+    if(!p||p.style.display==='none') return;
+    if(!p.contains(e.target)&&!(e.target.classList&&e.target.classList.contains('ma-gear'))) toggleMAConfig(false);
+  }); }
   bar.querySelectorAll('.draw').forEach(b=>b.onclick=()=>{
     const a=b.dataset.draw;
     if(a==='clear'){ clearDrawings(); return; }
@@ -1440,11 +1485,11 @@ function clearIndSeries(){
 function applyIndicators(){
   if(!lwc||!lwcCandle) return;
   clearIndSeries();
-  const o=curOHLC; if(!o||!o.length){ relayoutPanes(); return; }
+  const o=curOHLC; if(!o||!o.length){ relayoutPanes(); renderChartLegend(); return; }
   const times=o.map(d=>d.time), closes=o.map(d=>d.close), col=chartColors();
   const lineOpt=c=>({color:c,lineWidth:1,priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false});
   const addLine=(c,arr)=>{ const s=lwc.addLineSeries(lineOpt(c)); s.setData(lineData(times,arr)); return s; };
-  if(IND.ma){ indSeries.ma=[[5,'#f0b90b'],[20,'#3b82f6'],[60,'#a855f7'],[120,'#22c55e']].map(([p,c])=>addLine(c,smaArr(closes,p))); }
+  if(IND.ma){ indSeries.ma=MA_LINES.map(m=>addLine(m.c,smaArr(closes,m.p))); }
   if(IND.boll){ const b=bollArr(closes,20,2); indSeries.boll=[addLine('#8b98a9',b.mid),addLine('#26c6da',b.up),addLine('#26c6da',b.lo)]; indSeries.boll[0].applyOptions({lineStyle:LightweightCharts.LineStyle.Dashed}); }
   if(IND.ich){ const k=ichimoku(o,9,26,52);
     indSeries.ich=[addLine('#2196f3',k.tenkan),addLine('#e53935',k.kijun),addLine('#66bb6a',k.spanA),addLine('#ef5350',k.spanB),addLine('#ab47bc',k.chikou)]; }
@@ -1459,16 +1504,24 @@ function applyIndicators(){
     const ml=lwc.addLineSeries(Object.assign(lineOpt('#2196f3'),{priceScaleId:'macd'})); ml.setData(lineData(times,m.macd));
     const sl=lwc.addLineSeries(Object.assign(lineOpt('#e53935'),{priceScaleId:'macd'})); sl.setData(lineData(times,m.signal));
     ml.priceScale().applyOptions({visible:false}); indSeries.macd=[h,ml,sl]; }
-  relayoutPanes();
+  relayoutPanes(); renderChartLegend();
 }
-/* 오실레이터(RSI·MACD)·거래량 하단 밴드 배치 — v4는 패널이 없어 scaleMargins로 구획 */
+/* 오실레이터(RSI·MACD)·거래량 하단 밴드 배치 — v4는 패널이 없어 scaleMargins로 구획.
+   각 밴드 메타를 PANES에 기록해 범례·상하단 숫자 라벨에 사용. */
 function relayoutPanes(){
   if(!lwc) return;
+  PANES=[];
   const osc=[]; if(IND.rsi) osc.push('rsi'); if(IND.macd) osc.push('macd');
   if(lwcVol) lwcVol.applyOptions({visible:!!IND.vol});
+  const META={
+    rsi:{label:'RSI(14)', series:()=>indSeries.rsi, fmt:v=>String(Math.round(v)), fixed:{t:100,b:0}},   // RSI 스케일 0~100 고정
+    macd:{label:'MACD(12·26·9)', series:()=>Array.isArray(indSeries.macd)?indSeries.macd[1]:null, fmt:v=>(v>=0?'+':'')+v.toFixed(2)},
+    vol:{label:'거래량', series:()=>lwcVol, fmt:fmtVol},
+  };
+  const pushPane=(k,m)=>{ const mm=META[k]; if(mm) PANES.push({key:k,label:mm.label,series:mm.series,fmt:mm.fmt,fixed:mm.fixed,top:m.top,bottom:m.bottom}); };
   if(osc.length===0){                                    // 오실레이터 없으면: 캔들 꽉 차게 + 거래량 하단 오버레이(기존 룩)
     try{lwc.priceScale('right').applyOptions({scaleMargins:{top:0.06,bottom:0.04}});}catch(e){}
-    if(lwcVol) try{lwcVol.priceScale().applyOptions({scaleMargins:{top:0.82,bottom:0}});}catch(e){}
+    if(IND.vol&&lwcVol){ const m={top:0.82,bottom:0}; try{lwcVol.priceScale().applyOptions({scaleMargins:m});}catch(e){} pushPane('vol',m); }
     return;
   }
   const bands=osc.concat(IND.vol?['vol']:[]);            // 위→아래 순서
@@ -1478,6 +1531,7 @@ function relayoutPanes(){
     const topF=(1-total)+i*bandH, m={top:topF+0.006,bottom:1-(topF+bandH)+0.006};
     if(b==='vol'){ if(lwcVol) try{lwcVol.priceScale().applyOptions({scaleMargins:m});}catch(e){} }
     else { const sc=(b==='rsi')?indSeries.rsi:(Array.isArray(indSeries.macd)?indSeries.macd[0]:null); if(sc) try{sc.priceScale().applyOptions({scaleMargins:m});}catch(e){} }
+    pushPane(b,m);
   });
 }
 /* ── 그리기: 수평 지지/저항선 + 추세선 ── */
@@ -1506,6 +1560,63 @@ function redrawDrawings(){
   (st.t||[]).forEach(seg=>{ if(seg&&seg.length===2) addTLine(seg); });
 }
 function clearDrawings(){ drawStore[drawKey()]={h:[],t:[]}; pendingTrend=null; redrawDrawings(); saveDraw(); }
+
+/* ── 차트 위 범례 + 밴드 상/하단 숫자 라벨 ── */
+function fmtVol(v){ if(v==null||!isFinite(v)) return '-'; v=Math.max(0,v);
+  if(v>=1e8) return (v/1e8).toFixed(v>=1e9?0:1)+'억'; if(v>=1e4) return Math.round(v/1e4).toLocaleString('en-US')+'만'; return Math.round(v).toLocaleString('en-US'); }
+function renderChartLegend(){
+  const canvas=document.getElementById('px-canvas'), box=document.getElementById('px-labels');
+  if(!box) return;
+  if(!canvas||!lwc){ box.innerHTML=''; return; }
+  let html='';
+  // 가격 위 오버레이 범례(어느 선이 무슨 지표인지)
+  const chips=[];
+  if(IND.ma) MA_LINES.forEach(m=>{ if(curOHLC&&curOHLC.length>=m.p) chips.push({c:m.c,t:'MA'+m.p}); });   // 봉 수 부족해 선이 안 그려지는 MA는 칩도 숨김
+  if(IND.boll) chips.push({c:'#26c6da',t:'볼린저(20·2σ)'});
+  if(IND.ich) chips.push({c:'#66bb6a',t:'일목(9·26·52)'});
+  if(chips.length) html+='<div class="chart-legend">'+chips.map(c=>`<span class="lg-chip"><i style="background:${c.c}"></i>${c.t}</span>`).join('')+'</div>';
+  // 하단 밴드: 헤더 라벨 + 상/하단 실제 표시값(픽셀→가격 역산)
+  const H=canvas.clientHeight; let taH=28; try{ taH=lwc.timeScale().height()||28; }catch(e){}
+  const paneH=Math.max(1,H-taH);
+  let axisW=54; try{ axisW=lwc.priceScale('right').width()||54; }catch(e){}
+  const rightPx=Math.round(axisW+4);
+  PANES.forEach(pn=>{
+    const topPx=pn.top*paneH, botPx=(1-pn.bottom)*paneH;
+    html+=`<div class="band-lbl" style="top:${(topPx+2).toFixed(0)}px;left:6px">${pn.label}</div>`;
+    let tv=null,bv=null;
+    if(pn.fixed){ tv=pn.fixed.t; bv=pn.fixed.b; }        // 고정 스케일(RSI 100/0)
+    else { const s=pn.series&&pn.series(); if(s){ try{ tv=s.coordinateToPrice(topPx); bv=s.coordinateToPrice(botPx); }catch(e){} } }
+    if(tv!=null&&isFinite(tv)) html+=`<div class="band-val" style="top:${(topPx+2).toFixed(0)}px;right:${rightPx}px">${pn.fmt(tv)}</div>`;
+    if(bv!=null&&isFinite(bv)) html+=`<div class="band-val" style="top:${(botPx-14).toFixed(0)}px;right:${rightPx}px">${pn.fmt(bv)}</div>`;
+  });
+  box.innerHTML=html;
+}
+/* ── 이동평균선 설정 패널(색상별 기간 추가·수정·삭제) ── */
+function renderMAConfig(){
+  const host=document.getElementById('tv-chart'); if(!host) return;
+  const panel=host.querySelector('#ma-config'); if(!panel) return;
+  const rows=MA_LINES.map((m,i)=>`<div class="ma-row">
+    <input class="ma-p" type="number" min="1" max="480" value="${m.p}" data-i="${i}">
+    <span class="ma-unit">일</span>
+    <input class="ma-c" type="color" value="${m.c}" data-i="${i}">
+    <button class="ma-del" data-i="${i}" title="삭제">×</button></div>`).join('');
+  panel.innerHTML='<h5>이동평균선 설정</h5>'+rows+'<button class="ma-add">+ 이동평균선 추가</button>';
+  panel.querySelectorAll('.ma-p').forEach(inp=>inp.onchange=()=>{ const i=+inp.dataset.i; const v=Math.max(1,Math.min(480,parseInt(inp.value,10)||1)); MA_LINES[i].p=v; inp.value=v; saveMALines(); applyIndicators(); });
+  panel.querySelectorAll('.ma-c').forEach(inp=>inp.oninput=()=>{ const i=+inp.dataset.i; MA_LINES[i].c=inp.value; saveMALines(); applyIndicators(); });
+  panel.querySelectorAll('.ma-del').forEach(b=>b.onclick=()=>{ const i=+b.dataset.i; MA_LINES.splice(i,1); if(!MA_LINES.length) MA_LINES.push({p:20,c:MA_PALETTE[0]}); saveMALines(); renderMAConfig(); applyIndicators(); });
+  panel.querySelector('.ma-add').onclick=()=>{ const used=MA_LINES.map(m=>m.c); const col=MA_PALETTE.find(c=>!used.includes(c))||MA_PALETTE[MA_LINES.length%MA_PALETTE.length];
+    const per=[10,30,90,240].find(p=>!MA_LINES.some(m=>m.p===p))||((MA_LINES.length+1)*10); MA_LINES.push({p:per,c:col}); saveMALines(); renderMAConfig(); applyIndicators(); };
+}
+function toggleMAConfig(force){
+  const host=document.getElementById('tv-chart'); if(!host) return;
+  const bar=host.querySelector('#px-bar2'); if(!bar) return;
+  let panel=host.querySelector('#ma-config');
+  if(!panel){ panel=document.createElement('div'); panel.id='ma-config'; panel.className='ma-config'; panel.style.display='none'; bar.appendChild(panel); }
+  const open=(force!=null)?force:(panel.style.display==='none');
+  panel.style.display=open?'block':'none';
+  const gear=host.querySelector('.ma-gear'); if(gear) gear.classList.toggle('on',open);
+  if(open){ if(!IND.ma){ IND.ma=true; saveIndState(); const mb=host.querySelector('.ind[data-ind="ma"]'); if(mb) mb.classList.add('on'); applyIndicators(); } renderMAConfig(); }
+}
 
 /* ===================== 지수 대비 주도주 (상대강도) =====================
    관심종목을 상장 지수(NASDAQ/S&P500/KOSPI/KOSDAQ)와 100 기준으로 정규화 비교 →
@@ -2263,7 +2374,7 @@ setInterval(loadNps,600000);                     // 연기금 매매동향 10분
    CSS의 clamp()는 첫 페인트·무JS 폴백으로 유지(컬럼은 fr이라 창을 가볍게 그대로 따라감). */
 (function(){
   const root=document.documentElement; let frozen=false, t=null;
-  function settle(){ root.style.fontSize=''; frozen=false; document.body.classList.remove('resizing'); }
+  function settle(){ root.style.fontSize=''; frozen=false; document.body.classList.remove('resizing'); try{ renderChartLegend(); }catch(e){} }
   window.addEventListener('resize', function(){
     if(!frozen){ root.style.fontSize=getComputedStyle(root).fontSize; frozen=true; document.body.classList.add('resizing'); }
     clearTimeout(t); t=setTimeout(settle, 180);
