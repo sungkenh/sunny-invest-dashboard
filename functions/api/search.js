@@ -6,9 +6,11 @@ async function __cfHandler(event) {
   let out = [];
 
   // 1) 네이버 증권 검색 (한글 지원, 국내+해외)
+  //    target=stock 만 허용됨. (과거 'stock,index,etf'는 API가 전체 거부 → 한글 검색이 통째로 실패하던 원인)
+  //    target=stock 하나로 국내 주식·ETF + 해외(미국 등) 종목이 모두 반환됨.
   try {
     const url = 'https://m.stock.naver.com/front-api/search/autoComplete?query=' +
-      encodeURIComponent(q) + '&target=stock,index,etf';
+      encodeURIComponent(q) + '&target=stock';
     const r = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0', 'Referer': 'https://m.stock.naver.com/' } });
     const data = await r.json();
     const items = ((data.result || {}).items) || [];
@@ -17,7 +19,7 @@ async function __cfHandler(event) {
       if (!code) continue;
       let sym, mk;
       if (nation === 'KOR' || tc === 'KOSPI' || tc === 'KOSDAQ' || tc === 'KONEX') {
-        sym = code + (tc === 'KOSPI' ? '.KS' : '.KQ'); mk = 'kr';
+        sym = code + (tc === 'KOSDAQ' || tc === 'KONEX' ? '.KQ' : '.KS'); mk = 'kr';   // 코스피=.KS, 코스닥/코넥스=.KQ
       } else { sym = code; mk = 'us'; }
       out.push({ sym, name: it.name, exch: it.typeName || tc, mk });
     }
