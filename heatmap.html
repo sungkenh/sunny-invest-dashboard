@@ -533,7 +533,7 @@ document.addEventListener('visibilitychange',()=>{ if(!document.hidden && mktSes
 renderSegs();
 load(true);
 loadPerf();                                                            // 기간 수익률 기준가(정적 JSON)
-timer=setInterval(()=>{ if(mktSession()!=='closed') load(); },15000);  // 네이버 폴링 주기(7초)보다 여유있게 · 선택 시장의 장중에만
+timer=setInterval(()=>{ if(mktSession()!=='closed') load(); },5000);   // 5초 자동 갱신 · 선택 시장의 장중에만 (탭 숨김이면 load 가 스킵)
 </script>
 </body>
 </html>

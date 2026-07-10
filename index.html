@@ -2621,7 +2621,7 @@ function hmBackChip(){
 function startKrLoop(){
   loadKrHeatmap(true);
   if(krTimer) return;
-  krTimer=setInterval(()=>{ if(hmKind==='KR' && krSessionOpen()) loadKrHeatmap(); }, 15000);  // 네이버 폴링 주기(7초)보다 여유있게
+  krTimer=setInterval(()=>{ if(hmKind==='KR' && krSessionOpen()) loadKrHeatmap(); }, 5000);   // 5초 자동 갱신 (탭 숨김·뷰포트 밖이면 loadKrHeatmap 이 스킵)
 }
 function stopKrLoop(){ if(krTimer){ clearInterval(krTimer); krTimer=null; } }
 // auto 모드에서 08:00 / 20:00 세션 경계를 넘어가면 전환 (tick에서 매초 호출)

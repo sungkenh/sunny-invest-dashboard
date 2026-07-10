@@ -5,7 +5,7 @@
 // (직접 폴링으로 초단위 체결 전진 확인). subrequest 예산: 페이지 1~2 (실패 시 스냅샷 +1) / 무료 50
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36';
 const CACHE = {};                 // `us|${n}` → {ts, data}
-const TTL = 15 * 1000;
+const TTL = 5 * 1000;             // 클라이언트 5초 폴링에 맞춤 (네이버 앱 자체 폴링은 7초)
 
 const UNIVERSES = {
   sp500:  { url: (p) => 'https://api.stock.naver.com/index/.INX/enrollStocks?page=' + p + '&pageSize=100' },
@@ -116,8 +116,8 @@ function ok(obj, short) {
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
       'Access-Control-Allow-Origin': '*',
-      'Cache-Control': short ? 'public, max-age=30' : 'public, max-age=10',
-      'Netlify-CDN-Cache-Control': short ? 'public, s-maxage=30' : 'public, s-maxage=20, stale-while-revalidate=120',
+      'Cache-Control': short ? 'public, max-age=30' : 'public, max-age=3',
+      'Netlify-CDN-Cache-Control': short ? 'public, s-maxage=30' : 'public, s-maxage=5, stale-while-revalidate=60',
     },
     body: JSON.stringify(obj),
   };

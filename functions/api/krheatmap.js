@@ -5,7 +5,7 @@
 // subrequest 예산: 랭킹 1~3 + kr_sectors.json 1 = 최대 4 (실패 시 스냅샷 +1) / Cloudflare 무료 50
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36';
 const CACHE = {};                 // `${mkt}|${n}` → {ts, data}
-const TTL = 15 * 1000;            // 네이버 pollingInterval 7초 · 엣지 s-maxage 20초와 정렬
+const TTL = 5 * 1000;             // 클라이언트 5초 폴링에 맞춤 (네이버 앱 자체 폴링은 7초)
 
 const MKT = { kospi: 'KOSPI', kosdaq: 'KOSDAQ' };
 const ALLOWED_N = [50, 100, 200];
@@ -122,8 +122,8 @@ function ok(obj, short) {
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
       'Access-Control-Allow-Origin': '*',
-      'Cache-Control': short ? 'public, max-age=30' : 'public, max-age=10',
-      'Netlify-CDN-Cache-Control': short ? 'public, s-maxage=30' : 'public, s-maxage=20, stale-while-revalidate=120',
+      'Cache-Control': short ? 'public, max-age=30' : 'public, max-age=3',
+      'Netlify-CDN-Cache-Control': short ? 'public, s-maxage=30' : 'public, s-maxage=5, stale-while-revalidate=60',
     },
     body: JSON.stringify(obj),
   };
