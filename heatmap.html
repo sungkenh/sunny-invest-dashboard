@@ -121,7 +121,7 @@
 <div class="filterbar">
   <span class="fl">시장</span>
   <div class="seg" id="seg-mkt">
-    <button data-v="kospi">코스피</button><button data-v="kosdaq">코스닥</button><button data-v="us">미국</button>
+    <button data-v="kospi">코스피</button><button data-v="kosdaq">코스닥</button><button data-v="sp500">S&amp;P500</button><button data-v="nasdaq">나스닥</button>
   </div>
   <span class="fl">종목 수</span>
   <div class="seg" id="seg-n">
@@ -176,7 +176,7 @@ function usSession(dow,mins){
   if(mins>=1350||mins<300) return 'open';
   return 'ext';
 }
-const mktSession=()=>{ const t=kstParts(), m=t.h*60+t.m; return MKT==='us' ? usSession(t.dow,m) : kospiSession(t.dow,m); };
+const mktSession=()=>{ const t=kstParts(), m=t.h*60+t.m; return isUS() ? usSession(t.dow,m) : kospiSession(t.dow,m); };
 function parseUTC(iso){
   if(!iso) return null;
   let s=String(iso).trim().replace(' ','T');
@@ -316,7 +316,7 @@ async function loadPerf(){
   if(PERIOD!=='1d') draw();
 }
 const curPeriod=()=>PERIODS.find(p=>p.v===PERIOD)||PERIODS[0];
-const curPerf=()=>MKT==='us' ? PERF.us : PERF.kr;
+const curPerf=()=>isUS() ? PERF.us : PERF.kr;
 function perfOf(it, p, price, dayPct){
   if(p.v==='1d') return dayPct;
   const pf=curPerf();
@@ -326,14 +326,14 @@ function perfOf(it, p, price, dayPct){
 }
 /* 표시 기준값: 미국은 정규장 외 시간에 프리/애프터 실시간 체결가·등락률을 우선 사용 */
 function effOf(it){
-  if(MKT==='us' && it.o && DATA && DATA.marketStatus!=='OPEN' && it.o.s==='OPEN' && isFinite(it.o.pct))
+  if(isUS() && it.o && DATA && DATA.marketStatus!=='OPEN' && it.o.s==='OPEN' && isFinite(it.o.pct))
     return {price:it.o.p, pct:it.o.pct, sess:it.o.t};
   return {price:it.price, pct:it.pct, sess:''};
 }
 const sessKor=t=>t==='PRE_MARKET'?'프리마켓':(t==='AFTER_MARKET'?'애프터마켓':'');
-const fmtPx=v=>MKT==='us' ? '$'+Number(v).toLocaleString('en-US',{maximumFractionDigits:2})
+const fmtPx=v=>isUS() ? '$'+Number(v).toLocaleString('en-US',{maximumFractionDigits:2})
                           : Number(v).toLocaleString('en-US')+'원';
-const fmtCap=v=>MKT==='us' ? (v>=1e12 ? '$'+(v/1e12).toFixed(2)+'T' : '$'+Math.round(v/1e9)+'B')
+const fmtCap=v=>isUS() ? (v>=1e12 ? '$'+(v/1e12).toFixed(2)+'T' : '$'+Math.round(v/1e9)+'B')
                            : capText(v);
 
 function krTreemap(host,items,opts){
@@ -384,9 +384,11 @@ function krTreemap(host,items,opts){
 /* ── 페이지 상태 ── */
 const ALLOWED_N=[50,100,200];
 const qs=new URLSearchParams(location.search);
-const MKTS=['kospi','kosdaq','us'];
-let MKT=(()=>{ const q=qs.get('mkt'); if(MKTS.includes(q)) return q;
-  try{ const v=localStorage.getItem('alphadesk.hmmkt'); if(MKTS.includes(v)) return v; }catch(e){}
+const MKTS=['kospi','kosdaq','sp500','nasdaq'];
+const isUS=()=>MKT==='sp500'||MKT==='nasdaq';
+let MKT=(()=>{ const norm=v=>v==='us'?'sp500':v;   // 구버전 '미국' 선택값 호환
+  const q=norm(qs.get('mkt')); if(MKTS.includes(q)) return q;
+  try{ const v=norm(localStorage.getItem('alphadesk.hmmkt')); if(MKTS.includes(v)) return v; }catch(e){}
   return 'kospi'; })();
 let N=(()=>{ try{ const v=parseInt(localStorage.getItem('alphadesk.hmpage'),10); if(ALLOWED_N.includes(v)) return v; }catch(e){}
   return 100; })();
@@ -398,7 +400,7 @@ function badge(){
   if(!DATA){ b.textContent='● LIVE'; b.classList.remove('stale'); return; }
   // 미국: 정규장이 아니어도 프리/애프터마켓이 열려 있으면 실시간
   const it0=DATA.items && DATA.items[0];
-  const overLive = MKT==='us' && DATA.source==='naver' && DATA.marketStatus!=='OPEN'
+  const overLive = isUS() && DATA.source==='naver' && DATA.marketStatus!=='OPEN'
     && it0 && it0.o && it0.o.s==='OPEN' && sessKor(it0.o.t);
   const live = DATA.source==='naver' && (DATA.marketStatus==='OPEN' || overLive);
   b.classList.toggle('stale', !live);
@@ -434,8 +436,8 @@ async function load(force){
   if(!force && document.hidden) return;
   const mkt=MKT, n=N;
   loading=true;
-  const d = mkt==='us'
-    ? await fetchLive('/api/usheatmap?n='+n, 'data/usheatmap.json')
+  const d = (mkt==='sp500'||mkt==='nasdaq')
+    ? await fetchLive('/api/usheatmap?us='+mkt+'&n='+n, 'data/usheatmap_'+mkt+'.json')
     : await fetchLive('/api/krheatmap?mkt='+mkt+'&n='+n, 'data/krheatmap_'+mkt+'.json');
   loading=false;
   if(pending){ pending=false; load(true); }

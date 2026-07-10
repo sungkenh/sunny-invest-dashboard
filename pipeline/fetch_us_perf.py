@@ -2,7 +2,7 @@
 """미국 히트맵 기간 수익률 기준가 → data/us_perf.json
 
 야후 차트 API(일봉·수정주가 adjclose)에서 종목별 1주/1달/3달/6달/올해/1년 전
-'기준 종가'를 뽑는다. 유니버스는 fetch_us_heatmap.py 가 만든 스냅샷(최대 200종목).
+'기준 종가'를 뽑는다. 유니버스는 fetch_us_heatmap.py 스냅샷 2종(sp500·nasdaq)의 합집합.
 프런트(heatmap.html)가 (현재가 / 기준종가 - 1) 로 기간 수익률을 실시간 계산한다.
 
 종목당 1요청 — 파이프라인 전용. fetch_us_heatmap.py 다음에 실행할 것.
@@ -58,13 +58,20 @@ def ref_closes(rows, targets):
 
 def main():
     os.makedirs(OUT, exist_ok=True)
-    snap_path = os.path.join(OUT, 'usheatmap.json')
-    if not os.path.exists(snap_path):
-        snap_path = os.path.join(HERE, '..', 'data', 'usheatmap.json')
-    if not os.path.exists(snap_path):
-        print('usheatmap.json 없음 → fetch_us_heatmap.py 먼저 실행')
+    codes, seen = [], set()
+    for us in ('sp500', 'nasdaq'):
+        p1 = os.path.join(OUT, 'usheatmap_%s.json' % us)
+        p2 = os.path.join(HERE, '..', 'data', 'usheatmap_%s.json' % us)
+        path = p1 if os.path.exists(p1) else p2
+        if not os.path.exists(path):
+            continue
+        for i in json.load(open(path, encoding='utf-8'))['items']:
+            if i['code'] not in seen:
+                seen.add(i['code'])
+                codes.append(i['code'])
+    if not codes:
+        print('스냅샷 없음 → fetch_us_heatmap.py 먼저 실행')
         return
-    codes = [i['code'] for i in json.load(open(snap_path, encoding='utf-8'))['items']]
 
     # 기준일은 미국 동부 기준이지만 일 단위 근사라 UTC 날짜로 충분
     today = datetime.datetime.now(datetime.timezone.utc).date()

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-"""미국 히트맵 스냅샷 폴백 → data/usheatmap.json
+"""미국 히트맵 스냅샷 폴백 → data/usheatmap_sp500.json, data/usheatmap_nasdaq.json
 
-네이버 해외주식 시총 랭킹(NASDAQ+NYSE 병합, 한글 업종 내장)을
-/api/usheatmap 과 동일한 스키마로 저장한다(최대 200종목).
+네이버 해외주식(한글 업종 내장)을 /api/usheatmap 과 동일한 스키마로 저장한다(각 최대 200종목).
+  sp500  : 지수 편입종목(index/.INX/enrollStocks)
+  nasdaq : 나스닥 거래소 시총 랭킹
 필터·정규화는 functions/api/usheatmap.js 와 **동일하게 유지**해야 한다.
 
 실행: python fetch_us_heatmap.py
@@ -18,7 +19,10 @@ UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Sa
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, 'data')
 
-EXCHANGES = ('NASDAQ', 'NYSE')
+UNIVERSES = {
+    'sp500':  'https://api.stock.naver.com/index/.INX/enrollStocks?page=%d&pageSize=100',
+    'nasdaq': 'https://api.stock.naver.com/stock/exchange/NASDAQ/marketValue?page=%d&pageSize=100',
+}
 TOP_N = 200
 
 
@@ -41,9 +45,10 @@ def keep(s):
     return cap > 0 and px > 0 and pct == pct
 
 
-def norm(s, mk):
+def norm(s):
     it = {
-        'code': s['symbolCode'], 'rc': s.get('reutersCode') or '', 'name': s['stockName'], 'mk': mk,
+        'code': s['symbolCode'], 'rc': s.get('reutersCode') or '', 'name': s['stockName'],
+        'mk': (s.get('stockExchangeType') or {}).get('code') or '',
         'sector': ((s.get('industryCodeType') or {}).get('industryGroupKor') or '').strip() or '기타',
         'price': num(s['closePrice']),
         # ⚠️ fluctuationsRatio 는 이미 부호 포함 — 다시 곱하지 말 것
@@ -57,44 +62,48 @@ def norm(s, mk):
     return it
 
 
-def main():
-    os.makedirs(OUT, exist_ok=True)
+def build(us):
     raw = []
-    for ex in EXCHANGES:
-        for p in (1, 2):
-            try:
-                d = _get('https://api.stock.naver.com/stock/exchange/%s/marketValue?page=%d&pageSize=100' % (ex, p))
-                raw += [(s, ex) for s in (d.get('stocks') or [])]
-            except Exception as e:
-                print('  [%s p%d] %s' % (ex, p, str(e)[:60]))
-            time.sleep(0.2)
+    for p in (1, 2):
+        try:
+            d = _get(UNIVERSES[us] % p)
+            raw += d.get('stocks') or []
+        except Exception as e:
+            print('  [%s p%d] %s' % (us, p, str(e)[:60]))
+        time.sleep(0.2)
 
     seen, items = set(), []
-    for s, ex in raw:
+    for s in raw:
         if not keep(s) or s['symbolCode'] in seen:
             continue
         seen.add(s['symbolCode'])
-        items.append(norm(s, ex))
+        items.append(norm(s))
     items.sort(key=lambda x: -x['cap'])
     items = items[:TOP_N]
 
     if not items:
-        print('종목 0 → 스킵(직전 스냅샷 보존)')
+        print('  %s 종목 0 → 스킵(직전 스냅샷 보존)' % us)
         return
 
-    first = raw[0][0] if raw else {}
+    first = raw[0] if raw else {}
     now = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)
     snap = {
         '_updated': now.isoformat(timespec='seconds'), 'source': 'snapshot',
-        'mkt': 'us', 'n': TOP_N,
+        'mkt': us, 'n': TOP_N,
         'marketStatus': first.get('marketStatus') or '',
         'overStatus': (first.get('overMarketPriceInfo') or {}).get('tradingSessionType') or '',
         'delay': 0, 'count': len(items), 'items': items,
     }
-    with open(os.path.join(OUT, 'usheatmap.json'), 'w', encoding='utf-8') as f:
+    with open(os.path.join(OUT, 'usheatmap_%s.json' % us), 'w', encoding='utf-8') as f:
         json.dump(snap, f, ensure_ascii=False, separators=(',', ':'))
     secs = len(set(i['sector'] for i in items))
-    print('usheatmap.json 저장: %d종목 · 업종 %d · marketStatus=%s' % (len(items), secs, snap['marketStatus']))
+    print('usheatmap_%s.json 저장: %d종목 · 업종 %d · marketStatus=%s' % (us, len(items), secs, snap['marketStatus']))
+
+
+def main():
+    os.makedirs(OUT, exist_ok=True)
+    for us in ('sp500', 'nasdaq'):
+        build(us)
 
 
 if __name__ == '__main__':
