@@ -193,6 +193,7 @@
   .hm-svg .hm-t:hover rect{stroke:#ffffff;stroke-width:1.4}
   .hm-sec-lbl{font-size:9px;font-weight:800;fill:var(--muted);letter-spacing:.2px;cursor:pointer}
   .hm-sec-lbl:hover{fill:var(--text);text-decoration:underline}
+  .hm-sub{cursor:default} .hm-sub:hover{fill:var(--muted);text-decoration:none}
   #hm-back{position:absolute;top:6px;left:6px;z-index:4;cursor:pointer;border:1px solid var(--border);
     background:var(--panel);color:var(--text);font-size:0.6875rem;font-weight:800;padding:4px 10px;border-radius:999px;font-family:inherit}
   #hm-back:hover{border-color:var(--accent);color:var(--accent)}
@@ -2818,7 +2819,17 @@ function krTreemap(host, items, opts){
   // 섹터 줌: 해당 섹터만 전체 영역에 펼친다 (라벨 클릭 → 줌, 뒤로 칩 → 전체)
   let rects;
   const zg = (opts&&opts.zoom) ? groups.find(x=>x.name===opts.zoom) : null;
-  if(zg) rects=[{c:zg, x:0, y:0, w:W, h:H, zoomed:true}];
+  if(zg){
+    // 섹터 줌: 내부를 세부 산업별로 재그룹 — 핀비즈에서 섹터를 클릭했을 때와 동일한 상세 화면
+    const inds={};
+    for(const it of zg.arr){ const k=(it.ind||'').trim()||zg.name; (inds[k]||(inds[k]=[])).push(it); }
+    const keys=Object.keys(inds);
+    if(keys.length>1){
+      const gs=keys.map(k=>{ let c=0; for(const it of inds[k]) c+=it.cap;
+        return {name:k, value:c, arr:inds[k].slice().sort((a,b)=>b.cap-a.cap)}; }).sort((a,b)=>b.value-a.value);
+      rects=squarify(gs,0,0,W,H); for(const r of rects) r.sub=true;   // 산업 소그룹(클릭 불가 헤더)
+    } else rects=[{c:zg, x:0, y:0, w:W, h:H, zoomed:true}];
+  }
   else { if(opts&&opts.zoom) hmZoom=null; rects=squarify(groups,0,0,W,H); }
 
   const p=hmPeriod();
@@ -2826,7 +2837,9 @@ function krTreemap(host, items, opts){
     +'<defs><clipPath id="hmclip" clipPathUnits="objectBoundingBox"><circle cx=".5" cy=".5" r=".5"/></clipPath></defs>';
   for(const g of rects){
     const hdr = (!g.zoomed && g.w>78 && g.h>30) ? 13 : 0;
-    if(hdr) s+='<text class="hm-sec-lbl" data-sec="'+calEsc(g.c.name)+'" x="'+(g.x+4).toFixed(1)+'" y="'+(g.y+10).toFixed(1)+'">'+calEsc(g.c.name)+' ›</text>';
+    if(hdr) s+= g.sub
+      ? '<text class="hm-sec-lbl hm-sub" x="'+(g.x+4).toFixed(1)+'" y="'+(g.y+10).toFixed(1)+'">'+calEsc(g.c.name)+'</text>'
+      : '<text class="hm-sec-lbl" data-sec="'+calEsc(g.c.name)+'" x="'+(g.x+4).toFixed(1)+'" y="'+(g.y+10).toFixed(1)+'">'+calEsc(g.c.name)+' ›</text>';
     const tiles=squarify(g.c.arr.map(it=>({value:it.cap, it})), g.x+1, g.y+1+hdr, Math.max(0,g.w-2), Math.max(0,g.h-hdr-2));
     for(const t of tiles){
       const it=t.c.it, eff=effOf(it);

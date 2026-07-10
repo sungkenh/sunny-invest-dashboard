@@ -2,7 +2,7 @@
 //   sp500  : 지수 편입종목 API(index/.INX/enrollStocks, 시총순 정렬·NYSE+나스닥 혼합)
 //   nasdaq : 나스닥 거래소 시총 랭킹 전체(상위 N — 나스닥100을 포함하는 상위집합)
 // 둘 다 delayTime 0 실시간, 한글 업종 그룹 내장, overMarketPriceInfo 로 프리·애프터마켓 체결가 제공
-// (직접 폴링으로 초단위 체결 전진 확인). subrequest 예산: 페이지 1~6 (실패 시 스냅샷 +1) / 무료 50
+// (직접 폴링으로 초단위 체결 전진 확인). subrequest 예산: 페이지 1~6 + 섹터 1 (실패 시 스냅샷 +1) / 무료 50
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36';
 const CACHE = {};                 // `us|${n}` → {ts, data}
 const TTL = 5 * 1000;             // 클라이언트 5초 폴링에 맞춤 (네이버 앱 자체 폴링은 7초)
@@ -23,32 +23,25 @@ async function naverUS(us, page) {
   return (j && j.stocks) || [];
 }
 
-/* 미국 대분류 섹터 — TRBC 중분류(업종코드 앞 4자리)를 트레이딩뷰 히트맵과 유사한 17개 대분류로 병합.
-   (네이버 세부 업종 그대로 쓰면 40여 그룹으로 쪼개져 트레이딩뷰와 배치가 달라 보이는 문제 해결) */
-const US_SECTORS = {
-  '5010':'에너지','5020':'에너지',
-  '5110':'소재·화학','5120':'소재·화학','5130':'소재·화학',
-  '5210':'산업재·제조','5440':'산업재·제조',
-  '5220':'상업 서비스',
-  '5240':'운송',
-  '5310':'자동차·내구소비재','5320':'자동차·내구소비재',
-  '5330':'소비자 서비스',
-  '5340':'소매 유통','5430':'소매 유통',
-  '5410':'필수 소비재','5420':'필수 소비재',
-  '5510':'금융','5530':'금융','5550':'금융','5730':'금융',
-  '5610':'헬스케어 장비·서비스',
-  '5620':'제약·바이오',
-  '5710':'전자 기술',
-  '5720':'기술 서비스',
-  '5740':'통신 서비스',
-  '5910':'유틸리티',
-  '6010':'부동산',
-};
-function usSector(s) {
-  if ((s.symbolCode || '') === 'BRK.B') return '금융';   // TRBC '소비재 대기업' 분류지만 통념상 금융
+/* 섹터: 핀비즈(finviz.com/map)와 동일한 분류 — 파이프라인이 핀비즈 맵 데이터에서 추출한
+   us_sectors.json(GICS 11개 섹터 한글 + 세부 산업 핀비즈 원문, 약 5,500종목)을 조인한다.
+   파일이 없거나 미등재 종목은 TRBC 업종코드 앞 2자리로 GICS 근사 폴백. */
+const GICS_FALLBACK = { '50':'에너지','51':'소재','52':'산업재','53':'경기소비재','54':'필수소비재',
+                        '55':'금융','56':'헬스케어','57':'기술','59':'유틸리티','60':'부동산' };
+function trbcSector(s) {
   const code = String((s.industryCodeType || {}).code || '');
-  return US_SECTORS[code.slice(0, 4)]
+  if (code.slice(0, 4) === '5740') return '통신 서비스';
+  return GICS_FALLBACK[code.slice(0, 2)]
     || ((s.industryCodeType || {}).industryGroupKor || '').trim() || '기타';
+}
+let SEC_CACHE = null, SEC_TS = 0;
+async function loadUsSectors(rawUrl) {
+  if (SEC_CACHE && Date.now() - SEC_TS < 60 * 60 * 1000) return SEC_CACHE;   // 정적 파일 — 1시간 캐시
+  try {
+    const r = await fetch(new URL('/data/us_sectors.json', rawUrl).toString());
+    if (r.ok) { const j = await r.json(); SEC_CACHE = (j && j.sectors) || {}; SEC_TS = Date.now(); return SEC_CACHE; }
+  } catch (e) { /* 폴백 유지 */ }
+  return SEC_CACHE || {};
 }
 
 function keep(s) {
@@ -61,8 +54,8 @@ function norm(s) {
   const it = {
     code: s.symbolCode, rc: s.reutersCode || '', name: s.stockName,
     mk: (s.stockExchangeType || {}).code || '',
-    sector: usSector(s),
-    ind: ((s.industryCodeType || {}).industryGroupKor || '').trim(),   // 세부 업종(툴팁용)
+    sector: trbcSector(s),                                             // 핀비즈 맵 조인으로 아래에서 덮어씀
+    ind: ((s.industryCodeType || {}).industryGroupKor || '').trim(),
     price: num(s.closePrice),
     // ⚠️ fluctuationsRatio 는 이미 부호 포함 — 다시 곱하지 말 것 (krheatmap 과 동일)
     pct: num(s.fluctuationsRatio),
@@ -124,6 +117,12 @@ async function __cfHandler(event) {
   }
   items.sort((a, b) => b.cap - a.cap);
   items.length = Math.min(items.length, n);
+
+  const secMap = await loadUsSectors(event.rawUrl);                    // 핀비즈 섹터·세부 산업 조인
+  for (const it of items) {
+    const m = secMap[it.code];
+    if (m) { it.sector = m[0]; if (m[1]) it.ind = m[1]; }
+  }
 
   const first = raw[0] || {};
   const data = {
