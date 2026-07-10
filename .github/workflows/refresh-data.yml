@@ -61,6 +61,8 @@ jobs:
           python fetch_trump.py     || echo "::warning::trump 수집 실패(스킵)"
           python fetch_yieldgap.py  || echo "::warning::yieldgap 수집 실패(스킵)"
           python fetch_nps.py       || echo "::warning::nps(연기금) 수집 실패(스킵)"
+          python fetch_kr_sectors.py || echo "::warning::kr_sectors(히트맵 업종맵·스냅샷) 수집 실패(스킵)"
+          python fetch_kr_perf.py   || echo "::warning::kr_perf(히트맵 기간수익률 기준가) 수집 실패(스킵)"
 
       - name: 결과를 data/ 로 복사
         run: |

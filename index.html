@@ -182,6 +182,24 @@
   .hm-tile.lg{flex:2.4 1 92px;min-height:56px;font-size:0.75rem}
   .hm-tile.md{flex:1.4 1 66px;min-height:44px;font-size:0.6875rem}
   .hm-tile.sm{flex:1 1 50px;min-height:34px;font-size:0.625rem}
+  /* 한국 실시간 트리맵(자체 SVG 렌더 · 네이버 데이터) */
+  .hm-svg{display:block;width:100%;height:100%}
+  .hm-svg .hm-t{cursor:pointer}
+  .hm-svg .hm-t:hover rect{stroke:#ffffff;stroke-width:1.4}
+  .hm-sec-lbl{font-size:9px;font-weight:800;fill:var(--muted);letter-spacing:.2px;cursor:pointer}
+  .hm-sec-lbl:hover{fill:var(--text);text-decoration:underline}
+  #hm-back{position:absolute;top:6px;left:6px;z-index:4;cursor:pointer;border:1px solid var(--border);
+    background:var(--panel);color:var(--text);font-size:0.6875rem;font-weight:800;padding:4px 10px;border-radius:999px;font-family:inherit}
+  #hm-back:hover{border-color:var(--accent);color:var(--accent)}
+  /* 타일 색(회색~빨강~파랑) 위 어디서나 읽히도록 흰 글자 + 어두운 외곽선 */
+  .hm-tn,.hm-tp{fill:#fff;text-anchor:middle;pointer-events:none;paint-order:stroke;stroke:rgba(0,0,0,.5);stroke-linejoin:round}
+  .hm-tn{font-size:10px;font-weight:800;stroke-width:2px}
+  .hm-tp{font-size:9px;font-weight:600;stroke-width:1.6px}
+  #hm-tip{position:absolute;z-index:5;display:none;pointer-events:none;background:var(--panel);border:1px solid var(--border);
+    border-radius:8px;padding:7px 10px;font-size:0.72rem;line-height:1.55;color:var(--text);box-shadow:0 6px 20px rgba(0,0,0,.5);white-space:nowrap}
+  #hm-tip b{font-weight:800}
+  #hm-tip small{color:var(--muted2);font-size:0.625rem}
+  .live-badge.stale{background:var(--muted2);color:#0a0e17}
 
   /* ===== 메인 그리드 ===== */
   /* 비례(fr) 컬럼 — 화면이 넓어지면 좌·우도 함께 넓어짐(가운데만 비대해지지 않게). 가운데 비중 축소 */
@@ -550,7 +568,7 @@
 
 <header class="topbar">
   <div class="brand"><div class="logo">S</div>써니의&nbsp;투자&nbsp;인사이트</div>
-  <nav class="mainnav"><a href="index.html" class="active">대시보드</a><a href="news.html">실시간 뉴스</a><a href="schedule.html">일정</a><a href="videos.html">추천 영상</a><a href="yieldgap.html">일드갭</a><a href="capex.html">AI투자처 찾기</a></nav>
+  <nav class="mainnav"><a href="index.html" class="active">대시보드</a><a href="news.html">실시간 뉴스</a><a href="schedule.html">일정</a><a href="videos.html">추천 영상</a><a href="heatmap.html">히트맵</a><a href="yieldgap.html">일드갭</a><a href="capex.html">AI투자처 찾기</a></nav>
   <div class="status-pills">
     <span class="pill" title="KOSPI·KOSDAQ (서울 KST) — 프리마켓 08:00–09:00 · 정규장 09:00–15:30 · 애프터마켓 15:30–20:00"><span class="dot" id="krx-dot"></span>KOSPI <b id="krx-st">—</b></span>
     <span class="pill" title="NASDAQ (서울 KST) — 데이마켓 09:00–17:00 · 프리마켓 17:00–22:30 · 정규장 22:30–05:00 · 애프터마켓 05:00–09:00"><span class="dot" id="us-dot"></span>NASDAQ <b id="us-st">—</b></span>
@@ -600,14 +618,14 @@
 </div>
 <section class="strip" id="strip"></section>
 
-<!-- 시가총액 히트맵 (TradingView · 시장 직접 선택, 국내/미국 구분 없음) -->
+<!-- 시가총액 히트맵 — 한국 장(08:00~20:00 KST)엔 네이버 실시간 자체 트리맵, 그 외엔 TradingView 미국 위젯 -->
 <section class="card heatmap-card">
   <div class="head">
     <h3>시가총액 히트맵</h3>
     <span class="live-badge">● LIVE</span>
     <div class="hm-controls">
       <div class="seg" id="hm-dataset"></div>
-      <span class="legend">색상=등락률 · 블록=시가총액 · 그룹=섹터 · 위젯 상단 ▾로 시장 직접 선택</span>
+      <span class="legend" id="hm-legend">색상=등락률 · 블록=시가총액 · 그룹=섹터</span>
       <a class="hm-open kospi" id="hm-kospi" target="_blank" rel="noopener">🇰🇷 KOSPI200 새 탭 ↗</a>
       <a class="hm-open" id="hm-open" target="_blank" rel="noopener">↗ 전체화면</a>
     </div>
@@ -615,8 +633,10 @@
   <div class="hm-body" id="hm-body">
     <div class="hm-fb-note" id="hm-note">실시간 히트맵 — 온라인·http(localhost:4321) 환경에서 표시됩니다.</div>
     <div id="hm-widget"></div>
+    <button id="hm-back" style="display:none"></button>
+    <div id="hm-tip"></div>
   </div>
-  <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/heatmap/stock/" rel="noopener nofollow" target="_blank">Track all markets on TradingView</a> · 데이터 제공: TradingView · 한국(KOSPI200) 등 위젯 미지원 시장은 ↗ 새 탭에서 직접 선택</div>
+  <div class="tradingview-widget-copyright" id="hm-copy"><a href="https://www.tradingview.com/heatmap/stock/" rel="noopener nofollow" target="_blank">Track all markets on TradingView</a> · 데이터 제공: TradingView · 한국 시장은 자동/코스피/코스닥 버튼으로</div>
 </section>
 
 <!-- 메인 -->
@@ -2258,6 +2278,7 @@ function tick(){
   document.getElementById('clock').textContent=t.yy+'년 '+t.mon+'월 '+t.day+'일('+t.wk+') '+t.hh+':'+t.mm+':'+t.ss;
   paintMkt('krx', kospiSession(t.dow,mins));
   paintMkt('us',  nasdaqSession(t.dow,mins));
+  if(typeof hmAutoTick==='function') hmAutoTick();   // 08:00/20:00 세션 경계에서 히트맵 자동 전환
 }
 function liveJitter(){
   // 관심종목(데모)만 미세 변동. 상단 지표는 실데이터(loadMarket)라 흔들지 않음.
@@ -2444,7 +2465,9 @@ function setThemeClass(mode){
 function applyTheme(mode){
   setThemeClass(mode);
   try{ localStorage.setItem('alphadesk.theme',mode); }catch(e){}
-  if(typeof renderHeatmap==='function') renderHeatmap();                      // 히트맵 colorTheme 재적용
+  // 히트맵 색 재적용 — KR 트리맵은 CSS 변수만 다시 읽으면 되므로 재조회 없이 다시 그린다
+  if(typeof hmKind!=='undefined' && hmKind==='KR'){ if(krData) drawKr(); }
+  else if(typeof renderHeatmap==='function') renderHeatmap();                 // US iframe 은 colorTheme 이 URL 에 있어 재생성 필요
   if(typeof SEL!=='undefined' && SEL){ curChartSym=null; renderChart(SEL); }  // 차트 색 재적용(재생성)
 }
 document.getElementById('themeToggle').addEventListener('click',()=>applyTheme(document.body.classList.contains('light')?'dark':'light'));
@@ -2490,25 +2513,69 @@ async function searchAndAdd(q){
     if(r.ok){ const l=await r.json(); if(l.length){ addWL(l[0].sym, l[0].name, l[0].mk); return; } } }catch(e){}
 }
 
-/* ---- 시가총액 히트맵 (TradingView 실시간 + 오프라인 폴백) ---- */
-const HM_SETS=[
-  {k:'S&P 500',t:'SPX500'},{k:'나스닥100',t:'NASDAQ100'}
-];
-let hmSource='SPX500';
+/* ---- 시가총액 히트맵 ----
+   한국 장(평일 08:00~20:00 KST, 시간외 포함)에는 네이버 실시간 데이터로 자체 트리맵을 그리고,
+   그 외 시간에는 TradingView 미국 위젯을 띄운다.
+   (TradingView 임베드 위젯은 KOSPI200 dataSource를 지원하지 않아 한국은 직접 그릴 수밖에 없다.) */
+const HM_SETS=[{k:'자동',v:'auto'},{k:'코스피',v:'KOSPI'},{k:'코스닥',v:'KOSDAQ'},{k:'S&P 500',v:'SPX500'},{k:'나스닥100',v:'NASDAQ100'}];
+let HM_MODE=(()=>{ try{ const v=localStorage.getItem('alphadesk.hmsrc'); return HM_SETS.some(s=>s.v===v)?v:'auto'; }catch(e){ return 'auto'; } })();
+let hmSource='SPX500';        // 현재 TradingView dataSource
+let hmKind=null;              // 현재 렌더된 종류: 'KR' | 'US'
+let hmKrMkt=null;             // 현재 KR 시장: 'kospi' | 'kosdaq'
+let krData=null, krTimer=null, krLoading=false, krPending=false, hmVisible=false, hmZoom=null, _hmRO=null, _hmROt=0;
+
+function krSessionOpen(){ const t=kstParts(), k=kospiSession(t.dow,t.h*60+t.m).k; return k==='open'||k==='ext'; }
+function hmEffective(){
+  if(HM_MODE==='KOSPI'||HM_MODE==='KOSDAQ') return {kind:'KR', mkt:HM_MODE.toLowerCase()};
+  if(HM_MODE==='SPX500'||HM_MODE==='NASDAQ100') return {kind:'US', ds:HM_MODE};
+  return krSessionOpen() ? {kind:'KR', mkt:'kospi'} : {kind:'US', ds:'SPX500'};
+}
 function renderHmDataset(){
-  const seg=document.getElementById('hm-dataset');
-  seg.innerHTML = HM_SETS.map(d=>`<button data-t="${d.t}" class="${d.t===hmSource?'on':''}">${d.k}</button>`).join('');
-  seg.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{ hmSource=b.dataset.t; renderHmDataset(); renderHeatmap(); }));
+  const seg=document.getElementById('hm-dataset'); if(!seg) return;
+  seg.innerHTML=HM_SETS.map(d=>`<button data-v="${d.v}" class="${d.v===HM_MODE?'on':''}">${d.k}</button>`).join('');
+  seg.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+    HM_MODE=b.dataset.v; try{ localStorage.setItem('alphadesk.hmsrc',HM_MODE); }catch(e){}
+    renderHmDataset(); renderHeatmap();
+  }));
 }
 function tvHeatmapUrl(ds, kr){
   const cfg={dataSource:ds,blockColor:'change',blockSize:'market_cap_basic',grouping:'sector'};
   return (kr?'https://kr.tradingview.com/heatmap/stock/':'https://www.tradingview.com/heatmap/stock/')+'#'+encodeURIComponent(JSON.stringify(cfg));
 }
-// 국내/미국 탭 없음 — 위젯 내장 선택기(▾)로 시장 직접 선택. KOSPI200 등 위젯 미지원 시장은 새 탭 링크.
+function hmNote(msg){ const n=document.getElementById('hm-note'); if(n) n.textContent=msg||''; }
+function hmBadge(d){
+  const b=document.querySelector('.heatmap-card .live-badge'); if(!b) return;
+  if(!d){ b.textContent='● LIVE'; b.classList.remove('stale'); b.removeAttribute('title'); return; }
+  const live = d.source==='naver' && d.marketStatus==='OPEN';
+  b.classList.toggle('stale', !live);
+  b.textContent = live ? '● 실시간 '+fmtCollected(d._updated)
+                       : (d.source==='snapshot' ? '스냅샷 · 종가 기준' : '장마감 · 종가 기준');
+  b.title = live ? '네이버 금융 실시간(지연 0분)' : '정규장 외 시간 또는 스냅샷 데이터';
+}
 function renderHeatmap(){
-  document.getElementById('hm-open').href  = tvHeatmapUrl(hmSource, false);   // 현재 위젯 시장 전체화면
-  document.getElementById('hm-kospi').href = tvHeatmapUrl('KOSPI200', true);  // 한국 KOSPI200(새 탭)
-  loadHeatmap();
+  const eff=hmEffective();
+  const open=document.getElementById('hm-open'), kospi=document.getElementById('hm-kospi');
+  const legend=document.getElementById('hm-legend'), copy=document.getElementById('hm-copy');
+  if(eff.kind==='KR'){
+    const changed = hmKind!=='KR' || hmKrMkt!==eff.mkt;
+    // 시장이 바뀌면 이전 iframe/이전 시장 SVG 모두 제거 — 옛 타일이 남아 잘못된 종목이 클릭되는 것 방지
+    if(changed){ const h=document.getElementById('hm-widget'); if(h) h.innerHTML=''; krData=null; hmZoom=null; }
+    hmKind='KR'; hmKrMkt=eff.mkt;
+    if(open){ open.href='heatmap.html?mkt='+eff.mkt; open.removeAttribute('target'); }
+    if(kospi) kospi.style.display='none';
+    if(legend) legend.textContent='색상=등락률 · 블록=시가총액 · 그룹=업종 · 타일 클릭 시 네이버 종목 페이지';
+    if(copy) copy.innerHTML='데이터 제공: <a href="https://m.stock.naver.com/" rel="noopener" target="_blank">네이버 금융</a> · 시가총액 상위 종목 · ETF·우선주·스팩 제외 · 시총 1% 미만 업종은 «기타»로 묶음';
+    if(krData) drawKr(); else hmNote('히트맵 불러오는 중…');
+    startKrLoop();
+  } else {
+    stopKrLoop(); hmKind='US'; hmKrMkt=null; krData=null; hmZoom=null; hmBackChip(); hmSource=eff.ds;
+    if(open){ open.href=tvHeatmapUrl(eff.ds,false); open.target='_blank'; }
+    if(kospi){ kospi.style.display=''; kospi.href=tvHeatmapUrl('KOSPI200',true); }
+    if(legend) legend.textContent='색상=등락률 · 블록=시가총액 · 그룹=섹터 · 위젯 상단 ▾로 시장 직접 선택';
+    if(copy) copy.innerHTML='<a href="https://www.tradingview.com/heatmap/stock/" rel="noopener nofollow" target="_blank">Track all markets on TradingView</a> · 데이터 제공: TradingView · 한국 시장은 [자동·코스피·코스닥] 버튼으로';
+    hmBadge(null); hmNote('실시간 히트맵 — 온라인·http(localhost:4321) 환경에서 표시됩니다.');
+    loadHeatmap();
+  }
 }
 // iframe 직접 생성(스크립트 재주입의 토글 불가 문제 회피 → src만 교체하면 매번 새로 렌더)
 function loadHeatmap(){
@@ -2522,15 +2589,201 @@ function loadHeatmap(){
   f.src='https://www.tradingview-widget.com/embed-widget/stock-heatmap/?locale=kr#'+encodeURIComponent(JSON.stringify(cfg));
   host.appendChild(f);
 }
-/* 히트맵(무거운 TradingView iframe)은 뷰포트 진입 시에만 로드 — 초기 로딩 가속 */
+
+/* ── 한국 실시간 트리맵: 데이터 ── */
+async function loadKrHeatmap(force){
+  // 진행 중이면 강제 요청은 예약해 두었다가 종료 직후 재실행 — 시장 전환이 in-flight 요청에 삼켜지지 않게
+  if(krLoading){ if(force) krPending=true; return; }
+  if(!force && (document.hidden || !hmVisible)) return;
+  const mkt=hmKrMkt||'kospi';
+  const body=document.getElementById('hm-body');
+  const n=(body && body.clientWidth && body.clientWidth<560) ? 50 : 100;
+  krLoading=true;
+  const d=await fetchLive('/api/krheatmap?mkt='+mkt+'&n='+n, 'data/krheatmap_'+mkt+'.json');
+  krLoading=false;
+  if(krPending){ krPending=false; if(hmKind==='KR') loadKrHeatmap(true); }
+  if(hmKind!=='KR' || (hmKrMkt||'kospi')!==mkt) return;                 // 전환 중 도착한 응답 폐기
+  if(!d || !Array.isArray(d.items) || !d.items.length){ if(!krData) hmNote('히트맵 데이터를 불러오지 못했습니다.'); return; }
+  if(krData && !freshGate('krheatmap_'+mkt, d._updated)) return;        // 과거 데이터로 되돌아가지 않기
+  if(d.items.length>n) d.items=d.items.slice(0,n);                      // 정적 스냅샷(200종목) 폴백 대비
+  krData=d; drawKr();
+}
+function drawKr(){
+  const host=document.getElementById('hm-widget');
+  if(!host || !krData) return;
+  hmNote(''); krTreemap(host, krData.items, {minShare:0.01, zoom:hmZoom}); hmBadge(krData); hmBackChip();
+}
+function hmBackChip(){
+  const b=document.getElementById('hm-back'); if(!b) return;
+  if(hmKind==='KR' && hmZoom){ b.style.display=''; b.textContent='← 전체 · '+hmZoom; }
+  else b.style.display='none';
+}
+function startKrLoop(){
+  loadKrHeatmap(true);
+  if(krTimer) return;
+  krTimer=setInterval(()=>{ if(hmKind==='KR' && krSessionOpen()) loadKrHeatmap(); }, 15000);  // 네이버 폴링 주기(7초)보다 여유있게
+}
+function stopKrLoop(){ if(krTimer){ clearInterval(krTimer); krTimer=null; } }
+// auto 모드에서 08:00 / 20:00 세션 경계를 넘어가면 전환 (tick에서 매초 호출)
+function hmAutoTick(){
+  if(HM_MODE!=='auto' || !hmVisible || !hmKind) return;
+  if((krSessionOpen()?'KR':'US')!==hmKind) renderHeatmap();
+}
+
+/* ── 스쿼리파이드 트리맵 (외부 라이브러리 없음) ──
+   면적 ∝ value. 남은 사각형의 짧은 변을 따라 행을 채우며 종횡비 최악값이 나빠지기 직전에 행을 확정한다. */
+function squarify(children, x, y, w, h){
+  const out=[]; if(!(w>0)||!(h>0)) return out;
+  const kids=children.filter(c=>isFinite(c.value)&&c.value>0);  // 면적 0인 항목은 그릴 수 없다(cap>0 은 API가 보장)
+  if(!kids.length) return out;
+  let total=0; for(const c of kids) total+=c.value;
+  const scale=(w*h)/total;
+  const rects=kids.map(c=>({c, a:c.value*scale}));
+  const free={x,y,w,h}; let i=0, row=[];
+  const worst=(rw, side)=>{
+    let s=0, mx=0, mn=Infinity;
+    for(const r of rw){ s+=r.a; if(r.a>mx) mx=r.a; if(r.a<mn) mn=r.a; }
+    if(!(s>0)||!(side>0)||!(mn>0)) return Infinity;
+    return Math.max(side*side*mx/(s*s), (s*s)/(side*side*mn));
+  };
+  const flush=()=>{
+    let s=0; for(const r of row) s+=r.a;
+    if(!(s>0)){ row=[]; return; }
+    const alongX = free.w < free.h;                          // 짧은 변이 가로면 행을 가로로 눕힌다
+    const side = alongX ? free.w : free.h;
+    const thick = Math.min(s/side, alongX?free.h:free.w);    // 부동소수 잔차로 밖으로 삐져나가지 않게
+    let off=0;
+    for(const r of row){
+      const len = thick>0 ? r.a/thick : 0;
+      out.push({c:r.c,
+        x: alongX ? free.x+off : free.x,
+        y: alongX ? free.y     : free.y+off,
+        w: alongX ? len        : thick,
+        h: alongX ? thick      : len});
+      off+=len;
+    }
+    if(alongX){ free.y+=thick; free.h-=thick; } else { free.x+=thick; free.w-=thick; }
+    row=[];
+  };
+  while(i<rects.length){
+    if(!(free.w>0)||!(free.h>0)) break;
+    const side=Math.min(free.w, free.h);
+    if(!row.length || worst(row.concat([rects[i]]), side) <= worst(row, side)) row.push(rects[i++]);
+    else flush();
+  }
+  if(row.length) flush();
+  return out;
+}
+/* 색: --up/--down/--flat 을 읽어 보간 → 한국식/미국식 색상과 라이트/다크가 자동 반영 */
+function cssRGB(name){
+  const v=(getComputedStyle(document.body).getPropertyValue(name)||'').trim().replace('#','');
+  const s=v.length===3 ? v.split('').map(c=>c+c).join('') : v;
+  return [parseInt(s.slice(0,2),16)||0, parseInt(s.slice(2,4),16)||0, parseInt(s.slice(4,6),16)||0];
+}
+const mixRGB=(a,b,t)=>[Math.round(a[0]+(b[0]-a[0])*t),Math.round(a[1]+(b[1]-a[1])*t),Math.round(a[2]+(b[2]-a[2])*t)];
+const rgbCss=c=>'rgb('+c[0]+','+c[1]+','+c[2]+')';
+function capText(v){
+  if(v>=1e12) return (v/1e12).toFixed(v>=1e13?0:1)+'조';
+  if(v>=1e8)  return Math.round(v/1e8).toLocaleString('en-US')+'억';
+  return Math.round(v).toLocaleString('en-US');
+}
+function krTreemap(host, items, opts){
+  const W=Math.floor(host.clientWidth), H=Math.floor(host.clientHeight);
+  if(!(W>0)||!(H>0)||!items.length){ host.innerHTML=''; return; }
+  const minShare=(opts&&opts.minShare)||0.01;
+  let total=0; for(const it of items) total+=it.cap;
+
+  const bySec={};
+  for(const it of items){ (bySec[it.sector] || (bySec[it.sector]=[])).push(it); }
+  const groups=[], rest=[];
+  for(const name in bySec){
+    const arr=bySec[name]; let cap=0; for(const it of arr) cap+=it.cap;
+    if(name==='기타' || cap/total<minShare) rest.push.apply(rest,arr);   // 잘게 쪼개진 업종은 «기타»로 병합
+    else groups.push({name, value:cap, arr});
+  }
+  if(rest.length){ let cap=0; for(const it of rest) cap+=it.cap; groups.push({name:'기타', value:cap, arr:rest}); }
+  groups.sort((a,b)=>b.value-a.value);
+  for(const g of groups) g.arr.sort((a,b)=>b.cap-a.cap);
+
+  // 섹터 줌: 해당 섹터만 전체 영역에 펼친다 (라벨 클릭 → 줌, 뒤로 칩 → 전체)
+  let rects;
+  const zg = (opts&&opts.zoom) ? groups.find(x=>x.name===opts.zoom) : null;
+  if(zg) rects=[{c:zg, x:0, y:0, w:W, h:H, zoomed:true}];
+  else { if(opts&&opts.zoom) hmZoom=null; rects=squarify(groups,0,0,W,H); }
+
+  const UP=cssRGB('--up'), DN=cssRGB('--down'), FL=cssRGB('--flat');
+  const narrow=W<560, LW=narrow?58:46, LH=narrow?32:26;
+  let s='<svg class="hm-svg" viewBox="0 0 '+W+' '+H+'" width="100%" height="100%" preserveAspectRatio="none">';
+  for(const g of rects){
+    const hdr = (!g.zoomed && g.w>78 && g.h>30) ? 13 : 0;
+    if(hdr) s+='<text class="hm-sec-lbl" data-sec="'+calEsc(g.c.name)+'" x="'+(g.x+4).toFixed(1)+'" y="'+(g.y+10).toFixed(1)+'">'+calEsc(g.c.name)+' ›</text>';
+    const tiles=squarify(g.c.arr.map(it=>({value:it.cap, it})), g.x+1, g.y+1+hdr, Math.max(0,g.w-2), Math.max(0,g.h-hdr-2));
+    for(const t of tiles){
+      const it=t.c.it;
+      const col=mixRGB(FL, it.pct>=0?UP:DN, Math.min(Math.abs(it.pct)/3,1));   // ±3%에서 최대 채도
+      s+='<g class="hm-t" data-code="'+it.code+'" data-name="'+calEsc(it.name)+'" data-sector="'+calEsc(it.sector)+'"'
+        +' data-pct="'+it.pct+'" data-price="'+it.price+'" data-cap="'+it.cap+'">'
+        +'<rect x="'+t.x.toFixed(1)+'" y="'+t.y.toFixed(1)+'" width="'+Math.max(0,t.w-0.6).toFixed(1)+'" height="'+Math.max(0,t.h-0.6).toFixed(1)+'" fill="'+rgbCss(col)+'"/>';
+      if(t.w>LW && t.h>LH){
+        const cx=(t.x+t.w/2).toFixed(1), cy=t.y+t.h/2;
+        s+='<text class="hm-tn" x="'+cx+'" y="'+(cy-2).toFixed(1)+'">'+calEsc(it.name)+'</text>'
+          +'<text class="hm-tp" x="'+cx+'" y="'+(cy+9).toFixed(1)+'">'+(it.pct>=0?'+':'')+it.pct.toFixed(2)+'%</text>';
+      }
+      s+='</g>';
+    }
+  }
+  host.innerHTML=s+'</svg>';
+}
+/* 툴팁·클릭은 #hm-body 에 위임 — 트리맵 innerHTML 재생성과 무관하게 1회만 바인딩 */
+function bindHmTiles(){
+  const body=document.getElementById('hm-body'), tip=document.getElementById('hm-tip');
+  if(!body||!tip||body._hmBound) return; body._hmBound=true;
+  body.addEventListener('mousemove', e=>{
+    const g=e.target.closest && e.target.closest('.hm-t');
+    if(!g){ tip.style.display='none'; return; }
+    const d=g.dataset, pct=parseFloat(d.pct);
+    // dataset 은 HTML 파서가 엔티티를 디코드한 원본을 돌려주므로 innerHTML 삽입 전 반드시 재이스케이프
+    tip.innerHTML='<b>'+calEsc(d.name)+'</b> <small>'+calEsc(d.sector)+'</small><br>'
+      +Number(d.price).toLocaleString('en-US')+'원 <span class="'+cls(pct)+'">'+(pct>=0?'+':'')+pct.toFixed(2)+'%</span><br>'
+      +'<small>시총 '+capText(+d.cap)+' · '+calEsc(d.code)+'</small>';
+    tip.style.display='block';
+    const r=body.getBoundingClientRect();
+    let x=e.clientX-r.left+14, y=e.clientY-r.top+14;
+    if(x+tip.offsetWidth  > r.width-6)  x=e.clientX-r.left-tip.offsetWidth-14;
+    if(y+tip.offsetHeight > r.height-6) y=e.clientY-r.top-tip.offsetHeight-14;
+    tip.style.left=Math.max(2,x)+'px'; tip.style.top=Math.max(2,y)+'px';
+  });
+  body.addEventListener('mouseleave',()=>{ tip.style.display='none'; });
+  body.addEventListener('click', e=>{
+    const l=e.target.closest && e.target.closest('.hm-sec-lbl');           // 섹터 라벨 → 해당 섹터 확대
+    if(l && l.dataset.sec){ hmZoom=l.dataset.sec; drawKr(); return; }
+    const g=e.target.closest && e.target.closest('.hm-t'); if(!g) return;
+    if(!/^[0-9A-Z]{6}$/.test(g.dataset.code||'')) return;   // 신형 코드(0126Z0 등) 포함
+    window.open('https://m.stock.naver.com/domestic/stock/'+g.dataset.code+'/total','_blank','noopener');
+  });
+  const back=document.getElementById('hm-back');
+  if(back) back.addEventListener('click',()=>{ hmZoom=null; drawKr(); });
+}
+function hmObserveResize(){
+  const body=document.getElementById('hm-body'); if(!body||_hmRO||!('ResizeObserver' in window)) return;
+  _hmRO=new ResizeObserver(()=>{ clearTimeout(_hmROt); _hmROt=setTimeout(()=>{ if(hmKind==='KR'&&krData) drawKr(); },150); });
+  _hmRO.observe(body);
+}
+/* 히트맵(무거운 iframe·폴링)은 뷰포트 진입 시에만 로드 — 초기 로딩 가속 */
 function setupHeatmapLazy(){
-  try{ document.getElementById('hm-open').href=tvHeatmapUrl(hmSource,false); document.getElementById('hm-kospi').href=tvHeatmapUrl('KOSPI200',true); }catch(e){}
-  const card=document.querySelector('.heatmap-card'); let done=false;
-  const go=()=>{ if(done) return; done=true; loadHeatmap(); };
+  bindHmTiles(); hmObserveResize();
+  const card=document.querySelector('.heatmap-card'); let started=false;
+  const start=()=>{ if(started) return; started=true; renderHeatmap(); };
   if(card && 'IntersectionObserver' in window){
-    const io=new IntersectionObserver(es=>{ if(es.some(e=>e.isIntersecting)){ io.disconnect(); go(); } },{rootMargin:'250px'});
-    io.observe(card); setTimeout(go,5000);   // 안전망
-  } else setTimeout(go,1500);
+    const io=new IntersectionObserver(es=>{
+      hmVisible=es.some(e=>e.isIntersecting);
+      if(!hmVisible) return;
+      if(!started) start();
+      else { hmAutoTick(); if(hmKind==='KR') loadKrHeatmap(); }   // 화면에 다시 들어오면 즉시 갱신
+    },{rootMargin:'250px'});
+    io.observe(card);
+    setTimeout(start,5000);   // 안전망 — 1회 렌더만. 폴링 여부(hmVisible)는 IO 의 실제 교차 상태만 신뢰
+  } else { hmVisible=true; setTimeout(start,1500); }
 }
 /* 오늘의 메모 · 중요 포인트 — 보기/편집 모드(편집·저장·취소 버튼). 브라우저(localStorage)에 저장, 재방문 유지(이 브라우저 한정). */
 const MEMO_LS='alphadesk.memo';
