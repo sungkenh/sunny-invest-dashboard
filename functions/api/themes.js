@@ -87,23 +87,41 @@ function staleSeries(c) {
 }
 
 /* ── 데이터 수집 ── */
-// 1년 일봉 종가(결측 forward-fill 최대 3일, 초과 구간은 스킵)
-async function closeSeries(sym) {
+const MAX_FILL = 3;   // 결측 봉 forward-fill 최대 3거래일
+const MAX_LAG = 3;    // 마지막 실제 봉이 벤치마크 최신봉보다 3봉 넘게 뒤처지면 표본 제외(거래정지·상폐·데이터 갭)
+
+// 1년 일봉 — 실제 봉만 {거래일키, 종가}로 반환(결측 봉은 제거하고 날짜 기준 정렬에서 다시 맞춘다)
+async function fetchSeries(sym) {
   try {
     const u = 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent(sym) + '?interval=1d&range=1y';
     const r = await fetch(u, { headers: { 'User-Agent': UA } });
     if (!r.ok) return null;
-    const d = await r.json();
-    const res = d && d.chart && d.chart.result && d.chart.result[0];
-    const raw = res && res.indicators && res.indicators.quote && res.indicators.quote[0] && res.indicators.quote[0].close;
-    if (!raw || !raw.length) return null;
-    const out = []; let miss = 0;
-    for (const v of raw) {
-      if (typeof v === 'number' && isFinite(v) && v > 0) { out.push(v); miss = 0; }
-      else if (out.length && miss < 3) { out.push(out[out.length - 1]); miss++; }
+    const j = await r.json();
+    const res = j && j.chart && j.chart.result && j.chart.result[0];
+    const ts = res && res.timestamp;
+    const cl = res && res.indicators && res.indicators.quote && res.indicators.quote[0] && res.indicators.quote[0].close;
+    if (!ts || !cl || !ts.length) return null;
+    const d = [], c = [];
+    for (let i = 0; i < ts.length; i++) {
+      const v = cl[i];
+      if (typeof v === 'number' && isFinite(v) && v > 0) { d.push(Math.floor(ts[i] / 86400)); c.push(v); }   // 같은 거래소면 일봉 타임스탬프가 동일 → 일(day) 키로 정렬 가능
     }
-    return out.length ? out : null;
+    return c.length ? { d, c } : null;
   } catch (e) { return null; }
+}
+
+// 벤치마크 거래일(bd)을 기준 달력으로 삼아 종목을 정렬. 위치가 아니라 '날짜'로 맞춘다.
+function alignToDays(bd, s) {
+  const map = new Map();
+  for (let i = 0; i < s.d.length; i++) map.set(s.d[i], s.c[i]);
+  const arr = new Array(bd.length).fill(null);
+  let last = null, age = 0, firstIdx = -1, lastRealIdx = -1;
+  for (let i = 0; i < bd.length; i++) {
+    const v = map.get(bd[i]);
+    if (v != null) { arr[i] = v; last = v; age = 0; lastRealIdx = i; if (firstIdx < 0) firstIdx = i; }
+    else if (last != null && age < MAX_FILL) { arr[i] = last; age++; }   // 짧은 결측만 채움
+  }
+  return { arr, firstIdx, lastRealIdx };
 }
 
 // 최신 촉매 뉴스 1건 (구글뉴스 RSS)
@@ -137,18 +155,36 @@ async function latestNews(q, mkt) {
 /* ── 비중의견 엔진 ── */
 const pct = (x, d) => (x >= 0 ? '+' : '') + (x * 100).toFixed(d === undefined ? 1 : d) + '%';
 
-function sectorMetrics(series, bench, benchName) {
-  const valids = series.filter((s) => s && s.length >= 120 && !staleSeries(s));
-  const validCount = valids.length;
-  if (!bench || bench.length < 25 || validCount < 1) return null;
-  const n = Math.min(bench.length, ...valids.map((a) => a.length));
-  if (n < 25) return null;
-  const tail = (a) => a.slice(a.length - n);
+// aligned: alignToDays 결과 배열(또는 null). bench: {d,c}. 모든 계열이 벤치 거래일에 맞춰져 있다.
+function sectorMetrics(aligned, bench, benchName) {
+  if (!bench || bench.c.length < 25) return null;
+  const L = bench.d.length;
 
-  // 등가중 리베이스 컴포지트 S, 벤치 B
-  const cols = valids.map((a) => { const t = tail(a); return t.map((v) => v / t[0]); });
+  // 신선도 가드: 마지막 실제 봉이 벤치 최신봉보다 MAX_LAG 넘게 뒤처진 종목은 제외(옛 종가가 '오늘'로 섞이는 것 차단)
+  const fresh = aligned.filter((a) => a && a.firstIdx >= 0 && (L - 1 - a.lastRealIdx) <= MAX_LAG);
+  if (!fresh.length) return null;
+
+  // 공통 시작점 = 유효 종목들의 최초 거래일 중 가장 늦은 것(신규상장 종목이 있으면 그 시점부터)
+  let start = 0; for (const a of fresh) if (a.firstIdx > start) start = a.firstIdx;
+  const n = L - start;
+  if (n < 25) return null;
+
+  // 구간 내 결측(3봉 초과 갭)이 있는 종목은 제외
+  const valids = [];
+  for (const a of fresh) {
+    let ok = true;
+    for (let i = start; i < L; i++) if (a.arr[i] == null) { ok = false; break; }
+    if (!ok) continue;
+    const seg = a.arr.slice(start);
+    if (seg.length >= 120 && !staleSeries(seg)) valids.push(seg);
+  }
+  const validCount = valids.length;
+  if (validCount < 1) return null;
+
+  // 등가중 리베이스 컴포지트 S, 벤치 B (동일 거래일 인덱스)
+  const cols = valids.map((seg) => seg.map((v) => v / seg[0]));
   const S = []; for (let t = 0; t < n; t++) S.push(mean(cols.map((a) => a[t])));
-  const bt = tail(bench); const B = bt.map((v) => v / bt[0]);
+  const bt = bench.c.slice(start); const B = bt.map((v) => v / bt[0]);
   const i = n - 1;
 
   // S1 절대모멘텀(6M) · S2 상대강도 · S3 추세구조 · S4 폭
@@ -164,8 +200,8 @@ function sectorMetrics(series, bench, benchName) {
   const sub3 = clamp((S[i] > ma50 ? 0.5 : -0.5) + (ma50 > maLong ? 0.5 : -0.5), -1, 1);
 
   let above = 0, pos = 0; const rets = [], todays = [];
-  for (const a of valids) {
-    const c = tail(a), last = c[n - 1];
+  for (const c of valids) {                       // c = 벤치 거래일에 정렬된 길이 n 구간
+    const last = c[n - 1];
     if (last > mean(c.slice(n - Math.min(50, n)))) above++;
     const ww = Math.min(63, n - 1); const r63 = last / c[n - 1 - ww] - 1;
     rets.push(r63); if (r63 > 0) pos++;
@@ -214,8 +250,8 @@ function sectorMetrics(series, bench, benchName) {
 
 // 스코어·가드레일 → 3단계 의견 + 경고 (시장 리스크오프는 카드마다 반복하지 않고 상단 배너로 표시)
 function opine(m, riskOff) {
-  if (!m || m.n < 60 || m.validCount < 3) {
-    return { op: 'op-hold', opTxt: '판단보류', warns: ['데이터 부족 — 판단보류'], conf: m ? Math.min(m.conf, 30) : 0 };
+  if (!m || m.n < 60 || m.validCount < 3) {   // 판단보류는 '중립'과 다른 상태 → 별도 클래스(op-void)로 시각 구분
+    return { op: 'op-void', opTxt: '판단보류', warns: ['데이터 부족 — 판단보류'], conf: m ? Math.min(m.conf, 30) : 0 };
   }
   let op = 'op-hold', opTxt = '중립';
   if (m.finalScore >= 25 && m.rs > 0) { op = 'op-buy'; opTxt = '비중확대'; }
@@ -265,23 +301,30 @@ async function build(mkt) {
   const desks = DESKS[mkt], bm = BENCH[mkt];
   const syms = []; desks.forEach((d) => d.basket.forEach(([s]) => syms.push(s)));
   const [benchSeries, seriesList] = await Promise.all([
-    closeSeries(bm.sym),
-    runPool(syms, 10, (s) => closeSeries(s)),
+    fetchSeries(bm.sym),
+    runPool(syms, 10, (s) => fetchSeries(s)),
   ]);
   const news = await runPool(desks, 7, (d) => latestNews(d.q, mkt));
 
-  const byS = {}; syms.forEach((s, i) => { byS[s] = seriesList[i]; });
+  // 벤치 거래일 기준으로 모든 종목을 날짜 정렬(위치 정렬 금지 — 옛 종가가 '오늘'로 밀려드는 것 방지)
+  const alignedBySym = {};
+  syms.forEach((s, i) => { const ser = seriesList[i]; alignedBySym[s] = (benchSeries && ser) ? alignToDays(benchSeries.d, ser) : null; });
+
   // 시장 리스크오프: 벤치 20일 수익률 < −8%
   let riskOff = false;
-  if (benchSeries && benchSeries.length > 21) { const b = benchSeries, j = b.length - 1; riskOff = (b[j] / b[j - 20] - 1) < -0.08; }
+  if (benchSeries && benchSeries.c.length > 21) { const b = benchSeries.c, j = b.length - 1; riskOff = (b[j] / b[j - 20] - 1) < -0.08; }
+  const L = benchSeries ? benchSeries.d.length : 0;
 
   const themes = desks.map((d, di) => {
-    const series = d.basket.map(([s]) => byS[s]);
-    const m = sectorMetrics(series, benchSeries, bm.name);
+    const m = sectorMetrics(d.basket.map(([s]) => alignedBySym[s]), benchSeries, bm.name);
     const o = opine(m, riskOff);
+    const insufficient = (o.opTxt === '판단보류');   // 판단보류면 정량 스코어·근거를 노출하지 않는다
     const picks = d.basket.map(([s, name]) => {
-      const c = byS[s];
-      const p = (c && c.length > 1) ? round((c[c.length - 1] / c[c.length - 2] - 1) * 100, 2) : null;
+      const a = alignedBySym[s];
+      // 신선하지 않은(뒤처진) 종목은 오늘 등락률을 표시하지 않는다
+      const fresh = a && a.lastRealIdx >= 1 && (L - 1 - a.lastRealIdx) <= MAX_LAG;
+      const p = (fresh && a.arr[L - 1] != null && a.arr[L - 2] != null)
+        ? round((a.arr[L - 1] / a.arr[L - 2] - 1) * 100, 2) : null;
       return { name, pct: p };
     });
     let lead = null; for (const p of picks) if (typeof p.pct === 'number' && (!lead || p.pct > lead.pct)) lead = p;
@@ -289,10 +332,13 @@ async function build(mkt) {
       nm: d.nm, desk: d.desk, thesis: d.thesis,
       op: o.op, opTxt: o.opTxt, warns: o.warns, conf: o.conf,
       confBand: o.conf >= 70 ? '높음' : (o.conf >= 45 ? '보통' : '낮음'),
-      score: m ? m.finalScore : null,
-      pts: m ? bullets(m) : ['구성종목 시세 이력이 부족해 정량 판단을 보류합니다.', '데이터가 쌓이면 자동으로 의견이 산출됩니다.', d.thesis],
+      score: insufficient ? null : m.finalScore,
+      pts: insufficient
+        ? ['유효 구성종목 또는 시세 이력이 부족해 정량 판단을 보류합니다.',
+           '거래정지·상장폐지·데이터 결측 종목은 표본에서 제외됩니다.', d.thesis]
+        : bullets(m),
       perf: m ? m.perfToday : null, lead, picks, cat: news[di],
-      metrics: m ? { r126: round(m.r126, 4), rs: round(m.rs, 4), breadth: round(m.breadth, 3), ext20: round(m.ext20, 4), rsi14: round(m.rsi14, 1), volRatio: round(m.volRatio, 2), curDD: round(m.curDD, 4), penalty: m.penalty, driver: m.driverScore } : null,
+      metrics: insufficient ? null : { r126: round(m.r126, 4), rs: round(m.rs, 4), breadth: round(m.breadth, 3), ext20: round(m.ext20, 4), rsi14: round(m.rsi14, 1), volRatio: round(m.volRatio, 2), curDD: round(m.curDD, 4), penalty: m.penalty, driver: m.driverScore },
     };
   });
 

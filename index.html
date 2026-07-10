@@ -396,6 +396,8 @@
   /* 리포트 본문 */
   .opinion{display:inline-block;font-size:0.75rem;font-weight:800;padding:3px 9px;border-radius:6px}
   .op-buy{color:#fff;background:#c0354a} .op-hold{color:#0a0e17;background:var(--gold)} .op-sell{color:#fff;background:#2563eb}
+  /* 판단보류 = 근거 없음. '중립'(실제 균형 판단)과 색으로 확실히 구분 */
+  .op-void{color:var(--muted2);background:transparent;border:1px dashed var(--border)}
   body.us-colors .op-buy{background:#15803d}
   .report p{margin:8px 0;color:#cdd8e8}
   .report .blk{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
@@ -989,7 +991,7 @@ let SAMPLE_VIDEOS = [   // 폴백(로드 전 잠깐 표시) — 실제는 /api/v
 /* ---- 테마 데스크 리포트 ---- */
 /* 초기 플레이스홀더 — 비중 의견은 /api/themes 가 실시세로 산출한다(하드코딩된 의견을 두지 않는다). */
 const SAMPLE_THEMES = ['AI · 반도체','방산 · 우주','원전 · 전력기기','조선 · 기계','2차전지 · 소재','바이오 · 헬스케어','금융 · 밸류업']
-  .map(nm=>({ nm, desk:'섹터 데스크', op:'op-hold', opTxt:'계산 중', score:null, conf:null, warns:[],
+  .map(nm=>({ nm, desk:'섹터 데스크', op:'op-void', opTxt:'계산 중', score:null, conf:null, warns:[],
     pts:['추세·지수 대비 상대강도·폭·리스크를 실시세로 계산하는 중입니다.'], picks:[], cat:null }));
 let THEMES = SAMPLE_THEMES.slice();     // /api/themes(라이브 산출) → data/themes_{mkt}.json(폴백)으로 교체
 let THEME_META = null;                  // {_updated, benchmark, riskOff, caveat}
@@ -1298,8 +1300,12 @@ async function loadThemes(fresh){
     try{ const r=await fetch('data/themes_'+mkt+'.json?t='+Date.now(),{cache:'no-store'}); if(r.ok) snap=await r.json(); }catch(e){}
   }
   const base=(live&&live.themes&&live.themes.length)?live:snap;
-  if(mkt===THEME_MKT && base && base.themes && base.themes.length){ THEMES=base.themes; THEME_META=base; renderThemes(); }
-  else if(when) when.textContent='산출 실패 — 잠시 후 다시 시도';
+  if(mkt!==THEME_MKT){ if(btn) btn.disabled=false; thmLoading=false; return; }   // 로딩 중 시장이 바뀌었으면 이 응답은 버린다
+  if(base && base.themes && base.themes.length){ THEMES=base.themes; THEME_META=base; renderThemes(); }
+  else {   // 라이브·폴백 모두 실패 → 이전 시장의 카드·배너·고지가 남지 않도록 초기화
+    THEMES=SAMPLE_THEMES.slice(); THEME_META=null; renderThemes();
+    if(when) when.textContent='산출 실패 — 잠시 후 다시 시도';
+  }
   if(btn) btn.disabled=false; thmLoading=false;
 }
 function bindThemeTabs(){

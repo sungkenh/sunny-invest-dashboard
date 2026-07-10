@@ -78,6 +78,16 @@ def clamp(x, lo, hi): return max(lo, min(hi, x))
 def mean(a): return sum(a) / len(a)
 
 
+# ⚠️ 파이썬 내장 round()는 뱅커스 라운딩(2.5→2)이라 JS Math.round(2.5→3)와 다르다.
+#    라이브(JS)와 폴백(PY) 카드가 어긋나지 않도록 half-up으로 통일한다.
+def r0(x): return math.floor(x + 0.5)
+
+
+def rn(x, n):
+    p = 10 ** n
+    return math.floor(x * p + 0.5) / p
+
+
 def stdev(a):
     if len(a) < 2: return 0.0
     m = mean(a)
@@ -112,21 +122,43 @@ def stale_series(c):
 
 
 # ── 수집 ──
-def close_series(sym):
+MAX_FILL = 3   # 결측 봉 forward-fill 최대 3거래일
+MAX_LAG = 3    # 마지막 실제 봉이 벤치마크 최신봉보다 3봉 넘게 뒤처지면 표본 제외
+
+
+def fetch_series(sym):
+    """1년 일봉 — 실제 봉만 (거래일키, 종가)로 반환. 결측 봉은 제거하고 날짜 기준 정렬에서 다시 맞춘다."""
     try:
         u = 'https://query1.finance.yahoo.com/v8/finance/chart/%s?interval=1d&range=1y' % urllib.parse.quote(sym)
         req = urllib.request.Request(u, headers={'User-Agent': UA})
-        d = json.loads(urllib.request.urlopen(req, timeout=15).read())
-        raw = d['chart']['result'][0]['indicators']['quote'][0]['close']
+        j = json.loads(urllib.request.urlopen(req, timeout=15).read())
+        res = j['chart']['result'][0]
+        ts = res['timestamp']
+        cl = res['indicators']['quote'][0]['close']
     except Exception:
         return None
-    out, miss = [], 0
-    for v in raw:
-        if isinstance(v, (int, float)) and v and v > 0:
-            out.append(float(v)); miss = 0
-        elif out and miss < 3:
-            out.append(out[-1]); miss += 1
-    return out or None
+    d, c = [], []
+    for i, v in enumerate(ts):
+        p = cl[i] if i < len(cl) else None
+        if isinstance(p, (int, float)) and p and p > 0:
+            d.append(v // 86400)     # 같은 거래소면 일봉 타임스탬프 동일 → 일(day) 키
+            c.append(float(p))
+    return {'d': d, 'c': c} if c else None
+
+
+def align_to_days(bd, s):
+    """벤치마크 거래일(bd)을 기준 달력으로 삼아 종목을 정렬. 위치가 아니라 '날짜'로 맞춘다."""
+    m = dict(zip(s['d'], s['c']))
+    arr = [None] * len(bd)
+    last = None; age = 0; first_idx = -1; last_real = -1
+    for i, day in enumerate(bd):
+        v = m.get(day)
+        if v is not None:
+            arr[i] = v; last = v; age = 0; last_real = i
+            if first_idx < 0: first_idx = i
+        elif last is not None and age < MAX_FILL:
+            arr[i] = last; age += 1
+    return {'arr': arr, 'firstIdx': first_idx, 'lastRealIdx': last_real}
 
 
 def _decode(s):
@@ -179,19 +211,32 @@ def latest_news(q, mkt):
 def _pct(x, d=1): return ('+' if x >= 0 else '') + ('%.*f%%' % (d, x * 100))
 
 
-def sector_metrics(series, bench, bench_name):
-    valids = [s for s in series if s and len(s) >= 120 and not stale_series(s)]
-    vc = len(valids)
-    if not bench or len(bench) < 25 or vc < 1: return None
-    n = min([len(bench)] + [len(a) for a in valids])
+def sector_metrics(aligned, bench, bench_name):
+    """aligned: align_to_days 결과 리스트(또는 None). 모든 계열이 벤치 거래일에 맞춰져 있다."""
+    if not bench or len(bench['c']) < 25: return None
+    L = len(bench['d'])
+
+    # 신선도 가드: 마지막 실제 봉이 벤치 최신봉보다 MAX_LAG 넘게 뒤처진 종목 제외
+    fresh = [a for a in aligned if a and a['firstIdx'] >= 0 and (L - 1 - a['lastRealIdx']) <= MAX_LAG]
+    if not fresh: return None
+
+    start = max(a['firstIdx'] for a in fresh)   # 신규상장 종목이 있으면 그 시점부터
+    n = L - start
     if n < 25: return None
 
-    cols = []
-    for a in valids:
-        t = a[len(a) - n:]
-        cols.append([v / t[0] for v in t])
+    valids = []
+    for a in fresh:
+        if any(a['arr'][i] is None for i in range(start, L)):   # 구간 내 3봉 초과 결측 → 제외
+            continue
+        seg = a['arr'][start:]
+        if len(seg) >= 120 and not stale_series(seg):
+            valids.append(seg)
+    vc = len(valids)
+    if vc < 1: return None
+
+    cols = [[v / seg[0] for v in seg] for seg in valids]
     S = [mean([c[t] for c in cols]) for t in range(n)]
-    bt = bench[len(bench) - n:]
+    bt = bench['c'][start:]
     B = [v / bt[0] for v in bt]
     i = n - 1
 
@@ -207,8 +252,7 @@ def sector_metrics(series, bench, bench_name):
     sub3 = clamp((0.5 if S[i] > ma50 else -0.5) + (0.5 if ma50 > ma_long else -0.5), -1, 1)
 
     above = pos = 0; rets = []; todays = []
-    for a in valids:
-        c = a[len(a) - n:]
+    for c in valids:                     # c = 벤치 거래일에 정렬된 길이 n 구간
         last = c[n - 1]
         if last > mean(c[n - min(50, n):]): above += 1
         ww = min(63, n - 1)
@@ -220,7 +264,7 @@ def sector_metrics(series, bench, bench_name):
     sub4 = 2 * breadth - 1
     dispersion = stdev(rets) if vc > 1 else 0.0
 
-    driver = round(100 * (0.30 * sub1 + 0.30 * sub2 + 0.25 * sub3 + 0.15 * sub4))
+    driver = r0(100 * (0.30 * sub1 + 0.30 * sub2 + 0.25 * sub3 + 0.15 * sub4))
 
     ma20 = mean(S[n - min(20, n):])
     ext20 = S[i] / ma20 - 1
@@ -232,7 +276,7 @@ def sector_metrics(series, bench, bench_name):
     rsi14 = wilder_rsi(S, 14)
     p_rsi = clamp((rsi14 - 70) / 15, 0, 1) * 10
     penalty = min(p_ext + p_vol + p_rsi, 30)
-    final = round(clamp(driver - penalty, -100, 100))
+    final = r0(clamp(driver - penalty, -100, 100))
 
     sgn = 1 if driver > 0 else (-1 if driver < 0 else 1)
     agree = 0.0
@@ -243,18 +287,19 @@ def sector_metrics(series, bench, bench_name):
     if n < 200: conf *= 0.85
     if n < 120: conf *= 0.6
     if n < 60: conf = min(conf, 30)
-    conf = round(clamp(conf, 0, 100))
+    conf = r0(clamp(conf, 0, 100))
 
     cur_dd = S[i] / max(S[n - min(252, n):]) - 1
     return dict(n=n, validCount=vc, r126=r126, r252=r252, rs=rs, breadth=breadth, above=above, pos=pos,
-                dispersion=dispersion, shortHist=short_hist, driverScore=driver, penalty=round(penalty),
+                dispersion=dispersion, shortHist=short_hist, driverScore=driver, penalty=r0(penalty),
                 finalScore=final, conf=conf, curDD=cur_dd, ext20=ext20, volRatio=vol_ratio, rsi14=rsi14,
-                perfToday=round(mean(todays) * 100, 2), benchName=bench_name)
+                perfToday=rn(mean(todays) * 100, 2), benchName=bench_name)
 
 
 def opine(m, risk_off):
     if not m or m['n'] < 60 or m['validCount'] < 3:
-        return dict(op='op-hold', opTxt='판단보류', warns=['데이터 부족 — 판단보류'],
+        # 판단보류는 '중립'과 다른 상태 → 별도 클래스(op-void)로 시각 구분
+        return dict(op='op-void', opTxt='판단보류', warns=['데이터 부족 — 판단보류'],
                     conf=min(m['conf'], 30) if m else 0)
     op, op_txt = 'op-hold', '중립'
     if m['finalScore'] >= 25 and m['rs'] > 0:
@@ -282,7 +327,7 @@ def bullets(m):
         (' (12개월 %s)' % _pct(m['r252'])) if m['r252'] is not None else '')
     part = '광범위' if m['breadth'] >= 0.6 else ('제한적' if m['breadth'] <= 0.4 else '보통')
     b2 = '구성 %d종목 중 %d개 50일선 위 · %d개 3개월 상승 — 폭 %d%%%s, 참여 %s' % (
-        m['validCount'], m['above'], m['pos'], round(m['breadth'] * 100),
+        m['validCount'], m['above'], m['pos'], r0(m['breadth'] * 100),
         ' (단기 이력)' if m['shortHist'] else '', part)
     b3 = '52주 고점 대비 %s · 20일 이격 %s · 변동성 지수 대비 %.1f배 — 종합 %s%d/100 (리스크 −%d)' % (
         _pct(m['curDD']), _pct(m['ext20']), m['volRatio'],
@@ -293,23 +338,31 @@ def bullets(m):
 def build(mkt):
     desks = DESKS[mkt]
     bsym, bname = BENCH[mkt]
-    bench = close_series(bsym)
+    bench = fetch_series(bsym)
     cache = {}
     for d in desks:
         for sym, _ in d['basket']:
             if sym not in cache:
-                cache[sym] = close_series(sym)
+                cache[sym] = fetch_series(sym)
 
-    risk_off = bool(bench and len(bench) > 21 and (bench[-1] / bench[-21] - 1) < -0.08)
+    # 벤치 거래일 기준 날짜 정렬(위치 정렬 금지 — 옛 종가가 '오늘'로 밀려드는 것 방지)
+    aligned = {s: (align_to_days(bench['d'], ser) if (bench and ser) else None) for s, ser in cache.items()}
+    L = len(bench['d']) if bench else 0
+
+    risk_off = bool(bench and len(bench['c']) > 21 and (bench['c'][-1] / bench['c'][-21] - 1) < -0.08)
 
     themes = []
     for d in desks:
-        m = sector_metrics([cache[s] for s, _ in d['basket']], bench, bname)
+        m = sector_metrics([aligned[s] for s, _ in d['basket']], bench, bname)
         o = opine(m, risk_off)
+        insufficient = (o['opTxt'] == '판단보류')   # 판단보류면 정량 스코어·근거를 노출하지 않는다
         picks = []
         for sym, name in d['basket']:
-            c = cache.get(sym)
-            picks.append({'name': name, 'pct': round((c[-1] / c[-2] - 1) * 100, 2) if (c and len(c) > 1) else None})
+            a = aligned.get(sym)
+            fresh = a and a['lastRealIdx'] >= 1 and (L - 1 - a['lastRealIdx']) <= MAX_LAG
+            p = (rn((a['arr'][L - 1] / a['arr'][L - 2] - 1) * 100, 2)
+                 if (fresh and a['arr'][L - 1] is not None and a['arr'][L - 2] is not None) else None)
+            picks.append({'name': name, 'pct': p})
         lead = None
         for p in picks:
             if p['pct'] is not None and (lead is None or p['pct'] > lead['pct']): lead = p
@@ -317,18 +370,20 @@ def build(mkt):
         themes.append({
             'nm': d['nm'], 'desk': d['desk'], 'thesis': d['thesis'],
             'op': o['op'], 'opTxt': o['opTxt'], 'warns': o['warns'], 'conf': o['conf'], 'confBand': cb,
-            'score': m['finalScore'] if m else None,
-            'pts': bullets(m) if m else ['구성종목 시세 이력이 부족해 정량 판단을 보류합니다.',
-                                         '데이터가 쌓이면 자동으로 의견이 산출됩니다.', d['thesis']],
+            'score': None if insufficient else m['finalScore'],
+            'pts': (['유효 구성종목 또는 시세 이력이 부족해 정량 판단을 보류합니다.',
+                     '거래정지·상장폐지·데이터 결측 종목은 표본에서 제외됩니다.', d['thesis']]
+                    if insufficient else bullets(m)),
             'perf': m['perfToday'] if m else None, 'lead': lead, 'picks': picks,
             'cat': latest_news(d['q'], mkt),
-            'metrics': ({'r126': round(m['r126'], 4), 'rs': round(m['rs'], 4), 'breadth': round(m['breadth'], 3),
-                         'ext20': round(m['ext20'], 4), 'rsi14': round(m['rsi14'], 1),
-                         'volRatio': round(m['volRatio'], 2), 'curDD': round(m['curDD'], 4),
-                         'penalty': m['penalty'], 'driver': m['driverScore']} if m else None),
+            'metrics': (None if insufficient else
+                        {'r126': rn(m['r126'], 4), 'rs': rn(m['rs'], 4), 'breadth': rn(m['breadth'], 3),
+                         'ext20': rn(m['ext20'], 4), 'rsi14': rn(m['rsi14'], 1),
+                         'volRatio': rn(m['volRatio'], 2), 'curDD': rn(m['curDD'], 4),
+                         'penalty': m['penalty'], 'driver': m['driverScore']}),
         })
         print('  [%s] %-16s score=%s conf=%s' % (o['opTxt'], d['nm'],
-              (m['finalScore'] if m else '—'), o['conf']))
+              ('—' if insufficient else m['finalScore']), o['conf']))
 
     now_utc = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)   # 프런트 parseUTC가 Z 없는 값을 UTC로 해석
     return {'_updated': now_utc.isoformat(timespec='seconds'), 'mkt': mkt,
