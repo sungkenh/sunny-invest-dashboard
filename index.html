@@ -2279,6 +2279,7 @@ function tick(){
   paintMkt('krx', kospiSession(t.dow,mins));
   paintMkt('us',  nasdaqSession(t.dow,mins));
   if(typeof hmAutoTick==='function') hmAutoTick();   // 08:00/20:00 세션 경계에서 히트맵 자동 전환
+  if(typeof hmKind!=='undefined' && hmKind==='KR' && krData) hmBadge(krData);   // 배지 '몇 초 전' 매초 갱신
 }
 function liveJitter(){
   // 관심종목(데모)만 미세 변동. 상단 지표는 실데이터(loadMarket)라 흔들지 않음.
@@ -2548,9 +2549,9 @@ function hmBadge(d){
   if(!d){ b.textContent='● LIVE'; b.classList.remove('stale'); b.removeAttribute('title'); return; }
   const live = d.source==='naver' && d.marketStatus==='OPEN';
   b.classList.toggle('stale', !live);
-  b.textContent = live ? '● 실시간 '+fmtCollected(d._updated)
-                       : (d.source==='snapshot' ? '스냅샷 · 종가 기준' : '장마감 · 종가 기준');
-  b.title = live ? '네이버 금융 실시간(지연 0분)' : '정규장 외 시간 또는 스냅샷 데이터';
+  b.textContent = live ? '● 실시간 · '+agoText(d._updated)
+                       : (d.source==='snapshot' ? '스냅샷 · 종가 기준' : '장마감 · 종가 기준')+' · '+agoText(d._updated)+' 수집';
+  b.title = (live ? '네이버 금융 실시간(지연 0분)' : '정규장 외 시간 또는 스냅샷 데이터')+' · 수집 '+fmtCollected(d._updated);
 }
 function renderHeatmap(){
   const eff=hmEffective();

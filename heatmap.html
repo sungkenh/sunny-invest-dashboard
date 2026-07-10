@@ -156,10 +156,11 @@
 /* ── 공용 헬퍼 (index.html 과 동일 구현. 각 페이지는 자립형 구조) ── */
 function kstParts(){
   const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Seoul',hourCycle:'h23',weekday:'short',
-    hour:'2-digit',minute:'2-digit',second:'2-digit'}).formatToParts(new Date());
+    month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'}).formatToParts(new Date());
   const o={}; p.forEach(x=>o[x.type]=x.value);
   const dm={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6};
-  return {h:+o.hour,m:+o.minute,hh:o.hour,mm:o.minute,ss:o.second,dow:dm[o.weekday]};
+  return {h:+o.hour,m:+o.minute,hh:o.hour,mm:o.minute,ss:o.second,dow:dm[o.weekday],
+    mon:String(+o.month),day:String(+o.day),wk:['일','월','화','수','목','금','토'][dm[o.weekday]]};
 }
 // KOSPI/KOSDAQ (KST): 프리 08:00~09:00 · 정규 09:00~15:30 · 애프터 15:30~20:00
 function kospiSession(dow,mins){
@@ -195,6 +196,14 @@ async function fetchLive(api,file){
   try{ const r=await fetch(api,{cache:'default'}); if(r.ok) return await r.json(); }catch(e){}
   try{ const r=await fetch(file+'?t='+Date.now(),{cache:'no-store'}); if(r.ok) return await r.json(); }catch(e){}
   return null;
+}
+function agoText(iso){
+  const d=parseUTC(iso); if(!d) return '';
+  const s=Math.max(0,Math.floor((Date.now()-d.getTime())/1000));
+  if(s<3) return '방금';
+  if(s<60) return s+'초 전';
+  const m=Math.floor(s/60); if(m<60) return m+'분 전';
+  return Math.floor(m/60)+'시간 전';
 }
 const LAST_FRESH={};
 function freshGate(key,updated){                     // 라이브 실패 → 옛 스냅샷으로 값이 과거로 점프하는 것 방지
@@ -422,9 +431,9 @@ function badge(){
     && it0 && it0.o && it0.o.s==='OPEN' && sessKor(it0.o.t);
   const live = DATA.source==='naver' && (DATA.marketStatus==='OPEN' || overLive);
   b.classList.toggle('stale', !live);
-  b.textContent = live ? '● '+(overLive?sessKor(it0.o.t):'실시간')+' '+fmtCollected(DATA._updated)
-                       : (DATA.source==='snapshot' ? '스냅샷 · 종가 기준' : '장마감 · 종가 기준');
-  b.title = live ? '네이버 금융 실시간(지연 0분)' : '정규장 외 시간 또는 스냅샷 데이터';
+  b.textContent = live ? '● '+(overLive?sessKor(it0.o.t):'실시간')+' '+fmtCollected(DATA._updated)+' · '+agoText(DATA._updated)
+                       : (DATA.source==='snapshot' ? '스냅샷 · 종가 기준' : '장마감 · 종가 기준')+' · '+agoText(DATA._updated)+' 수집';
+  b.title = (live ? '네이버 금융 실시간(지연 0분)' : '정규장 외 시간 또는 스냅샷 데이터')+' · 수집 '+fmtCollected(DATA._updated);
 }
 function renderSegs(){
   document.querySelectorAll('#seg-mkt button').forEach(b=>b.classList.toggle('on', b.dataset.v===MKT));
@@ -537,7 +546,8 @@ setThemeClass(localStorage.getItem('alphadesk.theme')||'dark');
 /* 시계 + 폴링 */
 function tick(){
   const t=kstParts();
-  document.getElementById('clock').textContent=t.hh+':'+t.mm+':'+t.ss;
+  document.getElementById('clock').textContent=t.mon+'.'+t.day+'('+t.wk+') '+t.hh+':'+t.mm+':'+t.ss;
+  if(DATA) badge();                                  // '몇 초 전' 이 실제 시간을 따라 매초 갱신
 }
 tick(); setInterval(tick,1000);
 
