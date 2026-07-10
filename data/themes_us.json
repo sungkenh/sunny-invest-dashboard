@@ -1,0 +1,408 @@
+{
+ "_updated": "2026-07-10T00:58:20",
+ "mkt": "us",
+ "benchmark": "S&P 500",
+ "riskOff": false,
+ "caveat": "가격(추세) 기반 상대 판단 — 밸류에이션·실적·수급 미반영. 매수/매도 신호가 아닌 비중 참고지표입니다.",
+ "count": 7,
+ "themes": [
+  {
+   "nm": "AI · 반도체",
+   "desk": "Semis 데스크",
+   "thesis": "가속컴퓨팅 전환으로 AI 인프라 CapEx가 반도체 이익에 집중",
+   "op": "op-buy",
+   "opTxt": "비중확대",
+   "warns": [
+    "특정 종목 주도 — 개별 확인 필요"
+   ],
+   "conf": 94,
+   "confBand": "높음",
+   "score": 82,
+   "pts": [
+    "최근 6개월 +58.2% · S&P 500 대비 +49.6%p — 지수 상회 (12개월 +109.7%)",
+    "구성 4종목 중 2개 50일선 위 · 4개 3개월 상승 — 폭 75%, 참여 광범위",
+    "52주 고점 대비 -3.7% · 20일 이격 +2.6% · 변동성 지수 대비 4.1배 — 종합 +82/100 (리스크 −10)"
+   ],
+   "perf": 2.05,
+   "lead": {
+    "name": "AMD",
+    "pct": 5.66
+   },
+   "picks": [
+    {
+     "name": "엔비디아",
+     "pct": -0.66
+    },
+    {
+     "name": "브로드컴",
+     "pct": 3.2
+    },
+    {
+     "name": "AMD",
+     "pct": 5.66
+    },
+    {
+     "name": "TSMC",
+     "pct": -0.0
+    }
+   ],
+   "cat": {
+    "ti": "Stock Market Today, July 9: AI Chip, Technology Stocks Rally, Overcoming Ceasefire Worries",
+    "link": "https://news.google.com/rss/articles/CBMilAFBVV95cUxONkRELW9IQVU4MXJtYU1OTWU1dkctWUpRUUhDLUh1d3Q0RnRHVWlJTXpDSXdxQmJtVlUtb2JqRXVjaFplSXFGNEZDS3pJQXZFdlNvTkxMOUJ0WUxfQmpUWmxzd3lsMlpDTW5WU3lod3ZBZGp3RmEzbnRuSUFuMEFlWHJ4MVo1R3lneEZaWHl2T2xjdkhx?oc=5",
+    "src": "Yahoo Finance",
+    "tm": "7시간 전"
+   },
+   "metrics": {
+    "r126": 0.582,
+    "rs": 0.4957,
+    "breadth": 0.75,
+    "ext20": 0.0261,
+    "rsi14": 54.4,
+    "volRatio": 4.09,
+    "curDD": -0.0375,
+    "penalty": 10,
+    "driver": 92
+   }
+  },
+  {
+   "nm": "빅테크 · 소프트웨어",
+   "desk": "테크 데스크",
+   "thesis": "AI 수익화 초기 국면 — 클라우드·광고 현금흐름이 투자를 뒷받침",
+   "op": "op-sell",
+   "opTxt": "비중축소",
+   "warns": [],
+   "conf": 59,
+   "confBand": "보통",
+   "score": -48,
+   "pts": [
+    "최근 6개월 -6.8% · S&P 500 대비 -15.4%p — 지수 하회 (12개월 +14.0%)",
+    "구성 4종목 중 1개 50일선 위 · 3개 3개월 상승 — 폭 50%, 참여 보통",
+    "52주 고점 대비 -9.8% · 20일 이격 +2.5% · 변동성 지수 대비 2.3배 — 종합 -48/100 (리스크 −8)"
+   ],
+   "perf": 0.43,
+   "lead": {
+    "name": "메타",
+    "pct": 4.7
+   },
+   "picks": [
+    {
+     "name": "마이크로소프트",
+     "pct": 0.27
+    },
+    {
+     "name": "알파벳",
+     "pct": -0.84
+    },
+    {
+     "name": "메타",
+     "pct": 4.7
+    },
+    {
+     "name": "팔란티어",
+     "pct": -2.41
+    }
+   ],
+   "cat": {
+    "ti": "Starbucks taps AI to cut reliance on Microsoft, IBM software",
+    "link": "https://news.google.com/rss/articles/CBMijgFBVV95cUxPRTRrYi1MYkdnb19xcEwzcTlGSWNJMWJrQWZ5YW5QZTFLaXRMN2twN3o5OUNOcXJGbHllRFBNVGxFRjlZYzJBRHlFWWVNczRrczlpWUZxOC1rLVZEa2U4NDBaSFJFUHlXTjRuVVBXUERjNWt0YmRRTFRhczhuUExNUEQ5ZlJqZ2lIRVVLRXln?oc=5",
+    "src": "Fortune",
+    "tm": "12시간 전"
+   },
+   "metrics": {
+    "r126": -0.068,
+    "rs": -0.1542,
+    "breadth": 0.5,
+    "ext20": 0.025,
+    "rsi14": 51.9,
+    "volRatio": 2.26,
+    "curDD": -0.0977,
+    "penalty": 8,
+    "driver": -40
+   }
+  },
+  {
+   "nm": "전력 · 원자력",
+   "desk": "유틸리티 데스크",
+   "thesis": "데이터센터 전력수요 급증으로 발전·원자력 계약단가가 재평가",
+   "op": "op-hold",
+   "opTxt": "중립",
+   "warns": [
+    "지수 동반 상승 — 초과성과 없음"
+   ],
+   "conf": 63,
+   "confBand": "보통",
+   "score": 18,
+   "pts": [
+    "최근 6개월 +4.7% · S&P 500 대비 -3.9%p — 지수 하회 (12개월 +13.2%)",
+    "구성 4종목 중 3개 50일선 위 · 2개 3개월 상승 — 폭 62%, 참여 광범위",
+    "52주 고점 대비 -9.9% · 20일 이격 +1.1% · 변동성 지수 대비 3.2배 — 종합 +18/100 (리스크 −10)"
+   ],
+   "perf": 1.79,
+   "lead": {
+    "name": "콘스텔레이션",
+    "pct": 2.54
+   },
+   "picks": [
+    {
+     "name": "GE버노바",
+     "pct": 0.4
+    },
+    {
+     "name": "비스트라",
+     "pct": 2.04
+    },
+    {
+     "name": "콘스텔레이션",
+     "pct": 2.54
+    },
+    {
+     "name": "NRG에너지",
+     "pct": 2.18
+    }
+   ],
+   "cat": {
+    "ti": "Projected PPA Demand & Total Data Center Power (TWh)",
+    "link": "https://news.google.com/rss/articles/CBMikgFBVV95cUxPMnRmUDVoc25oc2ZDSGIwblFzQzFYV1NIUkJUT1Q1M2hCckpPZDJ5U1JmTGdzWGI3NG5iNWdpaDZsMUpkbFJwTG83NXkyRTZYOGFqQzg3bXhkY1RZV3hzUG4wRHd2X3hCcXQ1ZTc2a0ZtLTJuTnZ2Y2E1LWxpMmtSWWx5Yl9RVm9zalktLXFJQl9YZw?oc=5",
+    "src": "Voronoi by Visual Capitalist",
+    "tm": "3시간 전"
+   },
+   "metrics": {
+    "r126": 0.0473,
+    "rs": -0.0389,
+    "breadth": 0.625,
+    "ext20": 0.0105,
+    "rsi14": 51.0,
+    "volRatio": 3.2,
+    "curDD": -0.099,
+    "penalty": 10,
+    "driver": 28
+   }
+  },
+  {
+   "nm": "방산 · 우주",
+   "desk": "방산 데스크",
+   "thesis": "지정학 리스크 상시화로 다년 방위예산 가시성 확보",
+   "op": "op-sell",
+   "opTxt": "비중축소",
+   "warns": [],
+   "conf": 61,
+   "confBand": "보통",
+   "score": -33,
+   "pts": [
+    "최근 6개월 -1.7% · S&P 500 대비 -10.3%p — 지수 하회 (12개월 +18.0%)",
+    "구성 4종목 중 2개 50일선 위 · 1개 3개월 상승 — 폭 38%, 참여 제한적",
+    "52주 고점 대비 -15.8% · 20일 이격 +2.1% · 변동성 지수 대비 2.1배 — 종합 -33/100 (리스크 −6)"
+   ],
+   "perf": -0.99,
+   "lead": {
+    "name": "RTX",
+    "pct": 0.15
+   },
+   "picks": [
+    {
+     "name": "RTX",
+     "pct": 0.15
+    },
+    {
+     "name": "록히드마틴",
+     "pct": -1.84
+    },
+    {
+     "name": "노스롭그루먼",
+     "pct": -2.36
+    },
+    {
+     "name": "제너럴다이내믹스",
+     "pct": 0.08
+    }
+   ],
+   "cat": {
+    "ti": "Lockheed Martin Lands $35 Billion Missile-Defense Deal",
+    "link": "https://news.google.com/rss/articles/CBMirgFBVV95cUxOdkxfRXlfbHBzbzBjVUwyNmhTQWpyRW1KNEdFUHd6QmE0LUJTV3hOVUw4VFNxV2ZkWUNPaDE5UDBIV29yY0VfZF84N042Y1NiMDBoS0FZVnhKZ2VfMkd5WkVZbEg5bjdrZjNIcy1Yd2R0V3gwSHRaOWtNSUwzY0x6eUxoR2JDLUFSaTY4VS0xc09aU3RZc0FtTWRVeHdTT3VhWTR2bEdWU0otQndjc3c?oc=5",
+    "src": "WSJ",
+    "tm": "15일 전"
+   },
+   "metrics": {
+    "r126": -0.0171,
+    "rs": -0.1033,
+    "breadth": 0.375,
+    "ext20": 0.0206,
+    "rsi14": 55.2,
+    "volRatio": 2.12,
+    "curDD": -0.1577,
+    "penalty": 6,
+    "driver": -27
+   }
+  },
+  {
+   "nm": "헬스케어 · 비만치료",
+   "desk": "헬스케어 데스크",
+   "thesis": "GLP-1 시장 확대와 대형 M&A가 파이프라인 가치를 재산정",
+   "op": "op-buy",
+   "opTxt": "비중확대",
+   "warns": [],
+   "conf": 90,
+   "confBand": "높음",
+   "score": 60,
+   "pts": [
+    "최근 6개월 +11.2% · S&P 500 대비 +2.6%p — 지수 상회 (12개월 +23.8%)",
+    "구성 4종목 중 4개 50일선 위 · 4개 3개월 상승 — 폭 100%, 참여 광범위",
+    "52주 고점 대비 -1.1% · 20일 이격 +4.4% · 변동성 지수 대비 1.7배 — 종합 +60/100 (리스크 −2)"
+   ],
+   "perf": 0.1,
+   "lead": {
+    "name": "유나이티드헬스",
+    "pct": 1.43
+   },
+   "picks": [
+    {
+     "name": "일라이릴리",
+     "pct": 0.09
+    },
+    {
+     "name": "노보노디스크",
+     "pct": -0.02
+    },
+    {
+     "name": "유나이티드헬스",
+     "pct": 1.43
+    },
+    {
+     "name": "애브비",
+     "pct": -1.12
+    }
+   ],
+   "cat": {
+    "ti": "Who benefits from classifying obesity as a disease?",
+    "link": "https://news.google.com/rss/articles/CBMinAFBVV95cUxPa01lczVWZk50T09GajFlRTR2SDBaUjREeFlZekRQNWQyVUVTd25JM3F5TU90azhmS0VSVlRfeFBVbHcyaWpQSDN0UHhDUTRoNHhqSDVPaUFXS1BiaHR5ekQyUU43TFNYOVpUc2p5cS1BNWpxN05LSEVFN3hvQW9URjVFbHE3QTN3TzdQYmJ5TlEtY2JWdjJHU0dFQV8?oc=5",
+    "src": "STAT",
+    "tm": "16시간 전"
+   },
+   "metrics": {
+    "r126": 0.1121,
+    "rs": 0.0258,
+    "breadth": 1.0,
+    "ext20": 0.0444,
+    "rsi14": 66.8,
+    "volRatio": 1.65,
+    "curDD": -0.0108,
+    "penalty": 2,
+    "driver": 62
+   }
+  },
+  {
+   "nm": "금융 · 은행",
+   "desk": "금융 데스크",
+   "thesis": "금리 하강기 순이자마진 둔화 vs 자본시장 수수료·자사주 매입",
+   "op": "op-hold",
+   "opTxt": "중립",
+   "warns": [
+    "지수 동반 상승 — 초과성과 없음"
+   ],
+   "conf": 74,
+   "confBand": "높음",
+   "score": 51,
+   "pts": [
+    "최근 6개월 +8.5% · S&P 500 대비 -0.1%p — 시장 수준 (12개월 +36.7%)",
+    "구성 4종목 중 4개 50일선 위 · 4개 3개월 상승 — 폭 100%, 참여 광범위",
+    "52주 고점 대비 -0.9% · 20일 이격 +1.7% · 변동성 지수 대비 1.6배 — 종합 +51/100 (리스크 −1)"
+   ],
+   "perf": 1.88,
+   "lead": {
+    "name": "골드만삭스",
+    "pct": 2.56
+   },
+   "picks": [
+    {
+     "name": "JP모건",
+     "pct": 1.47
+    },
+    {
+     "name": "골드만삭스",
+     "pct": 2.56
+    },
+    {
+     "name": "뱅크오브아메리카",
+     "pct": 1.63
+    },
+    {
+     "name": "모건스탠리",
+     "pct": 1.86
+    }
+   ],
+   "cat": {
+    "ti": "3 Bank Stocks With High Dividends and Earnings Growth",
+    "link": "https://news.google.com/rss/articles/CBMie0FVX3lxTE9rS3RPS2xtNnNFWUU1cHNrOWNiVzVMa3JoaHNpUC1hOUVkY1ZHUmsxSDZSbkkyTENWemEwT0FLQnZCN29XdlBZcGZlOGQydFhOSWJ5LVNZZjczZ1pEWjMtZ3hIbWFOazQydnZYYjJKR2hidFRuQ3JsYVN5VQ?oc=5",
+    "src": "Barron's",
+    "tm": "3시간 전"
+   },
+   "metrics": {
+    "r126": 0.0848,
+    "rs": -0.0014,
+    "breadth": 1.0,
+    "ext20": 0.0171,
+    "rsi14": 59.8,
+    "volRatio": 1.64,
+    "curDD": -0.0094,
+    "penalty": 1,
+    "driver": 52
+   }
+  },
+  {
+   "nm": "에너지",
+   "desk": "에너지 데스크",
+   "thesis": "공급 규율과 지정학 프리미엄 vs 수요 둔화의 균형",
+   "op": "op-hold",
+   "opTxt": "중립",
+   "warns": [],
+   "conf": 43,
+   "confBand": "낮음",
+   "score": 3,
+   "pts": [
+    "최근 6개월 +11.0% · S&P 500 대비 +2.3%p — 지수 상회 (12개월 +18.7%)",
+    "구성 4종목 중 0개 50일선 위 · 0개 3개월 상승 — 폭 0%, 참여 제한적",
+    "52주 고점 대비 -17.0% · 20일 이격 -1.8% · 변동성 지수 대비 1.8배 — 종합 +3/100 (리스크 −3)"
+   ],
+   "perf": -1.63,
+   "lead": {
+    "name": "SLB",
+    "pct": -0.4
+   },
+   "picks": [
+    {
+     "name": "엑슨모빌",
+     "pct": -2.6
+    },
+    {
+     "name": "셰브론",
+     "pct": -1.09
+    },
+    {
+     "name": "코노코필립스",
+     "pct": -2.44
+    },
+    {
+     "name": "SLB",
+     "pct": -0.4
+    }
+   ],
+   "cat": {
+    "ti": "Current price of oil as of July 9, 2026",
+    "link": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE1wZVRWRXR5VWFZVFhzYW1pZUFTYXZLY0piMDBEQTU3VHJHRjRPRHhXQWlwalV6VWlNUUZsWU1sS3BwLVVTSkRIX2tCSG1vT2tTYlpuSi1UQjJ1Y1Vfa1hwWlN3?oc=5",
+    "src": "Fortune",
+    "tm": "12시간 전"
+   },
+   "metrics": {
+    "r126": 0.1097,
+    "rs": 0.0235,
+    "breadth": 0.0,
+    "ext20": -0.0178,
+    "rsi14": 41.6,
+    "volRatio": 1.82,
+    "curDD": -0.1702,
+    "penalty": 3,
+    "driver": 6
+   }
+  }
+ ]
+}

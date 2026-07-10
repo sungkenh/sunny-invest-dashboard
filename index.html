@@ -415,6 +415,21 @@
   .theme .picks{font-size:0.75rem;color:var(--muted);margin-top:6px}
   .theme .picks b{color:var(--text)}
   .theme .cat{font-size:0.75rem;color:var(--accent);margin-top:5px}
+  /* 섹터 데스크 — 스코어·신뢰도·경고·구조적 논지 */
+  .theme .t-score{margin-left:6px;font-weight:800;font-variant-numeric:tabular-nums}
+  .theme .t-score.sc-p{color:var(--up)} .theme .t-score.sc-n{color:var(--down)}
+  .theme .t-conf{margin-left:6px;font-size:0.5938rem;padding:0 5px;border-radius:4px;border:1px solid var(--border)}
+  .theme .t-conf.cf-hi{color:#22c55e;border-color:#14532d} .theme .t-conf.cf-md{color:var(--gold);border-color:#4a3a12} .theme .t-conf.cf-lo{color:var(--muted2)}
+  .theme .t-thesis{font-size:0.6875rem;color:var(--muted2);border-left:2px solid var(--border);padding-left:7px;margin:6px 0 2px}
+  .theme .t-warns{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+  .theme .t-warn{font-size:0.625rem;color:#f0b90b;background:rgba(240,185,11,.10);border:1px solid #4a3a12;border-radius:5px;padding:1px 6px}
+  .thm-refresh{margin-left:auto;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--muted);
+    border-radius:999px;padding:4px 11px;font-size:0.6875rem;font-weight:700;font-family:inherit;white-space:nowrap}
+  .thm-refresh:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+  .thm-refresh:disabled{opacity:.5;cursor:progress}
+  .thm-riskoff{margin:0 0 10px;padding:7px 11px;border-radius:9px;font-size:0.75rem;font-weight:700;
+    color:#f0b90b;background:rgba(240,185,11,.08);border:1px solid #4a3a12}
+  .thm-caveat{margin-top:11px;font-size:0.6562rem;color:var(--muted2);line-height:1.5}
   .theme .t-perf{margin-left:auto;text-align:right;font-size:0.8125rem;font-weight:800;white-space:nowrap;line-height:1.1}
   .theme .t-perf small{display:block;font-size:0.5312rem;color:var(--muted2);font-weight:600}
   /* 공포·탐욕 지수 게이지 */
@@ -668,8 +683,20 @@
     </div>
 
     <div class="card">
-      <div class="head"><h3>테마별 전문가 데스크</h3><span class="tag">데일리 갱신 · 바스켓·촉매 실시간</span></div>
-      <div class="body"><div class="themes" id="themes"></div></div>
+      <div class="head" style="flex-wrap:wrap;gap:6px 8px">
+        <h3>섹터 전문가 데스크</h3>
+        <div class="seg" id="thm-tabs">
+          <button data-m="kr" class="on">🇰🇷 한국</button>
+          <button data-m="us">🇺🇸 미국</button>
+        </div>
+        <span class="tag" id="thm-when">계산 중…</span>
+        <button class="thm-refresh" id="thm-refresh" title="캐시를 무시하고 지금 다시 계산합니다">↻ 갱신</button>
+      </div>
+      <div class="body">
+        <div id="thm-banner"></div>
+        <div class="themes" id="themes"></div>
+        <div class="thm-caveat" id="thm-caveat"></div>
+      </div>
     </div>
   </div>
 
@@ -960,27 +987,14 @@ let SAMPLE_VIDEOS = [   // 폴백(로드 전 잠깐 표시) — 실제는 /api/v
 ];
 
 /* ---- 테마 데스크 리포트 ---- */
-const SAMPLE_THEMES = [
-  {nm:'AI · 반도체',desk:'반도체 섹터 데스크',op:'op-buy',opTxt:'비중확대',
-    pts:['하이퍼스케일러 CapEx 가이던스 연속 상향','HBM 공급 부족 2026년까지 지속','전력·냉각 인프라로 수혜 확산'],
-    picks:'NVDA · SK하이닉스 · 한미반도체 · SMCI', cat:'촉매: 차세대 GPU 출시, 분기 CapEx 시즌'},
-  {nm:'방산 · 우주',desk:'방산 데스크',op:'op-buy',opTxt:'비중확대',
-    pts:['글로벌 국방비 GDP 2%+ 증액 기조','K-방산 수출 파이프라인 확대','장기 수주잔고 가시성 높음'],
-    picks:'한화에어로 · LIG넥스원 · 현대로템 · RTX', cat:'촉매: 신규 수출계약, NATO 정상회의'},
-  {nm:'원전 · 전력인프라',desk:'에너지 데스크',op:'op-buy',opTxt:'비중확대',
-    pts:['AI 데이터센터 전력수요 폭증','SMR·송배전 투자 사이클','전력기기 공급 타이트'],
-    picks:'두산에너빌리티 · GE Vernova · 비스트라 · LS ELECTRIC', cat:'촉매: SMR 인허가, 전력망 투자안'},
-  {nm:'2차전지 · 소재',desk:'2차전지 데스크',op:'op-hold',opTxt:'중립',
-    pts:['전기차 캐즘 단기 지속','메탈 가격 바닥 다지기','고체전지 로드맵 장기 모멘텀'],
-    picks:'LG에너지솔루션 · 에코프로비엠 · 포스코퓨처엠', cat:'촉매: 보조금 정책, 신규 수주'},
-  {nm:'바이오 · 헬스케어',desk:'헬스케어 데스크',op:'op-hold',opTxt:'중립',
-    pts:['비만치료제(GLP-1) 시장 확대','대형 M&A·라이선스 딜 활발','금리 인하 시 밸류 우호'],
-    picks:'일라이릴리 · 노보노디스크 · 알테오젠', cat:'촉매: 임상 데이터, FDA 승인'},
-  {nm:'금융 · 금리',desk:'매크로·금융 데스크',op:'op-hold',opTxt:'중립',
-    pts:['금리인하 사이클 진입 국면','국내 밸류업 배당 매력','순이자마진 둔화 주의'],
-    picks:'KB금융 · 메리츠금융 · JPM', cat:'촉매: FOMC, 금통위, 밸류업 공시'},
-];
-let THEMES = SAMPLE_THEMES.slice();   // /api/themes·data/themes.json 로드 시 교체(라이브 바스켓·촉매)
+/* 초기 플레이스홀더 — 비중 의견은 /api/themes 가 실시세로 산출한다(하드코딩된 의견을 두지 않는다). */
+const SAMPLE_THEMES = ['AI · 반도체','방산 · 우주','원전 · 전력기기','조선 · 기계','2차전지 · 소재','바이오 · 헬스케어','금융 · 밸류업']
+  .map(nm=>({ nm, desk:'섹터 데스크', op:'op-hold', opTxt:'계산 중', score:null, conf:null, warns:[],
+    pts:['추세·지수 대비 상대강도·폭·리스크를 실시세로 계산하는 중입니다.'], picks:[], cat:null }));
+let THEMES = SAMPLE_THEMES.slice();     // /api/themes(라이브 산출) → data/themes_{mkt}.json(폴백)으로 교체
+let THEME_META = null;                  // {_updated, benchmark, riskOff, caveat}
+let THEME_MKT = (()=>{ try{ return localStorage.getItem('alphadesk.thmkt')==='us'?'us':'kr'; }catch(e){ return 'kr'; } })();
+let thmLoading = false;
 
 /* ---- 분석 엔진 매핑 ---- */
 const ENGINE = [
@@ -1270,12 +1284,37 @@ async function loadCalendar(){
   lsWrite(CAL_LS, {events:events, today:CAL_TODAY});   // 직전 일정 보관(다음 진입 즉시 시드)
 }
 /* ---- 테마별 전문가 데스크 — /api/themes (없으면 data/themes.json, 둘 다 없으면 큐레이션 폴백) ---- */
-async function loadThemes(){
+/* 섹터 데스크 — /api/themes?mkt=kr|us (실시세로 비중의견 산출). fresh=true면 캐시 무시하고 즉시 재계산. */
+async function loadThemes(fresh){
+  if(thmLoading) return; thmLoading=true;
+  const btn=document.getElementById('thm-refresh'), when=document.getElementById('thm-when');
+  if(btn) btn.disabled=true;
+  if(when) when.textContent = fresh?'재계산 중…':'계산 중…';
+  const mkt=THEME_MKT;
   let live=null, snap=null;
-  try{ const r=await fetch('/api/themes',{cache:'default'}); if(r.ok) live=await r.json(); }catch(e){}
-  if(!live || !live.themes || !live.themes.length){ try{ const r=await fetch('data/themes.json?t='+Date.now(),{cache:'no-store'}); if(r.ok) snap=await r.json(); }catch(e){} }
+  const qs='?mkt='+mkt+(fresh?('&fresh=1&_='+Date.now()):'');
+  try{ const r=await fetch('/api/themes'+qs,{cache:fresh?'no-store':'default'}); if(r.ok) live=await r.json(); }catch(e){}
+  if(!live || !live.themes || !live.themes.length){
+    try{ const r=await fetch('data/themes_'+mkt+'.json?t='+Date.now(),{cache:'no-store'}); if(r.ok) snap=await r.json(); }catch(e){}
+  }
   const base=(live&&live.themes&&live.themes.length)?live:snap;
-  if(base && base.themes && base.themes.length){ THEMES=base.themes; renderThemes(); }
+  if(mkt===THEME_MKT && base && base.themes && base.themes.length){ THEMES=base.themes; THEME_META=base; renderThemes(); }
+  else if(when) when.textContent='산출 실패 — 잠시 후 다시 시도';
+  if(btn) btn.disabled=false; thmLoading=false;
+}
+function bindThemeTabs(){
+  const tabs=document.getElementById('thm-tabs');
+  if(tabs){
+    tabs.querySelectorAll('button').forEach(b=>{
+      b.classList.toggle('on', b.dataset.m===THEME_MKT);
+      b.onclick=()=>{ if(b.dataset.m===THEME_MKT||thmLoading) return;
+        THEME_MKT=b.dataset.m; try{ localStorage.setItem('alphadesk.thmkt',THEME_MKT); }catch(e){}
+        tabs.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset.m===THEME_MKT));
+        loadThemes(); };
+    });
+  }
+  const rb=document.getElementById('thm-refresh');
+  if(rb) rb.onclick=()=>loadThemes(true);
 }
 /* ---- 공포·탐욕 지수 — /api/feargreed (CNN) → data/feargreed.json 폴백 ---- */
 const FNG_COLOR={ef:'#cf202f',f:'#e8833a',n:'#f4b000',g:'#6cc04a',eg:'#05b169'};
@@ -2045,23 +2084,40 @@ async function loadStockReports(sym, row){
 
 /* 테마 */
 function renderThemes(){
-  document.getElementById('themes').innerHTML = THEMES.map(t=>{
+  const box=document.getElementById('themes'); if(!box) return;
+  box.innerHTML = THEMES.map(t=>{
     const perfHtml = (typeof t.perf==='number')
       ? `<span class="t-perf ${cls(t.perf)}">${arr(t.perf)} ${sign(t.perf)}%<small>바스켓 오늘</small></span>` : '';
-    const picksHtml = Array.isArray(t.picks)
+    const picksHtml = (Array.isArray(t.picks) && t.picks.length)
       ? t.picks.map(p=>`<b>${p.name}</b>${typeof p.pct==='number'?` <span class="${cls(p.pct)} mono">${sign(p.pct)}%</span>`:''}`).join('  ')
-      : `<b>${t.picks||''}</b>`;
-    const catHtml = (t.cat && typeof t.cat==='object')
-      ? `<a href="${articleHref(t.cat.link)}" ${t.cat.link?'target="_blank" rel="noopener"':'onclick="return false"'} style="color:inherit">📰 ${t.cat.ti}</a> <small style="color:var(--muted2)">${[t.cat.src,t.cat.tm].filter(Boolean).join(' · ')}</small>`
-      : (t.cat||'');
+      : (typeof t.picks==='string' ? `<b>${t.picks}</b>` : '');
+    const catHtml = (t.cat && typeof t.cat==='object')   // 촉매 뉴스는 외부 RSS 문자열 → 이스케이프 필수
+      ? `<a href="${calEsc(articleHref(t.cat.link))}" ${t.cat.link?'target="_blank" rel="noopener"':'onclick="return false"'} style="color:inherit">📰 ${calEsc(t.cat.ti)}</a> <small style="color:var(--muted2)">${calEsc([t.cat.src,t.cat.tm].filter(Boolean).join(' · '))}</small>`
+      : (typeof t.cat==='string' ? calEsc(t.cat) : '');
+    const scoreHtml = (typeof t.score==='number')
+      ? `<span class="t-score ${t.score>=0?'sc-p':'sc-n'}" title="종합 스코어(리스크 감점 반영) −100~+100">${t.score>=0?'+':''}${t.score}</span>` : '';
+    const confHtml = (t.confBand)
+      ? `<span class="t-conf cf-${t.confBand==='높음'?'hi':(t.confBand==='보통'?'md':'lo')}" title="시그널 일치도·데이터 품질 기반 신뢰도 ${t.conf}">신뢰도 ${t.confBand}</span>` : '';
+    const warnHtml = (Array.isArray(t.warns) && t.warns.length)
+      ? `<div class="t-warns">${t.warns.map(w=>`<span class="t-warn">⚠ ${w}</span>`).join('')}</div>` : '';
+    const thesisHtml = t.thesis ? `<div class="t-thesis">구조적 논지 · ${t.thesis}</div>` : '';
     return `<div class="theme">
       <div class="t-top"><span class="opinion ${t.op}">${t.opTxt}</span>
-        <div><h4>${t.nm}</h4><div class="desk">${t.desk}</div></div>${perfHtml}</div>
+        <div><h4>${t.nm}</h4><div class="desk">${t.desk}${scoreHtml}${confHtml}</div></div>${perfHtml}</div>
+      ${thesisHtml}
       <ul>${t.pts.map(p=>`<li>${p}</li>`).join('')}</ul>
-      <div class="picks">관심: ${picksHtml}</div>
-      <div class="cat">${catHtml}</div>
+      ${warnHtml}
+      ${picksHtml?`<div class="picks">관심: ${picksHtml}</div>`:''}
+      ${catHtml?`<div class="cat">${catHtml}</div>`:''}
     </div>`;
   }).join('');
+  const ban=document.getElementById('thm-banner');
+  if(ban) ban.innerHTML = (THEME_META && THEME_META.riskOff)
+    ? `<div class="thm-riskoff">⚠ 시장 리스크오프 — ${THEME_META.benchmark} 20일 −8% 이하. 전 섹터 비중확대를 한 단계 보수적으로 조정했습니다.</div>` : '';
+  const cav=document.getElementById('thm-caveat');
+  if(cav) cav.textContent = (THEME_META && THEME_META.caveat) || '';
+  const when=document.getElementById('thm-when');
+  if(when && THEME_META) when.textContent = `${THEME_META.benchmark||''} 기준 · ${fmtCollected(THEME_META._updated)} 산출`;
 }
 
 /* 뉴스/영상 */
@@ -2535,7 +2591,7 @@ seedDeepFromCache();                                                            
 if(!seedNewsFromCache()) SAMPLE_NEWS=[];                                        // 보관본 즉시 시드, 없으면 가짜 예시 대신 '불러오는 중'
 seedMarketFromCache();                                                          // 데모값 대신 직전 시세 즉시 시드(과거값 깜빡임 방지)
 seedCalFromCache();                                                             // 빈 일정 대신 직전 일정 즉시 시드
-renderStrip(); renderWL(); renderSched(); renderDeep(); renderThemes(); renderNews(); bindNewsTabs(); renderFooter(); tick(); memoInit(); renderNps();
+renderStrip(); renderWL(); renderSched(); renderDeep(); renderThemes(); renderNews(); bindNewsTabs(); bindThemeTabs(); renderFooter(); tick(); memoInit(); renderNps();
 renderHmDataset();
 loadWatchlistBaseline();                                                       // 저장본 없으면 data/watchlist.json 시드
 cloudInit();                                                                   // 서버(KV) 동기화 — 있으면 서버값 우선, 없으면 무중단 폴백
@@ -2554,7 +2610,7 @@ setInterval(loadWatch,10000);                    // 관심종목 10초
 setInterval(loadBTC,5000);                       // 비트코인 5초(바이낸스 실시간)
 setInterval(loadNewsLive,60000);                 // 뉴스 60초
 setInterval(loadCalendar,300000);                // 일정 5분
-setInterval(loadThemes,600000);                  // 테마 데스크 10분
+setInterval(()=>loadThemes(),600000);            // 섹터 데스크 10분(서버 캐시 30분 — 즉시 재계산은 ↻ 갱신)
 setInterval(loadFearGreed,600000);               // 공포탐욕 10분
 setInterval(loadNps,600000);                     // 연기금 매매동향 10분(일별 데이터 · 재배포 반영용)
 
