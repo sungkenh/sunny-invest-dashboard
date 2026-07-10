@@ -257,6 +257,33 @@ function fmtPct(v){
   const a=Math.abs(v);
   return (v>=0?'+':'')+(a>=100?v.toFixed(0):(a>=10?v.toFixed(1):v.toFixed(2)))+'%';
 }
+/* 주어진 폭에 들어가는 만큼만 이름을 자른다 (한글≈1em · 영문/숫자≈0.58em, 넘치면 …) */
+function fitChars(name, maxW, fs){
+  const wOf=ch=>fs*(ch.charCodeAt(0)>0x2000?1:0.58);
+  let used=0, n=0;
+  for(const ch of name){ const w=wOf(ch); if(used+w>maxW) break; used+=w; n++; }
+  if(n>=name.length) return name;
+  const ell=fs*0.6;                                    // 말줄임표 폭 확보
+  while(n>0 && used+ell>maxW){ n--; used-=wOf(name[n]); }
+  return n>0 ? name.slice(0,n)+'…' : '';
+}
+/* 타일 라벨: 크기에 맞춰 글자 크기(7~11px)·글자 수를 조절해 가능한 한 종목명을 표시.
+   2줄(이름+등락률)이 안 되면 이름 한 줄이라도, 그것도 안 되면 생략(툴팁으로 확인). */
+function tileLabel(name, pctTxt, t, escFn){
+  const iw=t.w-4, ih=t.h-3;
+  if(iw<13 || ih<9) return '';
+  const cx=(t.x+t.w/2).toFixed(1), cy=t.y+t.h/2;
+  if(ih>=24 && iw>=26){                                // 2줄: 이름 + 등락률
+    const fs=Math.min(11, Math.max(8, Math.floor(ih/3)));
+    const nm=fitChars(name, iw, fs);
+    if(nm) return '<text class="hm-tn" style="font-size:'+fs+'px;stroke-width:'+(fs*0.2).toFixed(1)+'px" x="'+cx+'" y="'+(cy-2).toFixed(1)+'">'+escFn(nm)+'</text>'
+      +'<text class="hm-tp" style="font-size:'+(fs-1)+'px;stroke-width:'+((fs-1)*0.18).toFixed(1)+'px" x="'+cx+'" y="'+(cy+fs-1).toFixed(1)+'">'+pctTxt+'</text>';
+    return '';
+  }
+  const fs=Math.min(9, Math.max(7, Math.floor(ih-2))); // 1줄: 이름만
+  const nm=fitChars(name, iw, fs);
+  return nm ? '<text class="hm-tn" style="font-size:'+fs+'px;stroke-width:'+(fs*0.18).toFixed(1)+'px" x="'+cx+'" y="'+(cy+fs*0.36).toFixed(1)+'">'+escFn(nm)+'</text>' : '';
+}
 
 /* ── 기간 수익률 ──
    당일은 네이버 실시간 등락률, 그 외 기간은 파이프라인이 미리 수집한 기준 종가(data/kr_perf.json,
@@ -309,7 +336,6 @@ function krTreemap(host,items,opts){
 
   const p=curPeriod();
   const UP=cssRGB('--up'), DN=cssRGB('--down'), FL=cssRGB('--flat');
-  const narrow=W<640, LW=narrow?56:48, LH=narrow?30:28;
   let s='<svg class="hm-svg" viewBox="0 0 '+W+' '+H+'" width="100%" height="100%" preserveAspectRatio="none">';
   for(const g of rects){
     const hdr = (!g.zoomed && g.w>80 && g.h>32) ? 14 : 0;
@@ -320,13 +346,9 @@ function krTreemap(host,items,opts){
       const col = pv==null ? FL : mixRGB(FL, pv>=0?UP:DN, Math.min(Math.abs(pv)/p.cap,1));
       s+='<g class="hm-t" data-code="'+it.code+'" data-name="'+esc(it.name)+'" data-sector="'+esc(it.sector)+'"'
         +' data-pct="'+it.pct+'" data-ppct="'+(pv==null?'':pv)+'" data-price="'+it.price+'" data-cap="'+it.cap+'">'
-        +'<rect x="'+t.x.toFixed(1)+'" y="'+t.y.toFixed(1)+'" width="'+Math.max(0,t.w-0.6).toFixed(1)+'" height="'+Math.max(0,t.h-0.6).toFixed(1)+'" fill="'+rgbCss(col)+'"/>';
-      if(t.w>LW && t.h>LH){
-        const cx=(t.x+t.w/2).toFixed(1), cy=t.y+t.h/2;
-        s+='<text class="hm-tn" x="'+cx+'" y="'+(cy-2).toFixed(1)+'">'+esc(it.name)+'</text>'
-          +'<text class="hm-tp" x="'+cx+'" y="'+(cy+10).toFixed(1)+'">'+fmtPct(pv)+'</text>';
-      }
-      s+='</g>';
+        +'<rect x="'+t.x.toFixed(1)+'" y="'+t.y.toFixed(1)+'" width="'+Math.max(0,t.w-0.6).toFixed(1)+'" height="'+Math.max(0,t.h-0.6).toFixed(1)+'" fill="'+rgbCss(col)+'"/>'
+        +tileLabel(it.name, fmtPct(pv), t, esc)
+        +'</g>';
     }
   }
   host.innerHTML=s+'</svg>';
