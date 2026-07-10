@@ -80,6 +80,7 @@
   #hm-tip{position:absolute;z-index:5;display:none;pointer-events:none;background:var(--panel);border:1px solid var(--border);
     border-radius:8px;padding:8px 11px;font-size:12px;line-height:1.6;color:var(--text);box-shadow:0 6px 20px rgba(0,0,0,.5);white-space:nowrap}
   #hm-tip b{font-weight:800}
+  #hm-tip .up{color:#30cc5a} #hm-tip .down{color:#f63538}  /* 툴팁 등락 색도 핀비즈 타일과 일치 */
   #hm-tip small{color:var(--muted2);font-size:10.5px}
 
   footer{padding:14px 22px 26px;color:var(--muted2);font-size:11px;line-height:1.6;max-width:1900px;margin:0 auto}
@@ -259,13 +260,21 @@ function squarify(children,x,y,w,h){
   if(row.length) flush();
   return out;
 }
-function cssRGB(name){
-  const v=(getComputedStyle(document.body).getPropertyValue(name)||'').trim().replace('#','');
-  const s=v.length===3 ? v.split('').map(c=>c+c).join('') : v;
-  return [parseInt(s.slice(0,2),16)||0, parseInt(s.slice(2,4),16)||0, parseInt(s.slice(4,6),16)||0];
-}
 const mixRGB=(a,b,t)=>[Math.round(a[0]+(b[0]-a[0])*t),Math.round(a[1]+(b[1]-a[1])*t),Math.round(a[2]+(b[2]-a[2])*t)];
 const rgbCss=c=>'rgb('+c[0]+','+c[1]+','+c[2]+')';
+/* 등락률 색상: 핀비즈(finviz.com/map) 팔레트 — 상승 녹색, 하락 적색, 보합 슬레이트그레이.
+   ±1/3, ±2/3 지점에 중간 스톱을 둔 4단 램프라 약보합·강보합 구분이 핀비즈처럼 뚜렷하다. */
+const FV_FLAT=[65,69,84];                                     // #414554
+const FV_UP=[FV_FLAT,[53,118,78],[47,158,79],[48,204,90]];    // → #35764E → #2F9E4F → #30CC5A
+const FV_DN=[FV_FLAT,[139,68,78],[191,64,69],[246,53,56]];    // → #8B444E → #BF4045 → #F63538
+function fvColor(pv, cap){
+  if(pv==null || !isFinite(pv)) return FV_FLAT;
+  const stops=pv>=0?FV_UP:FV_DN;
+  const x=Math.min(Math.abs(pv)/cap,1)*(stops.length-1);
+  const i=Math.min(Math.floor(x), stops.length-2);
+  return mixRGB(stops[i], stops[i+1], x-i);
+}
+
 function capText(v){
   if(v>=1e12) return (v/1e12).toFixed(v>=1e13?0:1)+'조';
   if(v>=1e8)  return Math.round(v/1e8).toLocaleString('en-US')+'억';
@@ -382,7 +391,6 @@ function krTreemap(host,items,opts){
   else { if(opts&&opts.zoom) ZOOM=null; rects=squarify(groups,0,0,W,H); }
 
   const p=curPeriod();
-  const UP=cssRGB('--up'), DN=cssRGB('--down'), FL=cssRGB('--flat');
   let s='<svg class="hm-svg" viewBox="0 0 '+W+' '+H+'" width="100%" height="100%" preserveAspectRatio="none">'
     +'<defs><clipPath id="hmclip" clipPathUnits="objectBoundingBox"><circle cx=".5" cy=".5" r=".5"/></clipPath></defs>';
   for(const g of rects){
@@ -392,7 +400,7 @@ function krTreemap(host,items,opts){
     for(const t of tiles){
       const it=t.c.it, eff=effOf(it);
       const pv=perfOf(it, p, eff.price, eff.pct);
-      const col = pv==null ? FL : mixRGB(FL, pv>=0?UP:DN, Math.min(Math.abs(pv)/p.cap,1));
+      const col=fvColor(pv, p.cap);   // 핀비즈 팔레트 · 기간별 ±cap% 에서 최대 채도
       s+='<g class="hm-t" data-code="'+esc(it.code)+'" data-rc="'+esc(it.rc||'')+'" data-name="'+esc(it.name)+'" data-sector="'+esc(it.sector)+'"'
         +' data-pct="'+eff.pct+'" data-ppct="'+(pv==null?'':pv)+'" data-price="'+eff.price+'" data-sess="'+esc(eff.sess)+'" data-cap="'+it.cap+'">'
         +'<rect x="'+t.x.toFixed(1)+'" y="'+t.y.toFixed(1)+'" width="'+Math.max(0,t.w-0.6).toFixed(1)+'" height="'+Math.max(0,t.h-0.6).toFixed(1)+'" fill="'+rgbCss(col)+'"/>'
