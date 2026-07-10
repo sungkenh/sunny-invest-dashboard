@@ -2,7 +2,7 @@
 //   sp500  : 지수 편입종목 API(index/.INX/enrollStocks, 시총순 정렬·NYSE+나스닥 혼합)
 //   nasdaq : 나스닥 거래소 시총 랭킹 전체(상위 N — 나스닥100을 포함하는 상위집합)
 // 둘 다 delayTime 0 실시간, 한글 업종 그룹 내장, overMarketPriceInfo 로 프리·애프터마켓 체결가 제공
-// (직접 폴링으로 초단위 체결 전진 확인). subrequest 예산: 페이지 1~2 (실패 시 스냅샷 +1) / 무료 50
+// (직접 폴링으로 초단위 체결 전진 확인). subrequest 예산: 페이지 1~6 (실패 시 스냅샷 +1) / 무료 50
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36';
 const CACHE = {};                 // `us|${n}` → {ts, data}
 const TTL = 5 * 1000;             // 클라이언트 5초 폴링에 맞춤 (네이버 앱 자체 폴링은 7초)
@@ -11,7 +11,7 @@ const UNIVERSES = {
   sp500:  { url: (p) => 'https://api.stock.naver.com/index/.INX/enrollStocks?page=' + p + '&pageSize=100' },
   nasdaq: { url: (p) => 'https://api.stock.naver.com/stock/exchange/NASDAQ/marketValue?page=' + p + '&pageSize=100' },
 };
-const ALLOWED_N = [50, 100, 200];
+const ALLOWED_N = [50, 100, 200, 500];        // 500 = S&P500 전체(503종목 중 유효분)
 
 const iso = () => new Date().toISOString().slice(0, 19);
 const num = (v) => parseFloat(String(v == null ? '' : v).replace(/,/g, ''));
@@ -55,8 +55,8 @@ async function loadSnapshot(rawUrl, us) {
   return null;
 }
 
-// 시총순 정렬이므로 n=100 까지 1페이지, n=200 은 2페이지
-const pagesFor = (n) => (n <= 100 ? 1 : 2);
+// 시총순 정렬이므로 n=100 까지 1페이지, n=200 은 2페이지, n=500 은 6페이지(503종목 커버)
+const pagesFor = (n) => (n <= 100 ? 1 : (n <= 200 ? 2 : 6));
 
 async function __cfHandler(event) {
   const p = event.queryStringParameters || {};

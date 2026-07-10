@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """미국 히트맵 스냅샷 폴백 → data/usheatmap_sp500.json, data/usheatmap_nasdaq.json
 
-네이버 해외주식(한글 업종 내장)을 /api/usheatmap 과 동일한 스키마로 저장한다(각 최대 200종목).
+네이버 해외주식(한글 업종 내장)을 /api/usheatmap 과 동일한 스키마로 저장한다
+(sp500 은 전체 500종목, nasdaq 은 상위 200종목).
   sp500  : 지수 편입종목(index/.INX/enrollStocks)
   nasdaq : 나스닥 거래소 시총 랭킹
 필터·정규화는 functions/api/usheatmap.js 와 **동일하게 유지**해야 한다.
@@ -23,7 +24,8 @@ UNIVERSES = {
     'sp500':  'https://api.stock.naver.com/index/.INX/enrollStocks?page=%d&pageSize=100',
     'nasdaq': 'https://api.stock.naver.com/stock/exchange/NASDAQ/marketValue?page=%d&pageSize=100',
 }
-TOP_N = 200
+TOP_N = {'sp500': 500, 'nasdaq': 200}
+PAGES = {'sp500': 6, 'nasdaq': 2}
 
 
 def _get(url):
@@ -64,7 +66,7 @@ def norm(s):
 
 def build(us):
     raw = []
-    for p in (1, 2):
+    for p in range(1, PAGES[us] + 1):
         try:
             d = _get(UNIVERSES[us] % p)
             raw += d.get('stocks') or []
@@ -79,7 +81,7 @@ def build(us):
         seen.add(s['symbolCode'])
         items.append(norm(s))
     items.sort(key=lambda x: -x['cap'])
-    items = items[:TOP_N]
+    items = items[:TOP_N[us]]
 
     if not items:
         print('  %s 종목 0 → 스킵(직전 스냅샷 보존)' % us)
@@ -89,7 +91,7 @@ def build(us):
     now = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)
     snap = {
         '_updated': now.isoformat(timespec='seconds'), 'source': 'snapshot',
-        'mkt': us, 'n': TOP_N,
+        'mkt': us, 'n': TOP_N[us],
         'marketStatus': first.get('marketStatus') or '',
         'overStatus': (first.get('overMarketPriceInfo') or {}).get('tradingSessionType') or '',
         'delay': 0, 'count': len(items), 'items': items,

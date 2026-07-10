@@ -129,9 +129,7 @@
     <button data-v="kospi">코스피</button><button data-v="kosdaq">코스닥</button><button data-v="sp500">S&amp;P500</button><button data-v="nasdaq">나스닥</button>
   </div>
   <span class="fl">종목 수</span>
-  <div class="seg" id="seg-n">
-    <button data-v="50">50</button><button data-v="100">100</button><button data-v="200">200</button>
-  </div>
+  <div class="seg" id="seg-n"></div>
   <span class="fl">수익률</span>
   <div class="seg" id="seg-p"></div>
   <span class="fl">색상</span>
@@ -440,7 +438,8 @@ function krTreemap(host,items,opts){
 }
 
 /* ── 페이지 상태 ── */
-const ALLOWED_N=[50,100,200];
+const ALLOWED_N=[50,100,200,500];
+const nOpts=()=>MKT==='sp500'?[50,100,200,500]:[50,100,200];   // S&P500 은 전체 500 지원
 const qs=new URLSearchParams(location.search);
 const MKTS=['kospi','kosdaq','sp500','nasdaq'];
 const isUS=()=>MKT==='sp500'||MKT==='nasdaq';
@@ -450,6 +449,7 @@ let MKT=(()=>{ const norm=v=>v==='us'?'sp500':v;   // 구버전 '미국' 선택�
   return 'kospi'; })();
 let N=(()=>{ try{ const v=parseInt(localStorage.getItem('alphadesk.hmpage'),10); if(ALLOWED_N.includes(v)) return v; }catch(e){}
   return 100; })();
+if(!nOpts().includes(N)) N=200;                                // 현 시장이 500 미지원이면 강하
 let DATA=null, loading=false, pending=false, timer=null, ZOOM=null, _rot=0;
 
 function note(m){ document.getElementById('hm-note').textContent=m||''; }
@@ -468,7 +468,7 @@ function badge(){
 }
 function renderSegs(){
   document.querySelectorAll('#seg-mkt button').forEach(b=>b.classList.toggle('on', b.dataset.v===MKT));
-  document.querySelectorAll('#seg-n   button').forEach(b=>b.classList.toggle('on', +b.dataset.v===N));
+  document.getElementById('seg-n').innerHTML=nOpts().map(n=>`<button data-v="${n}" class="${n===N?'on':''}">${n}</button>`).join('');
   const sp=document.getElementById('seg-p');
   sp.innerHTML=PERIODS.map(p=>`<button data-v="${p.v}" class="${p.v===PERIOD?'on':''}">${p.k}</button>`).join('');
   document.querySelectorAll('#seg-pal button').forEach(b=>b.classList.toggle('on', b.dataset.v===HM_PAL));
@@ -517,6 +517,7 @@ document.getElementById('seg-mkt').addEventListener('click',e=>{
   MKT=b.dataset.v; try{ localStorage.setItem('alphadesk.hmmkt',MKT); }catch(e){}
   history.replaceState(null,'','?mkt='+MKT);
   ZOOM=null;                                                         // 시장이 바뀌면 섹터 구성도 바뀐다
+  if(!nOpts().includes(N)){ N=200; try{ localStorage.setItem('alphadesk.hmpage','200'); }catch(e){} }
   renderSegs(); restart();
 });
 document.getElementById('seg-n').addEventListener('click',e=>{

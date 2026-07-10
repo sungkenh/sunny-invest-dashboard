@@ -159,7 +159,12 @@
   .seg button.on{background:var(--accent);color:#ffffff}
   .seg button:hover:not(.on){color:var(--text)}
   .hm-controls .legend{font-size:0.6875rem;color:var(--muted)}
-  .hm-body{height:468px;position:relative;background:#0b1120;overflow:hidden}
+  .hm-body{height:640px;position:relative;background:#0b1120;overflow:hidden}  /* 상하 비율 확대(468→640) */
+  .hm-controls2{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:0 14px 9px}
+  .hm-controls2 .hm-lbl{font-size:0.625rem;font-weight:800;color:var(--muted2);letter-spacing:.3px}
+  .hm-controls2 .seg button{padding:3px 8px;font-size:0.625rem}
+  .hm-controls2 .legend{font-size:0.6875rem;color:var(--muted);margin-left:auto}
+  .hm-logo{pointer-events:none}
   #hm-widget{position:absolute;inset:0;z-index:1}
   .tradingview-widget-container,.tradingview-widget-container__widget{height:100%;width:100%;position:relative}
   .tradingview-widget-copyright{padding:6px 14px;font-size:0.6875rem;color:var(--muted2)}
@@ -622,17 +627,20 @@
 </div>
 <section class="strip" id="strip"></section>
 
-<!-- 시가총액 히트맵 — 한국 장(08:00~20:00 KST)엔 네이버 실시간 자체 트리맵, 그 외엔 TradingView 미국 위젯 -->
+<!-- 시가총액 히트맵 — 코스피/코스닥/S&P500/나스닥 전부 네이버 실시간 자체 트리맵 (전용 페이지와 동일 엔진) -->
 <section class="card heatmap-card">
   <div class="head">
     <h3>시가총액 히트맵</h3>
     <span class="live-badge">● LIVE</span>
     <div class="hm-controls">
       <div class="seg" id="hm-dataset"></div>
-      <span class="legend" id="hm-legend">색상=등락률 · 블록=시가총액 · 그룹=섹터</span>
-      <a class="hm-open kospi" id="hm-kospi" target="_blank" rel="noopener">🇰🇷 KOSPI200 새 탭 ↗</a>
-      <a class="hm-open" id="hm-open" target="_blank" rel="noopener">↗ 전체화면</a>
+      <a class="hm-open" id="hm-open" rel="noopener">↗ 전체화면</a>
     </div>
+  </div>
+  <div class="hm-controls2">
+    <span class="hm-lbl">수익률</span><div class="seg" id="hm-period"></div>
+    <span class="hm-lbl">색상</span><div class="seg" id="hm-pal"></div>
+    <span class="legend" id="hm-legend"></span>
   </div>
   <div class="hm-body" id="hm-body">
     <div class="hm-fb-note" id="hm-note">실시간 히트맵 — 온라인·http(localhost:4321) 환경에서 표시됩니다.</div>
@@ -640,7 +648,7 @@
     <button id="hm-back" style="display:none"></button>
     <div id="hm-tip"></div>
   </div>
-  <div class="tradingview-widget-copyright" id="hm-copy"><a href="https://www.tradingview.com/heatmap/stock/" rel="noopener nofollow" target="_blank">Track all markets on TradingView</a> · 데이터 제공: TradingView · 한국 시장은 자동/코스피/코스닥 버튼으로</div>
+  <div class="tradingview-widget-copyright" id="hm-copy">데이터 제공: <a href="https://m.stock.naver.com/" rel="noopener" target="_blank">네이버 금융</a> · 실시간(지연 0분) · 미국은 프리·애프터마켓 포함 · ETF·우선주·스팩 제외 · 시총 1% 미만 업종은 «기타» · 타일 클릭 → 네이버 종목 페이지</div>
 </section>
 
 <!-- 메인 -->
@@ -2236,7 +2244,7 @@ function bindNewsTabs(){
 function renderFooter(){
   document.getElementById('engine').innerHTML = ENGINE.map(e=>`<div class="e"><div class="k">${e.k}</div><div class="v">${e.v}</div></div>`).join('');
   document.getElementById('disc').innerHTML =
-    '✅ <b>자동 갱신</b>: 시장지표 16종·환율·역레포잔고(거의 실시간 — 미국 CNBC·국내 네이버금융(코스피·코스닥 실시간)·역레포 NY연준, 5초 갱신) · 관심종목 시세(10초) · 비트코인(5초·Binance) · 실시간 뉴스(60초) · 추천 영상(5분) · 핵심 일정의 경제지표·실적(5분) · 시가총액 히트맵(TradingView). 각 지표 클릭 시 출처 사이트로 이동(새 탭). ' +
+    '✅ <b>자동 갱신</b>: 시장지표 16종·환율·역레포잔고(거의 실시간 — 미국 CNBC·국내 네이버금융(코스피·코스닥 실시간)·역레포 NY연준, 5초 갱신) · 관심종목 시세(10초) · 비트코인(5초·Binance) · 실시간 뉴스(60초) · 추천 영상(5분) · 핵심 일정의 경제지표·실적(5분) · 시가총액 히트맵(네이버 실시간·5초). 각 지표 클릭 시 출처 사이트로 이동(새 탭). ' +
     '📅 <b>주요 지표·실적</b>: 지난주(−7일)~다음달(+30일) 한·미 경제지표·실적을 수집하며, 발표되면 <b>실제 수치·서프라이즈</b>와 한국어 <b>📰 분석 기사</b>를 함께 표시합니다(대시보드는 지난주~이번주, 전체는 일정 페이지). ' +
     '🔄 <b>주기적 갱신</b>: 종목 심층분석(에이전트 생성) · 한국/원거리 실적 일정(분기 단위, 재수집 시 반영). ' +
     '⚠ <b>샘플</b>: 테마별 전문가 데스크 리포트(예시). &nbsp; 본 화면은 정보 제공용이며 투자자문·매매 권유가 아닙니다. 투자 판단과 책임은 이용자 본인에게 있습니다.';
@@ -2283,7 +2291,7 @@ function tick(){
   paintMkt('krx', kospiSession(t.dow,mins));
   paintMkt('us',  nasdaqSession(t.dow,mins));
   if(typeof hmAutoTick==='function') hmAutoTick();   // 08:00/20:00 세션 경계에서 히트맵 자동 전환
-  if(typeof hmKind!=='undefined' && hmKind==='KR' && krData) hmBadge(krData);   // 배지 '몇 초 전' 매초 갱신
+  if(typeof krData!=='undefined' && krData) hmBadge(krData);   // 배지 '몇 초 전' 매초 갱신
 }
 function liveJitter(){
   // 관심종목(데모)만 미세 변동. 상단 지표는 실데이터(loadMarket)라 흔들지 않음.
@@ -2470,9 +2478,7 @@ function setThemeClass(mode){
 function applyTheme(mode){
   setThemeClass(mode);
   try{ localStorage.setItem('alphadesk.theme',mode); }catch(e){}
-  // 히트맵 색 재적용 — KR 트리맵은 CSS 변수만 다시 읽으면 되므로 재조회 없이 다시 그린다
-  if(typeof hmKind!=='undefined' && hmKind==='KR'){ if(krData) drawKr(); }
-  else if(typeof renderHeatmap==='function') renderHeatmap();                 // US iframe 은 colorTheme 이 URL 에 있어 재생성 필요
+  if(typeof krData!=='undefined' && krData) drawKr();                         // 히트맵 다시 그리기(테마 대비 유지)
   if(typeof SEL!=='undefined' && SEL){ curChartSym=null; renderChart(SEL); }  // 차트 색 재적용(재생성)
 }
 document.getElementById('themeToggle').addEventListener('click',()=>applyTheme(document.body.classList.contains('light')?'dark':'light'));
@@ -2519,22 +2525,20 @@ async function searchAndAdd(q){
 }
 
 /* ---- 시가총액 히트맵 ----
-   한국 장(평일 08:00~20:00 KST, 시간외 포함)에는 네이버 실시간 데이터로 자체 트리맵을 그리고,
-   그 외 시간에는 TradingView 미국 위젯을 띄운다.
-   (TradingView 임베드 위젯은 KOSPI200 dataSource를 지원하지 않아 한국은 직접 그릴 수밖에 없다.) */
-const HM_SETS=[{k:'자동',v:'auto'},{k:'코스피',v:'KOSPI'},{k:'코스닥',v:'KOSDAQ'},{k:'S&P 500',v:'SPX500'},{k:'나스닥100',v:'NASDAQ100'}];
-let HM_MODE=(()=>{ try{ const v=localStorage.getItem('alphadesk.hmsrc'); return HM_SETS.some(s=>s.v===v)?v:'auto'; }catch(e){ return 'auto'; } })();
-let hmSource='SPX500';        // 현재 TradingView dataSource
-let hmKind=null;              // 현재 렌더된 종류: 'KR' | 'US'
-let hmKrMkt=null;             // 현재 KR 시장: 'kospi' | 'kosdaq'
+   코스피/코스닥/S&P500/나스닥 전부 네이버 실시간 데이터로 자체 트리맵을 그린다(전용 히트맵 페이지와 동일 엔진).
+   자동: 한국 장(평일 08:00~20:00 KST) → 코스피, 그 외 → S&P500(미국 프리·정규·애프터 실시간, 휴장 시 종가) */
+const HM_SETS=[{k:'자동',v:'auto'},{k:'코스피',v:'kospi'},{k:'코스닥',v:'kosdaq'},{k:'S&P500',v:'sp500'},{k:'나스닥',v:'nasdaq'}];
+let HM_MODE=(()=>{ try{ let v=localStorage.getItem('alphadesk.hmsrc');
+  v=({KOSPI:'kospi',KOSDAQ:'kosdaq',SPX500:'sp500',NASDAQ100:'nasdaq'})[v]||v;   // 구버전(TradingView 시절) 값 호환
+  return HM_SETS.some(s=>s.v===v)?v:'auto'; }catch(e){ return 'auto'; } })();
+let hmMkt=null;               // 현재 렌더된 시장: kospi | kosdaq | sp500 | nasdaq
 let krData=null, krTimer=null, krLoading=false, krPending=false, hmVisible=false, hmZoom=null, _hmRO=null, _hmROt=0;
 
 function krSessionOpen(){ const t=kstParts(), k=kospiSession(t.dow,t.h*60+t.m).k; return k==='open'||k==='ext'; }
-function hmEffective(){
-  if(HM_MODE==='KOSPI'||HM_MODE==='KOSDAQ') return {kind:'KR', mkt:HM_MODE.toLowerCase()};
-  if(HM_MODE==='SPX500'||HM_MODE==='NASDAQ100') return {kind:'US', ds:HM_MODE};
-  return krSessionOpen() ? {kind:'KR', mkt:'kospi'} : {kind:'US', ds:'SPX500'};
-}
+function usSessionOpen(){ const t=kstParts(), k=nasdaqSession(t.dow,t.h*60+t.m).k; return k!=='closed'; }
+const isUSm=m=>m==='sp500'||m==='nasdaq';
+function hmEffective(){ return HM_MODE==='auto' ? (krSessionOpen()?'kospi':'sp500') : HM_MODE; }
+const mktOpen=m=>isUSm(m)?usSessionOpen():krSessionOpen();
 function renderHmDataset(){
   const seg=document.getElementById('hm-dataset'); if(!seg) return;
   seg.innerHTML=HM_SETS.map(d=>`<button data-v="${d.v}" class="${d.v===HM_MODE?'on':''}">${d.k}</button>`).join('');
@@ -2543,74 +2547,73 @@ function renderHmDataset(){
     renderHmDataset(); renderHeatmap();
   }));
 }
-function tvHeatmapUrl(ds, kr){
-  const cfg={dataSource:ds,blockColor:'change',blockSize:'market_cap_basic',grouping:'sector'};
-  return (kr?'https://kr.tradingview.com/heatmap/stock/':'https://www.tradingview.com/heatmap/stock/')+'#'+encodeURIComponent(JSON.stringify(cfg));
+function renderHmControls2(){
+  const sp=document.getElementById('hm-period'), pl=document.getElementById('hm-pal');
+  if(sp) sp.innerHTML=PERIODS.map(p=>`<button data-v="${p.v}" class="${p.v===HM_PERIOD?'on':''}">${p.k}</button>`).join('');
+  if(pl) pl.innerHTML=[['us','미국식'],['kr','한국식']].map(([v,k])=>`<button data-v="${v}" class="${v===HM_PAL?'on':''}">${k}</button>`).join('');
+}
+function bindHmControls2(){
+  const sp=document.getElementById('hm-period'), pl=document.getElementById('hm-pal');
+  if(sp) sp.addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b||b.dataset.v===HM_PERIOD) return;
+    HM_PERIOD=b.dataset.v; try{ localStorage.setItem('alphadesk.hmperiod',HM_PERIOD); }catch(e){}
+    loadPerf(); renderHmControls2(); hmLegend(); if(krData) drawKr();
+  });
+  if(pl) pl.addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b||b.dataset.v===HM_PAL) return;
+    HM_PAL=b.dataset.v; try{ localStorage.setItem('alphadesk.hmpal',HM_PAL); }catch(e){}
+    applyPalVars(); renderHmControls2(); hmLegend(); if(krData) drawKr();
+  });
 }
 function hmNote(msg){ const n=document.getElementById('hm-note'); if(n) n.textContent=msg||''; }
 function hmBadge(d){
   const b=document.querySelector('.heatmap-card .live-badge'); if(!b) return;
   if(!d){ b.textContent='● LIVE'; b.classList.remove('stale'); b.removeAttribute('title'); return; }
-  const live = d.source==='naver' && d.marketStatus==='OPEN';
+  const it0=d.items && d.items[0];        // 미국: 정규장 외에도 프리/애프터마켓이 열려 있으면 실시간
+  const overLive = isUSm(hmMkt) && d.source==='naver' && d.marketStatus!=='OPEN'
+    && it0 && it0.o && it0.o.s==='OPEN' && sessKor(it0.o.t);
+  const live = d.source==='naver' && (d.marketStatus==='OPEN' || overLive);
   b.classList.toggle('stale', !live);
-  b.textContent = live ? '● 실시간 · '+agoText(d._updated)
+  b.textContent = live ? '● '+(overLive?sessKor(it0.o.t):'실시간')+' · '+agoText(d._updated)
                        : (d.source==='snapshot' ? '스냅샷 · 종가 기준' : '장마감 · 종가 기준')+' · '+agoText(d._updated)+' 수집';
   b.title = (live ? '네이버 금융 실시간(지연 0분)' : '정규장 외 시간 또는 스냅샷 데이터')+' · 수집 '+fmtCollected(d._updated);
 }
-function renderHeatmap(){
-  const eff=hmEffective();
-  const open=document.getElementById('hm-open'), kospi=document.getElementById('hm-kospi');
-  const legend=document.getElementById('hm-legend'), copy=document.getElementById('hm-copy');
-  if(eff.kind==='KR'){
-    const changed = hmKind!=='KR' || hmKrMkt!==eff.mkt;
-    // 시장이 바뀌면 이전 iframe/이전 시장 SVG 모두 제거 — 옛 타일이 남아 잘못된 종목이 클릭되는 것 방지
-    if(changed){ const h=document.getElementById('hm-widget'); if(h) h.innerHTML=''; krData=null; hmZoom=null; }
-    hmKind='KR'; hmKrMkt=eff.mkt;
-    if(open){ open.href='heatmap.html?mkt='+eff.mkt; open.removeAttribute('target'); }
-    if(kospi) kospi.style.display='none';
-    if(legend) legend.innerHTML=hmChips(3)+' <span style="color:var(--muted2)">블록=시총 · 업종 라벨 클릭=확대 · 팔레트는 히트맵 페이지에서 선택</span>';
-    if(copy) copy.innerHTML='데이터 제공: <a href="https://m.stock.naver.com/" rel="noopener" target="_blank">네이버 금융</a> · 시가총액 상위 종목 · ETF·우선주·스팩 제외 · 시총 1% 미만 업종은 «기타»로 묶음';
-    if(krData) drawKr(); else hmNote('히트맵 불러오는 중…');
-    startKrLoop();
-  } else {
-    stopKrLoop(); hmKind='US'; hmKrMkt=null; krData=null; hmZoom=null; hmBackChip(); hmSource=eff.ds;
-    if(open){ open.href=tvHeatmapUrl(eff.ds,false); open.target='_blank'; }
-    if(kospi){ kospi.style.display=''; kospi.href=tvHeatmapUrl('KOSPI200',true); }
-    if(legend) legend.textContent='색상=등락률 · 블록=시가총액 · 그룹=섹터 · 위젯 상단 ▾로 시장 직접 선택';
-    if(copy) copy.innerHTML='<a href="https://www.tradingview.com/heatmap/stock/" rel="noopener nofollow" target="_blank">Track all markets on TradingView</a> · 데이터 제공: TradingView · 한국 시장은 [자동·코스피·코스닥] 버튼으로';
-    hmBadge(null); hmNote('실시간 히트맵 — 온라인·http(localhost:4321) 환경에서 표시됩니다.');
-    loadHeatmap();
-  }
+function hmLegend(){
+  const legend=document.getElementById('hm-legend'); if(!legend) return;
+  const p=hmPeriod();
+  legend.innerHTML='<b style="color:var(--muted);font-weight:800">'+(p.v==='1d'?'당일':p.k)+'</b> '+hmChips(p.cap)
+    +' <span style="color:var(--muted2)">블록=시총 · 업종 라벨=확대</span>';
 }
-// iframe 직접 생성(스크립트 재주입의 토글 불가 문제 회피 → src만 교체하면 매번 새로 렌더)
-function loadHeatmap(){
-  const host=document.getElementById('hm-widget'); host.innerHTML='';
-  const cfg={dataSource:hmSource,blockColor:'change',blockSize:'market_cap_basic',grouping:'sector',
-    colorTheme:document.body.classList.contains('light')?'light':'dark',hasTopBar:true,isDataSetEnabled:true,isMonoSize:false,isZoomEnabled:true,isFullsizeEnabled:true,
-    locale:'kr',width:'100%',height:'100%'};
-  const f=document.createElement('iframe');
-  f.style.cssText='width:100%;height:100%;border:0;display:block';
-  f.setAttribute('scrolling','no'); f.setAttribute('frameborder','0'); f.setAttribute('allowtransparency','true');
-  f.src='https://www.tradingview-widget.com/embed-widget/stock-heatmap/?locale=kr#'+encodeURIComponent(JSON.stringify(cfg));
-  host.appendChild(f);
+function renderHeatmap(){
+  const mkt=hmEffective();
+  // 시장이 바뀌면 이전 시장 SVG 제거 — 옛 타일이 남아 잘못된 종목이 클릭되는 것 방지
+  if(hmMkt!==mkt){ const h=document.getElementById('hm-widget'); if(h) h.innerHTML=''; krData=null; hmZoom=null; hmBackChip(); }
+  hmMkt=mkt;
+  const open=document.getElementById('hm-open');
+  if(open) open.href='heatmap.html?mkt='+mkt;
+  hmLegend();
+  if(krData) drawKr(); else hmNote('히트맵 불러오는 중…');
+  startKrLoop();
 }
 
-/* ── 한국 실시간 트리맵: 데이터 ── */
+/* ── 실시간 트리맵: 데이터 ── */
 async function loadKrHeatmap(force){
   // 진행 중이면 강제 요청은 예약해 두었다가 종료 직후 재실행 — 시장 전환이 in-flight 요청에 삼켜지지 않게
   if(krLoading){ if(force) krPending=true; return; }
   if(!force && (document.hidden || !hmVisible)) return;
-  const mkt=hmKrMkt||'kospi';
+  const mkt=hmMkt||'kospi';
   const body=document.getElementById('hm-body');
   const n=(body && body.clientWidth && body.clientWidth<560) ? 50 : 100;
   krLoading=true;
-  const d=await fetchLive('/api/krheatmap?mkt='+mkt+'&n='+n, 'data/krheatmap_'+mkt+'.json');
+  const d = isUSm(mkt)
+    ? await fetchLive('/api/usheatmap?us='+mkt+'&n='+n, 'data/usheatmap_'+mkt+'.json')
+    : await fetchLive('/api/krheatmap?mkt='+mkt+'&n='+n, 'data/krheatmap_'+mkt+'.json');
   krLoading=false;
-  if(krPending){ krPending=false; if(hmKind==='KR') loadKrHeatmap(true); }
-  if(hmKind!=='KR' || (hmKrMkt||'kospi')!==mkt) return;                 // 전환 중 도착한 응답 폐기
+  if(krPending){ krPending=false; loadKrHeatmap(true); }
+  if((hmMkt||'kospi')!==mkt) return;                                    // 전환 중 도착한 응답 폐기
   if(!d || !Array.isArray(d.items) || !d.items.length){ if(!krData) hmNote('히트맵 데이터를 불러오지 못했습니다.'); return; }
-  if(krData && !freshGate('krheatmap_'+mkt, d._updated)) return;        // 과거 데이터로 되돌아가지 않기
-  if(d.items.length>n) d.items=d.items.slice(0,n);                      // 정적 스냅샷(200종목) 폴백 대비
+  if(krData && !freshGate('heatmap_'+mkt, d._updated)) return;          // 과거 데이터로 되돌아가지 않기
+  if(d.items.length>n) d.items=d.items.slice(0,n);                      // 정적 스냅샷 폴백 대비
   krData=d; drawKr();
 }
 function drawKr(){
@@ -2620,19 +2623,19 @@ function drawKr(){
 }
 function hmBackChip(){
   const b=document.getElementById('hm-back'); if(!b) return;
-  if(hmKind==='KR' && hmZoom){ b.style.display=''; b.textContent='← 전체 · '+hmZoom; }
+  if(hmZoom){ b.style.display=''; b.textContent='← 전체 · '+hmZoom; }
   else b.style.display='none';
 }
 function startKrLoop(){
   loadKrHeatmap(true);
   if(krTimer) return;
-  krTimer=setInterval(()=>{ if(hmKind==='KR' && krSessionOpen()) loadKrHeatmap(); }, 5000);   // 5초 자동 갱신 (탭 숨김·뷰포트 밖이면 loadKrHeatmap 이 스킵)
+  krTimer=setInterval(()=>{ if(mktOpen(hmMkt||'kospi')) loadKrHeatmap(); }, 5000);   // 5초 자동 갱신 (탭 숨김·뷰포트 밖이면 스킵)
 }
 function stopKrLoop(){ if(krTimer){ clearInterval(krTimer); krTimer=null; } }
-// auto 모드에서 08:00 / 20:00 세션 경계를 넘어가면 전환 (tick에서 매초 호출)
+// auto 모드에서 세션 경계(08:00/20:00)를 넘어가면 코스피↔S&P500 전환 (tick에서 매초 호출)
 function hmAutoTick(){
-  if(HM_MODE!=='auto' || !hmVisible || !hmKind) return;
-  if((krSessionOpen()?'KR':'US')!==hmKind) renderHeatmap();
+  if(HM_MODE!=='auto' || !hmVisible || !hmMkt) return;
+  if(hmEffective()!==hmMkt) renderHeatmap();
 }
 
 /* ── 스쿼리파이드 트리맵 (외부 라이브러리 없음) ──
@@ -2716,6 +2719,50 @@ function capText(v){
   if(v>=1e8)  return Math.round(v/1e8).toLocaleString('en-US')+'억';
   return Math.round(v).toLocaleString('en-US');
 }
+/* 기간 수익률 · 미국 표시 도우미 (전용 히트맵 페이지와 동일 · localStorage 공유) */
+const PERIODS=[
+  {k:'당일', v:'1d',        cap:3},
+  {k:'1주',  v:'w1', i:0,   cap:6},
+  {k:'1달',  v:'m1', i:1,   cap:12},
+  {k:'3달',  v:'m3', i:2,   cap:20},
+  {k:'6달',  v:'m6', i:3,   cap:30},
+  {k:'올해', v:'ytd',i:4,   cap:30},
+  {k:'1년',  v:'y1', i:5,   cap:40},
+];
+let HM_PERIOD=(()=>{ try{ const v=localStorage.getItem('alphadesk.hmperiod'); if(PERIODS.some(p=>p.v===v)) return v; }catch(e){} return '1d'; })();
+const hmPeriod=()=>PERIODS.find(p=>p.v===HM_PERIOD)||PERIODS[0];
+const HM_PERF={kr:null, us:null};
+let _perfLoaded=false;
+function loadPerf(){                                     // 기간 수익률 기준가(정적 JSON) — 1회 지연 로드
+  if(_perfLoaded) return; _perfLoaded=true;
+  [['kr','data/kr_perf.json'],['us','data/us_perf.json']].forEach(async pair=>{
+    try{ const r=await fetch(pair[1]); if(r.ok){ HM_PERF[pair[0]]=await r.json(); if(HM_PERIOD!=='1d'&&krData) drawKr(); } }catch(e){}
+  });
+}
+function perfOf(it, p, price, dayPct){
+  if(p.v==='1d') return dayPct;
+  const pf=isUSm(hmMkt)?HM_PERF.us:HM_PERF.kr;
+  const r=pf && pf.refs && pf.refs[it.code];
+  const ref=r ? r[p.i] : null;
+  return (ref>0 && price>0) ? (price/ref-1)*100 : null;  // 기준가 없으면(신규상장 등) null → 회색
+}
+/* 표시 기준값: 미국은 정규장 외 시간에 프리/애프터 실시간 체결가·등락률을 우선 사용 */
+function effOf(it){
+  if(isUSm(hmMkt) && it.o && krData && krData.marketStatus!=='OPEN' && it.o.s==='OPEN' && isFinite(it.o.pct))
+    return {price:it.o.p, pct:it.o.pct, sess:it.o.t};
+  return {price:it.price, pct:it.pct, sess:''};
+}
+const sessKor=t=>t==='PRE_MARKET'?'프리마켓':(t==='AFTER_MARKET'?'애프터마켓':'');
+function fmtPct(v){
+  if(v==null || !isFinite(v)) return '—';
+  const a=Math.abs(v);
+  return (v>=0?'+':'')+(a>=100?v.toFixed(0):(a>=10?v.toFixed(1):v.toFixed(2)))+'%';
+}
+const fmtPx=v=>isUSm(hmMkt) ? '$'+Number(v).toLocaleString('en-US',{maximumFractionDigits:2}) : Number(v).toLocaleString('en-US')+'원';
+const fmtCap=v=>isUSm(hmMkt) ? (v>=1e12 ? '$'+(v/1e12).toFixed(2)+'T' : '$'+Math.round(v/1e9)+'B') : capText(v);
+/* 네이버 종목 로고 CDN — 국내는 종목코드, 해외는 로이터코드. 파일이 없으면 onerror 로 제거 */
+const LOGO_BASE='https://ssl.pstatic.net/imgstock/fn/real/logo/png/stock/Stock';
+const logoOf=it=>isUSm(hmMkt) ? (it.rc?LOGO_BASE+it.rc+'.png':'') : LOGO_BASE+it.code+'.png';
 /* 주어진 폭에 들어가는 만큼만 이름을 자른다 (한글≈1em · 영문/숫자≈0.58em, 넘치면 …) */
 function fitChars(name, maxW, fs){
   const wOf=ch=>fs*(ch.charCodeAt(0)>0x2000?1:0.58);
@@ -2727,17 +2774,24 @@ function fitChars(name, maxW, fs){
   return n>0 ? name.slice(0,n)+'…' : '';
 }
 /* 타일 라벨: 크기에 맞춰 글자 크기(7~11px)·글자 수를 조절해 가능한 한 종목명을 표시.
-   2줄(이름+등락률)이 안 되면 이름 한 줄이라도, 그것도 안 되면 생략(툴팁으로 확인). */
-function tileLabel(name, pctTxt, t, escFn){
+   공간이 충분하면 기업 로고까지 3단(로고+이름+등락률), 그다음 2줄 → 이름 한 줄 → 생략(툴팁으로 확인). */
+function tileLabel(name, pctTxt, t, escFn, logo){
   const iw=t.w-4, ih=t.h-3;
   if(iw<13 || ih<9) return '';
   const cx=(t.x+t.w/2).toFixed(1), cy=t.y+t.h/2;
-  if(ih>=24 && iw>=26){                                // 2줄: 이름 + 등락률
+  if(ih>=24 && iw>=26){
     const fs=Math.min(11, Math.max(8, Math.floor(ih/3)));
     const nm=fitChars(name, iw, fs);
-    if(nm) return '<text class="hm-tn" style="font-size:'+fs+'px;stroke-width:'+(fs*0.2).toFixed(1)+'px" x="'+cx+'" y="'+(cy-2).toFixed(1)+'">'+escFn(nm)+'</text>'
+    if(!nm) return '';
+    const L=Math.min(36, Math.floor(Math.min(iw,ih)*0.3));
+    if(logo && L>=12 && ih>=L+fs*2+12){                // 3단: 로고 + 이름 + 등락률
+      const top=t.y+t.h/2-(L+fs*2+6)/2;
+      return '<image class="hm-logo" href="'+escFn(logo)+'" x="'+((t.x+t.w/2)-L/2).toFixed(1)+'" y="'+top.toFixed(1)+'" width="'+L+'" height="'+L+'" clip-path="url(#hmclip)"/>'
+        +'<text class="hm-tn" style="font-size:'+fs+'px;stroke-width:'+(fs*0.2).toFixed(1)+'px" x="'+cx+'" y="'+(top+L+fs+2).toFixed(1)+'">'+escFn(nm)+'</text>'
+        +'<text class="hm-tp" style="font-size:'+(fs-1)+'px;stroke-width:'+((fs-1)*0.18).toFixed(1)+'px" x="'+cx+'" y="'+(top+L+fs*2+4).toFixed(1)+'">'+pctTxt+'</text>';
+    }
+    return '<text class="hm-tn" style="font-size:'+fs+'px;stroke-width:'+(fs*0.2).toFixed(1)+'px" x="'+cx+'" y="'+(cy-2).toFixed(1)+'">'+escFn(nm)+'</text>'
       +'<text class="hm-tp" style="font-size:'+(fs-1)+'px;stroke-width:'+((fs-1)*0.18).toFixed(1)+'px" x="'+cx+'" y="'+(cy+fs-1).toFixed(1)+'">'+pctTxt+'</text>';
-    return '';
   }
   const fs=Math.min(9, Math.max(7, Math.floor(ih-2))); // 1줄: 이름만
   const nm=fitChars(name, iw, fs);
@@ -2767,22 +2821,30 @@ function krTreemap(host, items, opts){
   if(zg) rects=[{c:zg, x:0, y:0, w:W, h:H, zoomed:true}];
   else { if(opts&&opts.zoom) hmZoom=null; rects=squarify(groups,0,0,W,H); }
 
-  let s='<svg class="hm-svg" viewBox="0 0 '+W+' '+H+'" width="100%" height="100%" preserveAspectRatio="none">';
+  const p=hmPeriod();
+  let s='<svg class="hm-svg" viewBox="0 0 '+W+' '+H+'" width="100%" height="100%" preserveAspectRatio="none">'
+    +'<defs><clipPath id="hmclip" clipPathUnits="objectBoundingBox"><circle cx=".5" cy=".5" r=".5"/></clipPath></defs>';
   for(const g of rects){
     const hdr = (!g.zoomed && g.w>78 && g.h>30) ? 13 : 0;
     if(hdr) s+='<text class="hm-sec-lbl" data-sec="'+calEsc(g.c.name)+'" x="'+(g.x+4).toFixed(1)+'" y="'+(g.y+10).toFixed(1)+'">'+calEsc(g.c.name)+' ›</text>';
     const tiles=squarify(g.c.arr.map(it=>({value:it.cap, it})), g.x+1, g.y+1+hdr, Math.max(0,g.w-2), Math.max(0,g.h-hdr-2));
     for(const t of tiles){
-      const it=t.c.it;
-      const col=fvColor(it.pct, 3);   // ±3%에서 최대 채도 (핀비즈 팔레트)
-      s+='<g class="hm-t" data-code="'+it.code+'" data-name="'+calEsc(it.name)+'" data-sector="'+calEsc(it.sector)+'"'
-        +' data-pct="'+it.pct+'" data-price="'+it.price+'" data-cap="'+it.cap+'">'
+      const it=t.c.it, eff=effOf(it);
+      const pv=perfOf(it, p, eff.price, eff.pct);
+      const col=fvColor(pv, p.cap);   // 선택 팔레트 · 기간별 ±cap% 최대 채도
+      s+='<g class="hm-t" data-code="'+calEsc(it.code)+'" data-rc="'+calEsc(it.rc||'')+'" data-name="'+calEsc(it.name)+'" data-sector="'+calEsc(it.sector)+'"'
+        +' data-pct="'+eff.pct+'" data-ppct="'+(pv==null?'':pv)+'" data-price="'+eff.price+'" data-sess="'+calEsc(eff.sess)+'" data-cap="'+it.cap+'">'
         +'<rect x="'+t.x.toFixed(1)+'" y="'+t.y.toFixed(1)+'" width="'+Math.max(0,t.w-0.6).toFixed(1)+'" height="'+Math.max(0,t.h-0.6).toFixed(1)+'" fill="'+rgbCss(col)+'"/>'
-        +tileLabel(it.name, (it.pct>=0?'+':'')+it.pct.toFixed(2)+'%', t, calEsc)
+        +tileLabel(it.name, fmtPct(pv), t, calEsc, logoOf(it))
         +'</g>';
     }
   }
   host.innerHTML=s+'</svg>';
+  // 로고 파일이 없는 종목: 이미지를 지우고 텍스트를 다시 가운데로
+  host.querySelectorAll('image.hm-logo').forEach(im=>im.addEventListener('error',()=>{
+    const g=im.parentNode, L=+im.getAttribute('width'); im.remove();
+    if(g) g.querySelectorAll('text').forEach(tx=>tx.setAttribute('y', (+tx.getAttribute('y'))-(L+4)/2));
+  },{once:true}));
 }
 /* 툴팁·클릭은 #hm-body 에 위임 — 트리맵 innerHTML 재생성과 무관하게 1회만 바인딩 */
 function bindHmTiles(){
@@ -2791,11 +2853,14 @@ function bindHmTiles(){
   body.addEventListener('mousemove', e=>{
     const g=e.target.closest && e.target.closest('.hm-t');
     if(!g){ tip.style.display='none'; return; }
-    const d=g.dataset, pct=parseFloat(d.pct);
+    const d=g.dataset, pct=parseFloat(d.pct), p=hmPeriod();
+    const ppct=d.ppct===''?null:parseFloat(d.ppct);
+    const dayLbl=sessKor(d.sess)||'당일';                    // 미국 프리/애프터마켓이면 라벨 교체
     // dataset 은 HTML 파서가 엔티티를 디코드한 원본을 돌려주므로 innerHTML 삽입 전 반드시 재이스케이프
     tip.innerHTML='<b>'+calEsc(d.name)+'</b> <small>'+calEsc(d.sector)+'</small><br>'
-      +Number(d.price).toLocaleString('en-US')+'원 <span class="'+cls(pct)+'">'+(pct>=0?'+':'')+pct.toFixed(2)+'%</span><br>'
-      +'<small>시총 '+capText(+d.cap)+' · '+calEsc(d.code)+'</small>';
+      +fmtPx(d.price)+' <span class="'+cls(pct)+'">'+dayLbl+' '+(pct>=0?'+':'')+pct.toFixed(2)+'%</span><br>'
+      +(p.v!=='1d' ? p.k+' 수익률 <span class="'+(ppct==null?'flat':cls(ppct))+'">'+fmtPct(ppct)+'</span><br>' : '')
+      +'<small>시총 '+fmtCap(+d.cap)+' · '+calEsc(d.code)+'</small>';
     tip.style.display='block';
     const r=body.getBoundingClientRect();
     let x=e.clientX-r.left+14, y=e.clientY-r.top+14;
@@ -2808,7 +2873,9 @@ function bindHmTiles(){
     const l=e.target.closest && e.target.closest('.hm-sec-lbl');           // 섹터 라벨 → 해당 섹터 확대
     if(l && l.dataset.sec){ hmZoom=l.dataset.sec; drawKr(); return; }
     const g=e.target.closest && e.target.closest('.hm-t'); if(!g) return;
-    if(!/^[0-9A-Z]{6}$/.test(g.dataset.code||'')) return;   // 신형 코드(0126Z0 등) 포함
+    if(/^[A-Za-z0-9.\-]{1,20}$/.test(g.dataset.rc||''))      // 미국: 로이터코드(NVDA.O)로 해외종목 페이지
+      return window.open('https://m.stock.naver.com/worldstock/stock/'+g.dataset.rc+'/total','_blank','noopener');
+    if(!/^[0-9A-Z]{6}$/.test(g.dataset.code||'')) return;   // 국내: 신형 코드(0126Z0 등) 포함
     window.open('https://m.stock.naver.com/domestic/stock/'+g.dataset.code+'/total','_blank','noopener');
   });
   const back=document.getElementById('hm-back');
@@ -2816,20 +2883,21 @@ function bindHmTiles(){
 }
 function hmObserveResize(){
   const body=document.getElementById('hm-body'); if(!body||_hmRO||!('ResizeObserver' in window)) return;
-  _hmRO=new ResizeObserver(()=>{ clearTimeout(_hmROt); _hmROt=setTimeout(()=>{ if(hmKind==='KR'&&krData) drawKr(); },150); });
+  _hmRO=new ResizeObserver(()=>{ clearTimeout(_hmROt); _hmROt=setTimeout(()=>{ if(krData) drawKr(); },150); });
   _hmRO.observe(body);
 }
 /* 히트맵(무거운 iframe·폴링)은 뷰포트 진입 시에만 로드 — 초기 로딩 가속 */
 function setupHeatmapLazy(){
   bindHmTiles(); hmObserveResize();
+  bindHmControls2();
   const card=document.querySelector('.heatmap-card'); let started=false;
-  const start=()=>{ if(started) return; started=true; renderHeatmap(); };
+  const start=()=>{ if(started) return; started=true; loadPerf(); renderHeatmap(); };
   if(card && 'IntersectionObserver' in window){
     const io=new IntersectionObserver(es=>{
       hmVisible=es.some(e=>e.isIntersecting);
       if(!hmVisible) return;
       if(!started) start();
-      else { hmAutoTick(); if(hmKind==='KR') loadKrHeatmap(); }   // 화면에 다시 들어오면 즉시 갱신
+      else { hmAutoTick(); loadKrHeatmap(); }   // 화면에 다시 들어오면 즉시 갱신
     },{rootMargin:'250px'});
     io.observe(card);
     setTimeout(start,5000);   // 안전망 — 1회 렌더만. 폴링 여부(hmVisible)는 IO 의 실제 교차 상태만 신뢰
@@ -2909,6 +2977,7 @@ idleLoad(()=>{ loadCalendar(); loadFearGreed(); }, 1);
 idleLoad(()=>{ loadNewsLive(); loadThemes(); }, 2);
 idleLoad(()=>{ loadNps(); }, 3);                                               // 연기금 매매동향
 idleLoad(()=>{ loadStripCandles(); }, 4);                                      // 지표 미니캔들(합성 프리뷰 이미 표시)
+renderHmControls2();
 setupHeatmapLazy();
 setupRelStrLazy();                                                             // 지수 대비 주도주(뷰포트 진입 시)
 setInterval(loadDeep,120000);                    // 심층분석 2분(큐레이션·지표 갱신 반영)
