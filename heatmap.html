@@ -72,6 +72,7 @@
   #hm-back{position:absolute;top:8px;left:8px;z-index:4;cursor:pointer;border:1px solid var(--border);
     background:var(--panel);color:var(--text);font-size:12px;font-weight:800;padding:5px 12px;border-radius:999px;font-family:inherit}
   #hm-back:hover{border-color:var(--accent);color:var(--accent)}
+  .hm-logo{pointer-events:none}
   /* 타일 색(회색~빨강~파랑) 위 어디서나 읽히도록 흰 글자 + 어두운 외곽선 */
   .hm-tn,.hm-tp{fill:#fff;text-anchor:middle;pointer-events:none;paint-order:stroke;stroke:rgba(0,0,0,.5);stroke-linejoin:round}
   .hm-tn{font-size:11px;font-weight:800;stroke-width:2.2px}
@@ -277,22 +278,33 @@ function fitChars(name, maxW, fs){
   return n>0 ? name.slice(0,n)+'…' : '';
 }
 /* 타일 라벨: 크기에 맞춰 글자 크기(7~11px)·글자 수를 조절해 가능한 한 종목명을 표시.
-   2줄(이름+등락률)이 안 되면 이름 한 줄이라도, 그것도 안 되면 생략(툴팁으로 확인). */
-function tileLabel(name, pctTxt, t, escFn){
+   공간이 충분하면 기업 로고(네이버 CDN)까지 3단(로고+이름+등락률)으로,
+   그다음 2줄(이름+등락률) → 이름 한 줄 → 생략(툴팁으로 확인) 순서로 줄여 간다. */
+function tileLabel(name, pctTxt, t, escFn, logo){
   const iw=t.w-4, ih=t.h-3;
   if(iw<13 || ih<9) return '';
   const cx=(t.x+t.w/2).toFixed(1), cy=t.y+t.h/2;
-  if(ih>=24 && iw>=26){                                // 2줄: 이름 + 등락률
+  if(ih>=24 && iw>=26){
     const fs=Math.min(11, Math.max(8, Math.floor(ih/3)));
     const nm=fitChars(name, iw, fs);
-    if(nm) return '<text class="hm-tn" style="font-size:'+fs+'px;stroke-width:'+(fs*0.2).toFixed(1)+'px" x="'+cx+'" y="'+(cy-2).toFixed(1)+'">'+escFn(nm)+'</text>'
+    if(!nm) return '';
+    const L=Math.min(36, Math.floor(Math.min(iw,ih)*0.3));
+    if(logo && L>=12 && ih>=L+fs*2+12){                // 3단: 로고 + 이름 + 등락률
+      const top=t.y+t.h/2-(L+fs*2+6)/2;
+      return '<image class="hm-logo" href="'+escFn(logo)+'" x="'+((t.x+t.w/2)-L/2).toFixed(1)+'" y="'+top.toFixed(1)+'" width="'+L+'" height="'+L+'" clip-path="url(#hmclip)"/>'
+        +'<text class="hm-tn" style="font-size:'+fs+'px;stroke-width:'+(fs*0.2).toFixed(1)+'px" x="'+cx+'" y="'+(top+L+fs+2).toFixed(1)+'">'+escFn(nm)+'</text>'
+        +'<text class="hm-tp" style="font-size:'+(fs-1)+'px;stroke-width:'+((fs-1)*0.18).toFixed(1)+'px" x="'+cx+'" y="'+(top+L+fs*2+4).toFixed(1)+'">'+pctTxt+'</text>';
+    }
+    return '<text class="hm-tn" style="font-size:'+fs+'px;stroke-width:'+(fs*0.2).toFixed(1)+'px" x="'+cx+'" y="'+(cy-2).toFixed(1)+'">'+escFn(nm)+'</text>'
       +'<text class="hm-tp" style="font-size:'+(fs-1)+'px;stroke-width:'+((fs-1)*0.18).toFixed(1)+'px" x="'+cx+'" y="'+(cy+fs-1).toFixed(1)+'">'+pctTxt+'</text>';
-    return '';
   }
   const fs=Math.min(9, Math.max(7, Math.floor(ih-2))); // 1줄: 이름만
   const nm=fitChars(name, iw, fs);
   return nm ? '<text class="hm-tn" style="font-size:'+fs+'px;stroke-width:'+(fs*0.18).toFixed(1)+'px" x="'+cx+'" y="'+(cy+fs*0.36).toFixed(1)+'">'+escFn(nm)+'</text>' : '';
 }
+/* 네이버 종목 로고 CDN — 국내는 종목코드, 해외는 로이터코드. 파일이 없으면(일부 종목) onerror 로 제거 */
+const LOGO_BASE='https://ssl.pstatic.net/imgstock/fn/real/logo/png/stock/Stock';
+const logoOf=it=>isUS() ? (it.rc?LOGO_BASE+it.rc+'.png':'') : LOGO_BASE+it.code+'.png';
 
 /* ── 기간 수익률 ──
    당일은 네이버 실시간 등락률, 그 외 기간은 파이프라인이 미리 수집한 기준 종가(data/kr_perf.json,
@@ -362,7 +374,8 @@ function krTreemap(host,items,opts){
 
   const p=curPeriod();
   const UP=cssRGB('--up'), DN=cssRGB('--down'), FL=cssRGB('--flat');
-  let s='<svg class="hm-svg" viewBox="0 0 '+W+' '+H+'" width="100%" height="100%" preserveAspectRatio="none">';
+  let s='<svg class="hm-svg" viewBox="0 0 '+W+' '+H+'" width="100%" height="100%" preserveAspectRatio="none">'
+    +'<defs><clipPath id="hmclip" clipPathUnits="objectBoundingBox"><circle cx=".5" cy=".5" r=".5"/></clipPath></defs>';
   for(const g of rects){
     const hdr = (!g.zoomed && g.w>80 && g.h>32) ? 14 : 0;
     if(hdr) s+='<text class="hm-sec-lbl" data-sec="'+esc(g.c.name)+'" x="'+(g.x+5).toFixed(1)+'" y="'+(g.y+11).toFixed(1)+'">'+esc(g.c.name)+' ›</text>';
@@ -374,11 +387,16 @@ function krTreemap(host,items,opts){
       s+='<g class="hm-t" data-code="'+esc(it.code)+'" data-rc="'+esc(it.rc||'')+'" data-name="'+esc(it.name)+'" data-sector="'+esc(it.sector)+'"'
         +' data-pct="'+eff.pct+'" data-ppct="'+(pv==null?'':pv)+'" data-price="'+eff.price+'" data-sess="'+esc(eff.sess)+'" data-cap="'+it.cap+'">'
         +'<rect x="'+t.x.toFixed(1)+'" y="'+t.y.toFixed(1)+'" width="'+Math.max(0,t.w-0.6).toFixed(1)+'" height="'+Math.max(0,t.h-0.6).toFixed(1)+'" fill="'+rgbCss(col)+'"/>'
-        +tileLabel(it.name, fmtPct(pv), t, esc)
+        +tileLabel(it.name, fmtPct(pv), t, esc, logoOf(it))
         +'</g>';
     }
   }
   host.innerHTML=s+'</svg>';
+  // 로고 파일이 없는 종목: 이미지를 지우고 텍스트를 다시 가운데로 (버크셔 등 일부)
+  host.querySelectorAll('image.hm-logo').forEach(im=>im.addEventListener('error',()=>{
+    const g=im.parentNode, L=+im.getAttribute('width'); im.remove();
+    if(g) g.querySelectorAll('text').forEach(tx=>tx.setAttribute('y', (+tx.getAttribute('y'))-(L+4)/2));
+  },{once:true}));
 }
 
 /* ── 페이지 상태 ── */
