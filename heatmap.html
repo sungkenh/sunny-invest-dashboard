@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>한국 주식 실시간 히트맵 · 써니의 투자 인사이트</title>
+<title>실시간 히트맵(한국·미국) · 써니의 투자 인사이트</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css"></noscript>
@@ -103,7 +103,7 @@
 <body>
 
 <header class="topbar">
-  <div class="brand"><div class="logo">S</div>써니의&nbsp;투자&nbsp;인사이트<small>한국 실시간 히트맵</small></div>
+  <div class="brand"><div class="logo">S</div>써니의&nbsp;투자&nbsp;인사이트<small>실시간 히트맵</small></div>
   <nav class="mainnav">
     <a href="index.html">대시보드</a>
     <a href="news.html">실시간 뉴스</a>
@@ -121,7 +121,7 @@
 <div class="filterbar">
   <span class="fl">시장</span>
   <div class="seg" id="seg-mkt">
-    <button data-v="kospi">코스피</button><button data-v="kosdaq">코스닥</button>
+    <button data-v="kospi">코스피</button><button data-v="kosdaq">코스닥</button><button data-v="us">미국</button>
   </div>
   <span class="fl">종목 수</span>
   <div class="seg" id="seg-n">
@@ -145,7 +145,8 @@
 <footer>
   데이터 제공: <a href="https://m.stock.naver.com/" target="_blank" rel="noopener">네이버 금융</a> ·
   시가총액 상위 종목 · ETF·ETN·우선주·스팩·거래정지 종목 제외 · 전체 시총 1% 미만 업종은 «기타»로 묶임.<br>
-  정규장(09:00~15:30 KST)에는 15초마다 자동 갱신되고, 그 외 시간에는 마지막 체결가(종가) 기준으로 표시됩니다.<br>
+  한국은 정규장(09:00~15:30 KST), 미국(나스닥+NYSE 병합)은 정규장(22:30~05:00 KST)과 프리·애프터마켓까지
+  <b>지연 0분 실시간</b>으로 15초마다 자동 갱신되고, 그 외 시간에는 마지막 체결가(종가) 기준으로 표시됩니다.<br>
   기간 수익률(1주~1년)은 <b>현재가 ÷ 기준일 종가(수정주가) − 1</b>로 계산합니다. 올해 = 작년 말 종가 대비.
   기준가가 없는 종목(신규 상장 등)은 회색으로 표시됩니다. 투자 판단의 근거로 삼기 전에 반드시 원 출처를 확인하세요.
 </footer>
@@ -168,6 +169,14 @@ function kospiSession(dow,mins){
   return 'closed';
 }
 const krSession=()=>{ const t=kstParts(); return kospiSession(t.dow,t.h*60+t.m); };
+// NASDAQ/NYSE (KST): 프리 17:00~22:30 · 정규 22:30~05:00(익일) · 애프터 05:00~09:00 · 데이 09:00~17:00
+function usSession(dow,mins){
+  const gap=(dow===6&&mins>=540)||(dow===0)||(dow===1&&mins<1020); // 주말 갭: 토 09:00~월 17:00
+  if(gap) return 'closed';
+  if(mins>=1350||mins<300) return 'open';
+  return 'ext';
+}
+const mktSession=()=>{ const t=kstParts(), m=t.h*60+t.m; return MKT==='us' ? usSession(t.dow,m) : kospiSession(t.dow,m); };
 function parseUTC(iso){
   if(!iso) return null;
   let s=String(iso).trim().replace(' ','T');
@@ -298,17 +307,34 @@ const PERIODS=[
   {k:'1년',  v:'y1', i:5,   cap:40},
 ];
 let PERIOD=(()=>{ try{ const v=localStorage.getItem('alphadesk.hmperiod'); if(PERIODS.some(p=>p.v===v)) return v; }catch(e){} return '1d'; })();
-let PERF=null;                                   // {refs:{code:[w1,m1,m3,m6,ytd,y1]}}
+const PERF={kr:null, us:null};                   // 시장별 {refs:{code:[w1,m1,m3,m6,ytd,y1]}}
 async function loadPerf(){
-  try{ const r=await fetch('data/kr_perf.json'); if(r.ok){ PERF=await r.json(); if(PERIOD!=='1d') draw(); } }catch(e){}
+  const jobs=[['kr','data/kr_perf.json'],['us','data/us_perf.json']].map(async([k,f])=>{
+    try{ const r=await fetch(f); if(r.ok) PERF[k]=await r.json(); }catch(e){}
+  });
+  await Promise.all(jobs);
+  if(PERIOD!=='1d') draw();
 }
 const curPeriod=()=>PERIODS.find(p=>p.v===PERIOD)||PERIODS[0];
-function perfOf(it, p){
-  if(p.v==='1d') return it.pct;
-  const r=PERF && PERF.refs && PERF.refs[it.code];
+const curPerf=()=>MKT==='us' ? PERF.us : PERF.kr;
+function perfOf(it, p, price, dayPct){
+  if(p.v==='1d') return dayPct;
+  const pf=curPerf();
+  const r=pf && pf.refs && pf.refs[it.code];
   const ref=r ? r[p.i] : null;
-  return (ref>0 && it.price>0) ? (it.price/ref-1)*100 : null;   // 기준가 없으면(신규상장 등) null → 회색
+  return (ref>0 && price>0) ? (price/ref-1)*100 : null;   // 기준가 없으면(신규상장 등) null → 회색
 }
+/* 표시 기준값: 미국은 정규장 외 시간에 프리/애프터 실시간 체결가·등락률을 우선 사용 */
+function effOf(it){
+  if(MKT==='us' && it.o && DATA && DATA.marketStatus!=='OPEN' && it.o.s==='OPEN' && isFinite(it.o.pct))
+    return {price:it.o.p, pct:it.o.pct, sess:it.o.t};
+  return {price:it.price, pct:it.pct, sess:''};
+}
+const sessKor=t=>t==='PRE_MARKET'?'프리마켓':(t==='AFTER_MARKET'?'애프터마켓':'');
+const fmtPx=v=>MKT==='us' ? '$'+Number(v).toLocaleString('en-US',{maximumFractionDigits:2})
+                          : Number(v).toLocaleString('en-US')+'원';
+const fmtCap=v=>MKT==='us' ? (v>=1e12 ? '$'+(v/1e12).toFixed(2)+'T' : '$'+Math.round(v/1e9)+'B')
+                           : capText(v);
 
 function krTreemap(host,items,opts){
   const W=Math.floor(host.clientWidth), H=Math.floor(host.clientHeight);
@@ -342,10 +368,11 @@ function krTreemap(host,items,opts){
     if(hdr) s+='<text class="hm-sec-lbl" data-sec="'+esc(g.c.name)+'" x="'+(g.x+5).toFixed(1)+'" y="'+(g.y+11).toFixed(1)+'">'+esc(g.c.name)+' ›</text>';
     const tiles=squarify(g.c.arr.map(it=>({value:it.cap,it})), g.x+1, g.y+1+hdr, Math.max(0,g.w-2), Math.max(0,g.h-hdr-2));
     for(const t of tiles){
-      const it=t.c.it, pv=perfOf(it,p);
+      const it=t.c.it, eff=effOf(it);
+      const pv=perfOf(it, p, eff.price, eff.pct);
       const col = pv==null ? FL : mixRGB(FL, pv>=0?UP:DN, Math.min(Math.abs(pv)/p.cap,1));
-      s+='<g class="hm-t" data-code="'+it.code+'" data-name="'+esc(it.name)+'" data-sector="'+esc(it.sector)+'"'
-        +' data-pct="'+it.pct+'" data-ppct="'+(pv==null?'':pv)+'" data-price="'+it.price+'" data-cap="'+it.cap+'">'
+      s+='<g class="hm-t" data-code="'+esc(it.code)+'" data-rc="'+esc(it.rc||'')+'" data-name="'+esc(it.name)+'" data-sector="'+esc(it.sector)+'"'
+        +' data-pct="'+eff.pct+'" data-ppct="'+(pv==null?'':pv)+'" data-price="'+eff.price+'" data-sess="'+esc(eff.sess)+'" data-cap="'+it.cap+'">'
         +'<rect x="'+t.x.toFixed(1)+'" y="'+t.y.toFixed(1)+'" width="'+Math.max(0,t.w-0.6).toFixed(1)+'" height="'+Math.max(0,t.h-0.6).toFixed(1)+'" fill="'+rgbCss(col)+'"/>'
         +tileLabel(it.name, fmtPct(pv), t, esc)
         +'</g>';
@@ -357,8 +384,9 @@ function krTreemap(host,items,opts){
 /* ── 페이지 상태 ── */
 const ALLOWED_N=[50,100,200];
 const qs=new URLSearchParams(location.search);
-let MKT=(()=>{ const q=qs.get('mkt'); if(q==='kospi'||q==='kosdaq') return q;
-  try{ const v=localStorage.getItem('alphadesk.hmmkt'); if(v==='kospi'||v==='kosdaq') return v; }catch(e){}
+const MKTS=['kospi','kosdaq','us'];
+let MKT=(()=>{ const q=qs.get('mkt'); if(MKTS.includes(q)) return q;
+  try{ const v=localStorage.getItem('alphadesk.hmmkt'); if(MKTS.includes(v)) return v; }catch(e){}
   return 'kospi'; })();
 let N=(()=>{ try{ const v=parseInt(localStorage.getItem('alphadesk.hmpage'),10); if(ALLOWED_N.includes(v)) return v; }catch(e){}
   return 100; })();
@@ -368,9 +396,13 @@ function note(m){ document.getElementById('hm-note').textContent=m||''; }
 function badge(){
   const b=document.getElementById('badge');
   if(!DATA){ b.textContent='● LIVE'; b.classList.remove('stale'); return; }
-  const live = DATA.source==='naver' && DATA.marketStatus==='OPEN';
+  // 미국: 정규장이 아니어도 프리/애프터마켓이 열려 있으면 실시간
+  const it0=DATA.items && DATA.items[0];
+  const overLive = MKT==='us' && DATA.source==='naver' && DATA.marketStatus!=='OPEN'
+    && it0 && it0.o && it0.o.s==='OPEN' && sessKor(it0.o.t);
+  const live = DATA.source==='naver' && (DATA.marketStatus==='OPEN' || overLive);
   b.classList.toggle('stale', !live);
-  b.textContent = live ? '● 실시간 '+fmtCollected(DATA._updated)
+  b.textContent = live ? '● '+(overLive?sessKor(it0.o.t):'실시간')+' '+fmtCollected(DATA._updated)
                        : (DATA.source==='snapshot' ? '스냅샷 · 종가 기준' : '장마감 · 종가 기준');
   b.title = live ? '네이버 금융 실시간(지연 0분)' : '정규장 외 시간 또는 스냅샷 데이터';
 }
@@ -394,7 +426,7 @@ function draw(){
   note('');
   krTreemap(document.getElementById('hm-widget'), DATA.items, {minShare:0.01, zoom:ZOOM});
   badge(); legendText(); backChip();
-  if(PERIOD!=='1d' && !PERF) note('기간 수익률 기준가(kr_perf.json)를 아직 불러오지 못해 회색으로 표시됩니다.');
+  if(PERIOD!=='1d' && !curPerf()) note('기간 수익률 기준가를 아직 불러오지 못해 회색으로 표시됩니다.');
 }
 async function load(force){
   // 진행 중이면 강제 요청은 예약해 두었다가 종료 직후 재실행 — 토글이 in-flight 요청에 삼켜지지 않게
@@ -402,12 +434,14 @@ async function load(force){
   if(!force && document.hidden) return;
   const mkt=MKT, n=N;
   loading=true;
-  const d=await fetchLive('/api/krheatmap?mkt='+mkt+'&n='+n, 'data/krheatmap_'+mkt+'.json');
+  const d = mkt==='us'
+    ? await fetchLive('/api/usheatmap?n='+n, 'data/usheatmap.json')
+    : await fetchLive('/api/krheatmap?mkt='+mkt+'&n='+n, 'data/krheatmap_'+mkt+'.json');
   loading=false;
   if(pending){ pending=false; load(true); }
   if(mkt!==MKT || n!==N) return;                                    // 전환 중 도착한 응답 폐기
   if(!d || !Array.isArray(d.items) || !d.items.length){ if(!DATA) note('히트맵 데이터를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.'); return; }
-  if(DATA && !freshGate('krheatmap_'+mkt, d._updated)) return;
+  if(DATA && !freshGate('heatmap_'+mkt, d._updated)) return;
   if(d.items.length>n) d.items=d.items.slice(0,n);                   // 정적 스냅샷(200종목) 폴백 대비
   DATA=d; draw();
 }
@@ -441,11 +475,12 @@ document.getElementById('seg-p').addEventListener('click',e=>{
     if(!g){ tip.style.display='none'; return; }
     const d=g.dataset, pct=parseFloat(d.pct), p=curPeriod();
     const ppct=d.ppct===''?null:parseFloat(d.ppct);
+    const dayLbl=sessKor(d.sess)||'당일';                    // 미국 프리/애프터마켓이면 라벨 교체
     // dataset 은 HTML 파서가 엔티티를 디코드한 원본을 돌려주므로 innerHTML 삽입 전 반드시 재이스케이프
     tip.innerHTML='<b>'+esc(d.name)+'</b> <small>'+esc(d.sector)+'</small><br>'
-      +Number(d.price).toLocaleString('en-US')+'원 <span class="'+cls(pct)+'">당일 '+(pct>=0?'+':'')+pct.toFixed(2)+'%</span><br>'
+      +fmtPx(d.price)+' <span class="'+cls(pct)+'">'+dayLbl+' '+(pct>=0?'+':'')+pct.toFixed(2)+'%</span><br>'
       +(p.v!=='1d' ? p.k+' 수익률 <span class="'+(ppct==null?'flat':cls(ppct))+'">'+fmtPct(ppct)+'</span><br>' : '')
-      +'<small>시총 '+capText(+d.cap)+' · '+esc(d.code)+'</small>';
+      +'<small>시총 '+fmtCap(+d.cap)+' · '+esc(d.code)+'</small>';
     tip.style.display='block';
     const r=body.getBoundingClientRect();
     let x=e.clientX-r.left+14, y=e.clientY-r.top+14;
@@ -458,7 +493,9 @@ document.getElementById('seg-p').addEventListener('click',e=>{
     const l=e.target.closest && e.target.closest('.hm-sec-lbl');           // 섹터 라벨 → 해당 섹터 확대
     if(l && l.dataset.sec){ ZOOM=l.dataset.sec; draw(); return; }
     const g=e.target.closest && e.target.closest('.hm-t'); if(!g) return;
-    if(!/^[0-9A-Z]{6}$/.test(g.dataset.code||'')) return;   // 신형 코드(0126Z0 등) 포함
+    if(/^[A-Za-z0-9.\-]{1,20}$/.test(g.dataset.rc||''))      // 미국: 로이터코드(NVDA.O)로 해외종목 페이지
+      return window.open('https://m.stock.naver.com/worldstock/stock/'+g.dataset.rc+'/total','_blank','noopener');
+    if(!/^[0-9A-Z]{6}$/.test(g.dataset.code||'')) return;   // 국내: 신형 코드(0126Z0 등) 포함
     window.open('https://m.stock.naver.com/domestic/stock/'+g.dataset.code+'/total','_blank','noopener');
   });
   document.getElementById('hm-back').addEventListener('click',()=>{ ZOOM=null; draw(); });
@@ -489,12 +526,12 @@ if('ResizeObserver' in window){
   ro.observe(document.getElementById('hm-body'));
 } else window.addEventListener('resize',()=>{ clearTimeout(_rot); _rot=setTimeout(draw,150); });
 
-document.addEventListener('visibilitychange',()=>{ if(!document.hidden && krSession()!=='closed') load(); });
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden && mktSession()!=='closed') load(); });
 
 renderSegs();
 load(true);
 loadPerf();                                                            // 기간 수익률 기준가(정적 JSON)
-timer=setInterval(()=>{ if(krSession()!=='closed') load(); },15000);   // 네이버 폴링 주기(7초)보다 여유있게
+timer=setInterval(()=>{ if(mktSession()!=='closed') load(); },15000);  // 네이버 폴링 주기(7초)보다 여유있게 · 선택 시장의 장중에만
 </script>
 </body>
 </html>

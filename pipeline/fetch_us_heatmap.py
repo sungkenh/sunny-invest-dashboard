@@ -1,0 +1,101 @@
+# -*- coding: utf-8 -*-
+"""미국 히트맵 스냅샷 폴백 → data/usheatmap.json
+
+네이버 해외주식 시총 랭킹(NASDAQ+NYSE 병합, 한글 업종 내장)을
+/api/usheatmap 과 동일한 스키마로 저장한다(최대 200종목).
+필터·정규화는 functions/api/usheatmap.js 와 **동일하게 유지**해야 한다.
+
+실행: python fetch_us_heatmap.py
+"""
+import os, sys, json, time, datetime, urllib.request
+
+try:
+    sys.stdout.reconfigure(encoding='utf-8')
+except Exception:
+    pass
+
+UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36'
+HERE = os.path.dirname(os.path.abspath(__file__))
+OUT = os.path.join(HERE, 'data')
+
+EXCHANGES = ('NASDAQ', 'NYSE')
+TOP_N = 200
+
+
+def _get(url):
+    req = urllib.request.Request(url, headers={'User-Agent': UA, 'Referer': 'https://m.stock.naver.com/'})
+    return json.loads(urllib.request.urlopen(req, timeout=20).read().decode('utf-8', 'ignore'))
+
+
+def num(v):
+    try:
+        return float(str(v).replace(',', ''))
+    except Exception:
+        return float('nan')
+
+
+def keep(s):
+    if (s.get('stockEndType') or '') != 'stock':
+        return False
+    cap, px, pct = num(s.get('marketValue')), num(s.get('closePrice')), num(s.get('fluctuationsRatio'))
+    return cap > 0 and px > 0 and pct == pct
+
+
+def norm(s, mk):
+    it = {
+        'code': s['symbolCode'], 'rc': s.get('reutersCode') or '', 'name': s['stockName'], 'mk': mk,
+        'sector': ((s.get('industryCodeType') or {}).get('industryGroupKor') or '').strip() or '기타',
+        'price': num(s['closePrice']),
+        # ⚠️ fluctuationsRatio 는 이미 부호 포함 — 다시 곱하지 말 것
+        'pct': num(s['fluctuationsRatio']),
+        'cap': num(s['marketValue']) * 1000,          # 천달러 → 달러
+    }
+    o = s.get('overMarketPriceInfo')
+    if o and o.get('overPrice') is not None and num(o.get('overPrice')) == num(o.get('overPrice')):
+        it['o'] = {'p': num(o['overPrice']), 'pct': num(o.get('fluctuationsRatio')),
+                   't': o.get('tradingSessionType') or '', 's': o.get('overMarketStatus') or ''}
+    return it
+
+
+def main():
+    os.makedirs(OUT, exist_ok=True)
+    raw = []
+    for ex in EXCHANGES:
+        for p in (1, 2):
+            try:
+                d = _get('https://api.stock.naver.com/stock/exchange/%s/marketValue?page=%d&pageSize=100' % (ex, p))
+                raw += [(s, ex) for s in (d.get('stocks') or [])]
+            except Exception as e:
+                print('  [%s p%d] %s' % (ex, p, str(e)[:60]))
+            time.sleep(0.2)
+
+    seen, items = set(), []
+    for s, ex in raw:
+        if not keep(s) or s['symbolCode'] in seen:
+            continue
+        seen.add(s['symbolCode'])
+        items.append(norm(s, ex))
+    items.sort(key=lambda x: -x['cap'])
+    items = items[:TOP_N]
+
+    if not items:
+        print('종목 0 → 스킵(직전 스냅샷 보존)')
+        return
+
+    first = raw[0][0] if raw else {}
+    now = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)
+    snap = {
+        '_updated': now.isoformat(timespec='seconds'), 'source': 'snapshot',
+        'mkt': 'us', 'n': TOP_N,
+        'marketStatus': first.get('marketStatus') or '',
+        'overStatus': (first.get('overMarketPriceInfo') or {}).get('tradingSessionType') or '',
+        'delay': 0, 'count': len(items), 'items': items,
+    }
+    with open(os.path.join(OUT, 'usheatmap.json'), 'w', encoding='utf-8') as f:
+        json.dump(snap, f, ensure_ascii=False, separators=(',', ':'))
+    secs = len(set(i['sector'] for i in items))
+    print('usheatmap.json 저장: %d종목 · 업종 %d · marketStatus=%s' % (len(items), secs, snap['marketStatus']))
+
+
+if __name__ == '__main__':
+    main()
