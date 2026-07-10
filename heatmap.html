@@ -422,7 +422,7 @@ function krTreemap(host,items,opts){
       const it=t.c.it, eff=effOf(it);
       const pv=perfOf(it, p, eff.price, eff.pct);
       const col=fvColor(pv, p.cap);   // 핀비즈 팔레트 · 기간별 ±cap% 에서 최대 채도
-      s+='<g class="hm-t" data-code="'+esc(it.code)+'" data-rc="'+esc(it.rc||'')+'" data-name="'+esc(it.name)+'" data-sector="'+esc(it.sector)+'"'
+      s+='<g class="hm-t" data-code="'+esc(it.code)+'" data-rc="'+esc(it.rc||'')+'" data-name="'+esc(it.name)+'" data-sector="'+esc(it.sector)+'" data-ind="'+esc(it.ind||'')+'"'
         +' data-pct="'+eff.pct+'" data-ppct="'+(pv==null?'':pv)+'" data-price="'+eff.price+'" data-sess="'+esc(eff.sess)+'" data-cap="'+it.cap+'">'
         +'<rect x="'+t.x.toFixed(1)+'" y="'+t.y.toFixed(1)+'" width="'+Math.max(0,t.w-0.6).toFixed(1)+'" height="'+Math.max(0,t.h-0.6).toFixed(1)+'" fill="'+rgbCss(col)+'"/>'
         +tileLabel(it.name, fmtPct(pv), t, esc, logoOf(it))
@@ -450,6 +450,7 @@ let MKT=(()=>{ const norm=v=>v==='us'?'sp500':v;   // 구버전 '미국' 선택�
 let N=(()=>{ try{ const v=parseInt(localStorage.getItem('alphadesk.hmpage'),10); if(ALLOWED_N.includes(v)) return v; }catch(e){}
   return 100; })();
 if(!nOpts().includes(N)) N=200;                                // 현 시장이 500 미지원이면 강하
+if(MKT==='sp500') N=500;                                       // S&P500 진입은 항상 전체 500 부터
 let DATA=null, loading=false, pending=false, timer=null, ZOOM=null, _rot=0;
 
 function note(m){ document.getElementById('hm-note').textContent=m||''; }
@@ -487,7 +488,7 @@ function backChip(){
 function draw(){
   if(!DATA) return;
   note('');
-  krTreemap(document.getElementById('hm-widget'), DATA.items, {minShare:0.01, zoom:ZOOM});
+  krTreemap(document.getElementById('hm-widget'), DATA.items, {minShare:isUS()?0.002:0.01, zoom:ZOOM});   // 미국은 대분류 17개뿐이라 병합 불필요
   badge(); legendText(); backChip();
   if(PERIOD!=='1d' && !curPerf()) note('기간 수익률 기준가를 아직 불러오지 못해 회색으로 표시됩니다.');
 }
@@ -517,7 +518,8 @@ document.getElementById('seg-mkt').addEventListener('click',e=>{
   MKT=b.dataset.v; try{ localStorage.setItem('alphadesk.hmmkt',MKT); }catch(e){}
   history.replaceState(null,'','?mkt='+MKT);
   ZOOM=null;                                                         // 시장이 바뀌면 섹터 구성도 바뀐다
-  if(!nOpts().includes(N)){ N=200; try{ localStorage.setItem('alphadesk.hmpage','200'); }catch(e){} }
+  if(MKT==='sp500') N=500;                                           // S&P500 은 500종목 전체가 기본
+  else if(!nOpts().includes(N)){ N=200; try{ localStorage.setItem('alphadesk.hmpage','200'); }catch(e){} }
   renderSegs(); restart();
 });
 document.getElementById('seg-n').addEventListener('click',e=>{
@@ -546,7 +548,7 @@ document.getElementById('seg-pal').addEventListener('click',e=>{
     const ppct=d.ppct===''?null:parseFloat(d.ppct);
     const dayLbl=sessKor(d.sess)||'당일';                    // 미국 프리/애프터마켓이면 라벨 교체
     // dataset 은 HTML 파서가 엔티티를 디코드한 원본을 돌려주므로 innerHTML 삽입 전 반드시 재이스케이프
-    tip.innerHTML='<b>'+esc(d.name)+'</b> <small>'+esc(d.sector)+'</small><br>'
+    tip.innerHTML='<b>'+esc(d.name)+'</b> <small>'+esc(d.sector)+(d.ind&&d.ind!==d.sector?' · '+esc(d.ind):'')+'</small><br>'
       +fmtPx(d.price)+' <span class="'+cls(pct)+'">'+dayLbl+' '+(pct>=0?'+':'')+pct.toFixed(2)+'%</span><br>'
       +(p.v!=='1d' ? p.k+' 수익률 <span class="'+(ppct==null?'flat':cls(ppct))+'">'+fmtPct(ppct)+'</span><br>' : '')
       +'<small>시총 '+fmtCap(+d.cap)+' · '+esc(d.code)+'</small>';

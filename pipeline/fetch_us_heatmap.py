@@ -47,11 +47,42 @@ def keep(s):
     return cap > 0 and px > 0 and pct == pct
 
 
+# 미국 대분류 섹터 — functions/api/usheatmap.js 의 US_SECTORS 와 동일하게 유지
+US_SECTORS = {
+    '5010': '에너지', '5020': '에너지',
+    '5110': '소재·화학', '5120': '소재·화학', '5130': '소재·화학',
+    '5210': '산업재·제조', '5440': '산업재·제조',
+    '5220': '상업 서비스',
+    '5240': '운송',
+    '5310': '자동차·내구소비재', '5320': '자동차·내구소비재',
+    '5330': '소비자 서비스',
+    '5340': '소매 유통', '5430': '소매 유통',
+    '5410': '필수 소비재', '5420': '필수 소비재',
+    '5510': '금융', '5530': '금융', '5550': '금융', '5730': '금융',
+    '5610': '헬스케어 장비·서비스',
+    '5620': '제약·바이오',
+    '5710': '전자 기술',
+    '5720': '기술 서비스',
+    '5740': '통신 서비스',
+    '5910': '유틸리티',
+    '6010': '부동산',
+}
+
+
+def us_sector(s):
+    if (s.get('symbolCode') or '') == 'BRK.B':
+        return '금융'
+    code = str((s.get('industryCodeType') or {}).get('code') or '')
+    return US_SECTORS.get(code[:4]) or \
+        ((s.get('industryCodeType') or {}).get('industryGroupKor') or '').strip() or '기타'
+
+
 def norm(s):
     it = {
         'code': s['symbolCode'], 'rc': s.get('reutersCode') or '', 'name': s['stockName'],
         'mk': (s.get('stockExchangeType') or {}).get('code') or '',
-        'sector': ((s.get('industryCodeType') or {}).get('industryGroupKor') or '').strip() or '기타',
+        'sector': us_sector(s),
+        'ind': ((s.get('industryCodeType') or {}).get('industryGroupKor') or '').strip(),
         'price': num(s['closePrice']),
         # ⚠️ fluctuationsRatio 는 이미 부호 포함 — 다시 곱하지 말 것
         'pct': num(s['fluctuationsRatio']),

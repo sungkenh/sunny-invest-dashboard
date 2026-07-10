@@ -23,6 +23,34 @@ async function naverUS(us, page) {
   return (j && j.stocks) || [];
 }
 
+/* 미국 대분류 섹터 — TRBC 중분류(업종코드 앞 4자리)를 트레이딩뷰 히트맵과 유사한 17개 대분류로 병합.
+   (네이버 세부 업종 그대로 쓰면 40여 그룹으로 쪼개져 트레이딩뷰와 배치가 달라 보이는 문제 해결) */
+const US_SECTORS = {
+  '5010':'에너지','5020':'에너지',
+  '5110':'소재·화학','5120':'소재·화학','5130':'소재·화학',
+  '5210':'산업재·제조','5440':'산업재·제조',
+  '5220':'상업 서비스',
+  '5240':'운송',
+  '5310':'자동차·내구소비재','5320':'자동차·내구소비재',
+  '5330':'소비자 서비스',
+  '5340':'소매 유통','5430':'소매 유통',
+  '5410':'필수 소비재','5420':'필수 소비재',
+  '5510':'금융','5530':'금융','5550':'금융','5730':'금융',
+  '5610':'헬스케어 장비·서비스',
+  '5620':'제약·바이오',
+  '5710':'전자 기술',
+  '5720':'기술 서비스',
+  '5740':'통신 서비스',
+  '5910':'유틸리티',
+  '6010':'부동산',
+};
+function usSector(s) {
+  if ((s.symbolCode || '') === 'BRK.B') return '금융';   // TRBC '소비재 대기업' 분류지만 통념상 금융
+  const code = String((s.industryCodeType || {}).code || '');
+  return US_SECTORS[code.slice(0, 4)]
+    || ((s.industryCodeType || {}).industryGroupKor || '').trim() || '기타';
+}
+
 function keep(s) {
   if ((s.stockEndType || '') !== 'stock') return false;            // ETF/ETN (랭킹엔 거의 없지만 방어)
   const cap = num(s.marketValue), px = num(s.closePrice), pct = num(s.fluctuationsRatio);
@@ -33,7 +61,8 @@ function norm(s) {
   const it = {
     code: s.symbolCode, rc: s.reutersCode || '', name: s.stockName,
     mk: (s.stockExchangeType || {}).code || '',
-    sector: ((s.industryCodeType || {}).industryGroupKor || '').trim() || '기타',
+    sector: usSector(s),
+    ind: ((s.industryCodeType || {}).industryGroupKor || '').trim(),   // 세부 업종(툴팁용)
     price: num(s.closePrice),
     // ⚠️ fluctuationsRatio 는 이미 부호 포함 — 다시 곱하지 말 것 (krheatmap 과 동일)
     pct: num(s.fluctuationsRatio),

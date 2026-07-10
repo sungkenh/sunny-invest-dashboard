@@ -2603,7 +2603,7 @@ async function loadKrHeatmap(force){
   if(!force && (document.hidden || !hmVisible)) return;
   const mkt=hmMkt||'kospi';
   const body=document.getElementById('hm-body');
-  const n=(body && body.clientWidth && body.clientWidth<560) ? 50 : 100;
+  const n = mkt==='sp500' ? 500 : ((body && body.clientWidth && body.clientWidth<560) ? 50 : 100);   // S&P500 은 트레이딩뷰처럼 전체 표시
   krLoading=true;
   const d = isUSm(mkt)
     ? await fetchLive('/api/usheatmap?us='+mkt+'&n='+n, 'data/usheatmap_'+mkt+'.json')
@@ -2619,7 +2619,7 @@ async function loadKrHeatmap(force){
 function drawKr(){
   const host=document.getElementById('hm-widget');
   if(!host || !krData) return;
-  hmNote(''); krTreemap(host, krData.items, {minShare:0.01, zoom:hmZoom}); hmBadge(krData); hmBackChip();
+  hmNote(''); krTreemap(host, krData.items, {minShare:isUSm(hmMkt)?0.002:0.01, zoom:hmZoom}); hmBadge(krData); hmBackChip();
 }
 function hmBackChip(){
   const b=document.getElementById('hm-back'); if(!b) return;
@@ -2832,7 +2832,7 @@ function krTreemap(host, items, opts){
       const it=t.c.it, eff=effOf(it);
       const pv=perfOf(it, p, eff.price, eff.pct);
       const col=fvColor(pv, p.cap);   // 선택 팔레트 · 기간별 ±cap% 최대 채도
-      s+='<g class="hm-t" data-code="'+calEsc(it.code)+'" data-rc="'+calEsc(it.rc||'')+'" data-name="'+calEsc(it.name)+'" data-sector="'+calEsc(it.sector)+'"'
+      s+='<g class="hm-t" data-code="'+calEsc(it.code)+'" data-rc="'+calEsc(it.rc||'')+'" data-name="'+calEsc(it.name)+'" data-sector="'+calEsc(it.sector)+'" data-ind="'+calEsc(it.ind||'')+'"'
         +' data-pct="'+eff.pct+'" data-ppct="'+(pv==null?'':pv)+'" data-price="'+eff.price+'" data-sess="'+calEsc(eff.sess)+'" data-cap="'+it.cap+'">'
         +'<rect x="'+t.x.toFixed(1)+'" y="'+t.y.toFixed(1)+'" width="'+Math.max(0,t.w-0.6).toFixed(1)+'" height="'+Math.max(0,t.h-0.6).toFixed(1)+'" fill="'+rgbCss(col)+'"/>'
         +tileLabel(it.name, fmtPct(pv), t, calEsc, logoOf(it))
@@ -2857,7 +2857,7 @@ function bindHmTiles(){
     const ppct=d.ppct===''?null:parseFloat(d.ppct);
     const dayLbl=sessKor(d.sess)||'당일';                    // 미국 프리/애프터마켓이면 라벨 교체
     // dataset 은 HTML 파서가 엔티티를 디코드한 원본을 돌려주므로 innerHTML 삽입 전 반드시 재이스케이프
-    tip.innerHTML='<b>'+calEsc(d.name)+'</b> <small>'+calEsc(d.sector)+'</small><br>'
+    tip.innerHTML='<b>'+calEsc(d.name)+'</b> <small>'+calEsc(d.sector)+(d.ind&&d.ind!==d.sector?' · '+calEsc(d.ind):'')+'</small><br>'
       +fmtPx(d.price)+' <span class="'+cls(pct)+'">'+dayLbl+' '+(pct>=0?'+':'')+pct.toFixed(2)+'%</span><br>'
       +(p.v!=='1d' ? p.k+' 수익률 <span class="'+(ppct==null?'flat':cls(ppct))+'">'+fmtPct(ppct)+'</span><br>' : '')
       +'<small>시총 '+fmtCap(+d.cap)+' · '+calEsc(d.code)+'</small>';
