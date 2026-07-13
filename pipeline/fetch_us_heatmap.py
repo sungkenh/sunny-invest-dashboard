@@ -40,7 +40,13 @@ def num(v):
         return float('nan')
 
 
+# SKHYV: SK하이닉스 ADR 중복 상장분 — 정규 티커 SKHY와 동일 종목·동일 시총으로 이중 집계됨
+EXCLUDE = {'SKHYV'}
+
+
 def keep(s):
+    if s.get('symbolCode') in EXCLUDE:
+        return False
     if (s.get('stockEndType') or '') != 'stock':
         return False
     cap, px, pct = num(s.get('marketValue')), num(s.get('closePrice')), num(s.get('fluctuationsRatio'))
