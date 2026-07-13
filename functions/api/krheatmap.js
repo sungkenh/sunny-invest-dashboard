@@ -21,20 +21,21 @@ async function naverMV(market, page) {
   return (j && j.stocks) || [];
 }
 
-// 히트맵 왜곡 요소 제거: ETF/ETN · 우선주 · 스팩 · 거래정지 · 값 결손
-function keep(s) {
-  if ((s.stockEndType || '') !== 'stock') return false;            // KODEX 200, TIGER 미국S&P500 …
+// 히트맵 왜곡 요소 제거: ETF/ETN · 우선주 · 스팩 · 값 결손.
+// ⚠ 거래정지는 제외하지 않는다 — 서킷브레이커(2026-07-11 코스피 -8%)처럼 시장 전체가 일시 정지되면
+//   전 종목이 걸러져 히트맵이 비는 사고가 났다. 정지 종목은 h:1 플래그로 표시만 한다(마지막 체결가는 유효).
+function dropReason(s) {
+  if ((s.stockEndType || '') !== 'stock') return 'etf';            // KODEX 200, TIGER 미국S&P500 …
   const code = s.itemCode || '';
-  if (code.length !== 6 || code[5] !== '0') return false;          // 보통주 코드 6번째 자리는 '0' (005935 삼성전자우 제외)
-  if (/스팩/.test(s.stockName || '')) return false;
-  const st = s.tradeStopType || {};
-  if (st.code && st.code !== '1') return false;                    // '1' = 운영/Trading
+  if (code.length !== 6 || code[5] !== '0') return 'pref';         // 보통주 코드 6번째 자리는 '0'
+  if (/스팩/.test(s.stockName || '')) return 'spac';
   const cap = +s.marketValueRaw, px = +s.closePriceRaw, pct = parseFloat(s.fluctuationsRatio);
-  return isFinite(cap) && cap > 0 && isFinite(px) && px > 0 && isFinite(pct);
+  if (!(isFinite(cap) && cap > 0 && isFinite(px) && px > 0 && isFinite(pct))) return 'bad';
+  return null;
 }
 
 function norm(s) {
-  return {
+  const it = {
     code: s.itemCode, name: s.stockName,
     mk: (s.stockExchangeType || {}).code || '',
     price: +s.closePriceRaw,
@@ -42,6 +43,9 @@ function norm(s) {
     pct: parseFloat(s.fluctuationsRatio),
     cap: +s.marketValueRaw,
   };
+  const st = s.tradeStopType || {};
+  if (st.code && st.code !== '1') it.h = 1;            // 거래정지(서킷브레이커·VI 포함) — 표시용
+  return it;
 }
 
 // 정적 자산 조인 (CF Function은 자기 오리진의 /data/*.json 을 fetch 할 수 있다)
@@ -80,35 +84,43 @@ async function __cfHandler(event) {
   const raw = [];
   for (const arr of res) if (arr) raw.push.apply(raw, arr);
 
-  if (!raw.length) {                                   // 라이브 전멸 → 스냅샷 → 빈결과
-    const snap = await loadSnapshot(event.rawUrl, mkt);
-    let data;
-    if (snap && Array.isArray(snap.items) && snap.items.length) {
-      const items = snap.items.slice(0, n);             // 스냅샷은 200종목 → 요청 n으로 자름
-      data = Object.assign({}, snap, { source: 'snapshot', n, count: items.length, items });
-    } else {
-      data = { _updated: iso(), source: 'error', mkt, n, marketStatus: '', delay: 0, count: 0, items: [] };
-    }
-    CACHE[key] = { ts: Date.now() - (TTL - 5000), data };   // 곧 재시도
-    return ok(data, true);
-  }
-
+  const drop = { etf: 0, pref: 0, spac: 0, bad: 0 };
   const seen = new Set(), items = [];
   for (const s of raw) {
-    if (!keep(s) || seen.has(s.itemCode)) continue;     // 페이지 간 중복 제거
+    if (seen.has(s.itemCode)) continue;                 // 페이지 간 중복 제거
+    const why = dropReason(s);
+    if (why) { drop[why]++; continue; }
     seen.add(s.itemCode); items.push(norm(s));
   }
   items.sort((a, b) => b.cap - a.cap);
   items.length = Math.min(items.length, n);
 
+  // 라이브 전멸 또는 필터 전량 탈락(어떤 필터 이상에도 화면이 비지 않게) → 스냅샷 → 빈결과
+  if (!items.length) {
+    const snap = await loadSnapshot(event.rawUrl, mkt);
+    let data;
+    if (snap && Array.isArray(snap.items) && snap.items.length) {
+      const its = snap.items.slice(0, n);               // 스냅샷은 200종목 → 요청 n으로 자름
+      data = Object.assign({}, snap, { source: 'snapshot', n, count: its.length, items: its });
+    } else {
+      data = { _updated: iso(), source: 'error', mkt, n, marketStatus: '', delay: 0, count: 0, items: [] };
+    }
+    if (raw.length) data.filtered = drop;               // 원인 판독용: 무엇이 걸러냈나
+    CACHE[key] = { ts: Date.now() - (TTL - 5000), data };   // 곧 재시도
+    return ok(data, true);
+  }
+
   const sec = await loadSectors(event.rawUrl);
   for (const it of items) it.sector = sec.map[it.code] || '기타';
 
+  const halted = items.reduce((a, i) => a + (i.h ? 1 : 0), 0);
   const data = {
     _updated: iso(), source: 'naver', mkt, n,
     marketStatus: (raw[0] || {}).marketStatus || '',
     delay: ((raw[0] || {}).stockExchangeType || {}).delayTime || 0,
     sectorsUpdated: sec.up, count: items.length,
+    halted: halted || undefined,                        // 거래정지 종목 수(서킷브레이커 감지용)
+    filtered: drop,
     partial: res.some((x) => !x) || undefined,          // 일부 페이지 실패
     items,
   };

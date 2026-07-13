@@ -46,9 +46,7 @@ def keep(s):
         return False
     if '스팩' in (s.get('stockName') or ''):
         return False
-    st = s.get('tradeStopType') or {}
-    if st.get('code') and st['code'] != '1':               # 거래정지
-        return False
+    # 거래정지 종목도 포함(서킷브레이커 방어 — krheatmap.js 와 동일)
     try:
         return float(s['marketValueRaw']) > 0 and float(s['closePriceRaw']) > 0 and \
             float(s['fluctuationsRatio']) == float(s['fluctuationsRatio'])

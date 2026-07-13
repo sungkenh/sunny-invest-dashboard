@@ -44,10 +44,12 @@ async function loadUsSectors(rawUrl) {
   return SEC_CACHE || {};
 }
 
-function keep(s) {
-  if ((s.stockEndType || '') !== 'stock') return false;            // ETF/ETN (랭킹엔 거의 없지만 방어)
+// ⚠ 거래정지는 제외하지 않는다(국내판 서킷브레이커 사고와 동일 원칙) — h:1 로 표시만.
+function dropReason(s) {
+  if ((s.stockEndType || '') !== 'stock') return 'etf';            // ETF/ETN (랭킹엔 거의 없지만 방어)
   const cap = num(s.marketValue), px = num(s.closePrice), pct = num(s.fluctuationsRatio);
-  return isFinite(cap) && cap > 0 && isFinite(px) && px > 0 && isFinite(pct);
+  if (!(isFinite(cap) && cap > 0 && isFinite(px) && px > 0 && isFinite(pct))) return 'bad';
+  return null;
 }
 
 function norm(s) {
@@ -66,6 +68,8 @@ function norm(s) {
     it.o = { p: num(o.overPrice), pct: num(o.fluctuationsRatio),
              t: o.tradingSessionType || '', s: o.overMarketStatus || '' };
   }
+  const st = s.tradeStopType || {};
+  if (st.code && st.code !== '1') it.h = 1;            // 거래정지 — 표시용
   return it;
 }
 
@@ -97,26 +101,31 @@ async function __cfHandler(event) {
   const raw = [];
   for (const arr of res) if (arr) raw.push.apply(raw, arr);
 
-  if (!raw.length) {                                   // 라이브 전멸 → 스냅샷 → 빈결과
-    const snap = await loadSnapshot(event.rawUrl, us);
-    let data;
-    if (snap && Array.isArray(snap.items) && snap.items.length) {
-      const items = snap.items.slice(0, n);
-      data = Object.assign({}, snap, { source: 'snapshot', n, count: items.length, items });
-    } else {
-      data = { _updated: iso(), source: 'error', mkt: us, n, marketStatus: '', delay: 0, count: 0, items: [] };
-    }
-    CACHE[key] = { ts: Date.now() - (TTL - 5000), data };   // 곧 재시도
-    return ok(data, true);
-  }
-
+  const drop = { etf: 0, bad: 0 };
   const seen = new Set(), items = [];
   for (const s of raw) {
-    if (!keep(s) || seen.has(s.symbolCode)) continue;
+    if (seen.has(s.symbolCode)) continue;
+    const why = dropReason(s);
+    if (why) { drop[why]++; continue; }
     seen.add(s.symbolCode); items.push(norm(s));
   }
   items.sort((a, b) => b.cap - a.cap);
   items.length = Math.min(items.length, n);
+
+  // 라이브 전멸 또는 필터 전량 탈락 → 스냅샷 → 빈결과
+  if (!items.length) {
+    const snap = await loadSnapshot(event.rawUrl, us);
+    let data;
+    if (snap && Array.isArray(snap.items) && snap.items.length) {
+      const its = snap.items.slice(0, n);
+      data = Object.assign({}, snap, { source: 'snapshot', n, count: its.length, items: its });
+    } else {
+      data = { _updated: iso(), source: 'error', mkt: us, n, marketStatus: '', delay: 0, count: 0, items: [] };
+    }
+    if (raw.length) data.filtered = drop;
+    CACHE[key] = { ts: Date.now() - (TTL - 5000), data };   // 곧 재시도
+    return ok(data, true);
+  }
 
   const secMap = await loadUsSectors(event.rawUrl);                    // 핀비즈 섹터·세부 산업 조인
   for (const it of items) {
@@ -125,12 +134,15 @@ async function __cfHandler(event) {
   }
 
   const first = raw[0] || {};
+  const halted = items.reduce((a, i) => a + (i.h ? 1 : 0), 0);
   const data = {
     _updated: iso(), source: 'naver', mkt: us, n,
     marketStatus: first.marketStatus || '',
     overStatus: ((first.overMarketPriceInfo || {}).tradingSessionType) || '',
     delay: ((first.stockExchangeType || {}).delayTime) || 0,
     count: items.length,
+    halted: halted || undefined,
+    filtered: drop,
     partial: res.some((x) => !x) || undefined,
     items,
   };

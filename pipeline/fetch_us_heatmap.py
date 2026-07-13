@@ -86,6 +86,9 @@ def norm(s):
     if o and o.get('overPrice') is not None and num(o.get('overPrice')) == num(o.get('overPrice')):
         it['o'] = {'p': num(o['overPrice']), 'pct': num(o.get('fluctuationsRatio')),
                    't': o.get('tradingSessionType') or '', 's': o.get('overMarketStatus') or ''}
+    st = s.get('tradeStopType') or {}
+    if st.get('code') and st['code'] != '1':
+        it['h'] = 1                                    # 거래정지 표시용
     return it
 
 

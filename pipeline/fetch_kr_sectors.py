@@ -68,15 +68,13 @@ def naver_mv(market, page):
 
 
 def keep(s):
+    # ⚠ 거래정지는 제외하지 않는다 — 서킷브레이커 발동 시 전 종목이 걸러지는 사고 방지(krheatmap.js 와 동일)
     if (s.get('stockEndType') or '') != 'stock':          # ETF/ETN 제외
         return False
     code = s.get('itemCode') or ''
     if len(code) != 6 or code[5] != '0':                  # 우선주 제외(보통주는 6번째 자리가 '0')
         return False
     if '스팩' in (s.get('stockName') or ''):
-        return False
-    st = s.get('tradeStopType') or {}
-    if st.get('code') and st['code'] != '1':               # 거래정지
         return False
     try:
         return float(s['marketValueRaw']) > 0 and float(s['closePriceRaw']) > 0 and \
@@ -108,6 +106,9 @@ def build_snapshot(mkt, sectors, n=200):
             'cap': float(s['marketValueRaw']),
             'sector': sectors.get(s['itemCode'], '기타'),
         })
+        st = s.get('tradeStopType') or {}
+        if st.get('code') and st['code'] != '1':
+            items[-1]['h'] = 1                            # 거래정지 표시용
     items.sort(key=lambda x: -x['cap'])
     items = items[:n]
     now = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)

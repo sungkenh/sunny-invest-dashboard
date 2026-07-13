@@ -153,6 +153,7 @@
   .rs-lg b{font-weight:800}
   .rs-note{color:var(--muted2);font-size:0.6875rem;margin-left:auto}
   .live-badge{font-size:0.625rem;font-weight:800;color:#05130b;background:#22c55e;padding:2px 7px;border-radius:5px;letter-spacing:.4px}
+  .live-badge.cb{background:var(--gold);color:#1a1400}
   .hm-controls{display:flex;align-items:center;gap:10px;margin-left:auto;flex-wrap:wrap}
   .seg{display:inline-flex;border:1px solid var(--border);border-radius:9px;overflow:hidden;background:var(--panel)}
   .seg button{border:none;background:transparent;color:var(--muted);padding:6px 12px;font-size:0.75rem;font-weight:700;cursor:pointer}
@@ -2574,8 +2575,12 @@ function hmBadge(d){
   const overLive = isUSm(hmMkt) && d.source==='naver' && d.marketStatus!=='OPEN'
     && it0 && it0.o && it0.o.s==='OPEN' && sessKor(it0.o.t);
   const live = d.source==='naver' && (d.marketStatus==='OPEN' || overLive);
+  // 장중인데 다수 종목이 거래정지 → 서킷브레이커(시장 전체 일시중단)로 판단해 명시
+  const cb = d.source==='naver' && d.marketStatus==='OPEN' && d.halted && d.count && d.halted/d.count>=0.3;
   b.classList.toggle('stale', !live);
-  b.textContent = live ? '● '+(overLive?sessKor(it0.o.t):'실시간')+' · '+agoText(d._updated)
+  b.classList.toggle('cb', !!cb);
+  b.textContent = cb ? '⚠ 서킷브레이커 · 정지 직전 시세 · '+agoText(d._updated)
+                : live ? '● '+(overLive?sessKor(it0.o.t):'실시간')+' · '+agoText(d._updated)
                        : (d.source==='snapshot' ? '스냅샷 · 종가 기준' : '장마감 · 종가 기준')+' · '+agoText(d._updated)+' 수집';
   b.title = (live ? '네이버 금융 실시간(지연 0분)' : '정규장 외 시간 또는 스냅샷 데이터')+' · 수집 '+fmtCollected(d._updated);
 }
@@ -2606,9 +2611,14 @@ async function loadKrHeatmap(force){
   const body=document.getElementById('hm-body');
   const n = mkt==='sp500' ? 500 : ((body && body.clientWidth && body.clientWidth<560) ? 50 : 100);   // S&P500 은 트레이딩뷰처럼 전체 표시
   krLoading=true;
-  const d = isUSm(mkt)
-    ? await fetchLive('/api/usheatmap?us='+mkt+'&n='+n, 'data/usheatmap_'+mkt+'.json')
-    : await fetchLive('/api/krheatmap?mkt='+mkt+'&n='+n, 'data/krheatmap_'+mkt+'.json');
+  const hmApi=isUSm(mkt) ? '/api/usheatmap?us='+mkt+'&n='+n : '/api/krheatmap?mkt='+mkt+'&n='+n;
+  const hmFile=isUSm(mkt) ? 'data/usheatmap_'+mkt+'.json' : 'data/krheatmap_'+mkt+'.json';
+  let d=await fetchLive(hmApi, hmFile);
+  if(d && Array.isArray(d.items) && !d.items.length){
+    // API가 200이지만 빈 배열(필터 이상 등) → 정적 스냅샷 재시도해 화면이 비지 않게
+    try{ const r=await fetch(hmFile+'?t='+Date.now(),{cache:'no-store'});
+      if(r.ok){ const s2=await r.json(); if(s2&&Array.isArray(s2.items)&&s2.items.length){ s2.source='snapshot'; d=s2; } } }catch(e){}
+  }
   krLoading=false;
   if(krPending){ krPending=false; loadKrHeatmap(true); }
   if((hmMkt||'kospi')!==mkt) return;                                    // 전환 중 도착한 응답 폐기
@@ -2846,7 +2856,7 @@ function krTreemap(host, items, opts){
       const pv=perfOf(it, p, eff.price, eff.pct);
       const col=fvColor(pv, p.cap);   // 선택 팔레트 · 기간별 ±cap% 최대 채도
       s+='<g class="hm-t" data-code="'+calEsc(it.code)+'" data-rc="'+calEsc(it.rc||'')+'" data-name="'+calEsc(it.name)+'" data-sector="'+calEsc(it.sector)+'" data-ind="'+calEsc(it.ind||'')+'"'
-        +' data-pct="'+eff.pct+'" data-ppct="'+(pv==null?'':pv)+'" data-price="'+eff.price+'" data-sess="'+calEsc(eff.sess)+'" data-cap="'+it.cap+'">'
+        +' data-pct="'+eff.pct+'" data-ppct="'+(pv==null?'':pv)+'" data-price="'+eff.price+'" data-sess="'+calEsc(eff.sess)+'" data-cap="'+it.cap+'"'+(it.h?' data-halt="1"':'')+'>'
         +'<rect x="'+t.x.toFixed(1)+'" y="'+t.y.toFixed(1)+'" width="'+Math.max(0,t.w-0.6).toFixed(1)+'" height="'+Math.max(0,t.h-0.6).toFixed(1)+'" fill="'+rgbCss(col)+'"/>'
         +tileLabel(it.name, fmtPct(pv), t, calEsc, logoOf(it))
         +'</g>';
@@ -2870,7 +2880,8 @@ function bindHmTiles(){
     const ppct=d.ppct===''?null:parseFloat(d.ppct);
     const dayLbl=sessKor(d.sess)||'당일';                    // 미국 프리/애프터마켓이면 라벨 교체
     // dataset 은 HTML 파서가 엔티티를 디코드한 원본을 돌려주므로 innerHTML 삽입 전 반드시 재이스케이프
-    tip.innerHTML='<b>'+calEsc(d.name)+'</b> <small>'+calEsc(d.sector)+(d.ind&&d.ind!==d.sector?' · '+calEsc(d.ind):'')+'</small><br>'
+    tip.innerHTML='<b>'+calEsc(d.name)+'</b> <small>'+calEsc(d.sector)+(d.ind&&d.ind!==d.sector?' · '+calEsc(d.ind):'')+'</small>'
+      +(d.halt?' <span class="flat">⏸ 거래정지</span>':'')+'<br>'
       +fmtPx(d.price)+' <span class="'+cls(pct)+'">'+dayLbl+' '+(pct>=0?'+':'')+pct.toFixed(2)+'%</span><br>'
       +(p.v!=='1d' ? p.k+' 수익률 <span class="'+(ppct==null?'flat':cls(ppct))+'">'+fmtPct(ppct)+'</span><br>' : '')
       +'<small>시총 '+fmtCap(+d.cap)+' · '+calEsc(d.code)+'</small>';
