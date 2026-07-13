@@ -44,8 +44,12 @@ async function loadUsSectors(rawUrl) {
   return SEC_CACHE || {};
 }
 
+// SKHYV: SK하이닉스 ADR 중복 상장분 — 정규 티커 SKHY와 동일 종목·동일 시총으로 이중 집계됨
+const EXCLUDE = new Set(['SKHYV']);
+
 // ⚠ 거래정지는 제외하지 않는다(국내판 서킷브레이커 사고와 동일 원칙) — h:1 로 표시만.
 function dropReason(s) {
+  if (EXCLUDE.has(s.symbolCode)) return 'dup';
   if ((s.stockEndType || '') !== 'stock') return 'etf';            // ETF/ETN (랭킹엔 거의 없지만 방어)
   const cap = num(s.marketValue), px = num(s.closePrice), pct = num(s.fluctuationsRatio);
   if (!(isFinite(cap) && cap > 0 && isFinite(px) && px > 0 && isFinite(pct))) return 'bad';
@@ -101,7 +105,7 @@ async function __cfHandler(event) {
   const raw = [];
   for (const arr of res) if (arr) raw.push.apply(raw, arr);
 
-  const drop = { etf: 0, bad: 0 };
+  const drop = { etf: 0, bad: 0, dup: 0 };
   const seen = new Set(), items = [];
   for (const s of raw) {
     if (seen.has(s.symbolCode)) continue;
