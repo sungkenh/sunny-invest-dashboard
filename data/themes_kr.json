@@ -1,5 +1,5 @@
 {
- "_updated": "2026-07-14T13:22:34",
+ "_updated": "2026-07-14T19:12:31",
  "mkt": "kr",
  "benchmark": "KOSPI",
  "riskOff": true,
@@ -20,47 +20,47 @@
    "confBand": "보통",
    "score": 53,
    "pts": [
-    "최근 6개월 +77.7% · KOSPI 대비 +27.0%p — 지수 상회 (12개월 +258.2%)",
+    "최근 6개월 +74.4% · KOSPI 대비 +24.0%p — 지수 상회 (12개월 +248.2%)",
     "구성 4종목 중 0개 50일선 위 · 2개 3개월 상승 — 폭 25%, 참여 제한적",
-    "52주 고점 대비 -30.3% · 20일 이격 -18.4% · 변동성 지수 대비 1.4배 — 종합 +53/100 (리스크 −0)"
+    "52주 고점 대비 -32.2% · 20일 이격 -21.7% · 변동성 지수 대비 1.3배 — 종합 +53/100 (리스크 −0)"
    ],
-   "perf": 2.28,
+   "perf": -8.88,
    "lead": {
-    "name": "SK하이닉스",
-    "pct": 3.69
+    "name": "리노공업",
+    "pct": -2.03
    },
    "picks": [
     {
      "name": "삼성전자",
-     "pct": 3.34
+     "pct": -10.7
     },
     {
      "name": "SK하이닉스",
-     "pct": 3.69
+     "pct": -15.37
     },
     {
      "name": "한미반도체",
-     "pct": 0.97
+     "pct": -7.43
     },
     {
      "name": "리노공업",
-     "pct": 1.11
+     "pct": -2.03
     }
    ],
    "cat": {
     "ti": "SK하이닉스 ADR 9%대 급락…본주는 3%대 반등",
-    "link": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE80ZDEyNXZlTl91S2w3Q244QnYwdFh2ak5lTTFUTjU0c3lxSC1XWW9uVEF6WTc2SDZPS0VoNFh1cGRVSTBZRXBheUVubHlkZmNYNXc?oc=5",
+    "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE13TURLb0NxdEJWZUxieDNlY1VYMHQ0Qm5pcmpiOXVIRzRWemFQQWdJdFJwRUQwdVpoUzFIZHktMTFVVUlfQU0yR0U2ZXJCSXBwY3FCZ0tqVUdfVnJXR1dTcg?oc=5",
     "src": "매일경제 마켓",
-    "tm": "5시간 전"
+    "tm": "11시간 전"
    },
    "metrics": {
-    "r126": 0.7767,
-    "rs": 0.27,
+    "r126": 0.7437,
+    "rs": 0.2395,
     "breadth": 0.25,
-    "ext20": -0.1839,
-    "rsi14": 38.8,
-    "volRatio": 1.37,
-    "curDD": -0.303,
+    "ext20": -0.217,
+    "rsi14": 36.7,
+    "volRatio": 1.35,
+    "curDD": -0.3224,
     "penalty": 0,
     "driver": 53
    }
@@ -72,55 +72,56 @@
    "op": "op-sell",
    "opTxt": "비중축소",
    "warns": [
-    "하락추세 가능 — 저가매수 아님"
+    "하락추세 가능 — 저가매수 아님",
+    "지수 동반 상승 — 초과성과 없음"
    ],
-   "conf": 60,
+   "conf": 45,
    "confBand": "보통",
-   "score": -45,
+   "score": -39,
    "pts": [
-    "최근 6개월 -0.2% · KOSPI 대비 -50.8%p — 지수 하회 (12개월 +18.2%)",
+    "최근 6개월 +3.8% · KOSPI 대비 -46.7%p — 지수 하회 (12개월 +24.0%)",
     "구성 4종목 중 0개 50일선 위 · 0개 3개월 상승 — 폭 0%, 참여 제한적",
-    "52주 고점 대비 -32.5% · 20일 이격 -12.0% · 변동성 지수 대비 0.9배 — 종합 -45/100 (리스크 −0)"
+    "52주 고점 대비 -29.1% · 20일 이격 -8.9% · 변동성 지수 대비 1.0배 — 종합 -39/100 (리스크 −0)"
    ],
-   "perf": -4.87,
+   "perf": -2.98,
    "lead": {
     "name": "한국항공우주",
-    "pct": -1.67
+    "pct": -0.55
    },
    "picks": [
     {
      "name": "한화에어로스페이스",
-     "pct": -6.84
+     "pct": -3.21
     },
     {
      "name": "LIG넥스원",
-     "pct": -8.28
+     "pct": -3.2
     },
     {
      "name": "현대로템",
-     "pct": -2.71
+     "pct": -4.97
     },
     {
      "name": "한국항공우주",
-     "pct": -1.67
+     "pct": -0.55
     }
    ],
    "cat": {
     "ti": "경상국립대·UNIST·KAI, 우주항공·방산·AI 연구소 설립 맞손",
     "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE1YaV9IakdTRS02VG5qZGl3dUlKOEZqN3BjTi1LSGlBcGtBZ2llNFRFVlNEekp5RDJhOHJRVEJqVlA0Sk9RZHphTmhTWVBLSFhMTlYwREZtSHdPTVZHblpUSNIBYEFVX3lxTE1YaV9IakdTRS02VG5qZGl3dUlKOEZqN3BjTi1LSGlBcGtBZ2llNFRFVlNEekp5RDJhOHJRVEJqVlA0Sk9RZHphTmhTWVBLSFhMTlYwREZtSHdPTVZHblpUSA?oc=5",
     "src": "연합뉴스",
-    "tm": "7시간 전"
+    "tm": "13시간 전"
    },
    "metrics": {
-    "r126": -0.0018,
-    "rs": -0.5085,
+    "r126": 0.0375,
+    "rs": -0.4666,
     "breadth": 0.0,
-    "ext20": -0.1203,
-    "rsi14": 36.6,
-    "volRatio": 0.86,
-    "curDD": -0.3246,
+    "ext20": -0.0891,
+    "rsi14": 40.1,
+    "volRatio": 0.99,
+    "curDD": -0.2913,
     "penalty": 0,
-    "driver": -45
+    "driver": -39
    }
   },
   {
@@ -138,47 +139,47 @@
    "confBand": "낮음",
    "score": -11,
    "pts": [
-    "최근 6개월 +34.1% · KOSPI 대비 -16.6%p — 지수 하회 (12개월 +128.8%)",
+    "최근 6개월 +30.6% · KOSPI 대비 -19.9%p — 지수 하회 (12개월 +127.4%)",
     "구성 4종목 중 0개 50일선 위 · 1개 3개월 상승 — 폭 13%, 참여 제한적",
-    "52주 고점 대비 -42.8% · 20일 이격 -16.5% · 변동성 지수 대비 1.2배 — 종합 -11/100 (리스크 −0)"
+    "52주 고점 대비 -43.2% · 20일 이격 -18.4% · 변동성 지수 대비 1.1배 — 종합 -11/100 (리스크 −0)"
    ],
-   "perf": 0.04,
+   "perf": -7.85,
    "lead": {
-    "name": "LS ELECTRIC",
-    "pct": 1.73
+    "name": "두산에너빌리티",
+    "pct": -6.27
    },
    "picks": [
     {
      "name": "두산에너빌리티",
-     "pct": -3.14
+     "pct": -6.27
     },
     {
      "name": "HD현대일렉트릭",
-     "pct": 1.14
+     "pct": -7.4
     },
     {
      "name": "LS ELECTRIC",
-     "pct": 1.73
+     "pct": -8.89
     },
     {
      "name": "효성중공업",
-     "pct": 0.41
+     "pct": -8.82
     }
    ],
    "cat": {
     "ti": "“AI 시대, SMR 상용화·수출 지원”",
-    "link": "https://news.google.com/rss/articles/CBMiVEFVX3lxTFBYV0owbmRsa01PYzR0cjY3UXFJdEY0dlhpaDBpZFVRZHBsdXZuUHNYNmo2c3dUZV8tbU5TbHo5dC1QSnFiV0M1THh1VUpKbkM4bGl2MA?oc=5",
+    "link": "https://news.google.com/rss/articles/CBMiS0FVX3lxTE4yaGw4VTlKWTlkZFN0cUJLcU0yTm9MZ2d3eVlXU083UFNwR25Lei1RZHZucnR1OVhLVGEta3BjUG1Nd0lHMjh4amV4RQ?oc=5",
     "src": "v.daum.net",
-    "tm": "13시간 전"
+    "tm": "18시간 전"
    },
    "metrics": {
-    "r126": 0.3406,
-    "rs": -0.1661,
+    "r126": 0.3055,
+    "rs": -0.1986,
     "breadth": 0.125,
-    "ext20": -0.1649,
-    "rsi14": 36.9,
-    "volRatio": 1.16,
-    "curDD": -0.4282,
+    "ext20": -0.1838,
+    "rsi14": 36.4,
+    "volRatio": 1.15,
+    "curDD": -0.4315,
     "penalty": 0,
     "driver": -11
    }
@@ -192,53 +193,53 @@
    "warns": [
     "하락추세 가능 — 저가매수 아님"
    ],
-   "conf": 67,
+   "conf": 68,
    "confBand": "보통",
-   "score": -75,
+   "score": -70,
    "pts": [
-    "최근 6개월 -23.1% · KOSPI 대비 -73.7%p — 지수 하회 (12개월 +10.8%)",
-    "구성 4종목 중 0개 50일선 위 · 0개 3개월 상승 — 폭 0%, 참여 제한적",
-    "52주 고점 대비 -36.1% · 20일 이격 -16.8% · 변동성 지수 대비 0.9배 — 종합 -75/100 (리스크 −0)"
+    "최근 6개월 -19.0% · KOSPI 대비 -69.4%p — 지수 하회 (12개월 +15.1%)",
+    "구성 4종목 중 0개 50일선 위 · 1개 3개월 상승 — 폭 13%, 참여 제한적",
+    "52주 고점 대비 -33.6% · 20일 이격 -15.2% · 변동성 지수 대비 0.9배 — 종합 -70/100 (리스크 −0)"
    ],
-   "perf": -3.71,
+   "perf": -1.85,
    "lead": {
-    "name": "한화오션",
-    "pct": -2.54
+    "name": "HD한국조선해양",
+    "pct": 0.29
    },
    "picks": [
     {
      "name": "HD한국조선해양",
-     "pct": -4.25
+     "pct": 0.29
     },
     {
      "name": "HD현대중공업",
-     "pct": -4.41
+     "pct": -3.27
     },
     {
      "name": "한화오션",
-     "pct": -2.54
+     "pct": -3.08
     },
     {
      "name": "삼성중공업",
-     "pct": -3.63
+     "pct": -1.34
     }
    ],
    "cat": {
-    "ti": "'가교 연료' LNG 전성기 길어진다…HD현대·한화 수주 훈풍",
-    "link": "https://news.google.com/rss/articles/CBMiVkFVX3lxTE8xeXpXa2NuZm13TnlNdkpHci0wXzNSU2dZYTQ5UUFFZ25iN2p0dm9haXY5Wl9VNmNhbmJ1TWF1bHU0bVFtQVR0dlVCUGs3ZnVVRHU1ZjlR?oc=5",
-    "src": "지디넷코리아",
-    "tm": "13시간 전"
+    "ti": "한화오션, '한화해운 발주' 세 번째 LNG선 건조 시작…美 공략 '윈윈'",
+    "link": "https://news.google.com/rss/articles/CBMiY0FVX3lxTE9qSzZwRmpVdUNUNFN2Z05uU3lJckg2bnAxYjJNZDYyYzFZeHBOb015QUVWNUVzSXNvUmZ1azRicy1EdkRyeFhpaWpnWXgwMS0tZ2lpb1FxeWtGT2c4WVVvVUs3RQ?oc=5",
+    "src": "더구루",
+    "tm": "2일 전"
    },
    "metrics": {
-    "r126": -0.2308,
-    "rs": -0.7375,
-    "breadth": 0.0,
-    "ext20": -0.1679,
-    "rsi14": 31.5,
+    "r126": -0.1897,
+    "rs": -0.6938,
+    "breadth": 0.125,
+    "ext20": -0.1517,
+    "rsi14": 33.7,
     "volRatio": 0.89,
-    "curDD": -0.3607,
+    "curDD": -0.3359,
     "penalty": 0,
-    "driver": -75
+    "driver": -70
    }
   },
   {
@@ -251,53 +252,53 @@
     "하락추세 가능 — 저가매수 아님",
     "지수 동반 상승 — 초과성과 없음"
    ],
-   "conf": 45,
-   "confBand": "보통",
-   "score": -41,
+   "conf": 44,
+   "confBand": "낮음",
+   "score": -38,
    "pts": [
-    "최근 6개월 +2.4% · KOSPI 대비 -48.3%p — 지수 하회 (12개월 +37.5%)",
+    "최근 6개월 +4.4% · KOSPI 대비 -46.1%p — 지수 하회 (12개월 +42.7%)",
     "구성 4종목 중 0개 50일선 위 · 0개 3개월 상승 — 폭 0%, 참여 제한적",
-    "52주 고점 대비 -43.6% · 20일 이격 -12.7% · 변동성 지수 대비 1.2배 — 종합 -41/100 (리스크 −0)"
+    "52주 고점 대비 -41.5% · 20일 이격 -10.9% · 변동성 지수 대비 1.2배 — 종합 -38/100 (리스크 −0)"
    ],
-   "perf": -3.77,
+   "perf": -0.01,
    "lead": {
-    "name": "LG에너지솔루션",
-    "pct": -1.98
+    "name": "삼성SDI",
+    "pct": 1.38
    },
    "picks": [
     {
      "name": "LG에너지솔루션",
-     "pct": -1.98
+     "pct": 0.77
     },
     {
      "name": "삼성SDI",
-     "pct": -2.84
+     "pct": 1.38
     },
     {
      "name": "에코프로비엠",
-     "pct": -6.01
+     "pct": -1.48
     },
     {
      "name": "포스코퓨처엠",
-     "pct": -4.25
+     "pct": -0.72
     }
    ],
    "cat": {
     "ti": "1~5월 전기차 배터리 전해액 적재량 19% 증가…비중국 시장 32% 급성장",
     "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTFBXVk9wWXBHZnRkRkdLOTVZcVd6UEpOVnN6ZV9jeU85VmhUb0xGTzZLXzF6bml3bWQxQXJhVGZEbWhaS2ZiazZ3OVpDVEtWUHBIRWs2NVJLZnJKSmFObXlOZA?oc=5",
     "src": "아시아경제",
-    "tm": "11시간 전"
+    "tm": "17시간 전"
    },
    "metrics": {
-    "r126": 0.0239,
-    "rs": -0.4827,
+    "r126": 0.0436,
+    "rs": -0.4605,
     "breadth": 0.0,
-    "ext20": -0.1274,
-    "rsi14": 35.3,
-    "volRatio": 1.19,
-    "curDD": -0.436,
+    "ext20": -0.1095,
+    "rsi14": 37.4,
+    "volRatio": 1.18,
+    "curDD": -0.415,
     "penalty": 0,
-    "driver": -41
+    "driver": -38
    }
   },
   {
@@ -311,51 +312,51 @@
    ],
    "conf": 85,
    "confBand": "높음",
-   "score": -100,
+   "score": -96,
    "pts": [
-    "최근 6개월 -28.9% · KOSPI 대비 -79.6%p — 지수 하회 (12개월 -22.4%)",
-    "구성 4종목 중 0개 50일선 위 · 0개 3개월 상승 — 폭 0%, 참여 제한적",
-    "52주 고점 대비 -33.2% · 20일 이격 -5.9% · 변동성 지수 대비 0.8배 — 종합 -100/100 (리스크 −0)"
+    "최근 6개월 -26.0% · KOSPI 대비 -76.4%p — 지수 하회 (12개월 -19.1%)",
+    "구성 4종목 중 1개 50일선 위 · 0개 3개월 상승 — 폭 13%, 참여 제한적",
+    "52주 고점 대비 -30.4% · 20일 이격 -2.3% · 변동성 지수 대비 0.8배 — 종합 -96/100 (리스크 −0)"
    ],
-   "perf": -4.34,
+   "perf": -0.65,
    "lead": {
-    "name": "셀트리온",
-    "pct": -1.31
+    "name": "삼성바이오로직스",
+    "pct": 0.36
    },
    "picks": [
     {
      "name": "삼성바이오로직스",
-     "pct": -2.29
+     "pct": 0.36
     },
     {
      "name": "셀트리온",
-     "pct": -1.31
+     "pct": -0.06
     },
     {
      "name": "알테오젠",
-     "pct": -11.69
+     "pct": -2.31
     },
     {
      "name": "유한양행",
-     "pct": -2.06
+     "pct": -0.58
     }
    ],
    "cat": {
-    "ti": "인제니아 \"머크가 선택한 혈관 신약\"...코스닥 상장 시동",
-    "link": "https://news.google.com/rss/articles/CBMia0FVX3lxTE1FSndjWDlEeW9hOE04UEN1dHdvNWFvMzhiZl83YUMtYUpIMTEybk8zZXkwc2MwSmpGMzdRY2p5YkJZdUZwMC1qUkJvampGOHUzdG5WdXB4ZTlPdGZ3dnNGdmpnSWNfU2Z0VmFV?oc=5",
-    "src": "히트뉴스",
-    "tm": "6시간 전"
+    "ti": "대덕에 부는 '퀀텀 AI 바이오' 실증 바람···질병 표적·신약 후보 잇단 성과",
+    "link": "https://news.google.com/rss/articles/CBMiakFVX3lxTE92dHBpeUJ6M19XbGZwSDNkRFlSb1lIRkNJaVdtVFVYWDZyVE1Hc1p4ekxmbC1WYnc3cE1wUjlNNjljdVdQWGxaYmhEbnZNS29UZ01yY2lqMkxYN3pobWhaSUNwM2pYYUlTSlE?oc=5",
+    "src": "헬로디디",
+    "tm": "10시간 전"
    },
    "metrics": {
-    "r126": -0.2892,
-    "rs": -0.7959,
-    "breadth": 0.0,
-    "ext20": -0.0588,
-    "rsi14": 40.8,
-    "volRatio": 0.84,
-    "curDD": -0.3316,
+    "r126": -0.2598,
+    "rs": -0.7639,
+    "breadth": 0.125,
+    "ext20": -0.0234,
+    "rsi14": 45.7,
+    "volRatio": 0.81,
+    "curDD": -0.3038,
     "penalty": 0,
-    "driver": -100
+    "driver": -96
    }
   },
   {
@@ -367,53 +368,53 @@
    "warns": [
     "지수 동반 상승 — 초과성과 없음"
    ],
-   "conf": 68,
-   "confBand": "보통",
-   "score": 36,
+   "conf": 71,
+   "confBand": "높음",
+   "score": 40,
    "pts": [
-    "최근 6개월 +29.9% · KOSPI 대비 -20.8%p — 지수 하회 (12개월 +28.4%)",
-    "구성 4종목 중 4개 50일선 위 · 3개 3개월 상승 — 폭 88%, 참여 광범위",
-    "52주 고점 대비 -2.5% · 20일 이격 +3.8% · 변동성 지수 대비 0.5배 — 종합 +36/100 (리스크 −0)"
+    "최근 6개월 +30.9% · KOSPI 대비 -19.5%p — 지수 하회 (12개월 +31.7%)",
+    "구성 4종목 중 4개 50일선 위 · 4개 3개월 상승 — 폭 100%, 참여 광범위",
+    "52주 고점 대비 +0.0% · 20일 이격 +6.4% · 변동성 지수 대비 0.5배 — 종합 +40/100 (리스크 −0)"
    ],
-   "perf": -2.47,
+   "perf": 0.19,
    "lead": {
-    "name": "삼성화재",
-    "pct": -1.72
+    "name": "메리츠금융",
+    "pct": 1.74
    },
    "picks": [
     {
      "name": "KB금융",
-     "pct": -3.33
+     "pct": 0.98
     },
     {
      "name": "신한지주",
-     "pct": -1.93
+     "pct": -0.55
     },
     {
      "name": "메리츠금융",
-     "pct": -2.91
+     "pct": 1.74
     },
     {
      "name": "삼성화재",
-     "pct": -1.72
+     "pct": -1.39
     }
    ],
    "cat": {
     "ti": "트러스톤, 태광산업에 밸류업 재검토 촉구 \"배당 인상·액면분할\"",
     "link": "https://news.google.com/rss/articles/CBMiS0FVX3lxTFB3c0lMUk9JX3k1U2lmMk5CTjZBTHFmeDJMdmVUbmZZalk2UGFzNjVEMGRLQzBwR0VFR1A5blYtN0ZPdXNlLXB2NUg2TQ?oc=5",
     "src": "v.daum.net",
-    "tm": "11시간 전"
+    "tm": "17시간 전"
    },
    "metrics": {
-    "r126": 0.2987,
-    "rs": -0.2079,
-    "breadth": 0.875,
-    "ext20": 0.038,
-    "rsi14": 57.3,
-    "volRatio": 0.49,
-    "curDD": -0.0248,
+    "r126": 0.3094,
+    "rs": -0.1948,
+    "breadth": 1.0,
+    "ext20": 0.0641,
+    "rsi14": 63.2,
+    "volRatio": 0.47,
+    "curDD": 0.0,
     "penalty": 0,
-    "driver": 36
+    "driver": 40
    }
   }
  ]
