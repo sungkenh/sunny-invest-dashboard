@@ -1,272 +1,12 @@
 {
- "_updated": "2026-07-30T13:46:40+00:00",
- "today": "2026-07-30",
+ "_updated": "2026-07-30T19:17:54+00:00",
+ "today": "2026-07-31",
  "window": {
-  "from": "2026-07-23",
-  "to": "2026-08-29"
+  "from": "2026-07-24",
+  "to": "2026-08-30"
  },
- "count": 269,
+ "count": 240,
  "events": [
-  {
-   "date": "2026-07-23",
-   "time": "08:00",
-   "et": "19:00",
-   "mk": "kr",
-   "type": "econ",
-   "title": "국내총생산(GDP) (전기比)",
-   "title_en": "GDP",
-   "importance": 3,
-   "forecast": "0.4%",
-   "previous": "1.8%",
-   "actual": "0.6%",
-   "category": "지표"
-  },
-  {
-   "date": "2026-07-23",
-   "time": "08:00",
-   "et": "19:00",
-   "mk": "kr",
-   "type": "econ",
-   "title": "국내총생산(GDP) (전년比)",
-   "title_en": "GDP",
-   "importance": 3,
-   "forecast": "3.5%",
-   "previous": "3.8%",
-   "actual": "3.7%",
-   "category": "지표"
-  },
-  {
-   "date": "2026-07-23",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "연속 실업수당청구",
-   "title_en": "Continuing Jobless Claims",
-   "importance": 2,
-   "forecast": "",
-   "previous": "1,798K",
-   "actual": "1,796K",
-   "category": "지표"
-  },
-  {
-   "date": "2026-07-23",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "신규 실업수당청구",
-   "title_en": "Initial Jobless Claims",
-   "importance": 2,
-   "forecast": "211K",
-   "previous": "209K",
-   "actual": "187K",
-   "category": "지표"
-  },
-  {
-   "date": "2026-07-23",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "인텔",
-   "ticker": "INTC",
-   "session": "시간 미정",
-   "eps_est": "$0.10",
-   "eps_prev": "",
-   "eps_actual": "$0.30",
-   "surprise": "+200.0%",
-   "n_ests": "10",
-   "mktcap": "$413B",
-   "importance": 3
-  },
-  {
-   "date": "2026-07-23",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "RTX",
-   "ticker": "RTX",
-   "session": "시간 미정",
-   "eps_est": "$1.66",
-   "eps_prev": "",
-   "eps_actual": "$1.89",
-   "surprise": "+13.9%",
-   "n_ests": "5",
-   "mktcap": "$290B",
-   "importance": 3
-  },
-  {
-   "date": "2026-07-23",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Thermo Fisher Scientific Inc",
-   "ticker": "TMO",
-   "session": "시간 미정",
-   "eps_est": "$5.71",
-   "eps_prev": "",
-   "eps_actual": "$6.03",
-   "surprise": "+5.6%",
-   "n_ests": "8",
-   "mktcap": "$214B",
-   "importance": 3
-  },
-  {
-   "date": "2026-07-23",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "T-Mobile US",
-   "ticker": "TMUS",
-   "session": "시간 미정",
-   "eps_est": "$2.49",
-   "eps_prev": "",
-   "eps_actual": "$3.13",
-   "surprise": "+25.7%",
-   "n_ests": "8",
-   "mktcap": "$195B",
-   "importance": 3
-  },
-  {
-   "date": "2026-07-23",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Union Pacific",
-   "ticker": "UNP",
-   "session": "시간 미정",
-   "eps_est": "$3.20",
-   "eps_prev": "",
-   "eps_actual": "$3.41",
-   "surprise": "+6.6%",
-   "n_ests": "6",
-   "mktcap": "$174B",
-   "importance": 3
-  },
-  {
-   "date": "2026-07-23",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Lockheed Martin",
-   "ticker": "LMT",
-   "session": "시간 미정",
-   "eps_est": "$7.22",
-   "eps_prev": "",
-   "eps_actual": "$7.94",
-   "surprise": "+10.0%",
-   "n_ests": "6",
-   "mktcap": "$131B",
-   "importance": 3
-  },
-  {
-   "date": "2026-07-23",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Newmont",
-   "ticker": "NEM",
-   "session": "시간 미정",
-   "eps_est": "$2.05",
-   "eps_prev": "",
-   "eps_actual": "$2.10",
-   "surprise": "+2.4%",
-   "n_ests": "5",
-   "mktcap": "$96B",
-   "importance": 2
-  },
-  {
-   "date": "2026-07-23",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Blackstone",
-   "ticker": "BX",
-   "session": "시간 미정",
-   "eps_est": "$1.33",
-   "eps_prev": "",
-   "eps_actual": "$1.52",
-   "surprise": "+14.3%",
-   "n_ests": "8",
-   "mktcap": "$96B",
-   "importance": 2
-  },
-  {
-   "date": "2026-07-23",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Comcast",
-   "ticker": "CMCSA",
-   "session": "시간 미정",
-   "eps_est": "$0.97",
-   "eps_prev": "",
-   "eps_actual": "$1.04",
-   "surprise": "+7.2%",
-   "n_ests": "8",
-   "mktcap": "$87B",
-   "importance": 2
-  },
-  {
-   "date": "2026-07-23",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Freeport-McMoran",
-   "ticker": "FCX",
-   "session": "시간 미정",
-   "eps_est": "$0.62",
-   "eps_prev": "",
-   "eps_actual": "$0.74",
-   "surprise": "+19.4%",
-   "n_ests": "7",
-   "mktcap": "$86B",
-   "importance": 2
-  },
-  {
-   "date": "2026-07-23",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Honeywell International",
-   "ticker": "HON",
-   "session": "시간 미정",
-   "eps_est": "$1.80",
-   "eps_prev": "",
-   "eps_actual": "$1.95",
-   "surprise": "+8.3%",
-   "n_ests": "4",
-   "mktcap": "$76B",
-   "importance": 2
-  },
-  {
-   "date": "2026-07-23",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Norfolk Southern",
-   "ticker": "NSC",
-   "session": "시간 미정",
-   "eps_est": "$3.23",
-   "eps_prev": "",
-   "eps_actual": "$3.52",
-   "surprise": "+9.0%",
-   "n_ests": "5",
-   "mktcap": "$75B",
-   "importance": 2
-  },
   {
    "date": "2026-07-24",
    "time": "21:00",
@@ -380,21 +120,7 @@
    "surprise": "+2.7%",
    "n_ests": "8",
    "mktcap": "$224B",
-   "importance": 3,
-   "articles": [
-    {
-     "t": "American Express’ Q2 Earnings Delivered a Fourth Straight Double-Digit Quarter",
-     "u": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxQb2VHV0I5X2R3Z3hkRzlsX2pIRlZyRTVUT0xZOGpQQ3VmbnpYNFZST1gydkFYa0dEeVVYdW4zRXdHVVJoeEYwYmlaQnJmSmtqZG9pX3phWl9RckRKZ3drWnprTFY5aC0xT045UWFsMHVxa09ZVGhQRHhNTHBKTHRkYmpENWRoM0p0Uno0R2xuV0RjTE90YzFQYXB4OFU2VUVDdDllTkJ0M044Zw?oc=5",
-     "s": "TIKR.com",
-     "d": "2026-07-24"
-    },
-    {
-     "t": "아메리칸 익스프레스(AXP)의 2026년 실적 전망 상향 조정 및 대규모 자사주 매입 완료에 투자자들이 어떻게 반응할까",
-     "u": "https://news.google.com/rss/articles/CBMirgFBVV95cUxQMzVueDIxTnV5YXJNd2l0MHhEUjQtbmR4NlM1TFpDaHhIY3RBc2ZuR3JhX1VyUWNMakpCZ29QNEFHdVdxZjhxSkZWWkdlb3JpYTZTb3hzZ0FjTGlNek9BYWpyVWkyZnEybm02amYtdmxaM3d2cTRHck15VVBUR29CT3JWMlZObWpLOUJHWlA5cEtMMjVoSjVpYTlvTEJiZjk5V1l6MUNxRW1QQURsSFHSAa4BQVVfeXFMUDM1bngyMU51eWFyTXdpdDB4RFI0LW5keDZTNUxaQ2h4SGN0QXNmbkdyYV9VclFjTGpKQmdvUDRBR3VXcWY4cUpGVlpHZW9yaWE2U294c2dBY0xpTXpPQWFqclVpMmZxMm5tNmpmLXZsWjN3dnE0R3JNeVVQVEdvQk9yVjJWTm1qSzlCR1pQOXBLTDI1aEo1aWE5b0xCYmY5OVdZejFDcUVtUEFEbEhR?oc=5",
-     "s": "simplywall.st",
-     "d": "2026-07-28"
-    }
-   ]
+   "importance": 3
   },
   {
    "date": "2026-07-24",
@@ -411,21 +137,7 @@
    "surprise": "+2.4%",
    "n_ests": "8",
    "mktcap": "$197B",
-   "importance": 3,
-   "articles": [
-    {
-     "t": "Verizon Communications Inc(VZ) 실적 예측: 미래 EPS 및 수익 성장 추정치",
-     "u": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE1KblV5dm1BZS1SejBkOE9KRHRrYzRWbXNlMWM2WXpmeUdUd2tBOWZBc0VZcXk3LWRkRklNNVE3RmVBUHBnN1ltZm1rZkg1VVpVYy1Ea25QZWRzOVpsVDAzT2ctczRYS2c?oc=5",
-     "s": "tradingkey.com",
-     "d": "2026-07-23"
-    },
-    {
-     "t": "버라이즌 커뮤니케이션즈(VZ), 구조조정과 실적 기대 속 13% 아래 공정가 가능성",
-     "u": "https://news.google.com/rss/articles/CBMioAFBVV95cUxPRG9jZmphbE1veFczQUpna0s5N1RFMV9EVmVLd2pCNXFOWU9oN1MwcWE1allhSVNDYlVkSVNjc3JpaFRLN29kUGN2Q3pYYjhNZ1lhTVNVVTJkUmNPQzhuSVF6T1gxelhYcVNpam0wVExJOHR2eUY3TnQ2RVdiQWN3MkM1bHdIaHk5dGdtbi1MRVFIeHllS1RQRnBMakFzRkZW0gGgAUFVX3lxTE9Eb2NmamFsTW94VzNBSmdrSzk3VEUxX0RWZUt3akI1cU5ZT2g3UzBxYTVqWWFJU0NiVWRJU2NzcmloVEs3b2RQY3ZDelhiOE1nWWFNU1VVMmRSY09DOG5JUXpPWDF6WFhxU2lqbTBUTEk4dHZ5RjdOdDZFV2JBY3cyQzVsd0hoeTl0Z21uLUxFUUh4eWVLVFBGcExqQXNGRlY?oc=5",
-     "s": "simplywall.st",
-     "d": "2026-07-24"
-    }
-   ]
+   "importance": 3
   },
   {
    "date": "2026-07-24",
@@ -442,21 +154,7 @@
    "surprise": "+5.5%",
    "n_ests": "5",
    "mktcap": "$185B",
-   "importance": 3,
-   "articles": [
-    {
-     "t": "넥스트에라(NextEra)의 2026년 2분기 실적 호조와 넥스트에라 에너지(NEE)의 재생에너지 수요가 투자 전망을 어떻게 바꿨는가",
-     "u": "https://news.google.com/rss/articles/CBMimgFBVV95cUxNUWZXNC1TcVNiRGZ5Nm1aM2R0dlFFYjBtUDJ2SkVNZjJ5WVF2OEMydGlzelJzWmdtMmR5RXpqQk9IWTMxbGhrNzVnVFRyejdzVWdDWDY0VDlELXFlMzFHZTRJMm5yQnUzYWtONUN6cjQ2YlJWSVRvbldrd0FUMDlMNHpYUGp4MTFpNnFTa3k5Z2Qwai1HMDEzOGZR0gGaAUFVX3lxTE1RZlc0LVNxU2JEZnk2bVozZHR2UUViMG1QMnZKRU1mMnlZUXY4QzJ0aXN6UnNaZ20yZHlFempCT0hZMzFsaGs3NWdUVHJ6N3NVZ0NYNjRUOUQtcWUzMUdlNEkybnJCdTNha041Q3pyNDZiUlZJVG9uV2t3QVQwOUw0elhQangxMWk2cVNreTlnZDBqLUcwMTM4ZlE?oc=5",
-     "s": "simplywall.st",
-     "d": "2026-07-25"
-    },
-    {
-     "t": "Nextera Energy Inc(NEE) 실적 예측: 미래 EPS 및 수익 성장 추정치",
-     "u": "https://news.google.com/rss/articles/CBMiaEFVX3lxTFB3b3FQLUQyeUdsZG1mV25WbFpySVFSYUplUVRlWGRIY0xXTjd3Z2pUZ1ZYVFRGeXI4M2gwUGk1NWY1YzlBOThHanhNRWhES1YxamJjS3RLRTNla2FPU1E4MVZwOE90M2Vz?oc=5",
-     "s": "tradingkey.com",
-     "d": "2026-07-26"
-    }
-   ]
+   "importance": 3
   },
   {
    "date": "2026-07-24",
@@ -737,48 +435,6 @@
   },
   {
    "date": "2026-07-28",
-   "time": "21:15",
-   "et": "08:15",
-   "mk": "us",
-   "type": "econ",
-   "title": "ADP Employment Change Weekly",
-   "title_en": "ADP Employment Change Weekly",
-   "importance": 2,
-   "forecast": "",
-   "previous": "16.25K",
-   "actual": "15.00K",
-   "category": "지표"
-  },
-  {
-   "date": "2026-07-28",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "무역수지",
-   "title_en": "Goods Trade Balance",
-   "importance": 2,
-   "forecast": "-100.30B",
-   "previous": "-105.89B",
-   "actual": "-101.50B",
-   "category": "지표"
-  },
-  {
-   "date": "2026-07-28",
-   "time": "23:00",
-   "et": "10:00",
-   "mk": "us",
-   "type": "econ",
-   "title": "CB 소비자신뢰",
-   "title_en": "CB Consumer Confidence",
-   "importance": 2,
-   "forecast": "92.4",
-   "previous": "92.2",
-   "actual": "90.8",
-   "category": "지표"
-  },
-  {
-   "date": "2026-07-28",
    "time": "",
    "mk": "us",
    "type": "earnings",
@@ -791,13 +447,13 @@
    "eps_actual": "$3.32",
    "surprise": "+2.8%",
    "n_ests": "11",
-   "mktcap": "$694B",
+   "mktcap": "$699B",
    "importance": 3,
    "articles": [
     {
      "t": "모건 스탠리, 비자 실적 성장 전망에 목표주가 상향",
      "u": "https://news.google.com/rss/articles/CBMidEFVX3lxTE9SbDhZcWg5YUtZNC1Ya0oxLXpzMlZ6ZmoyVWwzR2p2VkN2V29TWUFtVnlpZENzMmVHaThVZ2RkUDF1eXJKYmJoQkptTDZOWFd0TVZFQkRfZ3Y5MEtWZ1hJa2JwMDk4U3NWTi02bFpQNG5jaFBX?oc=5",
-     "s": "kr.investing.com",
+     "s": "Investing.com 한국어",
      "d": "2026-07-29"
     },
     {
@@ -822,7 +478,7 @@
    "eps_actual": "$0.97",
    "surprise": "+5.4%",
    "n_ests": "7",
-   "mktcap": "$380B",
+   "mktcap": "$383B",
    "importance": 3,
    "articles": [
     {
@@ -853,50 +509,19 @@
    "eps_actual": "$1.05",
    "surprise": "+5.0%",
    "n_ests": "7",
-   "mktcap": "$249B",
+   "mktcap": "$222B",
    "importance": 3,
    "articles": [
     {
      "t": "KLA 실적 발표 임박, AI 칩 수요 속 밸류에이션 시험대",
      "u": "https://news.google.com/rss/articles/CBMia0FVX3lxTE5aT1U1a240cUpWaWE5REsyZGV0ZjZoeFplaDQxRC1iV2NleFEyQUdYdENORDRGdXU2ZHcyYWFMV0tTTFA4Vm40c3V4dURhbUZ0NHZSQy1PejVnRXVmNFgtTXdHQTZycU1TR05B?oc=5",
-     "s": "kr.investing.com",
+     "s": "Investing.com 한국어",
      "d": "2026-07-28"
     },
     {
      "t": "KLA의 실적은 월가의 예상치를 상회했으나, 투자자들의 높은 기대감으로 주가는 하락했다",
      "u": "https://news.google.com/rss/articles/CBMid0FVX3lxTE1SZ1gzbTVERTBFOHFiRmMzQXkxN1hKQm9ZMEN5RzVseUJ2TTI5d09VZFF2T0lUYWw1djlSLWdHRzJ2SUtuZFg3eGFWdWYwdHQ1T3NLNDhPYnRJVUtqY3VFTjJZeUVTSzN6aU9USmtkRnU0TFVHOEZB?oc=5",
      "s": "TradingView",
-     "d": "2026-07-28"
-    }
-   ]
-  },
-  {
-   "date": "2026-07-28",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Boeing Company (The)",
-   "ticker": "BA",
-   "session": "시간 미정",
-   "eps_est": "($0.34)",
-   "eps_prev": "",
-   "eps_actual": "($0.76)",
-   "surprise": "-123.5%",
-   "n_ests": "6",
-   "mktcap": "$175B",
-   "importance": 3,
-   "articles": [
-    {
-     "t": "Boeing Co (BA) 주식 움직였습니다 상승 5.04%에 7월28일: 변동을 뒷받침하는 사실",
-     "u": "https://news.google.com/rss/articles/CBMijAFBVV95cUxOTmdoQ1ZNbHpNS2lMaXllMEtiVThYOC1za212UlZ2OWs5cEF3QjBob2lPbzliYXdjUjdzaHE3dHE0YnFZMWtMMURVZ1RTMHlvYUJydDJDTDZDN0NIUHRzRXpXNzVTRmlNUDBrZ01HYUZodjR1MW11SzM5MXJ3LVYwcVhWZmlVa3JMZ1Q4Zw?oc=5",
-     "s": "tradingkey.com",
-     "d": "2026-07-28"
-    },
-    {
-     "t": "보잉, 2분기 실적 호조에 급등…월가, 향후 전망 엇갈려 : 해외증시",
-     "u": "https://news.google.com/rss/articles/CBMiSkFVX3lxTFBjd3ZjNEZta1FabFlvNUxfLU5HZnhqWW9iV0ZFbU1GLWRuckRyXzM5ZTg4OEUtVmxscTB3TDJIRmpqVlpoSXFYX1F3?oc=5",
-     "s": "재경일보",
      "d": "2026-07-28"
     }
    ]
@@ -915,7 +540,7 @@
    "eps_actual": "$5.48",
    "surprise": "+12.1%",
    "n_ests": "4",
-   "mktcap": "$168B",
+   "mktcap": "$174B",
    "importance": 3,
    "articles": [
     {
@@ -938,6 +563,37 @@
    "mk": "us",
    "type": "earnings",
    "index": "S&P500",
+   "title": "Boeing Company (The)",
+   "ticker": "BA",
+   "session": "시간 미정",
+   "eps_est": "($0.34)",
+   "eps_prev": "",
+   "eps_actual": "($0.76)",
+   "surprise": "-123.5%",
+   "n_ests": "6",
+   "mktcap": "$169B",
+   "importance": 3,
+   "articles": [
+    {
+     "t": "Boeing Co (BA) 주식 움직였습니다 상승 5.04%에 7월28일: 변동을 뒷받침하는 사실",
+     "u": "https://news.google.com/rss/articles/CBMijAFBVV95cUxOTmdoQ1ZNbHpNS2lMaXllMEtiVThYOC1za212UlZ2OWs5cEF3QjBob2lPbzliYXdjUjdzaHE3dHE0YnFZMWtMMURVZ1RTMHlvYUJydDJDTDZDN0NIUHRzRXpXNzVTRmlNUDBrZ01HYUZodjR1MW11SzM5MXJ3LVYwcVhWZmlVa3JMZ1Q4Zw?oc=5",
+     "s": "tradingkey.com",
+     "d": "2026-07-28"
+    },
+    {
+     "t": "보잉, 2분기 실적 호조에 급등…월가, 향후 전망 엇갈려 : 해외증시",
+     "u": "https://news.google.com/rss/articles/CBMiSkFVX3lxTFBjd3ZjNEZta1FabFlvNUxfLU5HZnhqWW9iV0ZFbU1GLWRuckRyXzM5ZTg4OEUtVmxscTB3TDJIRmpqVlpoSXFYX1F3?oc=5",
+     "s": "재경일보",
+     "d": "2026-07-28"
+    }
+   ]
+  },
+  {
+   "date": "2026-07-28",
+   "time": "",
+   "mk": "us",
+   "type": "earnings",
+   "index": "S&P500",
    "title": "S&P Global",
    "ticker": "SPGI",
    "session": "시간 미정",
@@ -946,13 +602,13 @@
    "eps_actual": "$4.83",
    "surprise": "+7.6%",
    "n_ests": "4",
-   "mktcap": "$126B",
+   "mktcap": "$124B",
    "importance": 3,
    "articles": [
     {
      "t": "S&P 글로벌, 2026년 2분기 실적 부진에 주가 하락",
      "u": "https://news.google.com/rss/articles/CBMib0FVX3lxTE5XZFpncUtwUzNHbW9LdVYxTmFLVDVqMlVRZU9lU0UyZ0ZDbmhxN0VFandQRDYyWTN2WlhQQzZSUnVldVlTOTlTbHJTZVJHREx4ODNCQ2tNRGxWVElsU1N0elJYVk1zRGwyWTl0cWZscw?oc=5",
-     "s": "kr.investing.com",
+     "s": "Investing.com 한국어",
      "d": "2026-07-28"
     },
     {
@@ -977,12 +633,12 @@
    "eps_actual": "$0.78",
    "surprise": "+2.6%",
    "n_ests": "5",
-   "mktcap": "$108B",
+   "mktcap": "$107B",
    "importance": 3,
    "articles": [
     {
      "t": "Wall Street Raises Corning Earnings Estimates on Optical and Life Sciences Strength",
-     "u": "https://news.google.com/rss/articles/CBMixwFBVV95cUxNaXppOUp1NUxWd09PRmVGRnFQeks4bGVwTlE2ZG1PUHcxakxTQW9UY09iUGlTTEpVZDh5YWVWZWpEYU1ScmMyX3Jpc3FhVlFNTHFxbjYwSWJVZmI5LWlMOEZmeVhSYnpZRkxxOUp3bzJINDNVZWpJUVhHN1lMN0lMZTU2NmtnYndBeFZ3MnowUF91ZXlRUlZEUndXZV9QT1ZwTjItR0RWaldULUpNVjNZRzhYYmVwN2ZNN3o1TktnLVRJNTh0RVVz?oc=5",
+     "u": "https://news.google.com/rss/articles/CBMixgFBVV95cUxQWUJRRFBkWmFPSXZLYmVHcW4xSkJfdmdaYXRDcjFjSURvcEREdC0yNEtCRjNQanhUQ2d3eXZCWlhCd1h4X18xaGhQdnpqYkRmQXVHZFRQTEItX3IzUXRZS3djb2xMUEszbXhlVUhDWjdRaFdPSEpEZE1Rems5LVZ0bkNBel9OakNmVjRWVkNJZTcxOGc3aXNtRnJjUzJicGlrQ244cm9xUUVBMFUxdDRhRlhMZllyZUg1YkV5SVR5dUVtOUVrY3c?oc=5",
      "s": "TIKR.com",
      "d": "2026-07-27"
     }
@@ -1002,7 +658,7 @@
    "eps_actual": "$2.02",
    "surprise": "+1.5%",
    "n_ests": "9",
-   "mktcap": "$96B",
+   "mktcap": "$95B",
    "importance": 2
   },
   {
@@ -1019,24 +675,7 @@
    "eps_actual": "$1.76",
    "surprise": "+6.7%",
    "n_ests": "9",
-   "mktcap": "$90B",
-   "importance": 2
-  },
-  {
-   "date": "2026-07-28",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Sherwin-Williams Company (The)",
-   "ticker": "SHW",
-   "session": "시간 미정",
-   "eps_est": "$3.56",
-   "eps_prev": "",
-   "eps_actual": "$3.70",
-   "surprise": "+3.9%",
-   "n_ests": "6",
-   "mktcap": "$87B",
+   "mktcap": "$89B",
    "importance": 2
   },
   {
@@ -1053,7 +692,7 @@
    "eps_actual": "$4.21",
    "surprise": "+6.0%",
    "n_ests": "7",
-   "mktcap": "$86B",
+   "mktcap": "$87B",
    "importance": 2
   },
   {
@@ -1070,8 +709,81 @@
    "eps_actual": "$2.84",
    "surprise": "+1.4%",
    "n_ests": "6",
-   "mktcap": "$85B",
+   "mktcap": "$84B",
    "importance": 2
+  },
+  {
+   "date": "2026-07-28",
+   "time": "",
+   "mk": "us",
+   "type": "earnings",
+   "index": "S&P500",
+   "title": "American Tower (REIT)",
+   "ticker": "AMT",
+   "session": "시간 미정",
+   "eps_est": "$2.65",
+   "eps_prev": "",
+   "eps_actual": "$2.71",
+   "surprise": "+2.3%",
+   "n_ests": "4",
+   "mktcap": "$84B",
+   "importance": 2
+  },
+  {
+   "date": "2026-07-29",
+   "time": "03:00",
+   "et": "14:00",
+   "mk": "us",
+   "type": "econ",
+   "title": "FOMC 성명",
+   "title_en": "FOMC Statement",
+   "importance": 3,
+   "forecast": "",
+   "previous": "",
+   "actual": "",
+   "category": "지표",
+   "articles": [
+    {
+     "t": "美금리 3.50∼3.75% 5연속 동결…연준 의장 \"인플레 2% 목표\"(종합2보)",
+     "u": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE85ODJES01OeGoxZWt1S3k2enBaMGtiSG9iWU1yZXpRdjNOMno4WFJlbG1LUkNPak1GMms5VVdnVHlVRGRxaVdka0szQTRRUzZucFl1blZQWXJGYk3SAWBBVV95cUxOMmhvY3N5V2ZfbTdFbXZaZDEyRXFsN0t1VzVyVU9PcS13aE9Iei1uUUNuXzJPYm1ZYnlZTEJnRTZvSlFnUVBkOXFaeVYxbGY3c09sS19KSVFZT0xoUUk2Q24?oc=5",
+     "s": "연합뉴스",
+     "d": "2026-07-29"
+    },
+    {
+     "t": "워시의 2번째 FOMC 금리동결 예상…\"시장, '인상' 이변에도 대비\" - 머니투데이",
+     "u": "https://news.google.com/rss/articles/CBMiaEFVX3lxTFBsTG15N2p2Q0JOUmpVUk94TFY0TFVweGRnVEY2R3AwN0xtdWNUOTBfN3dPSUl1TVV4TVlPVFpJalVTM2lXMl9UaHAwUExzdE5GeW1vQlJ0Q3RDbFlMbWFNNE4tZzBOckdx0gFuQVVfeXFMTjFBaUc3dC1lSWZWQmZlb05tRWdyNlhaT2pjQlpRVkoxb2tjMUhwUzBZWHRVZURjdXRXWGlfOUlMOWdPUkFZSGVrSDJPWkRTemZXTm5vVjdhZW03aWtxdE1EbzU3QlNWbDBTWVp0OEE?oc=5",
+     "s": "머니투데이",
+     "d": "2026-07-28"
+    }
+   ]
+  },
+  {
+   "date": "2026-07-29",
+   "time": "03:00",
+   "et": "14:00",
+   "mk": "us",
+   "type": "econ",
+   "title": "연준 기준금리 결정",
+   "title_en": "Fed Interest Rate Decision",
+   "importance": 3,
+   "forecast": "3.75%",
+   "previous": "3.75%",
+   "actual": "3.75%",
+   "category": "지표",
+   "articles": [
+    {
+     "t": "美금리 3.50∼3.75% 5연속 동결…연준 의장 \"인플레 2% 목표\"(종합2보)",
+     "u": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE85ODJES01OeGoxZWt1S3k2enBaMGtiSG9iWU1yZXpRdjNOMno4WFJlbG1LUkNPak1GMms5VVdnVHlVRGRxaVdka0szQTRRUzZucFl1blZQWXJGYk3SAWBBVV95cUxOMmhvY3N5V2ZfbTdFbXZaZDEyRXFsN0t1VzVyVU9PcS13aE9Iei1uUUNuXzJPYm1ZYnlZTEJnRTZvSlFnUVBkOXFaeVYxbGY3c09sS19KSVFZT0xoUUk2Q24?oc=5",
+     "s": "연합뉴스",
+     "d": "2026-07-29"
+    },
+    {
+     "t": "워시의 2번째 FOMC 금리동결 예상…\"시장, '인상' 이변에도 대비\" - 머니투데이",
+     "u": "https://news.google.com/rss/articles/CBMiaEFVX3lxTFBsTG15N2p2Q0JOUmpVUk94TFY0TFVweGRnVEY2R3AwN0xtdWNUOTBfN3dPSUl1TVV4TVlPVFpJalVTM2lXMl9UaHAwUExzdE5GeW1vQlJ0Q3RDbFlMbWFNNE4tZzBOckdx0gFuQVVfeXFMTjFBaUc3dC1lSWZWQmZlb05tRWdyNlhaT2pjQlpRVkoxb2tjMUhwUzBZWHRVZURjdXRXWGlfOUlMOWdPUkFZSGVrSDJPWkRTemZXTm5vVjdhZW03aWtxdE1EbzU3QlNWbDBTWVp0OEE?oc=5",
+     "s": "머니투데이",
+     "d": "2026-07-28"
+    }
+   ]
   },
   {
    "date": "2026-07-29",
@@ -1099,7 +811,7 @@
     {
      "t": "마이크로소프트 Q4 실적, 수익 예상치를 넘어",
      "u": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE5MZ25reDY5ekJSTkRRUVByRW5rbHNDbzh6QWllZkg4TmFDRGlwalItN1ZSS0Q0NXdvLUFrcnNmVHVmOEQ1WXBIWUUxYzliTl9xTjhmMlM5TGNjQzJGcnN4ZnBXRnI?oc=5",
-     "s": "kr.investing.com",
+     "s": "Investing.com 한국어",
      "d": "2026-07-29"
     }
    ]
@@ -1217,7 +929,7 @@
     {
      "t": "ARM Holdings, 7월 29일 실적 발표 시 주가 11% 변동 가능성",
      "u": "https://news.google.com/rss/articles/CBMid0FVX3lxTE1xblNoZlVLX19NWmhGZlphUGN2TVFraUJxdlM3dHZ4eERuTUpEX3o2TVl3M2xtRTZJTXVmYzc0MWQ3LXhUTE93aElvVktTekRCdFdXcW1UcTJuaG4tVm1jelYzaUVtYTF5bUN0SHc2SlpqWTg0dHk0?oc=5",
-     "s": "kr.investing.com",
+     "s": "Investing.com 한국어",
      "d": "2026-07-22"
     },
     {
@@ -1285,7 +997,7 @@
     {
      "t": "메모리 값 급등에 유탄 맞은 퀄컴... 실적 부진에 가격인상 예고",
      "u": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE5iejlhRnB3WjhrM3ZDNHk0bHIyaGJTanJmTnRFVVV0RjNmdFVxMF9wbU1pQkU0UGpGOU9uaEJhXzVPYkJuSDVzR0F1MDNWb2JPWm1IeHlmcEFrcjRJTHFLa204Mm9idw?oc=5",
-     "s": "디일렉",
+     "s": "thelec.kr",
      "d": "2026-07-30"
     }
    ]
@@ -1316,7 +1028,7 @@
     {
      "t": "스타벅스, 실적 발표 앞두고 턴어라운드 중대 기로",
      "u": "https://news.google.com/rss/articles/CBMia0FVX3lxTE9MZ2Z3d3FoQWdfNkV3RjUyYUU3Rmx5ZUxCZEhSd2pOOTV4QWpuUkhnc185eFY3aV9MQUZGbGJxZ3NYY0lqRGxiTU1lTTQzUzFHZ1AtYWxrbVVpOXRvaGRodkVRYU02UXVfTF9n?oc=5",
-     "s": "kr.investing.com",
+     "s": "Investing.com 한국어",
      "d": "2026-07-29"
     }
    ]
@@ -1341,7 +1053,7 @@
     {
      "t": "포티넷 실적 발표 임박: AI 수요에 주가 두 배 급등 후",
      "u": "https://news.google.com/rss/articles/CBMia0FVX3lxTE9YLUx6bm9kZjlJOGdtUHhhUjBZVkZTMWVubnVsdWFQTS1ib1ZNS0sxX3Z6bXFHVTlZeG9qdHlKbDN4LWtYRDJ3clBkeWVOYmFCRUVtZklHU0YyOVZzanpfVHdlYUtlOHZ3Q2VR?oc=5",
-     "s": "kr.investing.com",
+     "s": "Investing.com 한국어",
      "d": "2026-07-29"
     },
     {
@@ -1407,10 +1119,10 @@
      "d": "2026-07-26"
     },
     {
-     "t": "제너럴 다이내믹스 실적 발표 임박: 국방 대기업, 1분기 호실적 이어갈까?",
-     "u": "https://news.google.com/rss/articles/CBMia0FVX3lxTE1pRlF6Wi1IT05LaWtrT2g4VDBDRFZZS2ZXUFlDXzVkRnIzMERoQndwRUI4NmdrVmtpeWZUeGptTFJzeHJiZmNpRmlGdUdRVHBLdmQyR1ZqT1k0X3VVOVJuU0VLWC1TOHowcVhV?oc=5",
-     "s": "kr.investing.com",
-     "d": "2026-07-28"
+     "t": "제너럴 다이내믹스(GD)의 법무총괄 교체로 인해 경영진의 안정성에 대한 평가가 새롭게 바뀌게 된 것일까?",
+     "u": "https://news.google.com/rss/articles/CBMimwFBVV95cUxQTUFDajN2UkpTdlBUalJGRzM2amZ4TFNBRUhwTEN3clBIdEJsM3RUY0trV1Fycld0V084dVNCcEQ4MlF1aXB2cURDMGd6WlU2bG50VEk1bnBtQjI5akRMTkNOZHh2dDZMbXoxWEtlMnNOVlNqY0U1YTc2Y3k5bjJjS250bWcwb215Y3FiMGszYWVDaERiU1dEWGxoQdIBoAFBVV95cUxQLVBkYWtyUmx3LXYweXBkTEVEeG9TWU9NUlN3bnZPS1BQSzdfdGpMR0dvRUhqNlBHYnVCMmkxREdjZk1VM1FJZ3dOU0ZwQTE4QkhWdTBEWlF1WXE5U3hhN2t0aXlRSEY5VVM5c0RQOGFuOFlFSWhjaUQ0Q0NnUnB6dFpSc1Roa0tBeU5pWURTZGpWcmlaaDZZdlVtbHZQWDEy?oc=5",
+     "s": "simplywall.st",
+     "d": "2026-07-23"
     }
    ]
   },
@@ -1502,9 +1214,9 @@
    "category": "지표",
    "articles": [
     {
-     "t": "미국 6월 개인소비지출(PCE) 전월 대비 -0.1%...인플레이션 둔화 흐름",
-     "u": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNaEVodWhFNTkxVE1SMTkzTkJZXzhoUGZFYkhiYWhqdWlCZzhTZGduRHJYQ1kyMmxJRDQ1WkVPRFVrejZlZDQtZFoxTmczaDJtMVFWX21RVFhKbEFtTzFLc09nSVJPQ0sxaTVSOThuSkpobENxeTVUXzdkYmlscDJTNjlpOElsU3duUXlFalNB?oc=5",
-     "s": "조선일보",
+     "t": "미국 6월 PCE 물가 3.7% 상승…시장 전망 근접 - 조선비즈",
+     "u": "https://news.google.com/rss/articles/CBMingFBVV95cUxPbGgyMmZPS19ZZk1JT01TS19pRVFELUJYRVQ3ZHY4UlVrdFhCZ3FzN1hnRmNBMVN3NHdSejBtcU81ZlEtTXlKXzNOc3RZVzBWbHNxMmhDeWZVNE9pR01VdUlIX3JBVHVpb3NCdEp3aE1zdXA4dTBCaVk3Q0FnUmJIQWpla3BKUFZyd0NwbmNCbGNFSWxJbHZhMm1PQk1Ld9IBsgFBVV95cUxPNnVBSnNXcTlGbWRuelZjTGx3NjhTOC1wNjM4dHYtRnJhLTNtS0xaenV3TGNaa1pQb2ZRSkhLaWNvaWJ3bUVDbDB5MncxTlU0M210RTYtX1htRGdRNTBUN1cwdXNrRFFneWhyaEpKZDlOTjQwTDFDYUhVeEI3SE9PUjdaZkhzVnh0WWNxYVZtc0NMNEphdlJWR2hOZGdhRFhCcllKek5nWmRFak4zZllUWHN3?oc=5",
+     "s": "Chosunbiz",
      "d": "2026-07-30"
     },
     {
@@ -1530,9 +1242,9 @@
    "category": "지표",
    "articles": [
     {
-     "t": "미국 6월 개인소비지출(PCE) 전월 대비 -0.1%...인플레이션 둔화 흐름",
-     "u": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNaEVodWhFNTkxVE1SMTkzTkJZXzhoUGZFYkhiYWhqdWlCZzhTZGduRHJYQ1kyMmxJRDQ1WkVPRFVrejZlZDQtZFoxTmczaDJtMVFWX21RVFhKbEFtTzFLc09nSVJPQ0sxaTVSOThuSkpobENxeTVUXzdkYmlscDJTNjlpOElsU3duUXlFalNB?oc=5",
-     "s": "조선일보",
+     "t": "미국 6월 PCE 물가 3.7% 상승…시장 전망 근접 - 조선비즈",
+     "u": "https://news.google.com/rss/articles/CBMingFBVV95cUxPbGgyMmZPS19ZZk1JT01TS19pRVFELUJYRVQ3ZHY4UlVrdFhCZ3FzN1hnRmNBMVN3NHdSejBtcU81ZlEtTXlKXzNOc3RZVzBWbHNxMmhDeWZVNE9pR01VdUlIX3JBVHVpb3NCdEp3aE1zdXA4dTBCaVk3Q0FnUmJIQWpla3BKUFZyd0NwbmNCbGNFSWxJbHZhMm1PQk1Ld9IBsgFBVV95cUxPNnVBSnNXcTlGbWRuelZjTGx3NjhTOC1wNjM4dHYtRnJhLTNtS0xaenV3TGNaa1pQb2ZRSkhLaWNvaWJ3bUVDbDB5MncxTlU0M210RTYtX1htRGdRNTBUN1cwdXNrRFFneWhyaEpKZDlOTjQwTDFDYUhVeEI3SE9PUjdaZkhzVnh0WWNxYVZtc0NMNEphdlJWR2hOZGdhRFhCcllKek5nWmRFak4zZllUWHN3?oc=5",
+     "s": "Chosunbiz",
      "d": "2026-07-30"
     },
     {
@@ -1558,16 +1270,16 @@
    "category": "지표",
    "articles": [
     {
+     "t": "미국 근원 개인소비지출물가지수(2026년 6월) - 이전: 3.4% 예상: 3.3%",
+     "u": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE5nNF9SdDNFcGVlNHhQekE5cVVLZmdDRktaUzhaZC1remlLNEZjV3ZGbVhLUEdHRGVKZU5ZZGpPeXRUQ1lHNldfMS15T09QY0JUX1E?oc=5",
+     "s": "EBC Financial Group",
+     "d": "2026-07-30"
+    },
+    {
      "t": "미국 6월 PCE 인플레이션 둔화, 근원 지표 3.3%로 하락하며 연준 정책 압력 완화",
      "u": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxOT2ViNzd5bldkWGN1SWNTSmNIQTdkaVc2N3RZOWNFWElpRnhpOFZWbnY0VEJqZ0Jrd2ZQNVFqYkk0djBNT0dEQ1VjN1ZzN014S1JqNXFfVThabWMxSElFMTBsQVZJaU1RS05rMFlTTUZoTnhoejFsOWZTZVdqQ280eTFsUGEwUTZXT1I4OTRISEpBaVZsYlVJQ1VTMU5JalAyUkxFZlhTQkFKUDVucXAycG5CLWR6VmV0bE5ZREticnUwN2RYU2RLQ2FxLUxHRHBnQzZZMkc5bw?oc=5",
      "s": "tradingkey.com",
      "d": "2026-07-29"
-    },
-    {
-     "t": "US Dollar: Fed inflation framework questions – Commerzbank",
-     "u": "https://news.google.com/rss/articles/CBMivgFBVV95cUxPdTdRblY1OGRQT1N1d1lwTlJ2US1GZHRESkROVmVoX2JSM2NzSVZ5cWdqV3hIWlE1ZXlsRTdmdVpFY3ZfMXR3OGpFRWUwenY4Z1dBbXRSMGRwMDVFekhxenAxaDAwU1RlZFVIMkYtZFVvOVhEREI1cndnclVhRG93ajNvNUtIMHV5NlZpLXZZc2F0NUVxOFczUm81SXB6S3JsUi00NUhncUJ6czBBb1BfMklNTUstN0tOWjI0LS13?oc=5",
-     "s": "TMGM trading",
-     "d": "2026-07-21"
     }
    ]
   },
@@ -1586,15 +1298,15 @@
    "category": "지표",
    "articles": [
     {
-     "t": "[양기태의 글로벌 경제 읽기] 미국 경제의 엔진",
-     "u": "https://news.google.com/rss/articles/CBMiS0FVX3lxTE5rTHJURndMOVB5ZVpubmVlNjhIZFdHbFdUMTkxUHJhMFF3NjV2dGdNSG9KV21yenQ3a0s0WURLYTRQb1g1VmN1U2dSVQ?oc=5",
-     "s": "v.daum.net",
-     "d": "2026-07-22"
+     "t": "[그래픽] 미국 경제성장률 추이",
+     "u": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE1SeFhLb0JRQ0hic010Z1JndFdjTmVFaUczM0ZLNUtfQkFIT1Y3SGptUlNLWURCM3RCdTYtc056elFZQzRRaFVYQURpVlhBSU9wTWpaeWJScWo4S3ZEcTZMedIBYEFVX3lxTE1SeFhLb0JRQ0hic010Z1JndFdjTmVFaUczM0ZLNUtfQkFIT1Y3SGptUlNLWURCM3RCdTYtc056elFZQzRRaFVYQURpVlhBSU9wTWpaeWJScWo4S3ZEcTZMeQ?oc=5",
+     "s": "연합뉴스",
+     "d": "2026-07-30"
     },
     {
-     "t": "미국 2분기 경제 성장률 ‘1.5%’···전문가 전망치 밑돌아",
-     "u": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE55SXRFM0VCd1R4RF9CTUFIWTNBemFZVjVzM3gza2V3UmdGOEpwVkdkNzZBb2c2VW1Ka1dmSjlVRVZhMGZVdzNJZkxOVHVIMHVrZzB2NVhaWVdwd9IBX0FVX3lxTE9aS0tEeU1nUHY0VFlqN1ZBUWJwYllqM21ORjN5LWVZSF9RNllsWE9UOVU3Z081Vkdka2FtdWJpLThJRDVzVi1FdS1YMGVxeXdMemNDc044bkhOT3dqVENJ?oc=5",
-     "s": "경향신문",
+     "t": "美 2분기 GDP 성장률 속보치 1.5%…예상보다 부진(종합)",
+     "u": "https://news.google.com/rss/articles/CBMicEFVX3lxTFBHVXVOTFhJNml6amlISUZscEZfREQ4ZUdPZGVEdFBTemtpazBNRF9Uekw0S0kxOFZGa3QtMHp4QUl0NnNmSjE2VlJ3emF4dWE1dGpFc1pnOU0zeVJ3YXFaRmZPLTBTLTYydHFCZDNoWXU?oc=5",
+     "s": "연합인포맥스",
      "d": "2026-07-30"
     }
    ]
@@ -1614,15 +1326,15 @@
    "category": "지표",
    "articles": [
     {
-     "t": "[양기태의 글로벌 경제 읽기] 미국 경제의 엔진",
-     "u": "https://news.google.com/rss/articles/CBMiS0FVX3lxTE5rTHJURndMOVB5ZVpubmVlNjhIZFdHbFdUMTkxUHJhMFF3NjV2dGdNSG9KV21yenQ3a0s0WURLYTRQb1g1VmN1U2dSVQ?oc=5",
-     "s": "v.daum.net",
-     "d": "2026-07-22"
+     "t": "[그래픽] 미국 경제성장률 추이",
+     "u": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE1SeFhLb0JRQ0hic010Z1JndFdjTmVFaUczM0ZLNUtfQkFIT1Y3SGptUlNLWURCM3RCdTYtc056elFZQzRRaFVYQURpVlhBSU9wTWpaeWJScWo4S3ZEcTZMedIBYEFVX3lxTE1SeFhLb0JRQ0hic010Z1JndFdjTmVFaUczM0ZLNUtfQkFIT1Y3SGptUlNLWURCM3RCdTYtc056elFZQzRRaFVYQURpVlhBSU9wTWpaeWJScWo4S3ZEcTZMeQ?oc=5",
+     "s": "연합뉴스",
+     "d": "2026-07-30"
     },
     {
-     "t": "미국 2분기 경제 성장률 ‘1.5%’···전문가 전망치 밑돌아",
-     "u": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE55SXRFM0VCd1R4RF9CTUFIWTNBemFZVjVzM3gza2V3UmdGOEpwVkdkNzZBb2c2VW1Ka1dmSjlVRVZhMGZVdzNJZkxOVHVIMHVrZzB2NVhaWVdwd9IBX0FVX3lxTE9aS0tEeU1nUHY0VFlqN1ZBUWJwYllqM21ORjN5LWVZSF9RNllsWE9UOVU3Z081Vkdka2FtdWJpLThJRDVzVi1FdS1YMGVxeXdMemNDc044bkhOT3dqVENJ?oc=5",
-     "s": "경향신문",
+     "t": "美 2분기 GDP 성장률 속보치 1.5%…예상보다 부진(종합)",
+     "u": "https://news.google.com/rss/articles/CBMicEFVX3lxTFBHVXVOTFhJNml6amlISUZscEZfREQ4ZUdPZGVEdFBTemtpazBNRF9Uekw0S0kxOFZGa3QtMHp4QUl0NnNmSjE2VlJ3emF4dWE1dGpFc1pnOU0zeVJ3YXFaRmZPLTBTLTYydHFCZDNoWXU?oc=5",
+     "s": "연합인포맥스",
      "d": "2026-07-30"
     }
    ]
@@ -1642,15 +1354,15 @@
    "category": "지표",
    "articles": [
     {
-     "t": "[양기태의 글로벌 경제 읽기] 미국 경제의 엔진",
-     "u": "https://news.google.com/rss/articles/CBMiS0FVX3lxTE5rTHJURndMOVB5ZVpubmVlNjhIZFdHbFdUMTkxUHJhMFF3NjV2dGdNSG9KV21yenQ3a0s0WURLYTRQb1g1VmN1U2dSVQ?oc=5",
-     "s": "v.daum.net",
-     "d": "2026-07-22"
+     "t": "[그래픽] 미국 경제성장률 추이",
+     "u": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE1SeFhLb0JRQ0hic010Z1JndFdjTmVFaUczM0ZLNUtfQkFIT1Y3SGptUlNLWURCM3RCdTYtc056elFZQzRRaFVYQURpVlhBSU9wTWpaeWJScWo4S3ZEcTZMedIBYEFVX3lxTE1SeFhLb0JRQ0hic010Z1JndFdjTmVFaUczM0ZLNUtfQkFIT1Y3SGptUlNLWURCM3RCdTYtc056elFZQzRRaFVYQURpVlhBSU9wTWpaeWJScWo4S3ZEcTZMeQ?oc=5",
+     "s": "연합뉴스",
+     "d": "2026-07-30"
     },
     {
-     "t": "미국 2분기 경제 성장률 ‘1.5%’···전문가 전망치 밑돌아",
-     "u": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE55SXRFM0VCd1R4RF9CTUFIWTNBemFZVjVzM3gza2V3UmdGOEpwVkdkNzZBb2c2VW1Ka1dmSjlVRVZhMGZVdzNJZkxOVHVIMHVrZzB2NVhaWVdwd9IBX0FVX3lxTE9aS0tEeU1nUHY0VFlqN1ZBUWJwYllqM21ORjN5LWVZSF9RNllsWE9UOVU3Z081Vkdka2FtdWJpLThJRDVzVi1FdS1YMGVxeXdMemNDc044bkhOT3dqVENJ?oc=5",
-     "s": "경향신문",
+     "t": "美 2분기 GDP 성장률 속보치 1.5%…예상보다 부진(종합)",
+     "u": "https://news.google.com/rss/articles/CBMicEFVX3lxTFBHVXVOTFhJNml6amlISUZscEZfREQ4ZUdPZGVEdFBTemtpazBNRF9Uekw0S0kxOFZGa3QtMHp4QUl0NnNmSjE2VlJ3emF4dWE1dGpFc1pnOU0zeVJ3YXFaRmZPLTBTLTYydHFCZDNoWXU?oc=5",
+     "s": "연합인포맥스",
      "d": "2026-07-30"
     }
    ]
@@ -1670,9 +1382,9 @@
    "category": "지표",
    "articles": [
     {
-     "t": "미국 6월 개인소비지출(PCE) 전월 대비 -0.1%...인플레이션 둔화 흐름",
-     "u": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNaEVodWhFNTkxVE1SMTkzTkJZXzhoUGZFYkhiYWhqdWlCZzhTZGduRHJYQ1kyMmxJRDQ1WkVPRFVrejZlZDQtZFoxTmczaDJtMVFWX21RVFhKbEFtTzFLc09nSVJPQ0sxaTVSOThuSkpobENxeTVUXzdkYmlscDJTNjlpOElsU3duUXlFalNB?oc=5",
-     "s": "조선일보",
+     "t": "미국 6월 PCE 물가 3.7% 상승…시장 전망 근접 - 조선비즈",
+     "u": "https://news.google.com/rss/articles/CBMingFBVV95cUxPbGgyMmZPS19ZZk1JT01TS19pRVFELUJYRVQ3ZHY4UlVrdFhCZ3FzN1hnRmNBMVN3NHdSejBtcU81ZlEtTXlKXzNOc3RZVzBWbHNxMmhDeWZVNE9pR01VdUlIX3JBVHVpb3NCdEp3aE1zdXA4dTBCaVk3Q0FnUmJIQWpla3BKUFZyd0NwbmNCbGNFSWxJbHZhMm1PQk1Ld9IBsgFBVV95cUxPNnVBSnNXcTlGbWRuelZjTGx3NjhTOC1wNjM4dHYtRnJhLTNtS0xaenV3TGNaa1pQb2ZRSkhLaWNvaWJ3bUVDbDB5MncxTlU0M210RTYtX1htRGdRNTBUN1cwdXNrRFFneWhyaEpKZDlOTjQwTDFDYUhVeEI3SE9PUjdaZkhzVnh0WWNxYVZtc0NMNEphdlJWR2hOZGdhRFhCcllKek5nWmRFak4zZllUWHN3?oc=5",
+     "s": "Chosunbiz",
      "d": "2026-07-30"
     },
     {
@@ -1698,9 +1410,9 @@
    "category": "지표",
    "articles": [
     {
-     "t": "미국 6월 개인소비지출(PCE) 전월 대비 -0.1%...인플레이션 둔화 흐름",
-     "u": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNaEVodWhFNTkxVE1SMTkzTkJZXzhoUGZFYkhiYWhqdWlCZzhTZGduRHJYQ1kyMmxJRDQ1WkVPRFVrejZlZDQtZFoxTmczaDJtMVFWX21RVFhKbEFtTzFLc09nSVJPQ0sxaTVSOThuSkpobENxeTVUXzdkYmlscDJTNjlpOElsU3duUXlFalNB?oc=5",
-     "s": "조선일보",
+     "t": "미국 6월 PCE 물가 3.7% 상승…시장 전망 근접 - 조선비즈",
+     "u": "https://news.google.com/rss/articles/CBMingFBVV95cUxPbGgyMmZPS19ZZk1JT01TS19pRVFELUJYRVQ3ZHY4UlVrdFhCZ3FzN1hnRmNBMVN3NHdSejBtcU81ZlEtTXlKXzNOc3RZVzBWbHNxMmhDeWZVNE9pR01VdUlIX3JBVHVpb3NCdEp3aE1zdXA4dTBCaVk3Q0FnUmJIQWpla3BKUFZyd0NwbmNCbGNFSWxJbHZhMm1PQk1Ld9IBsgFBVV95cUxPNnVBSnNXcTlGbWRuelZjTGx3NjhTOC1wNjM4dHYtRnJhLTNtS0xaenV3TGNaa1pQb2ZRSkhLaWNvaWJ3bUVDbDB5MncxTlU0M210RTYtX1htRGdRNTBUN1cwdXNrRFFneWhyaEpKZDlOTjQwTDFDYUhVeEI3SE9PUjdaZkhzVnh0WWNxYVZtc0NMNEphdlJWR2hOZGdhRFhCcllKek5nWmRFak4zZllUWHN3?oc=5",
+     "s": "Chosunbiz",
      "d": "2026-07-30"
     },
     {
@@ -1726,16 +1438,16 @@
    "category": "지표",
    "articles": [
     {
-     "t": "美 6월 근원 PCE 가격지수 전월비 0.1%↑…상승세 완만(상보)",
-     "u": "https://news.google.com/rss/articles/CBMickFVX3lxTE5pZU5NeG5zalpJbUJBSmRFZkVpRzNfYXZwMnFxWm0wUVgzXzlfekd4YW43TGV1SlFrdTBFNXZWdlFmNmxXYnFxZzNNV1Nvb0tzd3YxMEk0Rm9YN1JTdDRtTFBpUTRqcnlaWTlOTFZEdUNzdw?oc=5",
-     "s": "KB Think",
+     "t": "美 6월 근원 PCE 가격지수 전월비 0.1%↑…상승세 완만(종합)",
+     "u": "https://news.google.com/rss/articles/CBMicEFVX3lxTE5qT2hWa1VNNnEyTmZpTkV1MzRtcDFOZFUxYTVFYk1jUVpCei1JeGhsV291eDVHQllPMHRieVEtcGpjUFAwQkpsRHd0Q0pPOFE4QklnMGFpc2lQSHBURzhrb18wRE14MzcwbFNrUC0tTlQ?oc=5",
+     "s": "연합인포맥스",
      "d": "2026-07-30"
     },
     {
-     "t": "WSJ \"PCE 지표 측정방식 일부 변경…0.2%p 하락 효과\"",
-     "u": "https://news.google.com/rss/articles/CBMiW0FVX3lxTFBxTFk5Um5pcFl6QnZUcE96eVdieHlOODJHbUo4ZzI0U3Y1bXFUcEhxVzhRYjlPX3BEN2F0TWxtczZTLWxjdU4zWThxamdDcmxMdnkwNUJwQUNuYzTSAWBBVV95cUxQU0RlMUhaRHdDU1VOd3FHeW9hem1YQ2JQTlhXRVJoazJkNFZVVl8zaDNsa2Q0SEhnaWZvZlMwTVA4WnNQQVpTcDZROF9GMEFhSG5ySk5EOG5PUnNNR1BLZ24?oc=5",
-     "s": "연합뉴스",
-     "d": "2026-07-20"
+     "t": "미국 6월 개인소비지출(PCE) 전월 대비 -0.1%...인플레이션 둔화 흐름",
+     "u": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNaEVodWhFNTkxVE1SMTkzTkJZXzhoUGZFYkhiYWhqdWlCZzhTZGduRHJYQ1kyMmxJRDQ1WkVPRFVrejZlZDQtZFoxTmczaDJtMVFWX21RVFhKbEFtTzFLc09nSVJPQ0sxaTVSOThuSkpobENxeTVUXzdkYmlscDJTNjlpOElsU3duUXlFalNB?oc=5",
+     "s": "조선일보",
+     "d": "2026-07-30"
     }
    ]
   },
@@ -1794,322 +1506,6 @@
    "previous": "0.9%",
    "actual": "0.3%",
    "category": "지표"
-  },
-  {
-   "date": "2026-07-30",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "애플",
-   "ticker": "AAPL",
-   "session": "장 마감 후",
-   "eps_est": "$1.88",
-   "eps_prev": "$1.57",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "11",
-   "mktcap": "$4.99T",
-   "importance": 3,
-   "articles": [
-    {
-     "t": "[외신 헤드라인] 애플 실적발표 앞두고 콜옵션 매수↑",
-     "u": "https://news.google.com/rss/articles/CBMiT0FVX3lxTE9wNmlsR3lQQjZqZ011RlNkZk9GUVZTSkRzdDM2SlhmRGxmWVhZdlM2cmZmZmU1QXh0XzlWMzdTQkFwM1Rwc3h4Q3RHeHF4Nk0?oc=5",
-     "s": "v.daum.net",
-     "d": "2026-07-27"
-    },
-    {
-     "t": "빅테크 중 애플에 거는 기대…실적발표 앞두고 콜옵션 매수↑",
-     "u": "https://news.google.com/rss/articles/CBMicEFVX3lxTE1QdjVPVEJXWU9RQlBNRHpDUnhoQldVQkdRUEtfMnhheVJwbktZQzdvMGZRNVlsNWY1T0FMR1NPTU9tS1pWRWI0ek5hN3FETlM1QWMzX1AyVjVPa2ZxUGtSS0tUbDRGX3F2bDFzcTRjOGw?oc=5",
-     "s": "연합인포맥스",
-     "d": "2026-07-27"
-    }
-   ]
-  },
-  {
-   "date": "2026-07-30",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "아마존",
-   "ticker": "AMZN",
-   "session": "장 마감 후",
-   "eps_est": "$1.83",
-   "eps_prev": "$1.68",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "13",
-   "mktcap": "$2.48T",
-   "importance": 3,
-   "articles": [
-    {
-     "t": "MS·메타·아마존 실적발표에 쏠린 눈 '자본지출' 아닌 '잉여현금흐름' 보라",
-     "u": "https://news.google.com/rss/articles/CBMiTkFVX3lxTFAyOGU3dUpsZ0M5M2FGdExHNDdLS204MFA1S3B0dnZnd09zaWxIQ19MSmgtcnQ5VFBVRTE1RHhId3U2UXdZSUk0ME5QNGl5UQ?oc=5",
-     "s": "매일경제",
-     "d": "2026-07-28"
-    },
-    {
-     "t": "커지는 빅테크 AI 투자 부담…실적발표 앞두고 월가 긴장",
-     "u": "https://news.google.com/rss/articles/CBMiW0FVX3lxTFBwUTZ6S2dzcnBEM1kzVGt6NW9Bd21oWG5QS2h2UXhDaDJwUXlUdEMybGNNeUtoS1lwWGdnTFJEUGRZRmR0UGhkd2pJY0dSVTFjT1pVMDFlazdQXzDSAWBBVV95cUxNNUpQRlhHcHYyR1ExdFgzVV9VSG90TldWSlBBYWZWcXp0VjgtWXNmZnlDbDMwbzBpQ0NuVWhZcE1ITDZGSEt5cklmQ1E2MEhWTDVfRjlLMnkxMExaSmhuUXk?oc=5",
-     "s": "연합뉴스",
-     "d": "2026-07-28"
-    }
-   ]
-  },
-  {
-   "date": "2026-07-30",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Mastercard Incorporated",
-   "ticker": "MA",
-   "session": "장 시작 전",
-   "eps_est": "$4.77",
-   "eps_prev": "$4.15",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "12",
-   "mktcap": "$497B",
-   "importance": 3,
-   "articles": [
-    {
-     "t": "Mastercard Has a 60% Operating Margin and Hasn’t Had a Down Revenue Year in Over a Decade",
-     "u": "https://news.google.com/rss/articles/CBMitwFBVV95cUxQcDdFb2p6dFl4VmZJbFVrMmIyNVBwNGdpUkVYbEJwck1SOWNjU0x4NkNCTTU1OWt4ZFIxLXd0VzBETHJMMnVJWmo5WTMyTXFxaTZ3dVgzVjZBWDgxRmFZWkt0SzJZMVdNTnpseWQzOVJkc19WMXd5QlI1ZWJybGh6SkZldjRjNjh1RkphOHNlS3ZHQVk5cEZscWZ2TTVBV0RxRkNVdFhwY2VOTHBPNWJjQV81dmhXWFU?oc=5",
-     "s": "TIKR.com",
-     "d": "2026-07-29"
-    },
-    {
-     "t": "美 증시 2%대 급락...애플(AAPL)·아마존(AMZN)이 살릴까",
-     "u": "https://news.google.com/rss/articles/CBMiSkFVX3lxTE13N1Q5RHQxOE1iajA1VFZqS25PaXdMeWw0YXN1MDZBeXB0Q3ZWbkRENG81d2NaSjlZV1JXUVhNUEZHOVl1SFEwUThR?oc=5",
-     "s": "코인리더스",
-     "d": "2026-07-30"
-    }
-   ]
-  },
-  {
-   "date": "2026-07-30",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Stryker",
-   "ticker": "SYK",
-   "session": "장 마감 후",
-   "eps_est": "$3.46",
-   "eps_prev": "$3.13",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "7",
-   "mktcap": "$133B",
-   "importance": 3,
-   "articles": [
-    {
-     "t": "Stryker Corp (SYK) 주식 움직였습니다 상승 3.15%에 7월24일: 전체 분석",
-     "u": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNa2NPNlR5LWpWaXMxbkFCcnVhTzFzRXVoVjlQcnJpNjlKbzZ3NmhsNE5Tb1J3UGRwakJkd0h1OTVDcWh0OWFYOUo0SkNBTHRwWFF4dE9wZGRSOEJHVGdWQmR6RlgwTVdhbTlRNjBYQkN5cDU1R3YwQ2NzbmxnaUxfTXpTZ0RteUdFWEtRQmF3?oc=5",
-     "s": "tradingkey.com",
-     "d": "2026-07-24"
-    },
-    {
-     "t": "스트라이커(SYK) 주가는 공정가치 수준에 근접한 실적을 기록하고 있음에도 불구하고 공정가치보다 낮을 수 있다",
-     "u": "https://news.google.com/rss/articles/CBMijAFBVV95cUxOcl8zbzFJazRPWnVlQ3lWMjlxbWxNZTJaRVJxYkhuaHFoZW40MkpHalZHRWY1SmtsRlVVSDZ5Znl1VWppeDFxd1J1Tm4wTmViajI3ZEJKNGNMOXk4MHNUblJ2VnBmbnNsUWoyXzBVNkJLOW9yU0xuWEFsWFh3RENwRkl2SHlfWjViazFYONIBkgFBVV95cUxOZE5lWDRqZV9UQ0NrZmNjcHg0S1oyeWFsZFowNi1wd2Q4V3ZkQUtuQ1hTcVM1SEI1TTlpREpuOFpTQV9FaGxoSVVERmVyZ0swU0pCMUYxWEpOZkFPa0RKYlFBR1lNWFlHVjBneGsxa1lWakFlaElnUDJGZG5TUDlreUozVVJXSklzSlhTN1Vkb0t3dw?oc=5",
-     "s": "simplywall.st",
-     "d": "2026-07-18"
-    }
-   ]
-  },
-  {
-   "date": "2026-07-30",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Bristol-Myers Squibb Company",
-   "ticker": "BMY",
-   "session": "장 시작 전",
-   "eps_est": "$1.59",
-   "eps_prev": "$1.46",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "8",
-   "mktcap": "$130B",
-   "importance": 3,
-   "articles": [
-    {
-     "t": "BMY|Bristol-Myers Squibb Co|가격:63.593|Chg%:-0.007",
-     "u": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE9lSm9wV2o0WjdUV2tyU1hfajV0WFUyR0t2VHBHYnQzMFRQcF96ZlcxSEdDOGVERUZTNTNpNENHa24zQ2xUdVc3akhGcU1wY2xnWU5YV1kteDZPSVVaNDFVWUczYlRjQ2s?oc=5",
-     "s": "tradingkey.com",
-     "d": "2026-07-28"
-    },
-    {
-     "t": "FDA, Bristol Myers Squibb의 mezigdomide 신청 승인",
-     "u": "https://news.google.com/rss/articles/CBMicEFVX3lxTE53ZUhxemNZMnI1ZEluU0dsUVA4UzVCZU9XRnQ1c3JDeUE3eFBIaEwzdHJ4YUhyQVFpa0RCTmVVc1NRLXpxZjFSN2c4SW11akNfeDBjZ1pnV250Z2paYmtEVWtneHM2eG9Bbm9WaXcwRUQ?oc=5",
-     "s": "kr.investing.com",
-     "d": "2026-07-13"
-    }
-   ]
-  },
-  {
-   "date": "2026-07-30",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Altria Group",
-   "ticker": "MO",
-   "session": "장 시작 전",
-   "eps_est": "$1.50",
-   "eps_prev": "$1.44",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "4",
-   "mktcap": "$125B",
-   "importance": 3,
-   "articles": [
-    {
-     "t": "알트리아 그룹(MO)의 실적 상향 조정이 주주들에게 어떤 의미를 갖는가",
-     "u": "https://news.google.com/rss/articles/CBMioAFBVV95cUxPQkViTDl2Q05Zb3owOG9YdERpV3BWaUd2UzRNVFFOWlZBSUZnSjAxSHRRM0JqNk80alBNUENlVC1ZVkdTUnZvYXdwdWNTLUVxMVlxQUVtS1E5dnVsektNOXBDaDIwVFBuOWg0SnFQR2s1MzFhUGlCdXNhRjltSXh1aGN1NVdyb3FRWHRuUG1lcU9iWUlJZkxha2IxTWxGb1pM0gGmAUFVX3lxTFBPUGFOZ2RmREpiYWI2YUlCVE5SdU5zeFAxLWFYdi1VWVIyZzNRS3NwUHhsenU5dG1RelR2ejJxMy1BOGw0bGpScFdYbVMydk9GM0xaV05xcGtMakpaNVVRUDY1UXJNbzlkc3dJLU1fQWZ2cmdMS0hVS2VOM0ZUS0ZOWFl1RnZHUFEwMUNlUWdpVUgwWDZPRzBIak42SXVfcTRWakxKZnc?oc=5",
-     "s": "simplywall.st",
-     "d": "2026-07-25"
-    },
-    {
-     "t": "알트리아 그룹, 실적 부진에 주가 하락하며 가이던스 축소",
-     "u": "https://news.google.com/rss/articles/CBMia0FVX3lxTE80MjRKR0JNUk1XTUxtWDFuLWVIMmRWLUxJd19XM1dudDhMLWRybGNDTjhZemw0OTRMNzZlejYyTEIzdFk1SFBMV0stVEVpd3dQSXZhNTBTQWZHY2xQSkJpdzdZNTdzek1PLXhj?oc=5",
-     "s": "kr.investing.com",
-     "d": "2026-07-30"
-    }
-   ]
-  },
-  {
-   "date": "2026-07-30",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Southern Company (The)",
-   "ticker": "SO",
-   "session": "장 시작 전",
-   "eps_est": "$1",
-   "eps_prev": "$0.91",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "6",
-   "mktcap": "$109B",
-   "importance": 3,
-   "articles": [
-    {
-     "t": "SO|Southern Co|가격:95.910|Chg%:-0.870",
-     "u": "https://news.google.com/rss/articles/CBMiakFVX3lxTE5CbnN6N2tHZTVhMXpaV2hZU0JxTUdTLThCbGdwZVlBeUctUjNrRHA4clZYWUFkQ1p0VnE0dHFxVll1M0k0Q0pPcmVfcS0wcHZqS0UtcWJnLVFHcVlRSThQWEhBVzFYbXNmYWc?oc=5",
-     "s": "tradingkey.com",
-     "d": "2026-07-29"
-    },
-    {
-     "t": "서던, 2분기 순이익 11억 7400만 달러 기록... 전년 대비 33.4% 증가",
-     "u": "https://news.google.com/rss/articles/CBMic0FVX3lxTE9ORVI0Q2tyT3Q3TUkwME1RVUtyLUhITjRIQjJNQXprYUNET2xJSkxpVFV5b21BTXhTN2pscnNoSURwT3VzcnltMVk1dm1LVHc5dTk2dVFIYm14dFR1RzJUQzZMaDVrb3poWUpMREZFdVdibzQ?oc=5",
-     "s": "데이터투자",
-     "d": "2026-07-30"
-    }
-   ]
-  },
-  {
-   "date": "2026-07-30",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Trane Technologies plc",
-   "ticker": "TT",
-   "session": "장 시작 전",
-   "eps_est": "$4.27",
-   "eps_prev": "$3.88",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "4",
-   "mktcap": "$104B",
-   "importance": 3,
-   "articles": [
-    {
-     "t": "데이터센터 성장 동력, 트레인 테크놀로지 실적 좌우할까",
-     "u": "https://news.google.com/rss/articles/CBMia0FVX3lxTE94ZmtaZlc4NWQwcXVld2NsWVBiMlBBN1NHRjh4emVETEU4WVdVVFFHZ1JvM1BiY1JzOEJUZGxQVWJXbkNndWo1Qm1CMnFQMWN0TnM1ZTZYUmxlM2VzeWd6RVN4NnJXT0JoX29N?oc=5",
-     "s": "kr.investing.com",
-     "d": "2026-07-29"
-    },
-    {
-     "t": "TT|Trane Technologies PLC|가격:447.350|Chg%:-22.680",
-     "u": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE8tMk9vVWRFZW5iZFZUd09KQjM5ZW1HUFJDV2gwS2YwNU5LVnR1M2N0ckxTanJQQTd0d3U4a1h5YUFTTjYzWjBsTUZod1FXTkZIYnMzdkoxbndIVTF6NVdjRWplbkNuZw?oc=5",
-     "s": "tradingkey.com",
-     "d": "2026-07-28"
-    }
-   ]
-  },
-  {
-   "date": "2026-07-30",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "KKR & Co.",
-   "ticker": "KKR",
-   "session": "장 시작 전",
-   "eps_est": "$1.27",
-   "eps_prev": "$1",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "6",
-   "mktcap": "$92B",
-   "importance": 2
-  },
-  {
-   "date": "2026-07-30",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Valero Energy",
-   "ticker": "VLO",
-   "session": "장 시작 전",
-   "eps_est": "$9.87",
-   "eps_prev": "$2.28",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "5",
-   "mktcap": "$89B",
-   "importance": 2
-  },
-  {
-   "date": "2026-07-30",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Quanta Services",
-   "ticker": "PWR",
-   "session": "장 시작 전",
-   "eps_est": "$3.03",
-   "eps_prev": "$2.25",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "7",
-   "mktcap": "$88B",
-   "importance": 2
-  },
-  {
-   "date": "2026-07-30",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Intercontinental Exchange",
-   "ticker": "ICE",
-   "session": "장 시작 전",
-   "eps_est": "$1.84",
-   "eps_prev": "$1.81",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "7",
-   "mktcap": "$86B",
-   "importance": 2
   },
   {
    "date": "2026-07-31",
@@ -2229,7 +1625,7 @@
     {
      "t": "엑슨모빌 주가, 7월 31일 실적 발표에 3.3% 변동 예상",
      "u": "https://news.google.com/rss/articles/CBMid0FVX3lxTE5mRkl3MW9Zd2VZZkxfc1BlLWJzbnp4UGswMmtDVVdaUXhhV2pYWUc4TlA1TGg2WnY5M21QanZpTUNYLWhxdVdScUo5ckgxUVBENF84LU5LTlVwaDhtclVoTmI1dVFmWTZFQTcyR0E2bkpwRmxIeXdz?oc=5",
-     "s": "kr.investing.com",
+     "s": "Investing.com 한국어",
      "d": "2026-07-24"
     },
     {
@@ -2291,7 +1687,7 @@
     {
      "t": "셰브론 주가, 7월 31일 실적 발표에 2.9% 변동 예상",
      "u": "https://news.google.com/rss/articles/CBMid0FVX3lxTFB5a0cyRlRnYzZ1NlhBMTFiSjhCd1pWV25sUVBqU3RwTXVxTFI1S2J0R0gtUUVyQlFkMkRXcldRX3hwa0sxYXUtT3luYjBETG5xcE8zZGlWRGNQMkNEWVJuSTJ5NzZORWdSTHNGYmEzY1doOURudWdJ?oc=5",
-     "s": "kr.investing.com",
+     "s": "Investing.com 한국어",
      "d": "2026-07-24"
     },
     {
@@ -2320,16 +1716,16 @@
    "importance": 3,
    "articles": [
     {
-     "t": "Linde PLC (LIN) 주식 움직였습니다 상승 3.49%에 7월1일: 투자자가 알아야 할 정보",
-     "u": "https://news.google.com/rss/articles/CBMijgFBVV95cUxPdElucEN5X2ppVFNEVUEzTjA5ZGp0a0V1V1RadlgzUXVhZG55NTk0OEUzSVVuUWNSUUlGVDhfdHUzTE1DU2Zyc1V4WF9ad3hPUHZRV0tNM1JJN3U4ZVg4Szh6dXZQc2d0Ml9WTzlWT3c2WGVZMndOQW9nV1hqSExiZER3OEJkVGVNb1pIZm53?oc=5",
-     "s": "tradingkey.com",
-     "d": "2026-07-01"
-    },
-    {
      "t": "Linde PLC(LIN) 실적 예측: 미래 EPS 및 수익 성장 추정치",
      "u": "https://news.google.com/rss/articles/CBMiaEFVX3lxTFBjTHRmQ01veHg1RXNrTUFhLS1US2YyWlY5cWNxa1dpdkw3czd3MTdWUEpwUU5LOE9OYktyZXQycldTSzEtQnpOSnh6TGNTY3lGTXFRMFpkNlJOZkR1LVlCZ2Nwc3podWxr?oc=5",
      "s": "tradingkey.com",
      "d": "2026-07-27"
+    },
+    {
+     "t": "LIN|Linde PLC|가격:507.817|Chg%:-3.353",
+     "u": "https://news.google.com/rss/articles/CBMia0FVX3lxTE1XWUFLdnpVRVFibW85V2RpOXNEWVoyaXNCaS1mTER4UTYyblFqOUpJeEwtWkJwcmdTbHBVc1hxeXpuSVdUMTNyR1hPV09JNS1HRFE5Unl5Y0dNWG5jaTlBOS1SYzZ1Ujd3Zl9Z?oc=5",
+     "s": "tradingkey.com",
+     "d": "2026-07-30"
     }
    ]
   },
@@ -2574,9 +1970,9 @@
      "d": "2026-07-02"
     },
     {
-     "t": "美 6월 제조업 PMI 확장 유지…예상치는 모두 밑돌아(상보)",
-     "u": "https://news.google.com/rss/articles/CBMicEFVX3lxTFBMaWhJV3c4VVJYZENkclZ2N01jbTZsTmIyaVlDa3lBQ3pjby11dU8yUkg4dFhYRmpBUXRvNGlqaG84UGlkSU5JemNxamROeklBUC1fMDdFbWlCWGNjeHBxcWFQcm1OWVRDc3EzV3BRMlM?oc=5",
-     "s": "연합인포맥스",
+     "t": "미국 6월 제조업 지수 53.3%…성장세 속 숨고르기",
+     "u": "https://news.google.com/rss/articles/CBMiWEFVX3lxTFBEa1U1WmpfcUpzbTZBSHRXd3p6d2cxanlrOVQ4aENZaW9weEVRUkx4ajdZOGZ2SWJWdWhYS0hoZ2oteXVmYmNlMFA5OFdNNmdPdG5HVHM4Yzc?oc=5",
+     "s": "블록미디어",
      "d": "2026-07-02"
     }
    ]
@@ -2595,7 +1991,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "10",
-   "mktcap": "$296B",
+   "mktcap": "$295B",
    "importance": 3,
    "articles": [
     {
@@ -2607,7 +2003,7 @@
     {
      "t": "실적 발표 앞두고 Oppenheimer, 팔란티어 테크 주식 등급 재확인",
      "u": "https://news.google.com/rss/articles/CBMidEFVX3lxTE9BbkxKak43WUswdUNLdWhITmxsa0t2Z2xwTkQweWNoWDAyZEdNZVgwUm9DblMtbkxTM0tFdU5HRmJhNVBiYTdrcWU0N09Mem5FZUpja0lOODI3SnAzdVloS1Z1Y2c0WW1DMHJnMjRWODYyMHk4?oc=5",
-     "s": "kr.investing.com",
+     "s": "Investing.com 한국어",
      "d": "2026-07-27"
     }
    ]
@@ -2626,7 +2022,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "5",
-   "mktcap": "$124B",
+   "mktcap": "$123B",
    "importance": 3,
    "articles": [
     {
@@ -2657,7 +2053,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "8",
-   "mktcap": "$101B",
+   "mktcap": "$100B",
    "importance": 3,
    "articles": [
     {
@@ -2722,7 +2118,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "6",
-   "mktcap": "$56B",
+   "mktcap": "$57B",
    "importance": 2
   },
   {
@@ -2739,7 +2135,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "8",
-   "mktcap": "$54B",
+   "mktcap": "$56B",
    "importance": 2
   },
   {
@@ -2773,7 +2169,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "9",
-   "mktcap": "$33B",
+   "mktcap": "$31B",
    "importance": 2
   },
   {
@@ -2790,7 +2186,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "",
-   "mktcap": "$25B",
+   "mktcap": "$24B",
    "importance": 2
   },
   {
@@ -2807,7 +2203,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "4",
-   "mktcap": "$22B",
+   "mktcap": "$21B",
    "importance": 2
   },
   {
@@ -2824,7 +2220,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "3",
-   "mktcap": "$19B",
+   "mktcap": "$20B",
    "importance": 2
   },
   {
@@ -2952,7 +2348,7 @@
    "eps_prev": "",
    "eps_actual": "",
    "surprise": "",
-   "n_ests": "7",
+   "n_ests": "5",
    "mktcap": "$1.47T",
    "importance": 3,
    "articles": [
@@ -2990,7 +2386,7 @@
     {
      "t": "AMD, 실적 발표 앞두고 주가 7.8% 변동 예상",
      "u": "https://news.google.com/rss/articles/CBMid0FVX3lxTFBVa01jd1dpdEY3TFJ6ZnE4R2pydHA1c2h2TzI1UzZmeF8wNTNyb1hQSDlwb2xDSjg3YXpKM0ZMeHBTeTJFaGRCZWlONkRsVERhQUFOZmpjQWJfdkZpOWJaMzJsaEJLR0s1UzNudjRyQzJIR2pKSzhJ?oc=5",
-     "s": "kr.investing.com",
+     "s": "Investing.com 한국어",
      "d": "2026-07-28"
     },
     {
@@ -3019,16 +2415,16 @@
    "importance": 3,
    "articles": [
     {
-     "t": "캐터필러 주가, 8월 4일 실적 발표에 6.1% 변동 예상",
-     "u": "https://news.google.com/rss/articles/CBMid0FVX3lxTE1fU291eE9fRWYyUm1HeUZXYlZfQWtUUWRQSXc2WEdhUm4xZUkxdEl5R00wTGhqYVpjbjB1WUs4a1M0d0ZLSDZlMVRReUtqeUdsZWxrVUhXTU00OW81NFhtZHNzUEN3UlVfZlp4UmhGMHltQTBMLVlR?oc=5",
-     "s": "kr.investing.com",
-     "d": "2026-07-28"
+     "t": "Caterpillar Inc (CAT) 주식 움직였습니다 상승 3.06%에 7월30일: 어떤 신호인가요?",
+     "u": "https://news.google.com/rss/articles/CBMijgFBVV95cUxQNjRCNVdJRDI4elBFQ2phalNMTElhdTBEYzdTQ0dFa1owZldBaktiYU9jWG91NFVsb2JCRXdSMk9VM09RWHp0aXhoSGJzU2p0NEVJZEw3ZEw5R21hU1FlQWE4a0cta0dtU3p2NGkzYmxCV2k2Y01NQ1paM1hGVkdtSGR5bUJ5R0xFUTZZLXZR?oc=5",
+     "s": "tradingkey.com",
+     "d": "2026-07-30"
     },
     {
-     "t": "Caterpillar Inc(CAT) 실적 예측: 미래 EPS 및 수익 성장 추정치",
-     "u": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE5YZnNibkNTYmVCMXdMUjI3ODlPLUhtcFhfb293WkJKZUdzS0FOV2V5TFJfRFBaSVZXeDg1TWU1VHc1eWVpVkZBLWk2TWVoZGY3NFlkaWhtTWlROXZOVk5fcHh3Z0ppNkpX?oc=5",
-     "s": "tradingkey.com",
-     "d": "2026-07-27"
+     "t": "캐터필러 주가, 8월 4일 실적 발표에 6.1% 변동 예상",
+     "u": "https://news.google.com/rss/articles/CBMid0FVX3lxTE1fU291eE9fRWYyUm1HeUZXYlZfQWtUUWRQSXc2WEdhUm4xZUkxdEl5R00wTGhqYVpjbjB1WUs4a1M0d0ZLSDZlMVRReUtqeUdsZWxrVUhXTU00OW81NFhtZHNzUEN3UlVfZlp4UmhGMHltQTBMLVlR?oc=5",
+     "s": "Investing.com 한국어",
+     "d": "2026-07-28"
     }
    ]
   },
@@ -3058,7 +2454,7 @@
     {
      "t": "Merck 주식, $131.84로 52주 최고가 기록",
      "u": "https://news.google.com/rss/articles/CBMicEFVX3lxTE5HeUtSc0E0Z3dzcjNLdjlFMEN5aXVyaGx4WEhkazVRbjlQeWd4SjdVTVpGWjJPYlMtck5zT0MzcUdsTkhQOGRsSjNXNVFTVktHS2ZnZTlsc28wZDlaTkFsRGJXV0dhMndaZXJkUDFlWHg?oc=5",
-     "s": "kr.investing.com",
+     "s": "Investing.com 한국어",
      "d": "2026-07-27"
     }
    ]
@@ -3089,7 +2485,7 @@
     {
      "t": "암젠 주가, 8월 4일 실적 발표 후 4.6% 변동 가능성",
      "u": "https://news.google.com/rss/articles/CBMid0FVX3lxTFA5LXJPMTlxekpuS2VuVW9TVExINXgyY3FxQ3ZPemNSUjFPSkw2YmdWZWg4OU5JUUhVRExJOGVSUUNaUC1Ea3JORkM2S2F5Rk1MekVkSGkyWUl3VEZlQ2hZZFVMVzF6VW1Ta0Q0eEtDX016WkNselpn?oc=5",
-     "s": "kr.investing.com",
+     "s": "Investing.com 한국어",
      "d": "2026-07-28"
     }
    ]
@@ -3145,7 +2541,7 @@
     {
      "t": "McDonald’s 주식, 실적 발표 앞두고 3.2% 변동 가능성",
      "u": "https://news.google.com/rss/articles/CBMid0FVX3lxTE9fWlQ1cXNYTkF0LVlMNk91c19RbTAwUk5sSzN5ZWJYS3N6aU5qNmMyY3NLRTA5cG5KVm1UREJORkZGWU9tLXBnVklLSWJ0amJvUFplLUJSaDRXV3h4MlduYkttcEN5a1BDZjdtZmR4SmEwUWVaMXlj?oc=5",
-     "s": "kr.investing.com",
+     "s": "Investing.com 한국어",
      "d": "2026-07-28"
     },
     {
@@ -3238,12 +2634,12 @@
     {
      "t": "화이자 주가, 8월 4일 저녁 실적 발표 전후 3% 변동 가능성",
      "u": "https://news.google.com/rss/articles/CBMid0FVX3lxTE14WDV5RU4yTlBCc29LNDNweW0xYVAxYURlS2dDbG1NejI1OXJSR1JxS1hyV3NaSl9MWGlIOVljYWpTb25ISjN0YVRJdFNYQUIwU2JYU2JZVDNaTDlCZlIwbTI4TkRoNWZQZUlkQ3RoN3Bxc2JuWHJz?oc=5",
-     "s": "kr.investing.com",
+     "s": "Investing.com 한국어",
      "d": "2026-07-28"
     },
     {
      "t": "화이자(PFE) 주식은 유망한 신약 파이프라인을 보유하고 있으나 실적은 다소 부진한 가운데, 현재 주가는 적정 수준으로 평가된다.",
-     "u": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNMFlpMjBIbjdlcWdUTDJYNGYzR2xTaktCaVRmN0ZXbFYyT2hGMHBFMlV0OHFCejY2bXhxeWVrMXJOYU5nYV9VNlBrcUhPeG1fb0o2UkhmWkEzRDVJR3Bydmk0WFNWOHVQMXpwcjFkRHpPYXNPdHVTZ0NYTHA1Z2lOYXRpdm5hdXRMZnh5eEZGUFR2S3ZIMk1LOFl6YkTSAaIBQVVfeXFMTXJSdXNtTWhKWjcyZXJMSlFMSlpocnlodGlLaFZYRzVLaDN1ZEpGT0xaTHlyZzIxLUpPdFpFNWVLdjB0bVdLV1lUZFp4aEY3T3ZyLUhCdkJ0RFpsYjBHX0ZFekllRUNDZ2dxSi1RbW5LS29FUjZSc2dXUE45dXdhMGhRb2tpY29jNVYtZ1EweW16TGpfeElfUEMwWnlSR3BnUURn?oc=5",
+     "u": "https://news.google.com/rss/articles/CBMiogFBVV95cUxNclJ1c21NaEpaNzJlckxKUUxKWmhyeWh0aUtoVlhHNUtoM3VkSkZPTFpMeXJnMjEtSk90WkU1ZUt2MHRtV0tXWVRkWnhoRjdPdnItSEJ2QnREWmxiMEdfRkV6SWVFQ0NnZ3FKLVFtbktLb0VSNlJzZ1dQTjl1d2EwaFFva2ljb2M1Vi1nUTB5bXpMal94SV9QQzBaeVJHcGdRRGfSAaIBQVVfeXFMTXJSdXNtTWhKWjcyZXJMSlFMSlpocnlodGlLaFZYRzVLaDN1ZEpGT0xaTHlyZzIxLUpPdFpFNWVLdjB0bVdLV1lUZFp4aEY3T3ZyLUhCdkJ0RFpsYjBHX0ZFekllRUNDZ2dxSi1RbW5LS29FUjZSc2dXUE45dXdhMGhRb2tpY29jNVYtZ1EweW16TGpfeElfUEMwWnlSR3BnUURn?oc=5",
      "s": "simplywall.st",
      "d": "2026-07-29"
     }
@@ -3374,9 +2770,9 @@
      "d": "2026-07-07"
     },
     {
-     "t": "美 6월 ISM 서비스업 PMI 54.0…물가 꺾이고 고용 살았다",
-     "u": "https://news.google.com/rss/articles/CBMiYEFVX3lxTFBJUDFUR0hTeGIwX3l0eXpmVzUtc01jNkpWUE5vbnFDaVNHczZ2SVlXdXppaVBsODFiSC1ObUlkdldIR0twLVJFS2RsbUs3c3pENGtzcXBTdERpTnZENVhZNtIBeEFVX3lxTE9RUFF4MkI2Sy1QUFFGX1pjNFZsSjRiX0VTYk1mNFNTMDM2aDJMdlhtbTRDZ0kwTnpnTXprOWZld2pRMnhYZEF1Q09LSFk2MXRLWndNaG9hdzBMb2lrOVN5S3RPT01vQVV1eXJzS0NyS3g4UVJQeGhyQw?oc=5",
-     "s": "뉴시스",
+     "t": "美 6월 ISM 서비스업 PMI 54.0…경기 확장 속도 둔화",
+     "u": "https://news.google.com/rss/articles/CBMiYEFVX3lxTFBOZkVUUjFTT0Z3cGlZN2ZhZHkzck9LOWhVM3drbGM4bktCU21pSks0Y3pyQzYwanZpVWtISEZCd05jdm1ST2RRMEJDalNVLUlleWhQVDBLeU9MZ3paOFZTYw?oc=5",
+     "s": "아시아경제",
      "d": "2026-07-07"
     }
    ]
@@ -3407,7 +2803,7 @@
     {
      "t": "일라이릴리 주식, 8월 5일 실적 발표에 6.9% 변동 가능성",
      "u": "https://news.google.com/rss/articles/CBMid0FVX3lxTE5aZ3Y3MjNzV2wtLXA4Z3B0R0FzUm9DRWlOXzRZWVNFRWlSX2MtV0c0Z0pIalFacXpFYVctajFmaHl2bjkwRG1zTkNJZGxodHlsQTAyTi1HZjF6RzZyVnQybnROcXZyeXpDRjdxSjhVczYzQ28yWmRN?oc=5",
-     "s": "kr.investing.com",
+     "s": "Investing.com 한국어",
      "d": "2026-07-29"
     }
    ]
@@ -3432,7 +2828,7 @@
     {
      "t": "월트 디즈니 주가, 8월 실적 발표에 6.3% 변동 예상",
      "u": "https://news.google.com/rss/articles/CBMid0FVX3lxTE1lRWhOWWd2R3M0TWQ0eXc0a2FnbTNINm5zN0ZKV1JkeWZDZDZRR2hBMWEtRnk2SjgwNGpQdFNOMXFtU25Td2lQd0pVNW9XYzZpS2pqZ0hjUDlDdWJTMGgyVGRkNGNMWUZjWm1Yb3oybWpxX3MyaU9B?oc=5",
-     "s": "kr.investing.com",
+     "s": "Investing.com 한국어",
      "d": "2026-07-29"
     },
     {
@@ -3551,7 +2947,21 @@
    "surprise": "",
    "n_ests": "10",
    "mktcap": "$145B",
-   "importance": 3
+   "importance": 3,
+   "articles": [
+    {
+     "t": "Uber Technologies Inc(UBER) 실적 예측: 미래 EPS 및 수익 성장 추정치",
+     "u": "https://news.google.com/rss/articles/CBMiakFVX3lxTFA1VmpRcmhjWnJMWjJtaUx6SUtjdlIzV0p1ZTVDcEctS1IwS1A1V1NVVE9PeVM1WDdVdG5QRURwZjlIUXRKR3BteXpMOUxuMXNpel9oUWhWMnpHdnVjM3JFWHlnU08wNmlXR3c?oc=5",
+     "s": "tradingkey.com",
+     "d": "2026-07-26"
+    },
+    {
+     "t": "우버(UBER) 주가, 5년 수익률 57%를 유지하며 합리적인 수준으로 보인다",
+     "u": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOU2M1OFVKdWR6RlZDYUZIUUlub1NnWFJsYk9BU2o4akJ5bGFfUXZyRlRxZUdYdHk4SUc4am9FVWJKTDBkZUdoaUlFVHdYaFNSRkZuUTdJVWNCalVuTXV6VEJoUUZiNEVFX2xBT29vWklZNnNqUzJwa0UzeHVMMk5BQUpQRWpzWWNtakNocThkSE5zeXk1Z1pNbE0tNlRCUWVUaDdyYmp30gGmAUFVX3lxTE5TYzU4VUp1ZHpGVkNhRkhRSW5vU2dYUmxiT0FTajhqQnlsYV9RdnJGVHFlR1h0eThJRzhqb0VVYkpMMGRlR2hpSUVUd1hoU1JGRm5RN0lVY0JqVW5NdXpUQmhRRmI0RUVfbEFPb29aSVk2c2pTMnBrRTN4dUwyTkFBSlBFanNZY21qQ2hxOGRITnN5eTVnWk1sTS02VEJRZVRoN3Jianc?oc=5",
+     "s": "simplywall.st",
+     "d": "2026-07-28"
+    }
+   ]
   },
   {
    "date": "2026-08-05",
@@ -3568,7 +2978,21 @@
    "surprise": "",
    "n_ests": "8",
    "mktcap": "$135B",
-   "importance": 3
+   "importance": 3,
+   "articles": [
+    {
+     "t": "CVS Health Corp(CVS) 실적 예측: 미래 EPS 및 수익 성장 추정치",
+     "u": "https://news.google.com/rss/articles/CBMiaEFVX3lxTFAzckhHRUUwa0J0X3RkTzRHWmJsV2NEVFc4Q3VsMXBfLWVMQ0t0ZUlzektpMHk4ZnoyLW5PZTVEaFdGdm4wYng3bEVpY3FCc1VmLVBrQTl1cEtSRS0wYUdxWEdIWjFhZEtE?oc=5",
+     "s": "tradingkey.com",
+     "d": "2026-07-23"
+    },
+    {
+     "t": "CVS 헬스(CVS)는 연방거래위원회(FTC)와의 합의 이후 프리미엄을 붙여 거래될 수 있을까?",
+     "u": "https://news.google.com/rss/articles/CBMikAFBVV95cUxNTDBzU040dVZmem9COEU3NmIzQ3hBUjJLUnk3Y1gxQk9udzdnZXVzNmRDRVdPR2lpMDRKLURvdE83RnRkQ0dpdm1xdkFrWmM0bnpwWkw2VmMxbjVORnYyLWFkSXZlcWIyM2NvMXQ3bm9yT2ZqazZtb0JsSVBWUFV5aTBBamQ4MXVfUUc5WE50VWzSAZYBQVVfeXFMT0JOb0REaUtad2MtYzVjV3BPX1JmN1AzS0JDUWVsR3I2Q3pVc0VkY3FlMHM3RjNpVFFaaHBLbHJMbFUtSUE2bjlua1JHMjdqY25rbm44R1FKNk5fSkQyQ3RwMEhCdFl1MjhiVDU4ZWdDMzNydWpzZlNvWjVnSklUWnQ2SU9Cc2plSjFuRFdrTm5QUGswb2VR?oc=5",
+     "s": "simplywall.st",
+     "d": "2026-07-25"
+    }
+   ]
   },
   {
    "date": "2026-08-05",
@@ -3585,7 +3009,21 @@
    "surprise": "",
    "n_ests": "7",
    "mktcap": "$134B",
-   "importance": 3
+   "importance": 3,
+   "articles": [
+    {
+     "t": "AppLovin(APP) 주가, AI 사업 전환과 2분기 실적 발표를 앞둔 지정학적 요인에 의한 조정세가 겹치며 13.3% 하락",
+     "u": "https://news.google.com/rss/articles/CBMijgFBVV95cUxQOUNPcU9BcW1mMzR0TlRWUFlnUEVoZ0gzQnNwRGFvc0ZlVHFkcFVId1hYTDBicGtCcU9RUXI1cjJRaVowcHA2UkQyZmc2ZUJYcUthR2NtMEo2YzhfWTJlNHNoN3NxTThpMDI0RjlOWjdnc1pqdGdpNW1ORGgwOWNRODFmbWdTWTZZbnNzWi130gGTAUFVX3lxTE4tRE94Z1hHWjc2aUc0WDVTSVp5RUxwTzNNWmtMd1hDYmtiNkZJVGVBS2FoeHdHRlUwLVNpbURHUmZBMkNsblBoSmszWEVkWEJzenlmSkNoQkpac3ByMzhmR0hCamdrMHUzTU9iQzMxWEFWUzhyY3Zyb1Q2V25sbTVIMUdTcEVNOS1hbVlmREdwTFZzRQ?oc=5",
+     "s": "simplywall.st",
+     "d": "2026-07-16"
+    },
+    {
+     "t": "Applovin Corp(APP) 실적 예측: 미래 EPS 및 수익 성장 추정치",
+     "u": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE5yQWlRbGJtcmQ3bFJpdHptUzZNN3BrVGlUV3VEMkxoUWJCTlpJX3pkWFNXWFZkNkptMEZqRnJjczVPRldHSFJPSE91eDlQN1loeWg0VXl6ZXZhcjNmMlk2dnMweWdWdEVp?oc=5",
+     "s": "tradingkey.com",
+     "d": "2026-07-23"
+    }
+   ]
   },
   {
    "date": "2026-08-05",
@@ -3602,7 +3040,21 @@
    "surprise": "",
    "n_ests": "5",
    "mktcap": "$107B",
-   "importance": 3
+   "importance": 3,
+   "articles": [
+    {
+     "t": "Mckesson Corp(MCK) 실적 예측: 미래 EPS 및 수익 성장 추정치",
+     "u": "https://news.google.com/rss/articles/CBMiaEFVX3lxTFBzZ0hBZFhBRW9tc0Y5VzZLVy1ReHhZV015VHlfYWdZSE1ocU5hRWNyQTdOUWVSNXlDdnNNNXFlb20tZ0VuVkN5R2J5OEtYUFotZWpRQzZfZlpvZnJibjFSOERldmVkY3Mz?oc=5",
+     "s": "tradingkey.com",
+     "d": "2026-07-28"
+    },
+    {
+     "t": "MCK|Mckesson Corp|가격:873.030|Chg%:+22.970",
+     "u": "https://news.google.com/rss/articles/CBMia0FVX3lxTE04dU10SG9MdnJYbWpOVzZsdTR2NXQtS19zOFRoTlZOYk51dzFIY2p0NTE0d2lmSjdTM0E4S3N4Tkw5SXpiRlZON3JKOEZnbVk5SnVHaGpiOGQwdTEwRVE1RW1TZGhCc3JRdDhr?oc=5",
+     "s": "tradingkey.com",
+     "d": "2026-07-27"
+    }
+   ]
   },
   {
    "date": "2026-08-05",
@@ -3767,8 +3219,22 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "6",
-   "mktcap": "$139B",
-   "importance": 3
+   "mktcap": "$144B",
+   "importance": 3,
+   "articles": [
+    {
+     "t": "COP|ConocoPhillips|가격:114.055|Chg%:-1.525",
+     "u": "https://news.google.com/rss/articles/CBMia0FVX3lxTFBIbkZmU0xMYXd3NEhIQXlaLTVNaGVGX09qWnBDVk9tMEdMRnIwVmRjck9FTEdlaFJLU1JSc3ByMVkwNnk0TmJVVlpESUdtU3VkUjQ4QmRNdmw2X0s4UEtsOHhqYmZsclM4R1BB?oc=5",
+     "s": "tradingkey.com",
+     "d": "2026-07-28"
+    },
+    {
+     "t": "코노코필립스(COP) 실적 발표를 앞두고 부각되는 윌로우와 LNG 내러티브 속 저평가 논쟁",
+     "u": "https://news.google.com/rss/articles/CBMikAFBVV95cUxQNVhZX2ZBa256LWZxNVhRT0lweERDazRBWHZrVGw4UkthT19XOHlMVFc2dXI1NnZOY2JuYWpFaWN0QU5TV3JPTUVNZFNISlBQQVdtRnJOUHdjMEdPNkNCY3RDOW5BUGF5SEYtRDlOYkVIWnVsN2ZpN0hQalRDbVllV2p5T0hGSVZxU2xBbFI1RGPSAZYBQVVfeXFMTk9FMVdMT0pCU0ZGZjBUMHJkQm90OVpEN0syaG5qcFpLWHdvVDc2cWZRZ3BJWVdNeko4QllVY1lWVjNsRzBELTdGbzdOSDg4ejBibDdvakNxdDFKWUF2YXYwakYwdWRla3hPTkJCUFhtd0ZVdjdhUk9wa0I2ZmhuVXNYQVJvbkY1bjd5cExIX1Z3aS1yUTJR?oc=5",
+     "s": "simplywall.st",
+     "d": "2026-07-23"
+    }
+   ]
   },
   {
    "date": "2026-08-06",
@@ -3784,8 +3250,22 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "7",
-   "mktcap": "$125B",
-   "importance": 3
+   "mktcap": "$120B",
+   "importance": 3,
+   "articles": [
+    {
+     "t": "Parker-Hannifin Corp(PH) 실적 예측: 미래 EPS 및 수익 성장 추정치",
+     "u": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE9xODVJOWx0RlhMMUdaVE13cE93YWszamJlQXN3bG1IVk1OVnlfMC1OclNMdk9mbUtaRVlNeEZPeWlJZDAwdVdEeEttWDlnQXkxTFZVTGdMUXdFNm9RSXZwM19ZYWVKS0k?oc=5",
+     "s": "tradingkey.com",
+     "d": "2026-07-26"
+    },
+    {
+     "t": "TechPrecision Corp(TPCS) 실적 예측: 미래 EPS 및 수익 성장 추정치",
+     "u": "https://news.google.com/rss/articles/CBMiakFVX3lxTFBLMzk1NG12cXl1MlpPalN4Um81MWs4YUhhRkRzak81eE1td04zczVrdzdrdmdZb0lWcmJ1Y1YwLXBJbnJzU0tUdXRDNk1BU21tVHh5aDRXUWNUbTBzYWNPMjFKMWtRYjliZ2c?oc=5",
+     "s": "tradingkey.com",
+     "d": "2026-07-27"
+    }
+   ]
   },
   {
    "date": "2026-08-06",
@@ -3801,8 +3281,22 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "4",
-   "mktcap": "$114B",
-   "importance": 3
+   "mktcap": "$109B",
+   "importance": 3,
+   "articles": [
+    {
+     "t": "Howmet Aerospace(HWM) 실적 발표 앞두고 주목, 상승 여력은 이미 반영됐나?",
+     "u": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNV0xMN0tUdnNwNG9YLTlTc09Pcm9TNnZJYjZCeENiTVctLWdZb3VWX0Vyal9TQ1owcEdoYzZ4LW01dGpzS2s5Z3lrdC1BX1l6OUJUV0xSeHZzT01LQWhkY3VNbm85ZHVOQ1lTMDFsRDZWUjViRDJtZXAyTWduSWtaY0lfc2hZYzh6Mng4eVozOFZLVk9qSERXNURsMTLSAaIBQVVfeXFMT2tUSkdUOUFiOW41UEpaRUFIU1RSTGNaTDFLTUxQUjZzSktxS2gzQUtpbUNYajhBNHgxdHowazVmTkMxcEVmcm9yVS1LQWpqZGFBSS1QQmNyNDc3QkR2RXlzU3RRSjlzeDR0OEhRbURlTUxXeUdjLXJiZmxnQTkzeEFBc19DNlZnSFYyOEpWU2JzYnNkdXM4YU9valdtVTJJWUV3?oc=5",
+     "s": "simplywall.st",
+     "d": "2026-07-23"
+    },
+    {
+     "t": "Howmet Aerospace Inc(HWM) 실적 예측: 미래 EPS 및 수익 성장 추정치",
+     "u": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE1iOGwtdEpsMm1ieXE1eGZka1hCb210UWlIVm5YcDAweDRocENPLXBScm1CS0c2MXdQQ0F2ZWZ1WDJudVhFLUowV2FJeEY5YUYtaU11U3NFOHoxbGo5REpwc3dFa0JWUFI4?oc=5",
+     "s": "tradingkey.com",
+     "d": "2026-07-23"
+    }
+   ]
   },
   {
    "date": "2026-08-06",
@@ -3818,7 +3312,24 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "8",
-   "mktcap": "$96B",
+   "mktcap": "$95B",
+   "importance": 2
+  },
+  {
+   "date": "2026-08-06",
+   "time": "",
+   "mk": "us",
+   "type": "earnings",
+   "index": "S&P500",
+   "title": "Datadog",
+   "ticker": "DDOG",
+   "session": "장 시작 전",
+   "eps_est": "$0.13",
+   "eps_prev": "$0.06",
+   "eps_actual": "",
+   "surprise": "",
+   "n_ests": "9",
+   "mktcap": "$94B",
    "importance": 2
   },
   {
@@ -3835,7 +3346,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "3",
-   "mktcap": "$94B",
+   "mktcap": "$93B",
    "importance": 2
   },
   {
@@ -3853,23 +3364,6 @@
    "surprise": "",
    "n_ests": "10",
    "mktcap": "$92B",
-   "importance": 2
-  },
-  {
-   "date": "2026-08-06",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Datadog",
-   "ticker": "DDOG",
-   "session": "장 시작 전",
-   "eps_est": "$0.13",
-   "eps_prev": "$0.06",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "9",
-   "mktcap": "$89B",
    "importance": 2
   },
   {
@@ -3903,7 +3397,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "5",
-   "mktcap": "$66B",
+   "mktcap": "$65B",
    "importance": 2
   },
   {
@@ -3937,7 +3431,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "5",
-   "mktcap": "$59B",
+   "mktcap": "$58B",
    "importance": 2
   },
   {
@@ -3954,7 +3448,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "8",
-   "mktcap": "$56B",
+   "mktcap": "$57B",
    "importance": 2
   },
   {
@@ -3969,7 +3463,21 @@
    "forecast": "",
    "previous": "57K",
    "actual": "",
-   "category": "지표"
+   "category": "지표",
+   "articles": [
+    {
+     "t": "美 6월 비농업 고용 5만7천명 증가·전망 하회…실업률 4.2%(종합)",
+     "u": "https://news.google.com/rss/articles/CBMicEFVX3lxTE5ZQ1otYU5kdFBSSTBzTHJWVktudjBod1JpdnFZdmZpZnB4X1RFamZSSkd2eklDR1V5RDc1TWRGWXNWSkhuUXNySWRTOU5jTm9WMDBWZ3ZPN1R6X0pyTGdCekRvTXhNc2Fna1U5U2JGaFA?oc=5",
+     "s": "연합인포맥스",
+     "d": "2026-07-03"
+    },
+    {
+     "t": "美 빅데이터 업체 \"6월 비농업고용 25만9천명↑…2023년 10월 이후 최고\"",
+     "u": "https://news.google.com/rss/articles/CBMickFVX3lxTE8wT2hYb25WVkNfQ29ZZ3pvUEVuM1FELUh3SVF6S3lJSG4xejJVLUxsaGp4MFl3U2JRbzhXQkRFMEYwbzFybkZJdGVmeFJobU9FVm15bjM3bFdfMThPeVdnUWZPbWJ1ZTBLMHNYTzk4cnJrZw?oc=5",
+     "s": "KB Think",
+     "d": "2026-07-02"
+    }
+   ]
   },
   {
    "date": "2026-08-07",
@@ -3983,7 +3491,21 @@
    "forecast": "",
    "previous": "49K",
    "actual": "",
-   "category": "지표"
+   "category": "지표",
+   "articles": [
+    {
+     "t": "美 6월 비농업 고용 5만7천명 증가·전망 하회…실업률 4.2%(종합)",
+     "u": "https://news.google.com/rss/articles/CBMicEFVX3lxTE5ZQ1otYU5kdFBSSTBzTHJWVktudjBod1JpdnFZdmZpZnB4X1RFamZSSkd2eklDR1V5RDc1TWRGWXNWSkhuUXNySWRTOU5jTm9WMDBWZ3ZPN1R6X0pyTGdCekRvTXhNc2Fna1U5U2JGaFA?oc=5",
+     "s": "연합인포맥스",
+     "d": "2026-07-03"
+    },
+    {
+     "t": "美 빅데이터 업체 \"6월 비농업고용 25만9천명↑…2023년 10월 이후 최고\"",
+     "u": "https://news.google.com/rss/articles/CBMickFVX3lxTE8wT2hYb25WVkNfQ29ZZ3pvUEVuM1FELUh3SVF6S3lJSG4xejJVLUxsaGp4MFl3U2JRbzhXQkRFMEYwbzFybkZJdGVmeFJobU9FVm15bjM3bFdfMThPeVdnUWZPbWJ1ZTBLMHNYTzk4cnJrZw?oc=5",
+     "s": "KB Think",
+     "d": "2026-07-02"
+    }
+   ]
   },
   {
    "date": "2026-08-07",
@@ -4191,7 +3713,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "5",
-   "mktcap": "$51B",
+   "mktcap": "$47B",
    "importance": 2
   },
   {
@@ -4208,7 +3730,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "4",
-   "mktcap": "$37B",
+   "mktcap": "$33B",
    "importance": 2
   },
   {
@@ -4295,7 +3817,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "6",
-   "mktcap": "$456B",
+   "mktcap": "$443B",
    "importance": 3
   },
   {
@@ -4312,7 +3834,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "7",
-   "mktcap": "$48B",
+   "mktcap": "$43B",
    "importance": 2
   },
   {
@@ -4329,7 +3851,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "1",
-   "mktcap": "$43B",
+   "mktcap": "$38B",
    "importance": 2
   },
   {
@@ -4430,7 +3952,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "9",
-   "mktcap": "$378B",
+   "mktcap": "$347B",
    "importance": 3
   },
   {
@@ -4660,7 +4182,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "15",
-   "mktcap": "$260B",
+   "mktcap": "$256B",
    "importance": 3
   },
   {
@@ -4829,23 +4351,6 @@
    "mk": "us",
    "type": "earnings",
    "index": "S&P500",
-   "title": "Analog Devices",
-   "ticker": "ADI",
-   "session": "장 시작 전",
-   "eps_est": "$3.33",
-   "eps_prev": "$2.05",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "8",
-   "mktcap": "$178B",
-   "importance": 3
-  },
-  {
-   "date": "2026-08-19",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
    "title": "TJX Companies (The)",
    "ticker": "TJX",
    "session": "시간 미정",
@@ -4854,7 +4359,24 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "6",
-   "mktcap": "$178B",
+   "mktcap": "$179B",
+   "importance": 3
+  },
+  {
+   "date": "2026-08-19",
+   "time": "",
+   "mk": "us",
+   "type": "earnings",
+   "index": "S&P500",
+   "title": "Analog Devices",
+   "ticker": "ADI",
+   "session": "장 시작 전",
+   "eps_est": "$3.33",
+   "eps_prev": "$2.05",
+   "eps_actual": "",
+   "surprise": "",
+   "n_ests": "8",
+   "mktcap": "$172B",
    "importance": 3
   },
   {
@@ -4871,7 +4393,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "13",
-   "mktcap": "$122B",
+   "mktcap": "$121B",
    "importance": 3
   },
   {
@@ -4888,7 +4410,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "14",
-   "mktcap": "$65B",
+   "mktcap": "$66B",
    "importance": 2
   },
   {
@@ -4905,7 +4427,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "11",
-   "mktcap": "$31B",
+   "mktcap": "$30B",
    "importance": 2
   },
   {
