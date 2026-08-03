@@ -40,16 +40,17 @@ def naver_mi(cats, rc):
                  % (cat, urllib.parse.quote(rc)))
             d = json.loads(urllib.request.urlopen(urllib.request.Request(u, headers=hdr), timeout=10).read())
             v = d.get('result') or {}
-            price = float(v['closePrice'])
+            # ⚠️ 값이 천단위 콤마 문자열("1,385.50")로 온다 — 반드시 콤마 제거 후 변환
+            price = float(str(v['closePrice']).replace(',', ''))
             chg = pct = None
             for kf in ('compareToPreviousClosePrice', 'fluctuations', 'changeValue', 'compareToPreviousPrice'):
                 try:
-                    chg = float(v[kf]); break
+                    chg = float(str(v[kf]).replace(',', '')); break
                 except Exception:
                     pass
             for kf in ('fluctuationsRatio', 'changeRate'):
                 try:
-                    pct = float(v[kf]); break
+                    pct = float(str(v[kf]).replace(',', '')); break
                 except Exception:
                     pass
             return price, chg, pct
@@ -87,7 +88,7 @@ def naver_world_basic(rc):
 NAVER_MI = {
     'ust10y': (['bond'], 'US10YT=RR'),
     'usdkrw': (['exchange'], 'FX_USDKRW'),
-    'usdjpy': (['exchange'], 'FX_USDJPY'),
+    'usdjpy': (['worldExchange', 'exchange'], 'FX_USDJPY'),   # 달러/엔은 국제 환율 분류
     'gold':   (['metals', 'gold'], 'CMDT_GC'),
     'wti':    (['oil', 'energy'], 'OIL_CL'),
 }

@@ -64,12 +64,14 @@ async function naverMI(cats, rc) {
       const r = await fetch(u, { headers: { 'User-Agent': UA, 'Referer': 'https://m.stock.naver.com/' } });
       const d = await r.json();
       const v = d && d.result;
-      const px = v && parseFloat(v.closePrice);
+      // ⚠️ 값이 천단위 콤마 문자열("1,385.50")로 온다 — parseFloat 는 콤마에서 잘려 1이 되므로 반드시 제거
+      const num = (x) => parseFloat(String(x == null ? '' : x).replace(/,/g, ''));
+      const px = v && num(v.closePrice);
       if (!isFinite(px)) throw new Error('no data');
       // 등락 필드명은 화면 버전에 따라 달라 방어적으로 조회 (Raw 계열은 부호 포함)
-      const chg = parseFloat([v.compareToPreviousClosePrice, v.fluctuations, v.changeValue, v.compareToPreviousPrice]
-        .find((x) => x != null && isFinite(parseFloat(x))));
-      const pct = parseFloat([v.fluctuationsRatio, v.changeRate].find((x) => x != null && isFinite(parseFloat(x))));
+      const chg = num([v.compareToPreviousClosePrice, v.fluctuations, v.changeValue, v.compareToPreviousPrice]
+        .find((x) => x != null && isFinite(num(x))));
+      const pct = num([v.fluctuationsRatio, v.changeRate].find((x) => x != null && isFinite(num(x))));
       return { price: round(px, 4), chg: isFinite(chg) ? round(chg, 4) : null, pct: isFinite(pct) ? round(pct, 2) : null };
     } catch (e) { lastErr = e; }
   }
@@ -93,7 +95,7 @@ async function naverWorldBasic(rc) {
 const NAVER_MI = {
   ust10y: { cats: ['bond'], rc: 'US10YT=RR' },
   usdkrw: { cats: ['exchange'], rc: 'FX_USDKRW' },
-  usdjpy: { cats: ['exchange'], rc: 'FX_USDJPY' },
+  usdjpy: { cats: ['worldExchange', 'exchange'], rc: 'FX_USDJPY' },   // 달러/엔은 국제 환율 분류
   gold:   { cats: ['metals', 'gold'], rc: 'CMDT_GC' },
   wti:    { cats: ['oil', 'energy'], rc: 'OIL_CL' },
 };
