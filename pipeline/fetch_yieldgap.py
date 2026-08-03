@@ -12,8 +12,9 @@ except Exception:
     pass
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36'
-KR_KOSPI_EY_EST = 8.7     # KOSPI 추정 PER ~11.5 → 어닝일드 ~8.7%
-KR_REIT_YIELD_EST = 6.0   # 국내 상장 리츠 평균 배당수익률 추정 ~6%
+# 2026-08-03 갱신: AI 이익 급증(12M 선행 EPS +170%)으로 KOSPI 12M 선행 PER 4.8~6.4 보도 기준
+KR_KOSPI_EY_EST = 18.0    # 선행 PER 중앙 ~5.6 → 어닝일드 ≈ 18% (선행 기준)
+KR_REIT_YIELD_EST = 7.5   # 상장 리츠 평균 배당수익률 — 2025년 7.3%, 2026년 다수 8%+ (한국리츠협회)
 US_REIT_YIELD_EST = 3.6   # VNQ 라이브 실패 시 폴백
 US_NASDAQ_EY_EST = 2.9    # QQQ(NASDAQ-100) 라이브 실패 시 폴백 (PER ~34)
 UPDATE_DAYS = 28          # 월 1회 정책: 스냅샷이 이보다 최근이면 갱신 스킵
@@ -105,7 +106,10 @@ def main():
             dt = dt.replace(tzinfo=datetime.timezone.utc)
         age = (datetime.datetime.now(datetime.timezone.utc) - dt).days if dt else 999
         has_new = isinstance(prev.get('us'), dict) and 'nasdaq' in prev['us']
-        if has_new and age < UPDATE_DAYS:
+        # 한국 추정 상수를 코드에서 갱신하면 월 1회 정책을 무시하고 즉시 재생성
+        same_est = ((prev.get('kr') or {}).get('stock') or {}).get('val') == KR_KOSPI_EY_EST and \
+                   ((prev.get('kr') or {}).get('reit') or {}).get('val') == KR_REIT_YIELD_EST
+        if has_new and same_est and age < UPDATE_DAYS:
             with open(pipe_snap, 'w', encoding='utf-8') as f:
                 json.dump(prev, f, ensure_ascii=False, indent=1)
             print('yieldgap: 최근 갱신 %d일 전 — 월 1회 정책으로 유지(스킵)' % age)
