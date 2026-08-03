@@ -186,7 +186,7 @@
 <div class="filterbar">
   <span class="fl">전략</span>
   <div class="seg" id="seg-mode">
-    <button data-v="day">단타 (분봉)</button><button data-v="swing">스윙 (일봉)</button><button data-v="long">장기 (주봉)</button>
+    <button data-v="day">단타 (분봉)</button><button data-v="swing">스윙 (60·120분)</button><button data-v="long">장기 (일봉)</button>
   </div>
   <span class="fl">시장</span>
   <div class="seg" id="seg-mkt">
@@ -195,6 +195,10 @@
   <span class="fl" id="fl-itv" hidden>분봉</span>
   <div class="seg" id="seg-itv" hidden>
     <button data-v="1m">1분</button><button data-v="5m">5분</button><button data-v="15m">15분</button>
+  </div>
+  <span class="fl" id="fl-sitv" hidden>봉 주기</span>
+  <div class="seg" id="seg-sitv" hidden>
+    <button data-v="60m">60분</button><button data-v="120m">120분</button>
   </div>
   <span class="fl">신호 인정</span>
   <div class="seg" id="seg-look">
@@ -229,7 +233,7 @@
       최근 N봉 내 ①·② 발생 + ③ 충족 = <b>매도 신호</b>, 모두 겹치면 <b>강력 매도</b>.
       히스토그램 반전↓·스토캐스틱 과열 데드·RSI 70 이탈·하락 다이버전스·BB 상단 복귀가 2개↑ 겹치면 <b>조기 매도</b>.<br>
       <b>외국인</b> 열은 외국인 보유한도 소진율의 최근 변화로, (+)면 외국인 순매수 유입, (−)면 이탈 흐름입니다.
-      종목 행을 클릭하면 차트와 상세 근거를 볼 수 있습니다. 단타는 분봉, 스윙은 일봉, 장기는 주봉 기준입니다.
+      종목 행을 클릭하면 차트와 상세 근거를 볼 수 있습니다. 단타는 1~15분봉, 스윙은 60·120분봉, 장기는 일봉 기준입니다.
     </div>
   </div>
 
@@ -254,7 +258,7 @@
 </main>
 
 <footer>
-  데이터 제공: <a href="https://m.stock.naver.com/" target="_blank" rel="noopener">네이버 금융</a>(실시간 현재가·시총 상위 유니버스·일/주봉·외국인 소진율) ·
+  데이터 제공: <a href="https://m.stock.naver.com/" target="_blank" rel="noopener">네이버 금융</a>(실시간 현재가·시총 상위 유니버스·일봉·외국인 소진율) ·
   <a href="https://finance.yahoo.com/" target="_blank" rel="noopener">야후 파이낸스</a>(분봉·지수 차트).
   유니버스는 코스피·코스닥 <b>시가총액 상위 50종목</b>(ETF·ETN·우선주·스팩 제외).<br>
   장 성격은 지수 일봉의 <b>20·60일 이동평균 배열·기울기와 ADX(14) 추세 강도</b>로 판별합니다(ADX 20 미만 = 횡보).
@@ -544,6 +548,21 @@ function judge(closes,hi,lo,look){
     ma20s:ma20,ma60s:ma60,bbUs:bb.u,bbLs:bb.l,
     ma20:ma20[L-1],ma60:ma60[L-1],bbU:bb.u[L-1],bbL:bb.l[L-1],pb,close:closes[L-1]};
 }
+/* 60분봉 → 120분봉 합성: 같은 거래일(KST) 안에서 연속 2봉 병합 */
+function agg120(ohlc){
+  const day=t=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul'}).format(new Date(t*1000));
+  const out=[]; let cur=null, curDay=null, cnt=0;
+  for(const b of ohlc){
+    const d=day(b.time);
+    if(!cur||curDay!==d||cnt===2){
+      cur={time:b.time,open:b.open,high:b.high,low:b.low,close:b.close};
+      out.push(cur); curDay=d; cnt=1;
+    } else {
+      cur.high=Math.max(cur.high,b.high); cur.low=Math.min(cur.low,b.low); cur.close=b.close; cnt=2;
+    }
+  }
+  return out;
+}
 /* 외국인 소진율 배열 → {now, d5, d20} (%p 변화). 데이터 없으면 null */
 function frgnStats(f){
   if(!f||!f.length) return null;
@@ -596,17 +615,20 @@ const store=(k,v)=>{ try{ if(v===undefined) return localStorage.getItem('alphade
 let MODE  =['day','swing','long'].includes(store('mode'))?store('mode'):'swing';
 let MKT   =['kospi','kosdaq','all'].includes(store('mkt'))?store('mkt'):'all';
 let ITV   =['1m','5m','15m'].includes(store('itv'))?store('itv'):'5m';
+let SITV  =['60m','120m'].includes(store('sitv'))?store('sitv'):'60m';
 let LOOK  =[3,5,10].includes(+store('look'))?+store('look'):5;
 let FILTER=['all','buy','near','sell'].includes(store('filter'))?store('filter'):'all';
 let NOTIF =store('notif')==='1';
 let OPENED=null;                          // 펼쳐진 종목 코드
 
+/* 단타=1~15분봉 · 스윙=60/120분봉(야후 60분봉, 120분은 2봉 합성) · 장기=일봉(네이버 수정주가+외국인) */
 const MODES={
   day:  {sise:false, unit:'봉',   zero:'현재봉', ttl:60*1000,    frgnLbl:'외국인(5일)'},
-  swing:{sise:'day', unit:'거래일',zero:'오늘',   ttl:10*60*1000, frgnLbl:'외국인(5일)', days:420},
-  long: {sise:'week',unit:'주',   zero:'이번 주', ttl:30*60*1000, frgnLbl:'외국인(4주)', days:2600},
+  swing:{sise:false, unit:'봉',   zero:'현재봉', ttl:5*60*1000,  frgnLbl:'외국인(5일)'},
+  long: {sise:'day', unit:'거래일',zero:'오늘',   ttl:10*60*1000, frgnLbl:'외국인(5일)', days:420},
 };
 const DAY_RANGE={'1m':'5d','5m':'5d','15m':'1mo'};
+const SW_RANGE='3mo';                     // 60분봉 3개월 ≈ 450봉 (MACD 워밍업 충분)
 const QUOTE_MS=10*1000;
 const REGIME_TTL=10*60*1000;
 
@@ -615,7 +637,7 @@ const CHARTS={};                          // `${code}|${key}` → {ts, closes, d
 const FRGN={};                            // 단타용 일봉 소진율: code → {ts, f:[]}
 let REGIME={kospi:null,kosdaq:null};      // {ts, rg, spark, name, live:{price,pct}}
 let ROWS=[], SCANNING=false, SCAN_AT=null, FAILN=0;
-const modeKey=()=> MODE==='day'?ITV:(MODE==='long'?'1wk':'1d');
+const modeKey=()=> MODE==='day'?ITV:(MODE==='swing'?SITV:'1d');
 
 /* ── 데이터 수집 ── */
 async function loadUniverse(mkt){
@@ -646,7 +668,8 @@ async function getJSON(url){
   const d=await r.json(); if(!d||d.error) throw 0;
   return d;
 }
-/* 스윙·장기: 네이버 siseJson(시세+외국인 소진율). 실패 시 야후 폴백(외국인 없음) */
+/* 장기(일봉): 네이버 siseJson(수정주가+외국인 소진율), 실패 시 야후 폴백.
+   스윙(60/120분): 야후 60분봉 — 120분은 같은 날 안에서 2봉 합성. 단타(1~15분): 야후 분봉 */
 async function fetchStock(u){
   const cfg=MODES[MODE];
   if(cfg.sise){
@@ -658,20 +681,23 @@ async function fetchStock(u){
         dates:d.rows.map(r=>r.d), f:d.rows.map(r=>r.f),
         lastDate:d.rows[d.rows.length-1].d };
     }catch(e){ /* 야후 폴백 */ }
-    const y=await getJSON('/api/chart?sym='+u.code+(u.mkt==='kosdaq'?'.KQ':'.KS')
-      +(MODE==='long'?'&range=5y&interval=1wk':'&range=1y&interval=1d'));
+    const y=await getJSON('/api/chart?sym='+u.code+(u.mkt==='kosdaq'?'.KQ':'.KS')+'&range=1y&interval=1d');
     if(!Array.isArray(y.ohlc)||y.ohlc.length<40) throw 0;
     return { ts:Date.now(), src:'yahoo',
       closes:y.ohlc.map(b=>b.close), his:y.ohlc.map(b=>b.high), los:y.ohlc.map(b=>b.low),
       dates:y.ohlc.map(b=>String(b.time).replace(/-/g,'')), f:null,
       lastDate:String(y.ohlc[y.ohlc.length-1].time).replace(/-/g,'') };
   }
+  const itv = MODE==='swing' ? '60m' : ITV;
+  const range = MODE==='swing' ? SW_RANGE : DAY_RANGE[ITV];
   const y=await getJSON('/api/chart?sym='+u.code+(u.mkt==='kosdaq'?'.KQ':'.KS')
-    +'&range='+DAY_RANGE[ITV]+'&interval='+ITV);
+    +'&range='+range+'&interval='+itv);
   if(!Array.isArray(y.ohlc)||y.ohlc.length<40) throw 0;
+  const ohlc=(MODE==='swing'&&SITV==='120m')?agg120(y.ohlc):y.ohlc;
+  if(ohlc.length<40) throw 0;
   return { ts:Date.now(), src:'yahoo',
-    closes:y.ohlc.map(b=>b.close), his:y.ohlc.map(b=>b.high), los:y.ohlc.map(b=>b.low),
-    dates:y.ohlc.map(b=>b.time), f:null, lastDate:null };
+    closes:ohlc.map(b=>b.close), his:ohlc.map(b=>b.high), los:ohlc.map(b=>b.low),
+    dates:ohlc.map(b=>b.time), f:null, lastDate:null };
 }
 /* 단타 모드 외국인: 일봉 소진율 90일(10분 캐시, 실패 무시) */
 async function ensureFrgn(code){
@@ -710,11 +736,11 @@ function liveBars(u,ch){
   const mktOpen=uv&&uv.status==='OPEN'&&uv.source==='naver';
   if(!(u.price>0)) return {c,h,l};
   const upd=i=>{ c[i]=u.price; h[i]=Math.max(isFinite(h[i])?h[i]:u.price,u.price); l[i]=Math.min(isFinite(l[i])?l[i]:u.price,u.price); };
-  if(MODE==='swing'){
+  if(MODE==='long'){
     if(ch.lastDate===kstYMD()) upd(c.length-1);
-    else if(mktOpen){ c.push(u.price); h.push(u.price); l.push(u.price); }
+    else if(mktOpen){ c.push(u.price); h.push(u.price); l.push(u.price); }   // 오늘 봉 미생성 → 잠정 추가
   } else if(mktOpen){
-    upd(c.length-1);                          // 분봉·주봉: 형성 중인 봉 갱신
+    upd(c.length-1);                          // 분봉 계열: 형성 중인 봉 갱신
   }
   return {c,h,l};
 }
@@ -744,7 +770,7 @@ async function scan(force){
       await pool(need,8,async u=>{
         const ch=await fetchStock(u).catch(()=>null);
         if(ch) CHARTS[u.code+'|'+key]=ch; else FAILN++;
-        if(MODE==='day') await ensureFrgn(u.code).catch(()=>{});
+        if(MODE!=='long') await ensureFrgn(u.code).catch(()=>{});   // 분봉 계열은 일봉 소진율 별도 수집
         setProg(++done,need.length,true);
       });
     }
@@ -756,7 +782,7 @@ async function scan(force){
 }
 
 function frgnOf(u,ch){
-  if(MODE==='day') return frgnStats(FRGN[u.code]&&FRGN[u.code].f);
+  if(MODE!=='long') return frgnStats(FRGN[u.code]&&FRGN[u.code].f);
   return frgnStats(ch&&ch.f);
 }
 function compute(){
@@ -922,7 +948,12 @@ function render(){
 
 /* ── 상세(펼침): 가격+MA+볼린저 / MACD / RSI / 외국인 소진율 차트 + 근거 ── */
 function fmtD(d,src){
-  if(MODE==='day') return (new Date(d*1000)).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'Asia/Seoul'});
+  if(MODE!=='long'){
+    const dt=new Date(d*1000);
+    const md=new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',month:'numeric',day:'numeric'}).format(dt);
+    const hm=dt.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'Asia/Seoul'});
+    return MODE==='swing' ? md.replace(/\s/g,'').replace(/\.$/,'')+' '+hm : hm;
+  }
   const s=String(d); return +s.slice(4,6)+'/'+ +s.slice(6,8);
 }
 function detailChartSVG(x,W){
@@ -1161,7 +1192,7 @@ function paintStatus(){
   else if(anyLive){ b.className='live-badge stale'; b.textContent=sess==='ext'?'시간외':'장 종료'; }
   else { b.className='live-badge stale'; b.textContent='스냅샷'; }
   if(!SCANNING&&SCAN_AT){
-    const nm=MODE==='swing'?'일봉':(MODE==='long'?'주봉':({'1m':'1분봉','5m':'5분봉','15m':'15분봉'}[ITV]));
+    const nm=MODE==='long'?'일봉':(MODE==='swing'?({'60m':'60분봉','120m':'120분봉'}[SITV]):({'1m':'1분봉','5m':'5분봉','15m':'15분봉'}[ITV]));
     document.getElementById('st-scan').textContent=
       nm+' 스캔 '+agoText(new Date(SCAN_AT).toISOString())+(FAILN?' · '+FAILN+'종목 수집 실패':'');
   }
@@ -1179,13 +1210,16 @@ function segInit(id,cur,fn){
   });
 }
 function syncItvVis(){
-  const on=MODE==='day';
-  document.getElementById('seg-itv').hidden=!on;
-  document.getElementById('fl-itv').hidden=!on;
+  const day=MODE==='day', sw=MODE==='swing';
+  document.getElementById('seg-itv').hidden=!day;
+  document.getElementById('fl-itv').hidden=!day;
+  document.getElementById('seg-sitv').hidden=!sw;
+  document.getElementById('fl-sitv').hidden=!sw;
 }
 segInit('seg-mode',MODE,v=>{ MODE=v; store('mode',v); OPENED=null; syncItvVis(); scan(false); });
 segInit('seg-mkt',MKT,v=>{ MKT=v; store('mkt',v); OPENED=null; drawRegimes(); scan(false); });
 segInit('seg-itv',ITV,v=>{ ITV=v; store('itv',v); scan(false); });
+segInit('seg-sitv',SITV,v=>{ SITV=v; store('sitv',v); scan(false); });
 segInit('seg-look',LOOK,v=>{ LOOK=+v; store('look',v); compute(); });
 segInit('seg-filter',FILTER,v=>{ FILTER=v; store('filter',v); render(); });
 document.getElementById('btn-rescan').addEventListener('click',()=>scan(true));
