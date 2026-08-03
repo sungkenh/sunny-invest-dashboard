@@ -1,5 +1,6 @@
-// 상단 지표 15종 실시간 — /api/market  (야후 chart API + 美재무부 2년물 CSV)
-// 방문 시점에 직접 수집. 모듈 캐시(60s) + 엣지 캐시로 함수 호출 최소화.
+// 상단 지표 15종 실시간 — /api/market
+// 국내 지수·미국채 10/2년물은 네이버 시장지표 우선(신선도), 야후 chart API 폴백.
+// 2년물 스파크라인·최종 폴백은 美재무부 일일 CSV. 모듈 캐시(60s) + 엣지 캐시.
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36';
 const SYMS = {
   kospi: '^KS11', ewy: 'EWY', kosdaq: '^KQ11', spx: '^GSPC', ndx: '^NDX', ndxfut: 'NQ=F', sox: '^SOX',
@@ -52,6 +53,21 @@ function downsample(arr, n) {
   return out;
 }
 
+// 미국채 수익률 — 네이버 시장지표(yieldgap.js 와 동일 productDetail 엔드포인트, 재무부 CSV보다 신선)
+async function naverBond(rc) {
+  const u = 'https://m.stock.naver.com/front-api/marketIndex/productDetail?category=bond&reutersCode=' + encodeURIComponent(rc);
+  const r = await fetch(u, { headers: { 'User-Agent': UA, 'Referer': 'https://m.stock.naver.com/' } });
+  const d = await r.json();
+  const v = d && d.result;
+  const px = v && parseFloat(v.closePrice);
+  if (!isFinite(px)) throw new Error('no bond ' + rc);
+  // 등락 필드명은 화면 버전에 따라 달라 방어적으로 조회 (Raw 계열은 부호 포함)
+  const chg = parseFloat([v.compareToPreviousClosePrice, v.fluctuations, v.changeValue, v.compareToPreviousPrice]
+    .find((x) => x != null && isFinite(parseFloat(x))));
+  const pct = parseFloat([v.fluctuationsRatio, v.changeRate].find((x) => x != null && isFinite(parseFloat(x))));
+  return { price: round(px, 3), chg: isFinite(chg) ? round(chg, 3) : null, pct: isFinite(pct) ? round(pct, 2) : null };
+}
+
 async function treasury2y() {
   const yr = new Date().getUTCFullYear();
   const u = 'https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/'
@@ -85,11 +101,36 @@ async function __cfHandler(event) {
         return;
       } catch (e) { /* 야후 폴백 */ }
     }
+    // 미국채 10년: 네이버 시장지표 우선(가격·등락) + 야후 스파크라인. 실패 시 야후 전체로 폴백.
+    if (k === 'ust10y') {
+      try {
+        const [nb, ch] = await Promise.all([naverBond('US10YT=RR'), chartQuote(s).catch(() => null)]);
+        res[k] = { sym: s, price: nb.price,
+          chg: nb.chg != null ? nb.chg : (ch ? ch.chg : null),
+          pct: nb.pct != null ? nb.pct : (ch ? ch.pct : 0),
+          sp: (ch && ch.sp) || [], src: 'naver' };
+        return;
+      } catch (e) { /* 야후 폴백 */ }
+    }
     try { res[k] = { sym: s, ...(await chartQuote(s)), src: 'yahoo' }; }
     catch (e) { res[k] = { sym: s, error: String(e).slice(0, 60) }; }
   }));
-  try { res.ust2y = { sym: 'UST2Y', ...(await treasury2y()) }; }
-  catch (e) { res.ust2y = { sym: 'UST2Y', error: String(e).slice(0, 60) }; }
+  // 미국채 2년: 네이버 시장지표 우선(재무부 CSV는 하루 지연) + 재무부 일별 시계열(스파크라인·폴백)
+  {
+    const [nb, tr] = await Promise.all([naverBond('US2YT=RR').catch(() => null), treasury2y().catch(() => null)]);
+    if (nb) {
+      // 장중엔 재무부 최신 확정치 = 어제 종가 → 등락 폴백 기준으로 사용
+      const prevDaily = tr ? tr.price : null;
+      res.ust2y = { sym: 'UST2Y', price: nb.price,
+        chg: nb.chg != null ? nb.chg : (prevDaily != null ? round(nb.price - prevDaily, 3) : null),
+        pct: nb.pct != null ? nb.pct : (prevDaily ? round((nb.price - prevDaily) / prevDaily * 100, 2) : null),
+        sp: (tr && tr.sp) || [], src: 'naver' };
+    } else if (tr) {
+      res.ust2y = { sym: 'UST2Y', ...tr, src: 'treasury' };
+    } else {
+      res.ust2y = { sym: 'UST2Y', error: 'naver+treasury fail' };
+    }
+  }
   res._updated = new Date().toISOString().slice(0, 19);
   CACHE = { ts: Date.now(), data: res };
   return ok(res);
