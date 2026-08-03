@@ -793,7 +793,7 @@ const arr  = n => n>0?'▲':(n<0?'▼':'■');
 // src = 그 지표를 긁어온 출처 사이트(클릭 시 새 탭으로 이동).
 const SAMPLE_INDEX = [
   {key:'kospi',  nm:'코스피',     sym:'KOSPI',   val:2712.45, chg:+18.32, pct:+0.68, dec:2, sp:[40,42,41,44,46,45,48,50,49,52], src:'https://m.stock.naver.com/domestic/index/KOSPI/total'},
-  {key:'ewy',    nm:'코스피200 야간선물', sym:'K200 Night', val:830.0, chg:+2.10, pct:+0.25, dec:2, sp:[58,59,58,60,61,60,62,61,62,62], src:'https://kred.dev/ko/kospi-200-night-futures'},
+  {key:'ewy',    nm:'코스피 야간 (EWY 프록시)', sym:'EWY·MSCI한국', val:62.0, chg:+0.40, pct:+0.65, pre:'$', dec:2, sp:[58,59,58,60,61,60,62,61,62,62], src:'https://kred.dev/ko/kospi-200-night-futures'},
   {key:'kosdaq', nm:'코스닥',     sym:'KOSDAQ',  val:842.10,  chg:-3.44,  pct:-0.41, dec:2, sp:[55,54,52,53,50,49,50,48,47,46], src:'https://m.stock.naver.com/domestic/index/KOSDAQ/total'},
   {key:'spx',    nm:'S&P 500',   sym:'SPX',     val:5431.60, chg:+24.10, pct:+0.45, dec:2, sp:[30,33,35,34,38,40,42,44,46,49], src:'https://m.stock.naver.com/worldstock/index/.INX/total'},
   {key:'ndx',    nm:'나스닥100',  sym:'NDX',     val:19420.3, chg:+112.4, pct:+0.58, dec:1, sp:[28,30,29,34,37,39,38,43,47,50], src:'https://m.stock.naver.com/worldstock/index/.NDX/total'},
@@ -2344,7 +2344,7 @@ function pushSpark(d, price){                      // 실시간 틱 누적(롤�
   if(d.sp[d.sp.length-1]!==price){ d.sp.push(price); if(d.sp.length>48) d.sp.shift(); }
 }
 /* 상단 지표 미니 캔들용 OHLC — /api/chart(야후, 지수 심볼 동작). 장 마감(주말)이면 직전 세션을 미리보기로 표시. */
-const STRIP_YF={kospi:'^KS11',kosdaq:'^KQ11',spx:'^GSPC',ndx:'^NDX',ndxfut:'NQ=F',sox:'^SOX',btc:'BTC-USD',gold:'GC=F',wti:'CL=F',ust10y:'^TNX',usdkrw:'KRW=X',usdjpy:'JPY=X',vix:'^VIX'};
+const STRIP_YF={kospi:'^KS11',ewy:'EWY',kosdaq:'^KQ11',spx:'^GSPC',ndx:'^NDX',ndxfut:'NQ=F',sox:'^SOX',btc:'BTC-USD',gold:'GC=F',wti:'CL=F',ust10y:'^TNX',usdkrw:'KRW=X',usdjpy:'JPY=X',vix:'^VIX'};
 function downOHLC(arr,n){
   if(arr.length<=n) return arr.map(b=>({o:b.open,h:b.high,l:b.low,c:b.close}));
   const out=[], step=arr.length/n;

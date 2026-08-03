@@ -53,11 +53,10 @@ function downsample(arr, n) {
   return out;
 }
 
-// 네이버 시장지표 productDetail — 채권·환율·원자재 공용 (yieldgap.js 검증 엔드포인트).
-// 카테고리 슬러그가 상품군마다 달라 후보를 순차 시도한다.
-async function naverMI(cats, rc) {
+// 네이버 시장지표 productDetail — 채권·환율·원자재 공용 (프로브로 확정한 카테고리·코드 조합)
+async function naverMI(tries) {
   let lastErr = null;
-  for (const cat of cats) {
+  for (const [cat, rc] of tries) {
     try {
       const u = 'https://m.stock.naver.com/front-api/marketIndex/productDetail?category=' + cat
         + '&reutersCode=' + encodeURIComponent(rc);
@@ -67,90 +66,39 @@ async function naverMI(cats, rc) {
       // ⚠️ 값이 천단위 콤마 문자열("1,385.50")로 온다 — parseFloat 는 콤마에서 잘려 1이 되므로 반드시 제거
       const num = (x) => parseFloat(String(x == null ? '' : x).replace(/,/g, ''));
       const px = v && num(v.closePrice);
-      if (!isFinite(px)) throw new Error('no data');
-      // 등락 필드명은 화면 버전에 따라 달라 방어적으로 조회 (Raw 계열은 부호 포함)
+      if (!isFinite(px)) throw new Error('no data ' + cat + '/' + rc);
       const chg = num([v.compareToPreviousClosePrice, v.fluctuations, v.changeValue, v.compareToPreviousPrice]
         .find((x) => x != null && isFinite(num(x))));
       const pct = num([v.fluctuationsRatio, v.changeRate].find((x) => x != null && isFinite(num(x))));
       return { price: round(px, 4), chg: isFinite(chg) ? round(chg, 4) : null, pct: isFinite(pct) ? round(pct, 2) : null };
     } catch (e) { lastErr = e; }
   }
-  throw lastErr || new Error('naver mi fail ' + rc);
+  throw lastErr || new Error('naver mi fail');
 }
-const naverBond = (rc) => naverMI(['bond'], rc);
-// 네이버 월드스톡 기본 시세 — 나스닥100 선물(NQcv1, 미니) 등 futures/stock 공용
-async function naverWorldBasic(rc) {
-  const u = 'https://api.stock.naver.com/stock/' + encodeURIComponent(rc) + '/basic';
+const naverBond = (rc) => naverMI([['bond', rc]]);
+// 나스닥100 선물(NQcv1, 미니) — 폴링 선물 API (프로브 확정). 등락 부호는 방향 코드(1·2=상승, 4·5=하락, 3=보합)
+async function naverPollFut(rc) {
+  const u = 'https://polling.finance.naver.com/api/realtime/worldstock/futures/' + encodeURIComponent(rc);
   const r = await fetch(u, { headers: { 'User-Agent': UA, 'Referer': 'https://m.stock.naver.com/' } });
-  const v = await r.json();
-  const num = (x) => parseFloat(String(x == null ? '' : x).replace(/,/g, ''));
-  const px = num(v && v.closePrice);
-  if (!isFinite(px)) throw new Error('no basic ' + rc);
-  const pct = num(v.fluctuationsRatio);
-  let chg = num(v.compareToPreviousClosePrice);
-  if (isFinite(chg) && isFinite(pct) && pct < 0 && chg > 0) chg = -chg;   // 등락폭 부호 결손 방어
-  return { price: round(px, 4), chg: isFinite(chg) ? round(chg, 4) : null, pct: isFinite(pct) ? round(pct, 2) : null };
-}
-// 네이버 우선 지표: 미국채·환율·금·WTI (실패 시 야후 폴백 — 지수·선물·BTC·VIX 는 야후 유지)
-const NAVER_MI = {
-  ust10y: { cats: ['bond'], rc: 'US10YT=RR' },
-  usdkrw: { cats: ['exchange'], rc: 'FX_USDKRW' },
-  usdjpy: { cats: ['worldExchange', 'exchange'], rc: 'FX_USDJPY' },   // 달러/엔은 국제 환율 분류
-  gold:   { cats: ['metals', 'gold'], rc: 'CMDT_GC' },
-  wti:    { cats: ['oil', 'energy'], rc: 'OIL_CL' },
-};
-
-// WTI — TradingView USOIL(스캐너 API, 사용자 지정 소스). columns: 종가·등락폭·등락률
-async function tvQuote(ticker) {
-  const r = await fetch('https://scanner.tradingview.com/global/scan', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'User-Agent': UA },
-    body: JSON.stringify({ symbols: { tickers: [ticker] }, columns: ['close', 'change_abs', 'change'] }),
-  });
   const d = await r.json();
-  const row = d && d.data && d.data[0] && d.data[0].d;
-  const px = row && parseFloat(row[0]);
-  if (!isFinite(px)) throw new Error('tv no data');
-  const chg = parseFloat(row[1]), pct = parseFloat(row[2]);
-  return { price: round(px, 4), chg: isFinite(chg) ? round(chg, 4) : null, pct: isFinite(pct) ? round(pct, 2) : null };
+  const row = d && d.datas && d.datas[0];
+  const num = (x) => parseFloat(String(x == null ? '' : x).replace(/,/g, ''));
+  const px = row && num(row.closePrice);
+  if (!isFinite(px)) throw new Error('no fut ' + rc);
+  const dir = String((row.compareToPreviousPrice || {}).code || '');
+  const s = (dir === '4' || dir === '5') ? -1 : (dir === '3' ? 0 : 1);
+  const chg = num(row.compareToPreviousClosePrice), pct = num(row.fluctuationsRatio);
+  return { price: round(px, 4), chg: isFinite(chg) ? round(chg * s, 4) : null, pct: isFinite(pct) ? round(pct * s, 2) : null };
 }
 
-// 코스피200 야간선물 — kred.dev (사용자 지정). JSON API 후보 → __NEXT_DATA__ 딥스캔 순으로 시도.
-// 사이트 구조가 확인 불가한 서드파티라 방어적으로 파싱하고, 실패 시 항목을 생략해 직전 값을 유지한다.
-function deepQuote(o, lo, hi) {
-  let best = null;
-  const num = (x) => { const v = parseFloat(String(x == null ? '' : x).replace(/,/g, '')); return isFinite(v) ? v : null; };
-  const walk = (v) => {
-    if (best || !v || typeof v !== 'object') return;
-    if (!Array.isArray(v)) {
-      const price = ['price', 'last', 'lastPrice', 'close', 'value', 'tradePrice'].map((k) => num(v[k]))
-        .find((x) => x != null && x > lo && x < hi);
-      if (price != null) {
-        const chg = ['change', 'chg', 'netChange', 'changeValue', 'diff'].map((k) => num(v[k]))
-          .find((x) => x != null && Math.abs(x) < price * 0.2);
-        const pct = ['changePercent', 'changeRate', 'percent', 'pct', 'fluctuationsRatio'].map((k) => num(v[k]))
-          .find((x) => x != null && Math.abs(x) < 30);
-        if (chg != null || pct != null) { best = { price: round(price, 2), chg: chg != null ? round(chg, 2) : null, pct: pct != null ? round(pct, 2) : null }; return; }
-      }
-    }
-    for (const k in v) walk(v[k]);
-  };
-  walk(o);
-  return best;
-}
-async function kredNight() {
-  const hdr = { 'User-Agent': UA };
-  for (const u of ['https://kred.dev/api/kospi-200-night-futures', 'https://kred.dev/api/series/kospi-200-night-futures']) {
-    try {
-      const r = await fetch(u, { headers: hdr });
-      if (r.ok) { const q = deepQuote(await r.json(), 100, 2000); if (q) return q; }
-    } catch (e) { /* 다음 후보 */ }
-  }
-  const html = await (await fetch('https://kred.dev/ko/kospi-200-night-futures', { headers: hdr })).text();
-  const m = html.match(/<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/);
-  if (m) { try { const q = deepQuote(JSON.parse(m[1]), 100, 2000); if (q) return q; } catch (e) { /* 파싱 실패 */ } }
-  throw new Error('kred parse fail');
-}
+// 네이버 우선 지표 — 카테고리·코드는 실서비스 프로브로 확정 (금·WTI 는 COMEX·NYMEX 선물 연속물, 지연 10분)
+const NAVER_MI = {
+  ust10y: { tries: [['bond', 'US10YT=RR']] },
+  usdkrw: { tries: [['exchange', 'FX_USDKRW']] },
+  usdjpy: { tries: [['exchangeWorld', 'JPY=X'], ['exchangeWorld', 'JPY='], ['exchange', 'FX_USDJPY']] },
+  gold:   { tries: [['metals', 'GCcv1']] },
+  wti:    { tries: [['energy', 'CLcv1']] },
+};
 
 async function treasury2y() {
   const yr = new Date().getUTCFullYear();
@@ -185,27 +133,10 @@ async function __cfHandler(event) {
         return;
       } catch (e) { /* 야후 폴백 */ }
     }
-    // 코스피200 야간선물: kred.dev (실패 시 항목 생략 → 클라이언트가 직전 값 유지)
-    if (k === 'ewy') {
-      try { res[k] = { sym: 'K200N', ...(await kredNight()), sp: [], src: 'kred' }; }
-      catch (e) { res[k] = { sym: 'K200N', error: String(e).slice(0, 60) }; }
-      return;
-    }
-    // WTI: TradingView USOIL 우선(사용자 지정) → 네이버 시장지표 → 야후 순
-    if (k === 'wti') {
-      try {
-        const [tv, ch] = await Promise.all([tvQuote('TVC:USOIL'), chartQuote(s).catch(() => null)]);
-        res[k] = { sym: s, price: tv.price,
-          chg: tv.chg != null ? tv.chg : (ch ? ch.chg : null),
-          pct: tv.pct != null ? tv.pct : (ch ? ch.pct : 0),
-          sp: (ch && ch.sp) || [], src: 'tv' };
-        return;
-      } catch (e) { /* 네이버 → 야후 폴백 (아래 NAVER_MI 경로) */ }
-    }
     // 나스닥100 선물: 네이버 미니 나스닥100 선물(NQcv1) 우선 + 야후 NQ=F 스파크라인/폴백
     if (k === 'ndxfut') {
       try {
-        const [nb, ch] = await Promise.all([naverWorldBasic('NQcv1'), chartQuote(s).catch(() => null)]);
+        const [nb, ch] = await Promise.all([naverPollFut('NQcv1'), chartQuote(s).catch(() => null)]);
         res[k] = { sym: s, price: nb.price,
           chg: nb.chg != null ? nb.chg : (ch ? ch.chg : null),
           pct: nb.pct != null ? nb.pct : (ch ? ch.pct : 0),
@@ -216,7 +147,7 @@ async function __cfHandler(event) {
     // 미국채·환율·금·WTI: 네이버 시장지표 우선(가격·등락) + 야후 스파크라인. 실패 시 야후 전체로 폴백.
     if (NAVER_MI[k]) {
       try {
-        const [nb, ch] = await Promise.all([naverMI(NAVER_MI[k].cats, NAVER_MI[k].rc), chartQuote(s).catch(() => null)]);
+        const [nb, ch] = await Promise.all([naverMI(NAVER_MI[k].tries), chartQuote(s).catch(() => null)]);
         res[k] = { sym: s, price: nb.price,
           chg: nb.chg != null ? nb.chg : (ch ? ch.chg : null),
           pct: nb.pct != null ? nb.pct : (ch ? ch.pct : 0),
