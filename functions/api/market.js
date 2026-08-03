@@ -53,20 +53,50 @@ function downsample(arr, n) {
   return out;
 }
 
-// 미국채 수익률 — 네이버 시장지표(yieldgap.js 와 동일 productDetail 엔드포인트, 재무부 CSV보다 신선)
-async function naverBond(rc) {
-  const u = 'https://m.stock.naver.com/front-api/marketIndex/productDetail?category=bond&reutersCode=' + encodeURIComponent(rc);
-  const r = await fetch(u, { headers: { 'User-Agent': UA, 'Referer': 'https://m.stock.naver.com/' } });
-  const d = await r.json();
-  const v = d && d.result;
-  const px = v && parseFloat(v.closePrice);
-  if (!isFinite(px)) throw new Error('no bond ' + rc);
-  // 등락 필드명은 화면 버전에 따라 달라 방어적으로 조회 (Raw 계열은 부호 포함)
-  const chg = parseFloat([v.compareToPreviousClosePrice, v.fluctuations, v.changeValue, v.compareToPreviousPrice]
-    .find((x) => x != null && isFinite(parseFloat(x))));
-  const pct = parseFloat([v.fluctuationsRatio, v.changeRate].find((x) => x != null && isFinite(parseFloat(x))));
-  return { price: round(px, 3), chg: isFinite(chg) ? round(chg, 3) : null, pct: isFinite(pct) ? round(pct, 2) : null };
+// 네이버 시장지표 productDetail — 채권·환율·원자재 공용 (yieldgap.js 검증 엔드포인트).
+// 카테고리 슬러그가 상품군마다 달라 후보를 순차 시도한다.
+async function naverMI(cats, rc) {
+  let lastErr = null;
+  for (const cat of cats) {
+    try {
+      const u = 'https://m.stock.naver.com/front-api/marketIndex/productDetail?category=' + cat
+        + '&reutersCode=' + encodeURIComponent(rc);
+      const r = await fetch(u, { headers: { 'User-Agent': UA, 'Referer': 'https://m.stock.naver.com/' } });
+      const d = await r.json();
+      const v = d && d.result;
+      const px = v && parseFloat(v.closePrice);
+      if (!isFinite(px)) throw new Error('no data');
+      // 등락 필드명은 화면 버전에 따라 달라 방어적으로 조회 (Raw 계열은 부호 포함)
+      const chg = parseFloat([v.compareToPreviousClosePrice, v.fluctuations, v.changeValue, v.compareToPreviousPrice]
+        .find((x) => x != null && isFinite(parseFloat(x))));
+      const pct = parseFloat([v.fluctuationsRatio, v.changeRate].find((x) => x != null && isFinite(parseFloat(x))));
+      return { price: round(px, 4), chg: isFinite(chg) ? round(chg, 4) : null, pct: isFinite(pct) ? round(pct, 2) : null };
+    } catch (e) { lastErr = e; }
+  }
+  throw lastErr || new Error('naver mi fail ' + rc);
 }
+const naverBond = (rc) => naverMI(['bond'], rc);
+// 네이버 월드스톡 기본 시세 — 나스닥100 선물(NQcv1, 미니) 등 futures/stock 공용
+async function naverWorldBasic(rc) {
+  const u = 'https://api.stock.naver.com/stock/' + encodeURIComponent(rc) + '/basic';
+  const r = await fetch(u, { headers: { 'User-Agent': UA, 'Referer': 'https://m.stock.naver.com/' } });
+  const v = await r.json();
+  const num = (x) => parseFloat(String(x == null ? '' : x).replace(/,/g, ''));
+  const px = num(v && v.closePrice);
+  if (!isFinite(px)) throw new Error('no basic ' + rc);
+  const pct = num(v.fluctuationsRatio);
+  let chg = num(v.compareToPreviousClosePrice);
+  if (isFinite(chg) && isFinite(pct) && pct < 0 && chg > 0) chg = -chg;   // 등락폭 부호 결손 방어
+  return { price: round(px, 4), chg: isFinite(chg) ? round(chg, 4) : null, pct: isFinite(pct) ? round(pct, 2) : null };
+}
+// 네이버 우선 지표: 미국채·환율·금·WTI (실패 시 야후 폴백 — 지수·선물·BTC·VIX 는 야후 유지)
+const NAVER_MI = {
+  ust10y: { cats: ['bond'], rc: 'US10YT=RR' },
+  usdkrw: { cats: ['exchange'], rc: 'FX_USDKRW' },
+  usdjpy: { cats: ['exchange'], rc: 'FX_USDJPY' },
+  gold:   { cats: ['metals', 'gold'], rc: 'CMDT_GC' },
+  wti:    { cats: ['oil', 'energy'], rc: 'OIL_CL' },
+};
 
 async function treasury2y() {
   const yr = new Date().getUTCFullYear();
@@ -101,10 +131,21 @@ async function __cfHandler(event) {
         return;
       } catch (e) { /* 야후 폴백 */ }
     }
-    // 미국채 10년: 네이버 시장지표 우선(가격·등락) + 야후 스파크라인. 실패 시 야후 전체로 폴백.
-    if (k === 'ust10y') {
+    // 나스닥100 선물: 네이버 미니 나스닥100 선물(NQcv1) 우선 + 야후 NQ=F 스파크라인/폴백
+    if (k === 'ndxfut') {
       try {
-        const [nb, ch] = await Promise.all([naverBond('US10YT=RR'), chartQuote(s).catch(() => null)]);
+        const [nb, ch] = await Promise.all([naverWorldBasic('NQcv1'), chartQuote(s).catch(() => null)]);
+        res[k] = { sym: s, price: nb.price,
+          chg: nb.chg != null ? nb.chg : (ch ? ch.chg : null),
+          pct: nb.pct != null ? nb.pct : (ch ? ch.pct : 0),
+          sp: (ch && ch.sp) || [], src: 'naver' };
+        return;
+      } catch (e) { /* 야후 폴백 */ }
+    }
+    // 미국채·환율·금·WTI: 네이버 시장지표 우선(가격·등락) + 야후 스파크라인. 실패 시 야후 전체로 폴백.
+    if (NAVER_MI[k]) {
+      try {
+        const [nb, ch] = await Promise.all([naverMI(NAVER_MI[k].cats, NAVER_MI[k].rc), chartQuote(s).catch(() => null)]);
         res[k] = { sym: s, price: nb.price,
           chg: nb.chg != null ? nb.chg : (ch ? ch.chg : null),
           pct: nb.pct != null ? nb.pct : (ch ? ch.pct : 0),
