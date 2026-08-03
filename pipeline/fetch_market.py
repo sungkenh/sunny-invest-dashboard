@@ -29,27 +29,68 @@ def naver_index(code):
     delay = int((row.get('stockExchangeType') or {}).get('delayTime', 0))
     return price, chg, pct, delay
 
-def naver_bond(rc):
-    """미국채 수익률 — 네이버 시장지표(yieldgap 파이프라인과 동일 엔드포인트, 재무부 CSV보다 신선).
-       반환 (price, chg|None, pct|None). 등락 필드명은 방어적으로 조회."""
-    u = ('https://m.stock.naver.com/front-api/marketIndex/productDetail?category=bond&reutersCode=%s'
-         % urllib.parse.quote(rc))
+def naver_mi(cats, rc):
+    """네이버 시장지표 productDetail — 채권·환율·원자재 공용 (yieldgap 파이프라인 검증 엔드포인트).
+       카테고리 후보를 순차 시도. 반환 (price, chg|None, pct|None)."""
     hdr = {'User-Agent': 'Mozilla/5.0', 'Referer': 'https://m.stock.naver.com/'}
-    d = json.loads(urllib.request.urlopen(urllib.request.Request(u, headers=hdr), timeout=10).read())
-    v = d.get('result') or {}
-    price = float(v['closePrice'])
-    chg = pct = None
-    for kf in ('compareToPreviousClosePrice', 'fluctuations', 'changeValue', 'compareToPreviousPrice'):
+    err = None
+    for cat in cats:
         try:
-            chg = float(v[kf]); break
-        except Exception:
-            pass
-    for kf in ('fluctuationsRatio', 'changeRate'):
+            u = ('https://m.stock.naver.com/front-api/marketIndex/productDetail?category=%s&reutersCode=%s'
+                 % (cat, urllib.parse.quote(rc)))
+            d = json.loads(urllib.request.urlopen(urllib.request.Request(u, headers=hdr), timeout=10).read())
+            v = d.get('result') or {}
+            price = float(v['closePrice'])
+            chg = pct = None
+            for kf in ('compareToPreviousClosePrice', 'fluctuations', 'changeValue', 'compareToPreviousPrice'):
+                try:
+                    chg = float(v[kf]); break
+                except Exception:
+                    pass
+            for kf in ('fluctuationsRatio', 'changeRate'):
+                try:
+                    pct = float(v[kf]); break
+                except Exception:
+                    pass
+            return price, chg, pct
+        except Exception as e:
+            err = e
+    raise err or RuntimeError('naver mi fail')
+
+
+def naver_bond(rc):
+    return naver_mi(['bond'], rc)
+
+
+def naver_world_basic(rc):
+    """네이버 월드스톡 기본 시세 — 나스닥100 선물(NQcv1, 미니) 등. (price, chg|None, pct|None)"""
+    u = 'https://api.stock.naver.com/stock/%s/basic' % urllib.parse.quote(rc)
+    hdr = {'User-Agent': 'Mozilla/5.0', 'Referer': 'https://m.stock.naver.com/'}
+    v = json.loads(urllib.request.urlopen(urllib.request.Request(u, headers=hdr), timeout=10).read())
+
+    def num(x):
         try:
-            pct = float(v[kf]); break
+            return float(str(x).replace(',', ''))
         except Exception:
-            pass
+            return None
+    price = num(v.get('closePrice'))
+    if price is None:
+        raise RuntimeError('no basic %s' % rc)
+    pct = num(v.get('fluctuationsRatio'))
+    chg = num(v.get('compareToPreviousClosePrice'))
+    if chg is not None and pct is not None and pct < 0 and chg > 0:
+        chg = -chg                                  # 등락폭 부호 결손 방어
     return price, chg, pct
+
+
+# 네이버 우선 지표: 미국채·환율·금·WTI (실패 시 야후 폴백 — 지수·선물·BTC·VIX 는 야후 유지)
+NAVER_MI = {
+    'ust10y': (['bond'], 'US10YT=RR'),
+    'usdkrw': (['exchange'], 'FX_USDKRW'),
+    'usdjpy': (['exchange'], 'FX_USDJPY'),
+    'gold':   (['metals', 'gold'], 'CMDT_GC'),
+    'wti':    (['oil', 'energy'], 'OIL_CL'),
+}
 
 
 def quote(s):
@@ -90,10 +131,10 @@ for k, s in SYMS.items():
             continue
         except Exception:
             pass
-    # 미국채 10년: 네이버 시장지표 우선(가격·등락) + 야후 스파크라인. 실패 시 야후 전체로 폴백.
-    if k == 'ust10y':
+    # 나스닥100 선물: 네이버 미니 나스닥100 선물(NQcv1) 우선 + 야후 스파크라인/폴백
+    if k == 'ndxfut':
         try:
-            price, chg, pct = naver_bond('US10YT=RR')
+            price, chg, pct = naver_world_basic('NQcv1')
             if chg is None:
                 try:
                     _, pc = quote(s)
@@ -102,8 +143,28 @@ for k, s in SYMS.items():
                         pct = (price - pc) / pc * 100
                 except Exception:
                     pass
-            res[k] = {'sym': s, 'price': round(price, 3),
-                      'chg': round(chg, 3) if chg is not None else None,
+            res[k] = {'sym': s, 'price': round(price, 4),
+                      'chg': round(chg, 4) if chg is not None else None,
+                      'pct': round(pct, 2) if pct is not None else None,
+                      'sp': series(s), 'src': 'naver'}
+            continue
+        except Exception:
+            pass
+    # 미국채·환율·금·WTI: 네이버 시장지표 우선(가격·등락) + 야후 스파크라인. 실패 시 야후 전체로 폴백.
+    if k in NAVER_MI:
+        try:
+            cats, rc = NAVER_MI[k]
+            price, chg, pct = naver_mi(cats, rc)
+            if chg is None:
+                try:
+                    _, pc = quote(s)
+                    if pc:
+                        chg = price - pc
+                        pct = (price - pc) / pc * 100
+                except Exception:
+                    pass
+            res[k] = {'sym': s, 'price': round(price, 4),
+                      'chg': round(chg, 4) if chg is not None else None,
                       'pct': round(pct, 2) if pct is not None else None,
                       'sp': series(s), 'src': 'naver'}
             continue
