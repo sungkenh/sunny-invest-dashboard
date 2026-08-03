@@ -190,7 +190,7 @@
   </div>
   <span class="fl">시장</span>
   <div class="seg" id="seg-mkt">
-    <button data-v="kospi">코스피 50</button><button data-v="kosdaq">코스닥 50</button><button data-v="all">국내 100</button><button data-v="sp500">S&amp;P500 50</button><button data-v="nasdaq">나스닥 50</button>
+    <button data-v="kospi">코스피 50</button><button data-v="kosdaq">코스닥 50</button><button data-v="sp500">S&amp;P500</button><button data-v="nasdaq">나스닥</button>
   </div>
   <span class="fl" id="fl-itv" hidden>분봉</span>
   <div class="seg" id="seg-itv" hidden>
@@ -260,7 +260,8 @@
 <footer>
   데이터 제공: <a href="https://m.stock.naver.com/" target="_blank" rel="noopener">네이버 금융</a>(실시간 현재가·시총 상위 유니버스·일봉·외국인 소진율) ·
   <a href="https://finance.yahoo.com/" target="_blank" rel="noopener">야후 파이낸스</a>(분봉·지수 차트).
-  유니버스는 코스피·코스닥·S&amp;P500·나스닥 <b>시가총액 상위 50종목</b>(ETF·ETN·우선주·스팩 제외).
+  유니버스는 국내 = 코스피·코스닥 <b>시가총액 상위 50종목</b>, 미국 = <b>S&amp;P500 편입 전 종목·나스닥 시총 상위 500</b>을
+  전부 스캔한 뒤 <b>매수·매도 포지션 강도 상위 50종목</b>만 제안합니다(ETF·ETN·우선주·스팩 제외).
   미국은 정규장(22:30~05:00 KST) 외 프리·애프터마켓 체결가를 현재가에 반영하며, 장 성격은 S&amp;P500(^GSPC)·나스닥100(^NDX) 지수로 판별합니다.<br>
   장 성격은 지수 일봉의 <b>20·60일 이동평균 배열·기울기와 ADX(14) 추세 강도</b>로 판별합니다(ADX 20 미만 = 횡보).
   외국인 수급은 <b>외국인 보유한도 소진율</b>의 최근 변화량(%p)으로, 정확한 순매수 금액이 아닌 근사 지표입니다.<br>
@@ -626,7 +627,7 @@ function techniqueFor(u,j,rg,fd){
 /* ── 상태 ── */
 const store=(k,v)=>{ try{ if(v===undefined) return localStorage.getItem('alphadesk.sig.'+k); localStorage.setItem('alphadesk.sig.'+k,v); }catch(e){ return null; } };
 let MODE  =['day','swing','long'].includes(store('mode'))?store('mode'):'swing';
-let MKT   =['kospi','kosdaq','all','sp500','nasdaq'].includes(store('mkt'))?store('mkt'):'all';
+let MKT   =['kospi','kosdaq','sp500','nasdaq'].includes(store('mkt'))?store('mkt'):'kospi';
 let ITV   =['1m','5m','15m'].includes(store('itv'))?store('itv'):'5m';
 let SITV  =['60m','120m'].includes(store('sitv'))?store('sitv'):'60m';
 let LOOK  =[3,5,10].includes(+store('look'))?+store('look'):5;
@@ -649,18 +650,20 @@ let UNIV={kospi:null,kosdaq:null,sp500:null,nasdaq:null};
 const CHARTS={};                          // `${code}|${key}` → {ts, closes, dates, f, lastDate, src}
 const FRGN={};                            // 국내 단타·스윙용 일봉 소진율: code → {ts, f:[]}
 let REGIME={kospi:null,kosdaq:null,sp500:null,nasdaq:null};   // {ts, rg, closes, live:{price,pct}}
-let ROWS=[], SCANNING=false, SCAN_AT=null, FAILN=0;
+let ROWS=[], SCANNING=false, SCAN_AT=null, FAILN=0, FULLN=0;
 const modeKey=()=> MODE==='day'?ITV:(MODE==='swing'?SITV:'1d');
-const activeMkts=()=> MKT==='all'?['kospi','kosdaq']:[MKT];      // '국내 100' = 코스피+코스닥
+const activeMkts=()=> [MKT];
+const US_TOP=50;                          // 미국: 전체 스캔 후 포지션 강도 상위 50만 제안
 const symOf=u=> isUSm(u.mkt)?u.code:(u.code+(u.mkt==='kosdaq'?'.KQ':'.KS'));
 
 /* ── 데이터 수집 ── */
 async function loadUniverse(mkt){
   if(isUSm(mkt)){
-    const d=await fetchLive('/api/usheatmap?us='+mkt+'&n=50','data/usheatmap_'+mkt+'.json');
+    // 전체 유니버스: S&P500 = 편입 전 종목(~503) · 나스닥 = 시총 상위 500
+    const d=await fetchLive('/api/usheatmap?us='+mkt+'&n=500','data/usheatmap_'+mkt+'.json');
     if(!d||!Array.isArray(d.items)) return null;
     return { status:d.marketStatus||'', updated:d._updated||'', source:d.source||'',
-      items:d.items.slice(0,50).map(it=>{
+      items:d.items.map(it=>{
         // 프리·애프터마켓 실시간 체결가 우선 (heatmap 과 동일 원칙)
         const ext=d.marketStatus!=='OPEN'&&it.o&&it.o.s==='OPEN'&&isFinite(it.o.pct);
         return {code:it.code,rc:it.rc,name:it.name,mkt,
@@ -793,11 +796,12 @@ async function scan(force){
     const items=univItems();
     if(!items.length){ note('시세 유니버스를 불러오지 못했습니다. 잠시 후 다시 시도합니다.'); return; }
 
-    const need=items.filter(u=>{ const c=CHARTS[u.code+'|'+key]; return force||!c||Date.now()-c.ts>cfg.ttl; });
+    const ttl=cfg.ttl*(isUSm(MKT)?3:1);           // 미국 전체 스캔은 재수집 주기 완화(부하·레이트리밋)
+    const need=items.filter(u=>{ const c=CHARTS[u.code+'|'+key]; return force||!c||Date.now()-c.ts>ttl; });
     let done=0; FAILN=0;
     if(need.length){
       setProg(0,need.length,true);
-      await pool(need,8,async u=>{
+      await pool(need,isUSm(MKT)?12:8,async u=>{
         const ch=await fetchStock(u).catch(()=>null);
         if(ch) CHARTS[u.code+'|'+key]=ch; else FAILN++;
         if(MODE!=='long'&&!isUSm(u.mkt)) await ensureFrgn(u.code).catch(()=>{});   // 국내 분봉 계열만 소진율 수집
@@ -828,12 +832,25 @@ function compute(){
     const rg=REGIME[u.mkt]&&REGIME[u.mkt].rg;
     ROWS.push({u,ch,j,fd,tech:j?techniqueFor(u,j,rg,fd):null});
   }
+  FULLN=ROWS.length;
+  const recency=x=>x.j?Math.min(x.j.gc??99,x.j.zu??99,x.j.dc??99,x.j.zd??99):99;
+  // 미국: 전체 유니버스를 판정한 뒤 매수·매도 포지션 강도 상위 50만 제안
+  if(isUSm(MKT)&&ROWS.length>US_TOP){
+    const strength={buy2:6,sell2:6,buy1:5,sell1:5,ebuy:4,esell:4,nbuy:3,nsell:3,up1:1,dn1:1,neu:0};
+    ROWS.sort((a,b)=>{
+      const sa=a.j?strength[a.j.v]:-1, sb=b.j?strength[b.j.v]:-1;
+      if(sa!==sb) return sb-sa;
+      const ca=recency(a), cb=recency(b);
+      if(ca!==cb) return ca-cb;
+      return b.u.cap-a.u.cap;
+    });
+    ROWS.length=US_TOP;
+  }
   const rank={buy2:0,buy1:1,ebuy:2,nbuy:3,up1:4,neu:5,dn1:6,nsell:7,esell:8,sell1:9,sell2:10};
   ROWS.sort((a,b)=>{
     const ra=a.j?rank[a.j.v]:9, rb=b.j?rank[b.j.v]:9;
     if(ra!==rb) return ra-rb;
-    const ca=a.j?Math.min(a.j.gc??99,a.j.zu??99,a.j.dc??99,a.j.zd??99):99;
-    const cb=b.j?Math.min(b.j.gc??99,b.j.zu??99,b.j.dc??99,b.j.zd??99):99;
+    const ca=recency(a), cb=recency(b);
     if(ca!==cb) return ca-cb;
     return b.u.cap-a.u.cap;
   });
@@ -948,7 +965,8 @@ function render(){
   const nOf=ks=>ROWS.filter(x=>x.j&&ks.includes(x.j.v)).length;
   const buyN=nOf(['buy2','buy1','ebuy']), sellN=nOf(['sell2','sell1','esell']), nearN=nOf(['nbuy','nsell','ebuy','esell']);
   document.getElementById('st-count').textContent=
-    ROWS.length?('매수 '+buyN+' · 임박 '+nearN+' · 매도 '+sellN+' / '+ROWS.length+'종목'):'';
+    ROWS.length?('매수 '+buyN+' · 임박 '+nearN+' · 매도 '+sellN
+      +(FULLN>ROWS.length?' — 전체 '+FULLN+'종목 중 포지션 상위 '+ROWS.length+' 제안':' / '+ROWS.length+'종목')):'';
   if(!rows.length){
     tb.innerHTML='<tr><td colspan="11"><div class="note-empty">'+
       (ROWS.length? '현재 조건(최근 '+LOOK+unit()+' 이내 크로스 + RSI 기준)을 충족하는 종목이 없습니다.<br>'
