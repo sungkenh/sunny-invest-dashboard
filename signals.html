@@ -190,7 +190,7 @@
   </div>
   <span class="fl">시장</span>
   <div class="seg" id="seg-mkt">
-    <button data-v="kospi">코스피 50</button><button data-v="kosdaq">코스닥 50</button><button data-v="all">전체 100</button>
+    <button data-v="kospi">코스피 50</button><button data-v="kosdaq">코스닥 50</button><button data-v="all">국내 100</button><button data-v="sp500">S&amp;P500 50</button><button data-v="nasdaq">나스닥 50</button>
   </div>
   <span class="fl" id="fl-itv" hidden>분봉</span>
   <div class="seg" id="seg-itv" hidden>
@@ -232,7 +232,7 @@
       ① <b>MACD 데드크로스</b> · ② <b>0선 하향 이탈</b> · ③ <b>RSI(14) &lt; 50</b> —
       최근 N봉 내 ①·② 발생 + ③ 충족 = <b>매도 신호</b>, 모두 겹치면 <b>강력 매도</b>.
       히스토그램 반전↓·스토캐스틱 과열 데드·RSI 70 이탈·하락 다이버전스·BB 상단 복귀가 2개↑ 겹치면 <b>조기 매도</b>.<br>
-      <b>외국인</b> 열은 외국인 보유한도 소진율의 최근 변화로, (+)면 외국인 순매수 유입, (−)면 이탈 흐름입니다.
+      <b>외국인</b> 열은 외국인 보유한도 소진율의 최근 변화로, (+)면 외국인 순매수 유입, (−)면 이탈 흐름입니다(국내 전용 — 미국 종목은 «—»).
       종목 행을 클릭하면 차트와 상세 근거를 볼 수 있습니다. 단타는 1~15분봉, 스윙은 60·120분봉, 장기는 일봉 기준입니다.
     </div>
   </div>
@@ -260,7 +260,8 @@
 <footer>
   데이터 제공: <a href="https://m.stock.naver.com/" target="_blank" rel="noopener">네이버 금융</a>(실시간 현재가·시총 상위 유니버스·일봉·외국인 소진율) ·
   <a href="https://finance.yahoo.com/" target="_blank" rel="noopener">야후 파이낸스</a>(분봉·지수 차트).
-  유니버스는 코스피·코스닥 <b>시가총액 상위 50종목</b>(ETF·ETN·우선주·스팩 제외).<br>
+  유니버스는 코스피·코스닥·S&amp;P500·나스닥 <b>시가총액 상위 50종목</b>(ETF·ETN·우선주·스팩 제외).
+  미국은 정규장(22:30~05:00 KST) 외 프리·애프터마켓 체결가를 현재가에 반영하며, 장 성격은 S&amp;P500(^GSPC)·나스닥100(^NDX) 지수로 판별합니다.<br>
   장 성격은 지수 일봉의 <b>20·60일 이동평균 배열·기울기와 ADX(14) 추세 강도</b>로 판별합니다(ADX 20 미만 = 횡보).
   외국인 수급은 <b>외국인 보유한도 소진율</b>의 최근 변화량(%p)으로, 정확한 순매수 금액이 아닌 근사 지표입니다.<br>
   지표는 종가 기준 MACD(12,26,9)·RSI(14, Wilder)·볼린저밴드(20,2)·스토캐스틱 슬로우(14,3,3)로 계산하며,
@@ -290,6 +291,14 @@ function kospiSession(dow,mins){
   return 'closed';
 }
 const krSession=()=>{ const t=kstParts(); return kospiSession(t.dow,t.h*60+t.m); };
+// NASDAQ/NYSE (KST): 프리 17:00~22:30 · 정규 22:30~05:00(익일) · 애프터 05:00~09:00
+function usSession(dow,mins){
+  const gap=(dow===6&&mins>=540)||(dow===0)||(dow===1&&mins<1020);   // 주말 갭: 토 09:00~월 17:00
+  if(gap) return 'closed';
+  if(mins>=1350||mins<300) return 'open';
+  return 'ext';
+}
+const usSessionNow=()=>{ const t=kstParts(); return usSession(t.dow,t.h*60+t.m); };
 function parseUTC(iso){
   if(!iso) return null;
   let s=String(iso).trim().replace(' ','T');
@@ -311,8 +320,12 @@ async function fetchLive(api,file){
 }
 const cls = n => n>0?'up':(n<0?'down':'flat');
 const esc = s => String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-const fmtPx = v => Number(v).toLocaleString('en-US')+'원';
-const fmtCap = v => v>=1e12 ? (v/1e12).toFixed(1)+'조' : Math.round(v/1e8)+'억';
+const US_MKTS=['sp500','nasdaq'];
+const isUSm = m => US_MKTS.indexOf(m)>=0;
+const fmtPx = (v,us) => us ? '$'+Number(v).toLocaleString('en-US',{maximumFractionDigits:2})
+                           : Number(v).toLocaleString('en-US')+'원';
+const fmtCap = (v,us) => us ? (v>=1e12 ? '$'+(v/1e12).toFixed(2)+'T' : '$'+Math.round(v/1e9)+'B')
+                            : (v>=1e12 ? (v/1e12).toFixed(1)+'조' : Math.round(v/1e8)+'억');
 
 /*IND-BEGIN*/ /* ── 지표 엔진: EMA·SMA·볼린저·MACD(12,26,9)·RSI(14 Wilder)·ADX(14)·크로스·임박 ── */
 function emaSeries(v,n){
@@ -589,7 +602,7 @@ function techniqueFor(u,j,rg,fd){
   let t,why;
   if(regime==='bull'){
     if(j.ma20!=null&&u.price>j.ma20){
-      if(dist20!=null&&Math.abs(dist20)<=0.015){ t='MA20 눌림목 매수'; why='강세장 + 20일선('+fmtPx(Math.round(j.ma20))+') 부근 — 지지 확인 시 분할 매수 유효'; }
+      if(dist20!=null&&Math.abs(dist20)<=0.015){ t='MA20 눌림목 매수'; why='강세장 + 20일선('+fmtPx(Math.round(j.ma20),isUSm(u.mkt))+') 부근 — 지지 확인 시 분할 매수 유효'; }
       else if(j.gcOK||j.zuOK){ t='추세추종 (MACD)'; why='강세장에서 골든크로스·0선 돌파 신뢰도 높음'; }
       else { t='추세 보유'; why='20일선 위 추세 유지 — 종가 이탈 전까지 보유, 이탈 시 축소'; }
     } else { t='회복 확인 대기'; why='강세장이지만 이 종목은 20일선 아래 — 20일선 회복 확인 후 접근'; }
@@ -613,7 +626,7 @@ function techniqueFor(u,j,rg,fd){
 /* ── 상태 ── */
 const store=(k,v)=>{ try{ if(v===undefined) return localStorage.getItem('alphadesk.sig.'+k); localStorage.setItem('alphadesk.sig.'+k,v); }catch(e){ return null; } };
 let MODE  =['day','swing','long'].includes(store('mode'))?store('mode'):'swing';
-let MKT   =['kospi','kosdaq','all'].includes(store('mkt'))?store('mkt'):'all';
+let MKT   =['kospi','kosdaq','all','sp500','nasdaq'].includes(store('mkt'))?store('mkt'):'all';
 let ITV   =['1m','5m','15m'].includes(store('itv'))?store('itv'):'5m';
 let SITV  =['60m','120m'].includes(store('sitv'))?store('sitv'):'60m';
 let LOOK  =[3,5,10].includes(+store('look'))?+store('look'):5;
@@ -632,24 +645,39 @@ const SW_RANGE='3mo';                     // 60분봉 3개월 ≈ 450봉 (MACD �
 const QUOTE_MS=10*1000;
 const REGIME_TTL=10*60*1000;
 
-let UNIV={kospi:null,kosdaq:null};
+let UNIV={kospi:null,kosdaq:null,sp500:null,nasdaq:null};
 const CHARTS={};                          // `${code}|${key}` → {ts, closes, dates, f, lastDate, src}
-const FRGN={};                            // 단타용 일봉 소진율: code → {ts, f:[]}
-let REGIME={kospi:null,kosdaq:null};      // {ts, rg, spark, name, live:{price,pct}}
+const FRGN={};                            // 국내 단타·스윙용 일봉 소진율: code → {ts, f:[]}
+let REGIME={kospi:null,kosdaq:null,sp500:null,nasdaq:null};   // {ts, rg, closes, live:{price,pct}}
 let ROWS=[], SCANNING=false, SCAN_AT=null, FAILN=0;
 const modeKey=()=> MODE==='day'?ITV:(MODE==='swing'?SITV:'1d');
+const activeMkts=()=> MKT==='all'?['kospi','kosdaq']:[MKT];      // '국내 100' = 코스피+코스닥
+const symOf=u=> isUSm(u.mkt)?u.code:(u.code+(u.mkt==='kosdaq'?'.KQ':'.KS'));
 
 /* ── 데이터 수집 ── */
 async function loadUniverse(mkt){
+  if(isUSm(mkt)){
+    const d=await fetchLive('/api/usheatmap?us='+mkt+'&n=50','data/usheatmap_'+mkt+'.json');
+    if(!d||!Array.isArray(d.items)) return null;
+    return { status:d.marketStatus||'', updated:d._updated||'', source:d.source||'',
+      items:d.items.slice(0,50).map(it=>{
+        // 프리·애프터마켓 실시간 체결가 우선 (heatmap 과 동일 원칙)
+        const ext=d.marketStatus!=='OPEN'&&it.o&&it.o.s==='OPEN'&&isFinite(it.o.pct);
+        return {code:it.code,rc:it.rc,name:it.name,mkt,
+          price:ext?it.o.p:it.price,pct:ext?it.o.pct:it.pct,cap:it.cap,h:it.h};
+      }) };
+  }
   const d=await fetchLive('/api/krheatmap?mkt='+mkt+'&n=50','data/krheatmap_'+mkt+'.json');
   if(!d||!Array.isArray(d.items)) return null;
   return { status:d.marketStatus||'', updated:d._updated||'', source:d.source||'',
     items:d.items.slice(0,50).map(it=>({code:it.code,name:it.name,mkt,price:it.price,pct:it.pct,cap:it.cap,h:it.h})) };
 }
+async function refreshUniv(){
+  await Promise.all(activeMkts().map(async m=>{ const d=await loadUniverse(m); if(d) UNIV[m]=d; }));
+}
 function univItems(){
   const a=[];
-  if(MKT!=='kosdaq'&&UNIV.kospi) a.push.apply(a,UNIV.kospi.items);
-  if(MKT!=='kospi'&&UNIV.kosdaq) a.push.apply(a,UNIV.kosdaq.items);
+  for(const m of activeMkts()) if(UNIV[m]) a.push.apply(a,UNIV[m].items);
   return a;
 }
 async function pool(items,limit,fn,onprog){
@@ -672,6 +700,14 @@ async function getJSON(url){
    스윙(60/120분): 야후 60분봉 — 120분은 같은 날 안에서 2봉 합성. 단타(1~15분): 야후 분봉 */
 async function fetchStock(u){
   const cfg=MODES[MODE];
+  if(cfg.sise&&isUSm(u.mkt)){                       // 미국 장기 = 야후 일봉 (소진율 없음)
+    const y=await getJSON('/api/chart?sym='+encodeURIComponent(symOf(u))+'&range=1y&interval=1d');
+    if(!Array.isArray(y.ohlc)||y.ohlc.length<40) throw 0;
+    return { ts:Date.now(), src:'yahoo',
+      closes:y.ohlc.map(b=>b.close), his:y.ohlc.map(b=>b.high), los:y.ohlc.map(b=>b.low),
+      dates:y.ohlc.map(b=>String(b.time).replace(/-/g,'')), f:null,
+      lastDate:String(y.ohlc[y.ohlc.length-1].time).replace(/-/g,'') };
+  }
   if(cfg.sise){
     try{
       const d=await getJSON('/api/krsise?code='+u.code+'&tf='+cfg.sise+'&days='+cfg.days);
@@ -681,7 +717,7 @@ async function fetchStock(u){
         dates:d.rows.map(r=>r.d), f:d.rows.map(r=>r.f),
         lastDate:d.rows[d.rows.length-1].d };
     }catch(e){ /* 야후 폴백 */ }
-    const y=await getJSON('/api/chart?sym='+u.code+(u.mkt==='kosdaq'?'.KQ':'.KS')+'&range=1y&interval=1d');
+    const y=await getJSON('/api/chart?sym='+encodeURIComponent(symOf(u))+'&range=1y&interval=1d');
     if(!Array.isArray(y.ohlc)||y.ohlc.length<40) throw 0;
     return { ts:Date.now(), src:'yahoo',
       closes:y.ohlc.map(b=>b.close), his:y.ohlc.map(b=>b.high), los:y.ohlc.map(b=>b.low),
@@ -690,7 +726,7 @@ async function fetchStock(u){
   }
   const itv = MODE==='swing' ? '60m' : ITV;
   const range = MODE==='swing' ? SW_RANGE : DAY_RANGE[ITV];
-  const y=await getJSON('/api/chart?sym='+u.code+(u.mkt==='kosdaq'?'.KQ':'.KS')
+  const y=await getJSON('/api/chart?sym='+encodeURIComponent(symOf(u))
     +'&range='+range+'&interval='+itv);
   if(!Array.isArray(y.ohlc)||y.ohlc.length<40) throw 0;
   const ohlc=(MODE==='swing'&&SITV==='120m')?agg120(y.ohlc):y.ohlc;
@@ -708,9 +744,10 @@ async function ensureFrgn(code){
     FRGN[code]={ts:Date.now(), f:d.rows.map(r=>r.f)};
   }catch(e){ FRGN[code]={ts:Date.now()-9*60*1000, f:null}; }   // 곧 재시도
 }
-/* 지수 국면: 야후 ^KS11/^KQ11 일봉 1y + /api/market 실시간 표시값 */
-const INDEX_SYM={kospi:'^KS11',kosdaq:'^KQ11'};
-const INDEX_NAME={kospi:'코스피',kosdaq:'코스닥'};
+/* 지수 국면: 야후 지수 일봉 1y + /api/market 실시간 표시값 */
+const INDEX_SYM={kospi:'^KS11',kosdaq:'^KQ11',sp500:'^GSPC',nasdaq:'^NDX'};
+const INDEX_NAME={kospi:'코스피',kosdaq:'코스닥',sp500:'S&amp;P500',nasdaq:'나스닥100'};
+const MARKET_KEY={kospi:'kospi',kosdaq:'kosdaq',sp500:'spx',nasdaq:'ndx'};   // data/market.json 필드명
 async function loadRegime(mkt,force){
   const c=REGIME[mkt];
   if(!force&&c&&Date.now()-c.ts<REGIME_TTL) return;
@@ -724,7 +761,8 @@ async function loadRegime(mkt,force){
   }
   try{
     const mk=await fetchLive('/api/market','data/market.json');
-    if(mk&&mk[mkt]&&isFinite(mk[mkt].price)) REGIME[mkt].live={price:mk[mkt].price,pct:mk[mkt].pct};
+    const v=mk&&mk[MARKET_KEY[mkt]];
+    if(v&&isFinite(v.price)) REGIME[mkt].live={price:v.price,pct:v.pct};
   }catch(e){}
   drawRegimes();
 }
@@ -732,15 +770,15 @@ async function loadRegime(mkt,force){
 /* 형성 중인 마지막 봉에 네이버 실시간가 반영 (고가·저가도 확장) */
 function liveBars(u,ch){
   const c=ch.closes.slice(), h=(ch.his||ch.closes).slice(), l=(ch.los||ch.closes).slice();
-  const uv=(u.mkt==='kosdaq'?UNIV.kosdaq:UNIV.kospi);
+  const uv=UNIV[u.mkt];
   const mktOpen=uv&&uv.status==='OPEN'&&uv.source==='naver';
   if(!(u.price>0)) return {c,h,l};
   const upd=i=>{ c[i]=u.price; h[i]=Math.max(isFinite(h[i])?h[i]:u.price,u.price); l[i]=Math.min(isFinite(l[i])?l[i]:u.price,u.price); };
-  if(MODE==='long'){
+  if(MODE==='long'&&!isUSm(u.mkt)){
     if(ch.lastDate===kstYMD()) upd(c.length-1);
     else if(mktOpen){ c.push(u.price); h.push(u.price); l.push(u.price); }   // 오늘 봉 미생성 → 잠정 추가
   } else if(mktOpen){
-    upd(c.length-1);                          // 분봉 계열: 형성 중인 봉 갱신
+    upd(c.length-1);                          // 분봉 계열·미국 일봉: 형성 중인 봉 갱신
   }
   return {c,h,l};
 }
@@ -751,15 +789,7 @@ async function scan(force){
   const key=modeKey(), cfg=MODES[MODE];
   setProg(0,1,true);
   try{
-    const jobs=[
-      MKT!=='kosdaq'?loadUniverse('kospi'):null,
-      MKT!=='kospi'?loadUniverse('kosdaq'):null,
-      MKT!=='kosdaq'?loadRegime('kospi',force):null,
-      MKT!=='kospi'?loadRegime('kosdaq',force):null,
-    ];
-    const [kp,kq]=await Promise.all(jobs);
-    if(kp) UNIV.kospi=kp;
-    if(kq) UNIV.kosdaq=kq;
+    await Promise.all([refreshUniv()].concat(activeMkts().map(m=>loadRegime(m,force))));
     const items=univItems();
     if(!items.length){ note('시세 유니버스를 불러오지 못했습니다. 잠시 후 다시 시도합니다.'); return; }
 
@@ -770,7 +800,7 @@ async function scan(force){
       await pool(need,8,async u=>{
         const ch=await fetchStock(u).catch(()=>null);
         if(ch) CHARTS[u.code+'|'+key]=ch; else FAILN++;
-        if(MODE!=='long') await ensureFrgn(u.code).catch(()=>{});   // 분봉 계열은 일봉 소진율 별도 수집
+        if(MODE!=='long'&&!isUSm(u.mkt)) await ensureFrgn(u.code).catch(()=>{});   // 국내 분봉 계열만 소진율 수집
         setProg(++done,need.length,true);
       });
     }
@@ -782,6 +812,7 @@ async function scan(force){
 }
 
 function frgnOf(u,ch){
+  if(isUSm(u.mkt)) return null;                 // 외국인 소진율은 국내 전용 지표
   if(MODE!=='long') return frgnStats(FRGN[u.code]&&FRGN[u.code].f);
   return frgnStats(ch&&ch.f);
 }
@@ -829,7 +860,7 @@ function miniIdxSVG(closes,rg){
 }
 function drawRegimes(){
   const host=document.getElementById('regimes');
-  const mkts=MKT==='all'?['kospi','kosdaq']:[MKT];
+  const mkts=activeMkts();
   host.innerHTML=mkts.map(mkt=>{
     const R=REGIME[mkt]||{};
     const rg=R.rg, info=rg?REGIME_INFO[rg.regime]:null;
@@ -925,14 +956,15 @@ function render(){
         : (SCANNING?'차트 수집 중…':'데이터가 아직 없습니다. «다시 스캔»을 눌러 주세요.'))+'</div></td></tr>';
     return;
   }
+  const MKCHIP={kospi:'KOSPI',kosdaq:'KOSDAQ',sp500:'S&amp;P500',nasdaq:'NASDAQ'};
   tb.innerHTML=rows.map((x,i)=>{
-    const u=x.u, j=x.j, vd=VD[j.v];
+    const u=x.u, j=x.j, vd=VD[j.v], us=isUSm(u.mkt);
     const fresh=Math.min(j.gc??99,j.dc??99,j.zu??99,j.zd??99)===0;
     return '<tr class="srow'+(fresh?' fresh':'')+'" data-code="'+u.code+'">'
       +'<td class="mono" style="color:var(--muted2)">'+(i+1)+'</td>'
-      +'<td class="name"><b>'+esc(u.name)+'</b><span class="mkchip">'+(u.mkt==='kosdaq'?'KOSDAQ':'KOSPI')+'</span>'
-        +'<small class="mono">'+u.code+'</small> <span class="cap">'+fmtCap(u.cap)+'</span></td>'
-      +'<td class="num mono">'+fmtPx(u.price)+'</td>'
+      +'<td class="name"><b>'+esc(u.name)+'</b><span class="mkchip">'+MKCHIP[u.mkt]+'</span>'
+        +'<small class="mono">'+u.code+'</small> <span class="cap">'+fmtCap(u.cap,us)+'</span></td>'
+      +'<td class="num mono">'+fmtPx(u.price,us)+'</td>'
       +'<td class="num mono '+cls(u.pct)+'">'+(u.pct>0?'+':'')+u.pct.toFixed(2)+'%</td>'
       +'<td><span class="vd '+vd[1]+'">'+vd[0]+'</span></td>'
       +'<td>'+chips(j)+'</td>'
@@ -1107,19 +1139,23 @@ function detailRow(x){
       +(fd?('소진율 <b class="mono">'+fd.now.toFixed(2)+'%</b> · 5일 <b class="mono '+cls(fd.d5)+'">'+(fd.d5>0?'+':'')+fd.d5.toFixed(2)+'%p</b>'
         +(fd.d20!=null?' · 20일 <b class="mono '+cls(fd.d20)+'">'+(fd.d20>0?'+':'')+fd.d20.toFixed(2)+'%p</b>':'')
         +'<br><span style="color:var(--muted2);font-size:11px">'+(fd.d5>=0.1?'외국인 순매수 유입 흐름':fd.d5<=-0.1?'외국인 이탈 흐름 — 매수 신호 신뢰도 감점':'외국인 수급 중립')+'</span>')
-      :'<span style="color:var(--muted2)">데이터 없음</span>')+'</div>'
+      :'<span style="color:var(--muted2)">'+(isUSm(u.mkt)?'미국 종목 — 외국인 소진율 지표는 국내 전용입니다':'데이터 없음')+'</span>')+'</div>'
     +'<div class="box"><h5>주요 수치</h5><table>'
       +'<tr><td>MACD / 시그널</td><td class="mono">'+fmtM(j.macd)+' / '+fmtM(j.sig)+'</td></tr>'
       +'<tr><td>MA20 / MA60</td><td class="mono">'+(j.ma20?Math.round(j.ma20).toLocaleString():'—')+' / '+(j.ma60?Math.round(j.ma60).toLocaleString():'—')+'</td></tr>'
       +'<tr><td>볼린저 상단 / 하단</td><td class="mono">'+(j.bbU?Math.round(j.bbU).toLocaleString():'—')+' / '+(j.bbL?Math.round(j.bbL).toLocaleString():'—')+'</td></tr>'
       +'<tr><td>%b (밴드 내 위치)</td><td class="mono">'+(j.pb==null?'—':j.pb.toFixed(2))+'</td></tr>'
       +'<tr><td>스토캐스틱 %K / %D</td><td class="mono">'+(j.early.stK==null?'—':j.early.stK.toFixed(1))+' / '+(j.early.stD==null?'—':j.early.stD.toFixed(1))+'</td></tr></table></div>'
-    +'<div style="display:flex;gap:8px"><button class="btn" data-naver="'+u.code+'">네이버 증권에서 보기 ↗</button></div>'
+    +'<div style="display:flex;gap:8px"><button class="btn" data-naver="'+u.code+'"'+(isUSm(u.mkt)&&u.rc?' data-rc="'+esc(u.rc)+'"':'')+'>네이버 증권에서 보기 ↗</button></div>'
     +'</div></div></td></tr>';
 }
 document.getElementById('tbody').addEventListener('click',e=>{
   const nv=e.target.closest('[data-naver]');
-  if(nv){ window.open('https://m.stock.naver.com/domestic/stock/'+nv.dataset.naver+'/total','_blank','noopener'); return; }
+  if(nv){
+    window.open(nv.dataset.rc ? 'https://m.stock.naver.com/worldstock/stock/'+nv.dataset.rc+'/total'
+                              : 'https://m.stock.naver.com/domestic/stock/'+nv.dataset.naver+'/total','_blank','noopener');
+    return;
+  }
   const tr=e.target.closest('tr.srow');
   if(!tr) return;
   OPENED = OPENED===tr.dataset.code ? null : tr.dataset.code;
@@ -1153,7 +1189,7 @@ function maybeNotify(){
     try{ if(localStorage.getItem(key)) continue; localStorage.setItem(key,'1'); }catch(e){ continue; }
     try{
       new Notification(title+' — '+x.u.name,{
-        tag:key, body:VD[x.j.v][0]+' · RSI '+x.j.rsi.toFixed(1)+' · '+fmtPx(x.u.price)+' ('+(x.u.pct>0?'+':'')+x.u.pct.toFixed(2)+'%)'});
+        tag:key, body:VD[x.j.v][0]+' · RSI '+x.j.rsi.toFixed(1)+' · '+fmtPx(x.u.price,isUSm(x.u.mkt))+' ('+(x.u.pct>0?'+':'')+x.u.pct.toFixed(2)+'%)'});
     }catch(e){}
   }
 }
@@ -1186,8 +1222,8 @@ function setProg(done,total,show){
 function note(t){ document.getElementById('st-note').textContent=t||''; }
 function paintStatus(){
   const b=document.getElementById('badge');
-  const sess=krSession();
-  const anyLive=(UNIV.kospi&&UNIV.kospi.source==='naver')||(UNIV.kosdaq&&UNIV.kosdaq.source==='naver');
+  const sess=isUSm(MKT)?usSessionNow():krSession();
+  const anyLive=activeMkts().some(m=>UNIV[m]&&UNIV[m].source==='naver');
   if(sess==='open'&&anyLive){ b.className='live-badge'; b.textContent='장중 LIVE'; }
   else if(anyLive){ b.className='live-badge stale'; b.textContent=sess==='ext'?'시간외':'장 종료'; }
   else { b.className='live-badge stale'; b.textContent='스냅샷'; }
@@ -1245,12 +1281,7 @@ tick(); setInterval(tick,1000);
 /* ── 폴링: 실시간가 10초(재판정만) · 차트는 모드별 TTL · 국면 10분 ── */
 setInterval(async()=>{
   if(SCANNING||document.hidden) return;
-  const [kp,kq]=await Promise.all([
-    MKT!=='kosdaq'?loadUniverse('kospi'):null,
-    MKT!=='kospi'?loadUniverse('kosdaq'):null,
-  ]);
-  if(kp) UNIV.kospi=kp;
-  if(kq) UNIV.kosdaq=kq;
+  await refreshUniv();
   compute(); paintStatus();
 },QUOTE_MS);
 setInterval(()=>{ if(!document.hidden) scan(false); },30*1000);   // TTL 지난 차트만 다시 받는다
