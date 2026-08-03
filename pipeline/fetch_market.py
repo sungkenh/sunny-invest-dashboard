@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """써니의 투자 인사이트 시세 수집기 — yfinance로 13개 지표를 받아 data/market.json 저장.
    실행: py fetch_market.py   (스케줄러로 5~10분마다 돌리면 준실시간)"""
-import json, os, datetime, urllib.request
+import json, os, datetime, urllib.request, urllib.parse
 import yfinance as yf
 
 SYMS = {
@@ -28,6 +28,29 @@ def naver_index(code):
     pct = float(row['fluctuationsRatioRaw'])
     delay = int((row.get('stockExchangeType') or {}).get('delayTime', 0))
     return price, chg, pct, delay
+
+def naver_bond(rc):
+    """미국채 수익률 — 네이버 시장지표(yieldgap 파이프라인과 동일 엔드포인트, 재무부 CSV보다 신선).
+       반환 (price, chg|None, pct|None). 등락 필드명은 방어적으로 조회."""
+    u = ('https://m.stock.naver.com/front-api/marketIndex/productDetail?category=bond&reutersCode=%s'
+         % urllib.parse.quote(rc))
+    hdr = {'User-Agent': 'Mozilla/5.0', 'Referer': 'https://m.stock.naver.com/'}
+    d = json.loads(urllib.request.urlopen(urllib.request.Request(u, headers=hdr), timeout=10).read())
+    v = d.get('result') or {}
+    price = float(v['closePrice'])
+    chg = pct = None
+    for kf in ('compareToPreviousClosePrice', 'fluctuations', 'changeValue', 'compareToPreviousPrice'):
+        try:
+            chg = float(v[kf]); break
+        except Exception:
+            pass
+    for kf in ('fluctuationsRatio', 'changeRate'):
+        try:
+            pct = float(v[kf]); break
+        except Exception:
+            pass
+    return price, chg, pct
+
 
 def quote(s):
     t = yf.Ticker(s)
@@ -67,6 +90,25 @@ for k, s in SYMS.items():
             continue
         except Exception:
             pass
+    # 미국채 10년: 네이버 시장지표 우선(가격·등락) + 야후 스파크라인. 실패 시 야후 전체로 폴백.
+    if k == 'ust10y':
+        try:
+            price, chg, pct = naver_bond('US10YT=RR')
+            if chg is None:
+                try:
+                    _, pc = quote(s)
+                    if pc:
+                        chg = price - pc
+                        pct = (price - pc) / pc * 100
+                except Exception:
+                    pass
+            res[k] = {'sym': s, 'price': round(price, 3),
+                      'chg': round(chg, 3) if chg is not None else None,
+                      'pct': round(pct, 2) if pct is not None else None,
+                      'sp': series(s), 'src': 'naver'}
+            continue
+        except Exception:
+            pass
     try:
         lp, pc = quote(s)
         res[k] = {'sym': s, 'price': round(lp, 4), 'chg': round(lp - pc, 4),
@@ -94,9 +136,24 @@ try:
         except Exception:
             pass
     res['ust2y'] = {'sym': 'UST2Y', 'price': round(last, 3), 'chg': round(last - prev, 3),
-                    'pct': round((last - prev) / prev * 100, 2), 'sp': sp2}
+                    'pct': round((last - prev) / prev * 100, 2), 'sp': sp2, 'src': 'treasury'}
 except Exception as e:
     res['ust2y'] = {'sym': 'UST2Y', 'error': str(e)[:90]}
+
+# 미국채 2년: 네이버 시장지표 우선 — 재무부 CSV는 하루 지연(스파크라인·등락 기준은 재무부 값 활용)
+try:
+    price, chg, pct = naver_bond('US2YT=RR')
+    tr = res['ust2y'] if 'price' in res.get('ust2y', {}) else None
+    prev_daily = tr['price'] if tr else None            # 장중엔 재무부 최신 확정치 = 어제 종가
+    if chg is None and prev_daily:
+        chg = price - prev_daily
+        pct = (price - prev_daily) / prev_daily * 100
+    res['ust2y'] = {'sym': 'UST2Y', 'price': round(price, 3),
+                    'chg': round(chg, 3) if chg is not None else None,
+                    'pct': round(pct, 2) if pct is not None else None,
+                    'sp': (tr or {}).get('sp', []), 'src': 'naver'}
+except Exception:
+    pass                                                # 실패 시 재무부 값 유지
 
 res['_updated'] = datetime.datetime.now().isoformat(timespec='seconds')
 here = os.path.dirname(os.path.abspath(__file__))
