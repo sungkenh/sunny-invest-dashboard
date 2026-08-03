@@ -8,7 +8,7 @@ const SYMS = {
   usdkrw: 'KRW=X', usdjpy: 'JPY=X', vix: '^VIX',
 };
 let CACHE = { ts: 0, data: null };
-const TTL = 60 * 1000;
+const TTL = 10 * 1000;                    // 10초 갱신 (클라이언트 5초 폴링과 조합)
 
 // 장중 1일 5분봉 — 현재가·등락 + 스파크라인 시계열(sp)을 한 번에
 async function chartQuote(sym) {
@@ -100,6 +100,58 @@ const NAVER_MI = {
   wti:    { cats: ['oil', 'energy'], rc: 'OIL_CL' },
 };
 
+// WTI — TradingView USOIL(스캐너 API, 사용자 지정 소스). columns: 종가·등락폭·등락률
+async function tvQuote(ticker) {
+  const r = await fetch('https://scanner.tradingview.com/global/scan', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'User-Agent': UA },
+    body: JSON.stringify({ symbols: { tickers: [ticker] }, columns: ['close', 'change_abs', 'change'] }),
+  });
+  const d = await r.json();
+  const row = d && d.data && d.data[0] && d.data[0].d;
+  const px = row && parseFloat(row[0]);
+  if (!isFinite(px)) throw new Error('tv no data');
+  const chg = parseFloat(row[1]), pct = parseFloat(row[2]);
+  return { price: round(px, 4), chg: isFinite(chg) ? round(chg, 4) : null, pct: isFinite(pct) ? round(pct, 2) : null };
+}
+
+// 코스피200 야간선물 — kred.dev (사용자 지정). JSON API 후보 → __NEXT_DATA__ 딥스캔 순으로 시도.
+// 사이트 구조가 확인 불가한 서드파티라 방어적으로 파싱하고, 실패 시 항목을 생략해 직전 값을 유지한다.
+function deepQuote(o, lo, hi) {
+  let best = null;
+  const num = (x) => { const v = parseFloat(String(x == null ? '' : x).replace(/,/g, '')); return isFinite(v) ? v : null; };
+  const walk = (v) => {
+    if (best || !v || typeof v !== 'object') return;
+    if (!Array.isArray(v)) {
+      const price = ['price', 'last', 'lastPrice', 'close', 'value', 'tradePrice'].map((k) => num(v[k]))
+        .find((x) => x != null && x > lo && x < hi);
+      if (price != null) {
+        const chg = ['change', 'chg', 'netChange', 'changeValue', 'diff'].map((k) => num(v[k]))
+          .find((x) => x != null && Math.abs(x) < price * 0.2);
+        const pct = ['changePercent', 'changeRate', 'percent', 'pct', 'fluctuationsRatio'].map((k) => num(v[k]))
+          .find((x) => x != null && Math.abs(x) < 30);
+        if (chg != null || pct != null) { best = { price: round(price, 2), chg: chg != null ? round(chg, 2) : null, pct: pct != null ? round(pct, 2) : null }; return; }
+      }
+    }
+    for (const k in v) walk(v[k]);
+  };
+  walk(o);
+  return best;
+}
+async function kredNight() {
+  const hdr = { 'User-Agent': UA };
+  for (const u of ['https://kred.dev/api/kospi-200-night-futures', 'https://kred.dev/api/series/kospi-200-night-futures']) {
+    try {
+      const r = await fetch(u, { headers: hdr });
+      if (r.ok) { const q = deepQuote(await r.json(), 100, 2000); if (q) return q; }
+    } catch (e) { /* 다음 후보 */ }
+  }
+  const html = await (await fetch('https://kred.dev/ko/kospi-200-night-futures', { headers: hdr })).text();
+  const m = html.match(/<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/);
+  if (m) { try { const q = deepQuote(JSON.parse(m[1]), 100, 2000); if (q) return q; } catch (e) { /* 파싱 실패 */ } }
+  throw new Error('kred parse fail');
+}
+
 async function treasury2y() {
   const yr = new Date().getUTCFullYear();
   const u = 'https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/'
@@ -132,6 +184,23 @@ async function __cfHandler(event) {
         res[k] = { sym: s, price: nv.price, chg: nv.chg, pct: nv.pct, sp: (ch && ch.sp) || [], src: 'naver', delay: nv.delay };
         return;
       } catch (e) { /* 야후 폴백 */ }
+    }
+    // 코스피200 야간선물: kred.dev (실패 시 항목 생략 → 클라이언트가 직전 값 유지)
+    if (k === 'ewy') {
+      try { res[k] = { sym: 'K200N', ...(await kredNight()), sp: [], src: 'kred' }; }
+      catch (e) { res[k] = { sym: 'K200N', error: String(e).slice(0, 60) }; }
+      return;
+    }
+    // WTI: TradingView USOIL 우선(사용자 지정) → 네이버 시장지표 → 야후 순
+    if (k === 'wti') {
+      try {
+        const [tv, ch] = await Promise.all([tvQuote('TVC:USOIL'), chartQuote(s).catch(() => null)]);
+        res[k] = { sym: s, price: tv.price,
+          chg: tv.chg != null ? tv.chg : (ch ? ch.chg : null),
+          pct: tv.pct != null ? tv.pct : (ch ? ch.pct : 0),
+          sp: (ch && ch.sp) || [], src: 'tv' };
+        return;
+      } catch (e) { /* 네이버 → 야후 폴백 (아래 NAVER_MI 경로) */ }
     }
     // 나스닥100 선물: 네이버 미니 나스닥100 선물(NQcv1) 우선 + 야후 NQ=F 스파크라인/폴백
     if (k === 'ndxfut') {
@@ -186,8 +255,8 @@ function ok(obj) {
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
       'Access-Control-Allow-Origin': '*',
-      'Cache-Control': 'public, max-age=15',
-      'Netlify-CDN-Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+      'Cache-Control': 'public, max-age=5',
+      'Netlify-CDN-Cache-Control': 'public, s-maxage=10, stale-while-revalidate=60',
     },
     body: JSON.stringify(obj),
   };
