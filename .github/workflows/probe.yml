@@ -1,0 +1,57 @@
+name: probe (임시 진단)
+
+# kred.dev 응답 구조·운영 /api/market 소스 상태 확인용 임시 워크플로우 — 확인 후 삭제 예정
+on:
+  workflow_dispatch: {}
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: kred 페이지 구조
+        run: |
+          curl -sL -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" \
+            https://kred.dev/ko/kospi-200-night-futures -o page.html -w "HTTP %{http_code}\n" || true
+          echo "size: $(wc -c < page.html)"
+          python3 - <<'EOF'
+          import re
+          html = open('page.html', encoding='utf-8', errors='ignore').read()
+          m = re.search(r'<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)</script>', html)
+          print('NEXT_DATA len:', len(m.group(1)) if m else 0)
+          if m:
+              print('--- NEXT_DATA head ---')
+              print(m.group(1)[:3500])
+          else:
+              print('--- script src 목록 ---')
+              for s in re.findall(r'<script[^>]*src="([^"]*)"', html)[:20]:
+                  print(s)
+              print('--- fetch/api 문자열 ---')
+              for s in re.findall(r'["\'](/[^"\']*api[^"\']*)["\']', html)[:20]:
+                  print(s)
+              print('--- body head ---')
+              print(html[:2500])
+          EOF
+
+      - name: kred API 후보
+        run: |
+          for u in "https://kred.dev/api/kospi-200-night-futures" \
+                   "https://kred.dev/api/series/kospi-200-night-futures" \
+                   "https://kred.dev/api/v1/kospi-200-night-futures" \
+                   "https://kred.dev/ko/kospi-200-night-futures.json"; do
+            echo "== $u"
+            curl -s -A "Mozilla/5.0" -w "\n[%{http_code}]\n" "$u" | head -c 800
+            echo
+          done
+
+      - name: 운영 /api/market 소스 상태
+        run: |
+          curl -s https://sunny-invest-dashboard.pages.dev/api/market -o m.json -w "HTTP %{http_code}\n"
+          python3 - <<'EOF'
+          import json
+          d = json.load(open('m.json'))
+          for k, v in d.items():
+              if isinstance(v, dict):
+                  print('%-8s src=%-9s price=%-12s chg=%-8s %s' % (
+                      k, v.get('src'), v.get('price'), v.get('chg'), v.get('error', '')))
+          print('_updated:', d.get('_updated'))
+          EOF
