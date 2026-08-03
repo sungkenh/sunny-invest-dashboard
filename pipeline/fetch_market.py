@@ -29,18 +29,17 @@ def naver_index(code):
     delay = int((row.get('stockExchangeType') or {}).get('delayTime', 0))
     return price, chg, pct, delay
 
-def naver_mi(cats, rc):
-    """네이버 시장지표 productDetail — 채권·환율·원자재 공용 (yieldgap 파이프라인 검증 엔드포인트).
-       카테고리 후보를 순차 시도. 반환 (price, chg|None, pct|None)."""
+def naver_mi(tries):
+    """네이버 시장지표 productDetail — 프로브로 확정한 (카테고리, 코드) 조합을 순차 시도.
+       반환 (price, chg|None, pct|None). 값은 천단위 콤마 문자열이라 반드시 제거 후 변환."""
     hdr = {'User-Agent': 'Mozilla/5.0', 'Referer': 'https://m.stock.naver.com/'}
     err = None
-    for cat in cats:
+    for cat, rc in tries:
         try:
             u = ('https://m.stock.naver.com/front-api/marketIndex/productDetail?category=%s&reutersCode=%s'
                  % (cat, urllib.parse.quote(rc)))
             d = json.loads(urllib.request.urlopen(urllib.request.Request(u, headers=hdr), timeout=10).read())
             v = d.get('result') or {}
-            # ⚠️ 값이 천단위 콤마 문자열("1,385.50")로 온다 — 반드시 콤마 제거 후 변환
             price = float(str(v['closePrice']).replace(',', ''))
             chg = pct = None
             for kf in ('compareToPreviousClosePrice', 'fluctuations', 'changeValue', 'compareToPreviousPrice'):
@@ -60,107 +59,41 @@ def naver_mi(cats, rc):
 
 
 def naver_bond(rc):
-    return naver_mi(['bond'], rc)
+    return naver_mi([('bond', rc)])
 
 
-def naver_world_basic(rc):
-    """네이버 월드스톡 기본 시세 — 나스닥100 선물(NQcv1, 미니) 등. (price, chg|None, pct|None)"""
-    u = 'https://api.stock.naver.com/stock/%s/basic' % urllib.parse.quote(rc)
+def naver_poll_fut(rc):
+    """나스닥100 선물(NQcv1) 등 — 폴링 선물 API. 등락 부호는 방향 코드(1·2=상승, 4·5=하락, 3=보합)."""
+    u = 'https://polling.finance.naver.com/api/realtime/worldstock/futures/%s' % urllib.parse.quote(rc)
     hdr = {'User-Agent': 'Mozilla/5.0', 'Referer': 'https://m.stock.naver.com/'}
-    v = json.loads(urllib.request.urlopen(urllib.request.Request(u, headers=hdr), timeout=10).read())
+    d = json.loads(urllib.request.urlopen(urllib.request.Request(u, headers=hdr), timeout=10).read())
+    row = (d.get('datas') or [None])[0]
+    if not row:
+        raise RuntimeError('no fut %s' % rc)
 
     def num(x):
         try:
             return float(str(x).replace(',', ''))
         except Exception:
             return None
-    price = num(v.get('closePrice'))
+    price = num(row.get('closePrice'))
     if price is None:
-        raise RuntimeError('no basic %s' % rc)
-    pct = num(v.get('fluctuationsRatio'))
-    chg = num(v.get('compareToPreviousClosePrice'))
-    if chg is not None and pct is not None and pct < 0 and chg > 0:
-        chg = -chg                                  # 등락폭 부호 결손 방어
-    return price, chg, pct
+        raise RuntimeError('no fut px')
+    code = str((row.get('compareToPreviousPrice') or {}).get('code') or '')
+    s = -1 if code in ('4', '5') else (0 if code == '3' else 1)
+    chg = num(row.get('compareToPreviousClosePrice'))
+    pct = num(row.get('fluctuationsRatio'))
+    return price, (chg * s if chg is not None else None), (pct * s if pct is not None else None)
 
 
-# 네이버 우선 지표: 미국채·환율·금·WTI (실패 시 야후 폴백 — 지수·선물·BTC·VIX 는 야후 유지)
+# 네이버 우선 지표 — 카테고리·코드는 실서비스 프로브로 확정 (금·WTI 는 COMEX·NYMEX 선물 연속물, 지연 10분)
 NAVER_MI = {
-    'ust10y': (['bond'], 'US10YT=RR'),
-    'usdkrw': (['exchange'], 'FX_USDKRW'),
-    'usdjpy': (['worldExchange', 'exchange'], 'FX_USDJPY'),   # 달러/엔은 국제 환율 분류
-    'gold':   (['metals', 'gold'], 'CMDT_GC'),
-    'wti':    (['oil', 'energy'], 'OIL_CL'),
+    'ust10y': [('bond', 'US10YT=RR')],
+    'usdkrw': [('exchange', 'FX_USDKRW')],
+    'usdjpy': [('exchangeWorld', 'JPY=X'), ('exchangeWorld', 'JPY='), ('exchange', 'FX_USDJPY')],
+    'gold':   [('metals', 'GCcv1')],
+    'wti':    [('energy', 'CLcv1')],
 }
-
-
-def tv_quote(ticker):
-    """TradingView 스캐너 — WTI(USOIL) 등. (price, chg|None, pct|None)"""
-    body = json.dumps({'symbols': {'tickers': [ticker]},
-                       'columns': ['close', 'change_abs', 'change']}).encode()
-    req = urllib.request.Request('https://scanner.tradingview.com/global/scan', data=body,
-                                 headers={'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0'})
-    d = json.loads(urllib.request.urlopen(req, timeout=10).read())
-    row = (d.get('data') or [{}])[0].get('d') or []
-    price = float(row[0])
-    chg = float(row[1]) if len(row) > 1 and row[1] is not None else None
-    pct = float(row[2]) if len(row) > 2 and row[2] is not None else None
-    return price, chg, pct
-
-
-def _deep_quote(o, lo, hi):
-    """kred.dev 응답 딥스캔 — price 류 키(범위 내) + 등락 키 동반 객체를 찾는다."""
-    def num(x):
-        try:
-            return float(str(x).replace(',', ''))
-        except Exception:
-            return None
-    if isinstance(o, dict):
-        price = next((v for v in (num(o.get(k)) for k in
-                     ('price', 'last', 'lastPrice', 'close', 'value', 'tradePrice'))
-                     if v is not None and lo < v < hi), None)
-        if price is not None:
-            chg = next((v for v in (num(o.get(k)) for k in
-                       ('change', 'chg', 'netChange', 'changeValue', 'diff'))
-                       if v is not None and abs(v) < price * 0.2), None)
-            pct = next((v for v in (num(o.get(k)) for k in
-                       ('changePercent', 'changeRate', 'percent', 'pct', 'fluctuationsRatio'))
-                       if v is not None and abs(v) < 30), None)
-            if chg is not None or pct is not None:
-                return price, chg, pct
-        for v in o.values():
-            r = _deep_quote(v, lo, hi)
-            if r:
-                return r
-    elif isinstance(o, list):
-        for v in o:
-            r = _deep_quote(v, lo, hi)
-            if r:
-                return r
-    return None
-
-
-def kred_night():
-    """코스피200 야간선물 — kred.dev (JSON API 후보 → __NEXT_DATA__ 딥스캔)."""
-    import re as _re
-    hdr = {'User-Agent': 'Mozilla/5.0'}
-    for u in ('https://kred.dev/api/kospi-200-night-futures',
-              'https://kred.dev/api/series/kospi-200-night-futures'):
-        try:
-            q = _deep_quote(json.loads(urllib.request.urlopen(
-                urllib.request.Request(u, headers=hdr), timeout=10).read()), 100, 2000)
-            if q:
-                return q
-        except Exception:
-            pass
-    html = urllib.request.urlopen(urllib.request.Request(
-        'https://kred.dev/ko/kospi-200-night-futures', headers=hdr), timeout=15).read().decode('utf-8', 'ignore')
-    m = _re.search(r'<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)</script>', html)
-    if m:
-        q = _deep_quote(json.loads(m.group(1)), 100, 2000)
-        if q:
-            return q
-    raise RuntimeError('kred parse fail')
 
 
 def quote(s):
@@ -201,40 +134,10 @@ for k, s in SYMS.items():
             continue
         except Exception:
             pass
-    # 코스피200 야간선물: kred.dev — 실패 시 직전 스냅샷 값 유지
-    if k == 'ewy':
-        try:
-            price, chg, pct = kred_night()
-            res[k] = {'sym': 'K200N', 'price': round(price, 2),
-                      'chg': round(chg, 2) if chg is not None else None,
-                      'pct': round(pct, 2) if pct is not None else None,
-                      'sp': [], 'src': 'kred'}
-        except Exception:
-            try:                                     # 직전 스냅샷 보존
-                prev = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                                   '..', 'data', 'market.json'), encoding='utf-8'))
-                if isinstance(prev.get('ewy'), dict) and 'price' in prev['ewy']:
-                    res[k] = prev['ewy']
-                else:
-                    res[k] = {'sym': 'K200N', 'error': 'kred fail'}
-            except Exception:
-                res[k] = {'sym': 'K200N', 'error': 'kred fail'}
-        continue
-    # WTI: TradingView USOIL 우선(사용자 지정) → 네이버 → 야후
-    if k == 'wti':
-        try:
-            price, chg, pct = tv_quote('TVC:USOIL')
-            res[k] = {'sym': s, 'price': round(price, 4),
-                      'chg': round(chg, 4) if chg is not None else None,
-                      'pct': round(pct, 2) if pct is not None else None,
-                      'sp': series(s), 'src': 'tv'}
-            continue
-        except Exception:
-            pass                                     # 네이버 → 야후 폴백 (아래 경로)
     # 나스닥100 선물: 네이버 미니 나스닥100 선물(NQcv1) 우선 + 야후 스파크라인/폴백
     if k == 'ndxfut':
         try:
-            price, chg, pct = naver_world_basic('NQcv1')
+            price, chg, pct = naver_poll_fut('NQcv1')
             if chg is None:
                 try:
                     _, pc = quote(s)
@@ -253,8 +156,7 @@ for k, s in SYMS.items():
     # 미국채·환율·금·WTI: 네이버 시장지표 우선(가격·등락) + 야후 스파크라인. 실패 시 야후 전체로 폴백.
     if k in NAVER_MI:
         try:
-            cats, rc = NAVER_MI[k]
-            price, chg, pct = naver_mi(cats, rc)
+            price, chg, pct = naver_mi(NAVER_MI[k])
             if chg is None:
                 try:
                     _, pc = quote(s)
