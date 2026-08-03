@@ -7,8 +7,9 @@ let CACHE = { ts: 0, data: null };
 const TTL = 30 * 60 * 1000;   // 30분
 
 // 한국 추정치 — 무료 라이브 소스 부재로 주기 업데이트(라벨 '추정' 표시). KOSPI 어닝일드=100/PER.
-const KR_KOSPI_EY_EST = 8.7;     // KOSPI 추정 PER ~11.5 → 어닝일드 ~8.7%
-const KR_REIT_YIELD_EST = 6.0;   // 국내 상장 리츠 평균 배당수익률 추정 ~6%
+// 2026-08-03 갱신: AI 이익 급증(12M 선행 EPS +170%)으로 KOSPI 12M 선행 PER 4.8~6.4 보도(서울경제 7/13·Investing 7월말)
+const KR_KOSPI_EY_EST = 18.0;    // 선행 PER 중앙 ~5.6 → 어닝일드 ≈ 18% (선행 기준 — 미국 multpl은 후행이라 기준 상이)
+const KR_REIT_YIELD_EST = 7.5;   // 상장 리츠 평균 배당수익률 — 2025년 7.3%, 2026년 다수 종목 8%+ (한국리츠협회)
 const US_REIT_YIELD_EST = 3.6;   // VNQ 라이브 실패 시 폴백
 const US_NASDAQ_EY_EST = 2.9;    // QQQ(NASDAQ-100) 라이브 실패 시 폴백 (PER ~34 → ~2.9%)
 
