@@ -97,6 +97,9 @@
   td.name small{color:var(--muted2);font-size:10.5px;margin-left:6px}
   .mkchip{display:inline-block;font-size:9px;font-weight:800;color:var(--muted);border:1px solid var(--border);
     border-radius:4px;padding:0 4px;margin-left:6px;vertical-align:1px}
+  .levchip{display:inline-block;font-size:9px;font-weight:800;border-radius:4px;padding:0 5px;margin-left:5px;vertical-align:1px;
+    color:var(--gold);border:1px solid var(--gold)}
+  .levchip.inv{color:var(--down);border-color:var(--down)}
   .cap{color:var(--muted2);font-size:10.5px}
   tr.srow.fresh td:first-child{box-shadow:inset 3px 0 0 var(--gold)}
 
@@ -190,7 +193,7 @@
   </div>
   <span class="fl">시장</span>
   <div class="seg" id="seg-mkt">
-    <button data-v="kospi">코스피 50</button><button data-v="kosdaq">코스닥 50</button><button data-v="sp500">S&amp;P500</button><button data-v="nasdaq">나스닥</button>
+    <button data-v="kospi">코스피 50</button><button data-v="kosdaq">코스닥 50</button><button data-v="sp500">S&amp;P500</button><button data-v="nasdaq">나스닥</button><button data-v="kretf">한국 ETF</button><button data-v="usetf">미국 ETF</button>
   </div>
   <span class="fl" id="fl-itv" hidden>분봉</span>
   <div class="seg" id="seg-itv" hidden>
@@ -262,7 +265,9 @@
   <a href="https://finance.yahoo.com/" target="_blank" rel="noopener">야후 파이낸스</a>(분봉·지수 차트).
   유니버스는 국내 = 코스피·코스닥 <b>시가총액 상위 50종목</b>, 미국 = <b>S&amp;P500 편입 전 종목·나스닥 시총 상위 500</b>을
   전부 스캔한 뒤 <b>매수·매도 포지션 강도 상위 50종목</b>만 제안합니다(ETF·ETN·우선주·스팩 제외).
-  미국은 정규장(22:30~05:00 KST) 외 프리·애프터마켓 체결가를 현재가에 반영하며, 장 성격은 S&amp;P500(^GSPC)·나스닥100(^NDX) 지수로 판별합니다.<br>
+  미국은 정규장(22:30~05:00 KST) 외 프리·애프터마켓 체결가를 현재가에 반영하며, 장 성격은 S&amp;P500(^GSPC)·나스닥100(^NDX) 지수로 판별합니다.
+  <b>ETF 시장</b>은 지수·섹터·레버리지·인버스 대표 상품 엄선 목록(한국 16 · 미국 24)으로, 시세는 차트 데이터 기준이라 개별주 대비 수십 초 지연될 수 있습니다.
+  <b>인버스는 기초지수와 반대로 움직이는 별도 상품</b>으로서 자체 가격에 대한 신호이며, 레버리지·인버스는 음의 복리(변동성 잠식) 특성상 장기 보유에 부적합합니다.<br>
   장 성격은 지수 일봉의 <b>20·60일 이동평균 배열·기울기와 ADX(14) 추세 강도</b>로 판별합니다(ADX 20 미만 = 횡보).
   외국인 수급은 <b>외국인 보유한도 소진율</b>의 최근 변화량(%p)으로, 정확한 순매수 금액이 아닌 근사 지표입니다.<br>
   지표는 종가 기준 MACD(12,26,9)·RSI(14, Wilder)·볼린저밴드(20,2)·스토캐스틱 슬로우(14,3,3)로 계산하며,
@@ -321,8 +326,55 @@ async function fetchLive(api,file){
 }
 const cls = n => n>0?'up':(n<0?'down':'flat');
 const esc = s => String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-const US_MKTS=['sp500','nasdaq'];
-const isUSm = m => US_MKTS.indexOf(m)>=0;
+const US_MKTS=['sp500','nasdaq','usetf'];
+const isUSm = m => US_MKTS.indexOf(m)>=0;         // 달러 표기·야후 직결·미국 세션
+const isETFm = m => m==='kretf'||m==='usetf';
+
+/* ── ETF 추천 유니버스 (엄선 목록 · lev: 레버리지 배수, '-' = 인버스) ── */
+const ETF_KR=[
+  {code:'069500',name:'KODEX 200'},
+  {code:'122630',name:'KODEX 레버리지',lev:'2X'},
+  {code:'252670',name:'KODEX 200선물인버스2X',lev:'-2X'},
+  {code:'114800',name:'KODEX 인버스',lev:'-1X'},
+  {code:'229200',name:'KODEX 코스닥150'},
+  {code:'233740',name:'KODEX 코스닥150레버리지',lev:'2X'},
+  {code:'251340',name:'KODEX 코스닥150선물인버스',lev:'-1X'},
+  {code:'102110',name:'TIGER 200'},
+  {code:'360750',name:'TIGER 미국S&P500'},
+  {code:'133690',name:'TIGER 미국나스닥100'},
+  {code:'381180',name:'TIGER 미국필라델피아반도체나스닥'},
+  {code:'091160',name:'KODEX 반도체'},
+  {code:'305540',name:'TIGER 2차전지테마'},
+  {code:'091170',name:'KODEX 은행'},
+  {code:'132030',name:'KODEX 골드선물(H)'},
+  {code:'148070',name:'KOSEF 국고채10년'},
+];
+const ETF_US=[
+  {code:'SPY',name:'S&P500'},
+  {code:'QQQ',name:'나스닥100'},
+  {code:'DIA',name:'다우존스30'},
+  {code:'IWM',name:'러셀2000'},
+  {code:'VTI',name:'미국 전체 시장'},
+  {code:'SMH',name:'반도체'},
+  {code:'SOXX',name:'반도체(iShares)'},
+  {code:'XLK',name:'기술 섹터'},
+  {code:'XLF',name:'금융 섹터'},
+  {code:'XLE',name:'에너지 섹터'},
+  {code:'TLT',name:'미 국채 20년+'},
+  {code:'GLD',name:'금'},
+  {code:'SSO',name:'S&P500 2배',lev:'2X'},
+  {code:'UPRO',name:'S&P500 3배',lev:'3X'},
+  {code:'QLD',name:'나스닥100 2배',lev:'2X'},
+  {code:'TQQQ',name:'나스닥100 3배',lev:'3X'},
+  {code:'SOXL',name:'반도체 3배',lev:'3X'},
+  {code:'SH',name:'S&P500 인버스',lev:'-1X'},
+  {code:'SDS',name:'S&P500 인버스 2배',lev:'-2X'},
+  {code:'SPXU',name:'S&P500 인버스 3배',lev:'-3X'},
+  {code:'PSQ',name:'나스닥100 인버스',lev:'-1X'},
+  {code:'QID',name:'나스닥100 인버스 2배',lev:'-2X'},
+  {code:'SQQQ',name:'나스닥100 인버스 3배',lev:'-3X'},
+  {code:'SOXS',name:'반도체 인버스 3배',lev:'-3X'},
+];
 const fmtPx = (v,us) => us ? '$'+Number(v).toLocaleString('en-US',{maximumFractionDigits:2})
                            : Number(v).toLocaleString('en-US')+'원';
 const fmtCap = (v,us) => us ? (v>=1e12 ? '$'+(v/1e12).toFixed(2)+'T' : '$'+Math.round(v/1e9)+'B')
@@ -621,13 +673,19 @@ function techniqueFor(u,j,rg,fd){
     if(fd.d5>=0.1) why+=' · 외국인 유입 동반(+'+fd.d5.toFixed(2)+'%p, 수급 우호)';
     else if(fd.d5<=-0.1) why+=' · 외국인 이탈 중('+fd.d5.toFixed(2)+'%p) — 신뢰도 감점 요인';
   }
+  if(u.lev){
+    if(u.lev.indexOf('-')===0)
+      why+= regime==='bull' ? ' · ⚠ 인버스 상품 — 시장 강세 국면 역행, 단기 헤지 용도로만'
+          : (regime==='bear' ? ' · 인버스 상품 — 약세 국면 순방향(시장 하락 베팅)' : ' · 인버스 상품(시장 하락 베팅)');
+    if(/[23]X/.test(u.lev)) why+=' · 레버리지 음의 복리(변동성 잠식) — 장기 보유 부적합';
+  }
   return {t,why};
 }
 
 /* ── 상태 ── */
 const store=(k,v)=>{ try{ if(v===undefined) return localStorage.getItem('alphadesk.sig.'+k); localStorage.setItem('alphadesk.sig.'+k,v); }catch(e){ return null; } };
 let MODE  =['day','swing','long'].includes(store('mode'))?store('mode'):'swing';
-let MKT   =['kospi','kosdaq','sp500','nasdaq'].includes(store('mkt'))?store('mkt'):'kospi';
+let MKT   =['kospi','kosdaq','sp500','nasdaq','kretf','usetf'].includes(store('mkt'))?store('mkt'):'kospi';
 let ITV   =['1m','5m','15m'].includes(store('itv'))?store('itv'):'5m';
 let SITV  =['60m','120m'].includes(store('sitv'))?store('sitv'):'60m';
 let LOOK  =[3,5,10].includes(+store('look'))?+store('look'):5;
@@ -658,6 +716,12 @@ const symOf=u=> isUSm(u.mkt)?u.code:(u.code+(u.mkt==='kosdaq'?'.KQ':'.KS'));
 
 /* ── 데이터 수집 ── */
 async function loadUniverse(mkt){
+  if(isETFm(mkt)){
+    // ETF: 엄선 목록 — 시세는 차트에서 산출(compute 의 etfQuote), 세션은 시계 기반
+    const open=(mkt==='kretf'?krSession():usSessionNow())==='open';
+    return { status:open?'OPEN':'CLOSE', updated:'', source:'chart',
+      items:(mkt==='kretf'?ETF_KR:ETF_US).map(e=>({code:e.code,name:e.name,lev:e.lev||null,mkt,price:0,pct:0,cap:0})) };
+  }
   if(isUSm(mkt)){
     // 전체 유니버스: S&P500 = 편입 전 종목(~503) · 나스닥 = 시총 상위 500
     const d=await fetchLive('/api/usheatmap?us='+mkt+'&n=500','data/usheatmap_'+mkt+'.json');
@@ -706,7 +770,7 @@ async function fetchStock(u){
   if(cfg.sise&&isUSm(u.mkt)){                       // 미국 장기 = 야후 일봉 (소진율 없음)
     const y=await getJSON('/api/chart?sym='+encodeURIComponent(symOf(u))+'&range=1y&interval=1d');
     if(!Array.isArray(y.ohlc)||y.ohlc.length<40) throw 0;
-    return { ts:Date.now(), src:'yahoo',
+    return { ts:Date.now(), src:'yahoo', prevClose:(isFinite(y.prevClose)?y.prevClose:null),
       closes:y.ohlc.map(b=>b.close), his:y.ohlc.map(b=>b.high), los:y.ohlc.map(b=>b.low),
       dates:y.ohlc.map(b=>String(b.time).replace(/-/g,'')), f:null,
       lastDate:String(y.ohlc[y.ohlc.length-1].time).replace(/-/g,'') };
@@ -722,7 +786,7 @@ async function fetchStock(u){
     }catch(e){ /* 야후 폴백 */ }
     const y=await getJSON('/api/chart?sym='+encodeURIComponent(symOf(u))+'&range=1y&interval=1d');
     if(!Array.isArray(y.ohlc)||y.ohlc.length<40) throw 0;
-    return { ts:Date.now(), src:'yahoo',
+    return { ts:Date.now(), src:'yahoo', prevClose:(isFinite(y.prevClose)?y.prevClose:null),
       closes:y.ohlc.map(b=>b.close), his:y.ohlc.map(b=>b.high), los:y.ohlc.map(b=>b.low),
       dates:y.ohlc.map(b=>String(b.time).replace(/-/g,'')), f:null,
       lastDate:String(y.ohlc[y.ohlc.length-1].time).replace(/-/g,'') };
@@ -734,7 +798,7 @@ async function fetchStock(u){
   if(!Array.isArray(y.ohlc)||y.ohlc.length<40) throw 0;
   const ohlc=(MODE==='swing'&&SITV==='120m')?agg120(y.ohlc):y.ohlc;
   if(ohlc.length<40) throw 0;
-  return { ts:Date.now(), src:'yahoo',
+  return { ts:Date.now(), src:'yahoo', prevClose:(isFinite(y.prevClose)?y.prevClose:null),
     closes:ohlc.map(b=>b.close), his:ohlc.map(b=>b.high), los:ohlc.map(b=>b.low),
     dates:ohlc.map(b=>b.time), f:null, lastDate:null };
 }
@@ -748,9 +812,9 @@ async function ensureFrgn(code){
   }catch(e){ FRGN[code]={ts:Date.now()-9*60*1000, f:null}; }   // 곧 재시도
 }
 /* 지수 국면: 야후 지수 일봉 1y + /api/market 실시간 표시값 */
-const INDEX_SYM={kospi:'^KS11',kosdaq:'^KQ11',sp500:'^GSPC',nasdaq:'^NDX'};
-const INDEX_NAME={kospi:'코스피',kosdaq:'코스닥',sp500:'S&amp;P500',nasdaq:'나스닥100'};
-const MARKET_KEY={kospi:'kospi',kosdaq:'kosdaq',sp500:'spx',nasdaq:'ndx'};   // data/market.json 필드명
+const INDEX_SYM={kospi:'^KS11',kosdaq:'^KQ11',sp500:'^GSPC',nasdaq:'^NDX',kretf:'^KS11',usetf:'^GSPC'};
+const INDEX_NAME={kospi:'코스피',kosdaq:'코스닥',sp500:'S&amp;P500',nasdaq:'나스닥100',kretf:'코스피 (한국 ETF 기준지수)',usetf:'S&amp;P500 (미국 ETF 기준지수)'};
+const MARKET_KEY={kospi:'kospi',kosdaq:'kosdaq',sp500:'spx',nasdaq:'ndx',kretf:'kospi',usetf:'spx'};   // data/market.json 필드명
 async function loadRegime(mkt,force){
   const c=REGIME[mkt];
   if(!force&&c&&Date.now()-c.ts<REGIME_TTL) return;
@@ -773,6 +837,7 @@ async function loadRegime(mkt,force){
 /* 형성 중인 마지막 봉에 네이버 실시간가 반영 (고가·저가도 확장) */
 function liveBars(u,ch){
   const c=ch.closes.slice(), h=(ch.his||ch.closes).slice(), l=(ch.los||ch.closes).slice();
+  if(isETFm(u.mkt)) return {c,h,l};           // ETF 시세는 차트 자체가 원천 — 덮어쓰기 없음
   const uv=UNIV[u.mkt];
   const mktOpen=uv&&uv.status==='OPEN'&&uv.source==='naver';
   if(!(u.price>0)) return {c,h,l};
@@ -804,7 +869,7 @@ async function scan(force){
       await pool(need,isUSm(MKT)?12:8,async u=>{
         const ch=await fetchStock(u).catch(()=>null);
         if(ch) CHARTS[u.code+'|'+key]=ch; else FAILN++;
-        if(MODE!=='long'&&!isUSm(u.mkt)) await ensureFrgn(u.code).catch(()=>{});   // 국내 분봉 계열만 소진율 수집
+        if(MODE!=='long'&&!isUSm(u.mkt)&&!isETFm(u.mkt)) await ensureFrgn(u.code).catch(()=>{});   // 국내 개별주 분봉 계열만 소진율 수집
         setProg(++done,need.length,true);
       });
     }
@@ -815,8 +880,29 @@ async function scan(force){
   }
 }
 
+/* ETF 시세: 차트에서 현재가·등락률 산출 (분봉은 직전 거래일 마지막 봉 대비) */
+function etfQuote(u,ch){
+  const c=ch.closes, L=c.length;
+  if(!L) return;
+  u.price=c[L-1];
+  let base=null;
+  if(MODE==='long'||ch.src==='naver'){
+    base=L>1?c[L-2]:null;
+  } else {
+    const tz=isUSm(u.mkt)?'America/New_York':'Asia/Seoul';
+    const day=t=>new Intl.DateTimeFormat('en-CA',{timeZone:tz}).format(new Date(t*1000));
+    const ds=ch.dates||[];
+    if(ds.length===L){
+      const lastD=day(ds[L-1]);
+      for(let i=L-2;i>=0;i--){ if(day(ds[i])!==lastD){ base=c[i]; break; } }
+    }
+    if(base==null&&isFinite(ch.prevClose)) base=ch.prevClose;
+    if(base==null&&L>1) base=c[L-2];
+  }
+  u.pct=base>0?(u.price/base-1)*100:0;
+}
 function frgnOf(u,ch){
-  if(isUSm(u.mkt)) return null;                 // 외국인 소진율은 국내 전용 지표
+  if(isUSm(u.mkt)||isETFm(u.mkt)) return null;  // 외국인 소진율은 국내 개별주 전용 지표
   if(MODE!=='long') return frgnStats(FRGN[u.code]&&FRGN[u.code].f);
   return frgnStats(ch&&ch.f);
 }
@@ -826,6 +912,7 @@ function compute(){
   for(const u of univItems()){
     const ch=CHARTS[u.code+'|'+key];
     if(!ch) continue;
+    if(isETFm(u.mkt)) etfQuote(u,ch);
     const bars=liveBars(u,ch);
     const j=judge(bars.c,bars.h,bars.l,LOOK);
     const fd=frgnOf(u,ch);
@@ -974,14 +1061,15 @@ function render(){
         : (SCANNING?'차트 수집 중…':'데이터가 아직 없습니다. «다시 스캔»을 눌러 주세요.'))+'</div></td></tr>';
     return;
   }
-  const MKCHIP={kospi:'KOSPI',kosdaq:'KOSDAQ',sp500:'S&amp;P500',nasdaq:'NASDAQ'};
+  const MKCHIP={kospi:'KOSPI',kosdaq:'KOSDAQ',sp500:'S&amp;P500',nasdaq:'NASDAQ',kretf:'ETF·KR',usetf:'ETF·US'};
   tb.innerHTML=rows.map((x,i)=>{
     const u=x.u, j=x.j, vd=VD[j.v], us=isUSm(u.mkt);
     const fresh=Math.min(j.gc??99,j.dc??99,j.zu??99,j.zd??99)===0;
+    const lev=u.lev?'<span class="levchip'+(u.lev.indexOf('-')===0?' inv':'')+'">'+esc(u.lev.indexOf('-')===0?'인버스 '+u.lev.slice(1):'레버리지 '+u.lev)+'</span>':'';
     return '<tr class="srow'+(fresh?' fresh':'')+'" data-code="'+u.code+'">'
       +'<td class="mono" style="color:var(--muted2)">'+(i+1)+'</td>'
-      +'<td class="name"><b>'+esc(u.name)+'</b><span class="mkchip">'+MKCHIP[u.mkt]+'</span>'
-        +'<small class="mono">'+u.code+'</small> <span class="cap">'+fmtCap(u.cap,us)+'</span></td>'
+      +'<td class="name"><b>'+esc(u.name)+'</b>'+lev+'<span class="mkchip">'+MKCHIP[u.mkt]+'</span>'
+        +'<small class="mono">'+u.code+'</small>'+(u.cap?' <span class="cap">'+fmtCap(u.cap,us)+'</span>':'')+'</td>'
       +'<td class="num mono">'+fmtPx(u.price,us)+'</td>'
       +'<td class="num mono '+cls(u.pct)+'">'+(u.pct>0?'+':'')+u.pct.toFixed(2)+'%</td>'
       +'<td><span class="vd '+vd[1]+'">'+vd[0]+'</span></td>'
@@ -1164,10 +1252,14 @@ function detailRow(x){
       +'<tr><td>볼린저 상단 / 하단</td><td class="mono">'+(j.bbU?Math.round(j.bbU).toLocaleString():'—')+' / '+(j.bbL?Math.round(j.bbL).toLocaleString():'—')+'</td></tr>'
       +'<tr><td>%b (밴드 내 위치)</td><td class="mono">'+(j.pb==null?'—':j.pb.toFixed(2))+'</td></tr>'
       +'<tr><td>스토캐스틱 %K / %D</td><td class="mono">'+(j.early.stK==null?'—':j.early.stK.toFixed(1))+' / '+(j.early.stD==null?'—':j.early.stD.toFixed(1))+'</td></tr></table></div>'
-    +'<div style="display:flex;gap:8px"><button class="btn" data-naver="'+u.code+'"'+(isUSm(u.mkt)&&u.rc?' data-rc="'+esc(u.rc)+'"':'')+'>네이버 증권에서 보기 ↗</button></div>'
+    +'<div style="display:flex;gap:8px">'+(u.mkt==='usetf'
+      ?'<button class="btn" data-yh="'+esc(u.code)+'">야후 파이낸스에서 보기 ↗</button>'
+      :'<button class="btn" data-naver="'+u.code+'"'+(isUSm(u.mkt)&&u.rc?' data-rc="'+esc(u.rc)+'"':'')+'>네이버 증권에서 보기 ↗</button>')+'</div>'
     +'</div></div></td></tr>';
 }
 document.getElementById('tbody').addEventListener('click',e=>{
+  const yh=e.target.closest('[data-yh]');
+  if(yh){ window.open('https://finance.yahoo.com/quote/'+encodeURIComponent(yh.dataset.yh),'_blank','noopener'); return; }
   const nv=e.target.closest('[data-naver]');
   if(nv){
     window.open(nv.dataset.rc ? 'https://m.stock.naver.com/worldstock/stock/'+nv.dataset.rc+'/total'
@@ -1241,7 +1333,7 @@ function note(t){ document.getElementById('st-note').textContent=t||''; }
 function paintStatus(){
   const b=document.getElementById('badge');
   const sess=isUSm(MKT)?usSessionNow():krSession();
-  const anyLive=activeMkts().some(m=>UNIV[m]&&UNIV[m].source==='naver');
+  const anyLive=activeMkts().some(m=>UNIV[m]&&(UNIV[m].source==='naver'||UNIV[m].source==='chart'));
   if(sess==='open'&&anyLive){ b.className='live-badge'; b.textContent='장중 LIVE'; }
   else if(anyLive){ b.className='live-badge stale'; b.textContent=sess==='ext'?'시간외':'장 종료'; }
   else { b.className='live-badge stale'; b.textContent='스냅샷'; }
