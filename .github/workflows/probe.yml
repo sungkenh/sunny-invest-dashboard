@@ -1,6 +1,5 @@
 name: probe (임시 진단)
 
-# 네이버 시장지표 카테고리·NQcv1·TradingView 실응답 확인용 — 확인 후 삭제 예정
 on:
   workflow_dispatch: {}
 
@@ -8,42 +7,26 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
-      - name: 네이버 productDetail 카테고리 매트릭스
+      - name: 확정 후보 검증
         run: |
-          H='-H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/"'
-          for code in FX_USDJPY OIL_CL CMDT_GC; do
-            for cat in exchange worldExchange oil energy metals gold materials marketindex; do
-              body=$(curl -s -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" \
-                "https://m.stock.naver.com/front-api/marketIndex/productDetail?category=$cat&reutersCode=$code" | head -c 300)
-              case "$body" in *closePrice*) echo "HIT  $code $cat :: $body";; *) echo "miss $code $cat :: ${body:0:60}";; esac
-            done
+          NH='-H User-Agent:Mozilla/5.0 -H Referer:https://m.stock.naver.com/'
+          echo "== exchangeWorld FX_USDJPY"
+          curl -s $NH "https://m.stock.naver.com/front-api/marketIndex/productDetail?category=exchangeWorld&reutersCode=FX_USDJPY" | head -c 400; echo; echo
+          echo "== energy CLcv1 (WTI 선물)"
+          curl -s $NH "https://m.stock.naver.com/front-api/marketIndex/productDetail?category=energy&reutersCode=CLcv1" | head -c 400; echo; echo
+          echo "== metals GCcv1 (금 선물)"
+          curl -s $NH "https://m.stock.naver.com/front-api/marketIndex/productDetail?category=metals&reutersCode=GCcv1" | head -c 400; echo; echo
+          echo "== energy OIL_CL / metals CMDT_GC (데스크톱 코드 재확인)"
+          curl -s $NH "https://m.stock.naver.com/front-api/marketIndex/productDetail?category=energy&reutersCode=OIL_CL" | head -c 200; echo
+          curl -s $NH "https://m.stock.naver.com/front-api/marketIndex/productDetail?category=metals&reutersCode=CMDT_GC" | head -c 200; echo; echo
+          echo "== TradingView symbol 엔드포인트"
+          curl -s -H "User-Agent: Mozilla/5.0" \
+            "https://scanner.tradingview.com/symbol?symbol=TVC%3AUSOIL&fields=close,change,change_abs&no_404=true" -w "\n[%{http_code}]\n" | head -c 400; echo
+          echo "== TradingView america scan"
+          curl -s -X POST "https://scanner.tradingview.com/america/scan" -H "Content-Type: application/json" -H "User-Agent: Mozilla/5.0" \
+            -d '{"symbols":{"tickers":["TVC:USOIL"]},"columns":["close","change_abs","change"]}' | head -c 300; echo; echo
+          echo "== K200 야간선물 네이버 후보 (worldstock futures)"
+          for c in KSc1 1KSc1 K2Icv1 KOScv1; do
+            echo "-- $c"
+            curl -s $NH "https://polling.finance.naver.com/api/realtime/worldstock/futures/$c" | head -c 250; echo
           done
-
-      - name: 네이버 마켓인덱스 목록/홈 API 후보
-        run: |
-          for u in "https://m.stock.naver.com/front-api/marketIndex/home" \
-                   "https://m.stock.naver.com/front-api/marketIndex/prices?category=exchange&page=1&pageSize=20" \
-                   "https://m.stock.naver.com/front-api/marketIndex/prices?category=oil&page=1&pageSize=20" \
-                   "https://m.stock.naver.com/front-api/marketIndex/prices?category=metals&page=1&pageSize=20"; do
-            echo "== $u"
-            curl -s -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" "$u" | head -c 700
-            echo; echo
-          done
-
-      - name: NQcv1 시세 API 후보
-        run: |
-          for u in "https://api.stock.naver.com/stock/NQcv1/basic" \
-                   "https://m.stock.naver.com/front-api/stock/NQcv1/basic" \
-                   "https://api.stock.naver.com/index/NQcv1/basic" \
-                   "https://polling.finance.naver.com/api/realtime/worldstock/futures/NQcv1"; do
-            echo "== $u"
-            curl -s -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" -w "\n[%{http_code}]" "$u" | head -c 700
-            echo; echo
-          done
-
-      - name: TradingView 스캐너
-        run: |
-          curl -s -X POST "https://scanner.tradingview.com/global/scan" \
-            -H "Content-Type: application/json" -H "User-Agent: Mozilla/5.0" \
-            -d '{"symbols":{"tickers":["TVC:USOIL"]},"columns":["close","change_abs","change"]}' \
-            -w "\n[%{http_code}]\n" | head -c 800
