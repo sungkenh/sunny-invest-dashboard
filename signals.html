@@ -85,7 +85,7 @@
   .prog i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
 
   .tbl-wrap{border:1px solid var(--border);border-radius:12px;overflow:auto;background:var(--panel)}
-  table.sig{width:100%;border-collapse:collapse;min-width:1240px}
+  table.sig{width:100%;border-collapse:collapse;min-width:1340px}
   table.sig th{position:sticky;top:0;background:var(--panel2);color:var(--muted2);font-size:11px;font-weight:800;
     text-align:left;padding:9px 12px;border-bottom:1px solid var(--border);letter-spacing:.3px;white-space:nowrap;z-index:2}
   table.sig td{padding:9px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle;white-space:nowrap}
@@ -100,6 +100,10 @@
   .levchip{display:inline-block;font-size:9px;font-weight:800;border-radius:4px;padding:0 5px;margin-left:5px;vertical-align:1px;
     color:var(--gold);border:1px solid var(--gold)}
   .levchip.inv{color:var(--down);border-color:var(--down)}
+  .machip{display:inline-block;font-size:10px;font-weight:700;border-radius:5px;padding:1px 6px;margin:1px 3px 1px 0;
+    background:var(--chip);border:1px solid var(--border);white-space:nowrap}
+  .machip.ok{color:var(--up);border-color:rgba(246,70,93,.4)}
+  .machip.bad{color:var(--down);border-color:rgba(59,130,246,.4)}
   .cap{color:var(--muted2);font-size:10.5px}
   tr.srow.fresh td:first-child{box-shadow:inset 3px 0 0 var(--gold)}
 
@@ -252,10 +256,10 @@
     <table class="sig">
       <thead><tr>
         <th style="width:30px">#</th><th>종목</th><th class="num">현재가</th><th class="num">등락률</th>
-        <th>판정</th><th>신호 근거</th><th>추천 기법 (장 성격 기반)</th><th class="num" id="th-frgn">외국인(5일)</th>
+        <th>판정</th><th>신호 근거</th><th>추천 기법 (장 성격 기반)</th><th>120·200일선</th><th class="num" id="th-frgn">외국인(5일)</th>
         <th>RSI(14)</th><th>MACD</th><th>히스토그램</th>
       </tr></thead>
-      <tbody id="tbody"><tr><td colspan="11"><div class="note-empty">시세와 차트를 불러와 계산을 시작합니다…</div></td></tr></tbody>
+      <tbody id="tbody"><tr><td colspan="12"><div class="note-empty">시세와 차트를 불러와 계산을 시작합니다…</div></td></tr></tbody>
     </table>
   </div>
 </main>
@@ -270,6 +274,9 @@
   <b>인버스는 기초지수와 반대로 움직이는 별도 상품</b>으로서 자체 가격에 대한 신호이며, 레버리지·인버스는 음의 복리(변동성 잠식) 특성상 장기 보유에 부적합합니다.<br>
   장 성격은 지수 일봉의 <b>20·60일 이동평균 배열·기울기와 ADX(14) 추세 강도</b>로 판별합니다(ADX 20 미만 = 횡보).
   외국인 수급은 <b>외국인 보유한도 소진율</b>의 최근 변화량(%p)으로, 정확한 순매수 금액이 아닌 근사 지표입니다.<br>
+  <b>120·200일선</b> 열은 일봉 기준 장기 이동평균 대비 위치(↑ 지지 / ↓ 깨짐)와 이격률로, 어느 모드에서든 일봉으로 계산합니다
+  (120일선 = 경기선, 200일선 = 장기 추세선 — 200일선 이탈은 장기 추세 훼손 신호로 봅니다).
+  스윙·단타 모드에서는 표시 종목의 일봉을 별도 수집하므로 스캔 직후 잠시 «—»였다가 채워질 수 있습니다.<br>
   지표는 종가 기준 MACD(12,26,9)·RSI(14, Wilder)·볼린저밴드(20,2)·스토캐스틱 슬로우(14,3,3)로 계산하며,
   장중에는 형성 중인 마지막 봉에 네이버 실시간 체결가를 반영해 자동 갱신됩니다. 🔔 알림은 이 페이지가 열려 있는 동안만 동작합니다.<br>
   MACD·RSI는 추세 후행 지표로 <b>거짓 신호(휩쏘)</b>가 빈번합니다. «조기 매수/매도»는 후행성을 보완하는 선행 지표
@@ -706,7 +713,7 @@ const REGIME_TTL=10*60*1000;
 
 let UNIV={kospi:null,kosdaq:null,sp500:null,nasdaq:null};
 const CHARTS={};                          // `${code}|${key}` → {ts, closes, dates, f, lastDate, src}
-const FRGN={};                            // 국내 단타·스윙용 일봉 소진율: code → {ts, f:[]}
+const DAILY={};                           // 일봉 컨텍스트(스윙·단타): code → {ts, closes, f}
 let REGIME={kospi:null,kosdaq:null,sp500:null,nasdaq:null};   // {ts, rg, closes, live:{price,pct}}
 let ROWS=[], SCANNING=false, SCAN_AT=null, FAILN=0, FULLN=0;
 const modeKey=()=> MODE==='day'?ITV:(MODE==='swing'?SITV:'1d');
@@ -802,14 +809,33 @@ async function fetchStock(u){
     closes:ohlc.map(b=>b.close), his:ohlc.map(b=>b.high), los:ohlc.map(b=>b.low),
     dates:ohlc.map(b=>b.time), f:null, lastDate:null };
 }
-/* 단타 모드 외국인: 일봉 소진율 90일(10분 캐시, 실패 무시) */
-async function ensureFrgn(code){
-  const c=FRGN[code];
-  if(c&&Date.now()-c.ts<10*60*1000) return;
+/* 일봉 컨텍스트(스윙·단타 보조): 종가 330일 → 120·200일선, 국내는 외국인 소진율 겸용. 30분 캐시 */
+async function ensureDaily(u){
+  const c=DAILY[u.code];
+  if(c&&Date.now()-c.ts<30*60*1000) return;
   try{
-    const d=await getJSON('/api/krsise?code='+code+'&tf=day&days=90');
-    FRGN[code]={ts:Date.now(), f:d.rows.map(r=>r.f)};
-  }catch(e){ FRGN[code]={ts:Date.now()-9*60*1000, f:null}; }   // 곧 재시도
+    if(isUSm(u.mkt)){
+      const y=await getJSON('/api/chart?sym='+encodeURIComponent(symOf(u))+'&range=1y&interval=1d');
+      DAILY[u.code]={ts:Date.now(), closes:y.ohlc.map(b=>b.close), f:null};
+    } else {
+      const d=await getJSON('/api/krsise?code='+u.code+'&tf=day&days=330');
+      DAILY[u.code]={ts:Date.now(), closes:d.rows.map(r=>r.c), f:d.rows.map(r=>r.f)};
+    }
+  }catch(e){ DAILY[u.code]={ts:Date.now()-25*60*1000, closes:null, f:null}; }   // 곧 재시도
+}
+/* 120·200일선 상태: 장기 모드는 보유 일봉, 그 외는 DAILY 캐시. 현재 관계는 실시간가 기준 */
+function maStats(u,ch){
+  const closes = MODE==='long' ? ch.closes : (DAILY[u.code]&&DAILY[u.code].closes);
+  if(!closes||closes.length<120) return null;
+  const L=closes.length;
+  const s120=smaSeries(closes,120), s200=L>=200?smaSeries(closes,200):null;
+  const m120=s120[L-1], m200=s200?s200[L-1]:null;
+  const px=u.price>0?u.price:closes[L-1];
+  return { m120, m200,
+    d120:m120?(px/m120-1)*100:null, d200:m200?(px/m200-1)*100:null,
+    up120:m120!=null?px>=m120:null, up200:m200!=null?px>=m200:null,
+    b120up:crossUpAgo(closes,s120), b120dn:crossUpAgo(s120,closes),
+    b200up:s200?crossUpAgo(closes,s200):null, b200dn:s200?crossUpAgo(s200,closes):null };
 }
 /* 지수 국면: 야후 지수 일봉 1y + /api/market 실시간 표시값 */
 const INDEX_SYM={kospi:'^KS11',kosdaq:'^KQ11',sp500:'^GSPC',nasdaq:'^NDX',kretf:'^KS11',usetf:'^GSPC'};
@@ -869,12 +895,20 @@ async function scan(force){
       await pool(need,isUSm(MKT)?12:8,async u=>{
         const ch=await fetchStock(u).catch(()=>null);
         if(ch) CHARTS[u.code+'|'+key]=ch; else FAILN++;
-        if(MODE!=='long'&&!isUSm(u.mkt)&&!isETFm(u.mkt)) await ensureFrgn(u.code).catch(()=>{});   // 국내 개별주 분봉 계열만 소진율 수집
+        if(MODE!=='long'&&!isUSm(u.mkt)) await ensureDaily(u).catch(()=>{});   // 국내: 일봉 컨텍스트(소진율+120·200일선) 동시 수집
         setProg(++done,need.length,true);
       });
     }
     SCAN_AT=Date.now();
     compute();
+    // 표시 대상(상위 50)의 일봉 컨텍스트(120·200일선, 미국·ETF) 지연 보충 → 재판정
+    if(MODE!=='long'){
+      const lack=ROWS.filter(x=>{ const d=DAILY[x.u.code]; return !d||Date.now()-d.ts>30*60*1000; });
+      if(lack.length){
+        await pool(lack,12,x=>ensureDaily(x.u).catch(()=>{}));
+        compute();
+      }
+    }
   } finally {
     SCANNING=false; setProg(0,1,false); paintStatus();
   }
@@ -903,7 +937,7 @@ function etfQuote(u,ch){
 }
 function frgnOf(u,ch){
   if(isUSm(u.mkt)||isETFm(u.mkt)) return null;  // 외국인 소진율은 국내 개별주 전용 지표
-  if(MODE!=='long') return frgnStats(FRGN[u.code]&&FRGN[u.code].f);
+  if(MODE!=='long') return frgnStats(DAILY[u.code]&&DAILY[u.code].f);
   return frgnStats(ch&&ch.f);
 }
 function compute(){
@@ -917,7 +951,7 @@ function compute(){
     const j=judge(bars.c,bars.h,bars.l,LOOK);
     const fd=frgnOf(u,ch);
     const rg=REGIME[u.mkt]&&REGIME[u.mkt].rg;
-    ROWS.push({u,ch,j,fd,tech:j?techniqueFor(u,j,rg,fd):null});
+    ROWS.push({u,ch,j,fd,ms:maStats(u,ch),tech:j?techniqueFor(u,j,rg,fd):null});
   }
   FULLN=ROWS.length;
   const recency=x=>x.j?Math.min(x.j.gc??99,x.j.zu??99,x.j.dc??99,x.j.zd??99):99;
@@ -989,8 +1023,14 @@ const VD={buy2:['강력 매수','buy2'],buy1:['매수 신호','buy1'],ebuy:['조
           nsell:['매도 임박','nsell'],esell:['조기 매도','esell'],sell1:['매도 신호','sell1'],sell2:['강력 매도','sell2']};
 const unit=()=>MODES[MODE].unit;
 const agoTxt=n=> n===0 ? MODES[MODE].zero : n+unit()+' 전';
-function chips(j){
+function chips(j,ms){
   const c=[];
+  if(ms){                                    // 120·200일선 돌파/이탈 이벤트 (거래일 기준)
+    if(ms.b200dn!=null&&ms.b200dn<=LOOK) c.push('<span class="chip s">200일선 이탈 · '+(ms.b200dn===0?'오늘':ms.b200dn+'거래일 전')+'</span>');
+    else if(ms.b120dn!=null&&ms.b120dn<=LOOK) c.push('<span class="chip s">120일선 이탈 · '+(ms.b120dn===0?'오늘':ms.b120dn+'거래일 전')+'</span>');
+    if(ms.b200up!=null&&ms.b200up<=LOOK) c.push('<span class="chip b">200일선 회복 · '+(ms.b200up===0?'오늘':ms.b200up+'거래일 전')+'</span>');
+    else if(ms.b120up!=null&&ms.b120up<=LOOK) c.push('<span class="chip b">120일선 회복 · '+(ms.b120up===0?'오늘':ms.b120up+'거래일 전')+'</span>');
+  }
   if(j.gcOK) c.push('<span class="chip b">골든크로스 · '+agoTxt(j.gc)+'</span>');
   if(j.zuOK) c.push('<span class="chip b">0선 상향돌파 · '+agoTxt(j.zu)+'</span>');
   if(j.dcOK) c.push('<span class="chip s">데드크로스 · '+agoTxt(j.dc)+'</span>');
@@ -1036,6 +1076,14 @@ function rsiCell(r){
   return '<span class="rsiwrap"><b class="mono" style="color:'+col+'">'+r.toFixed(1)+'</b>'
     +'<span class="rsibar"><i style="width:'+Math.max(2,Math.min(100,r))+'%;background:'+col+'"></i><em></em></span></span>';
 }
+/* 120·200일선 상태 셀: ↑=지지(위) ↓=깨짐(아래), 괄호는 이격률 */
+function maCell(ms){
+  if(!ms||ms.m120==null) return '<span class="flat">—</span>';
+  const one=(n,up,d)=> up==null ? '<span class="machip">'+n+' —</span>'
+    : '<span class="machip '+(up?'ok':'bad')+'" title="'+n+'일선 '+(up?'위(지지)':'아래(깨짐)')+'">'
+      +n+(up?'↑':'↓')+' '+(d>0?'+':'')+d.toFixed(1)+'%</span>';
+  return one('120',ms.up120,ms.d120)+one('200',ms.up200,ms.d200);
+}
 function frgnCell(fd){
   if(!fd||fd.d5==null||!isFinite(fd.d5)) return '<span class="flat">—</span>';
   const c=fd.d5>0.02?'up':(fd.d5<-0.02?'down':'flat');
@@ -1055,7 +1103,7 @@ function render(){
     ROWS.length?('매수 '+buyN+' · 임박 '+nearN+' · 매도 '+sellN
       +(FULLN>ROWS.length?' — 전체 '+FULLN+'종목 중 포지션 상위 '+ROWS.length+' 제안':' / '+ROWS.length+'종목')):'';
   if(!rows.length){
-    tb.innerHTML='<tr><td colspan="11"><div class="note-empty">'+
+    tb.innerHTML='<tr><td colspan="12"><div class="note-empty">'+
       (ROWS.length? '현재 조건(최근 '+LOOK+unit()+' 이내 크로스 + RSI 기준)을 충족하는 종목이 없습니다.<br>'
         +'«신호 인정» 범위를 늘리거나 필터를 «전체»로 바꿔 임박·추세 유지 종목까지 확인해 보세요.'
         : (SCANNING?'차트 수집 중…':'데이터가 아직 없습니다. «다시 스캔»을 눌러 주세요.'))+'</div></td></tr>';
@@ -1073,8 +1121,9 @@ function render(){
       +'<td class="num mono">'+fmtPx(u.price,us)+'</td>'
       +'<td class="num mono '+cls(u.pct)+'">'+(u.pct>0?'+':'')+u.pct.toFixed(2)+'%</td>'
       +'<td><span class="vd '+vd[1]+'">'+vd[0]+'</span></td>'
-      +'<td>'+chips(j)+'</td>'
+      +'<td>'+chips(j,x.ms)+'</td>'
       +'<td><div class="tech">'+(x.tech?'<b>'+esc(x.tech.t)+'</b><span>'+esc(x.tech.why)+'</span>':'—')+'</div></td>'
+      +'<td>'+maCell(x.ms)+'</td>'
       +'<td class="num">'+frgnCell(x.fd)+'</td>'
       +'<td>'+rsiCell(j.rsi)+'</td>'
       +'<td class="macdcell mono">'+fmtM(j.macd)+'<br><small>시그널 '+fmtM(j.sig)+'</small></td>'
@@ -1235,7 +1284,7 @@ function detailRow(x){
   const wrap=document.querySelector('.tbl-wrap');
   const W=Math.max(560,Math.min(920,(wrap?wrap.clientWidth:960)-380));
   const fd=x.fd;
-  return '<tr class="drow"><td colspan="11"><div class="dwrap">'
+  return '<tr class="drow"><td colspan="12"><div class="dwrap">'
     +'<div class="dchart">'+detailChartSVG(x,W)+'</div>'
     +'<div class="dinfo">'
     +'<div class="box"><h5>판정 근거</h5>'+judgeReason(x)+'</div>'
@@ -1249,6 +1298,8 @@ function detailRow(x){
     +'<div class="box"><h5>주요 수치</h5><table>'
       +'<tr><td>MACD / 시그널</td><td class="mono">'+fmtM(j.macd)+' / '+fmtM(j.sig)+'</td></tr>'
       +'<tr><td>MA20 / MA60</td><td class="mono">'+(j.ma20?Math.round(j.ma20).toLocaleString():'—')+' / '+(j.ma60?Math.round(j.ma60).toLocaleString():'—')+'</td></tr>'
+      +'<tr><td>120일선 / 200일선</td><td class="mono">'+(x.ms&&x.ms.m120?Math.round(x.ms.m120).toLocaleString():'—')+' / '+(x.ms&&x.ms.m200?Math.round(x.ms.m200).toLocaleString():'—')+'</td></tr>'
+      +'<tr><td>120·200일선 이격</td><td class="mono">'+(x.ms&&x.ms.d120!=null?(x.ms.d120>0?'+':'')+x.ms.d120.toFixed(1)+'%':'—')+' / '+(x.ms&&x.ms.d200!=null?(x.ms.d200>0?'+':'')+x.ms.d200.toFixed(1)+'%':'—')+'</td></tr>'
       +'<tr><td>볼린저 상단 / 하단</td><td class="mono">'+(j.bbU?Math.round(j.bbU).toLocaleString():'—')+' / '+(j.bbL?Math.round(j.bbL).toLocaleString():'—')+'</td></tr>'
       +'<tr><td>%b (밴드 내 위치)</td><td class="mono">'+(j.pb==null?'—':j.pb.toFixed(2))+'</td></tr>'
       +'<tr><td>스토캐스틱 %K / %D</td><td class="mono">'+(j.early.stK==null?'—':j.early.stK.toFixed(1))+' / '+(j.early.stD==null?'—':j.early.stD.toFixed(1))+'</td></tr></table></div>'
