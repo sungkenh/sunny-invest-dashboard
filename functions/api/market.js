@@ -171,7 +171,7 @@ async function __cfHandler(event) {
       // 장중엔 재무부 최신 확정치 = 어제 종가 → 등락 폴백 기준으로 사용
       const prevDaily = tr ? tr.price : null;
       res.ust2y = { sym: 'UST2Y', price: nb.price,
-        chg: nb.chg != null ? nb.chg : (prevDaily != null ? round(nb.price - prevDaily, 3) : null),
+        chg: nb.chg != null ? nb.chg : (prevDaily != null ? round(nb.price - prevDaily, 4) : null),
         pct: nb.pct != null ? nb.pct : (prevDaily ? round((nb.price - prevDaily) / prevDaily * 100, 2) : null),
         sp: (tr && tr.sp) || [], src: 'naver' };
     } else if (tr) {
