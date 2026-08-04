@@ -42,27 +42,6 @@ jobs:
           }
           sample 1; sleep 35; sample 2; sleep 35; sample 3
 
-      - name: WTI 스위스쿼트 CFD vs 지연 선물 — 10분 수렴 검증 (1분×13)
-        run: |
-          for i in $(seq 1 13); do
-            ts=$(date -u +%H:%M:%S)
-            sq=$(curl -s "https://forex-data-feed.swissquote.com/public-quotes/bboquotes/instrument/OIL/USD" \
-              -H "User-Agent: Mozilla/5.0" | python3 -c "
-          import json,sys
-          try:
-              d=json.load(sys.stdin)[0]['spreadProfilePrices']
-              p=next((x for x in d if x['spreadProfile'] in ('elite','Elite')), d[-1])
-              print('%.3f' % ((p['bid']+p['ask'])/2))
-          except Exception as e: print('ERR')")
-            nv=$(curl -s -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" \
-              "https://polling.finance.naver.com/api/realtime/marketindex/energy/CLcv1" | python3 -c "
-          import json,sys
-          r=(json.load(sys.stdin).get('datas') or [{}])[0]
-          print('%s@%s' % (r.get('closePrice'), (r.get('localTradedAt') or '')[11:19]))")
-            echo "[$i] $ts sq_mid=$sq naver_delayed=$nv"
-            [ $i -lt 13 ] && sleep 55
-          done
-
       - name: 폴링 marketindex 실시간 후보 (지연 없는 대안 탐색)
         run: |
           for u in "https://polling.finance.naver.com/api/realtime/marketindex/exchange/FX_USDKRW" \
