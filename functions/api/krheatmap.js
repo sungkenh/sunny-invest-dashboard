@@ -1,14 +1,14 @@
-// 한국 주식 실시간 히트맵 — /api/krheatmap?mkt=kospi|kosdaq&n=50|100|200
+// 한국 주식 실시간 히트맵 — /api/krheatmap?mkt=kospi|kosdaq&n=50|100|200|500
 // 네이버 시총 랭킹(실시간·delayTime 0) + 정적 업종맵(data/kr_sectors.json) 조인.
 //   랭킹 응답에 ETF가 섞여 있고(코스피 top100에 14개) 우선주·스팩·거래정지도 포함되므로 반드시 필터링한다.
 //   필터로 종목이 줄어들기 때문에 n개를 채우려면 페이지를 더 받아야 한다(코스피 page1 100건 → 84건만 생존).
-// subrequest 예산: 랭킹 1~3 + kr_sectors.json 1 = 최대 4 (실패 시 스냅샷 +1) / Cloudflare 무료 50
+// subrequest 예산: 랭킹 1~7 + kr_sectors.json 1 = 최대 8 (실패 시 스냅샷 +1) / Cloudflare 무료 50
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36';
 const CACHE = {};                 // `${mkt}|${n}` → {ts, data}
 const TTL = 5 * 1000;             // 클라이언트 5초 폴링에 맞춤 (네이버 앱 자체 폴링은 7초)
 
 const MKT = { kospi: 'KOSPI', kosdaq: 'KOSDAQ' };
-const ALLOWED_N = [50, 100, 200];
+const ALLOWED_N = [50, 100, 200, 500];
 
 const iso = () => new Date().toISOString().slice(0, 19);
 
@@ -65,7 +65,7 @@ async function loadSnapshot(rawUrl, mkt) {
 }
 
 // 필터로 종목이 깎이므로 여유 있게 페이지를 받는다
-const pagesFor = (n) => (n <= 50 ? 1 : (n <= 100 ? 2 : 3));
+const pagesFor = (n) => (n <= 50 ? 1 : (n <= 100 ? 2 : (n <= 200 ? 3 : 7)));
 
 async function __cfHandler(event) {
   const p = event.queryStringParameters || {};
@@ -100,7 +100,7 @@ async function __cfHandler(event) {
     const snap = await loadSnapshot(event.rawUrl, mkt);
     let data;
     if (snap && Array.isArray(snap.items) && snap.items.length) {
-      const its = snap.items.slice(0, n);               // 스냅샷은 200종목 → 요청 n으로 자름
+      const its = snap.items.slice(0, n);               // 스냅샷은 500종목 → 요청 n으로 자름
       data = Object.assign({}, snap, { source: 'snapshot', n, count: its.length, items: its });
     } else {
       data = { _updated: iso(), source: 'error', mkt, n, marketStatus: '', delay: 0, count: 0, items: [] };

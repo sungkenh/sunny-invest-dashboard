@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """한국 히트맵용 업종맵 + 스냅샷 폴백
    → data/kr_sectors.json        (종목코드 → 업종명)
-   → data/krheatmap_kospi.json   (/api/krheatmap 과 동일 스키마, 최대 200종목)
+   → data/krheatmap_kospi.json   (/api/krheatmap 과 동일 스키마, 최대 500종목)
    → data/krheatmap_kosdaq.json
 
 업종 소스: 네이버 금융 업종 분류(79개, EUC-KR HTML). 업종당 1요청 = 약 80요청이라
@@ -83,10 +83,10 @@ def keep(s):
         return False
 
 
-def build_snapshot(mkt, sectors, n=200):
+def build_snapshot(mkt, sectors, n=500):
     market = 'KOSPI' if mkt == 'kospi' else 'KOSDAQ'
     raw = []
-    for p in (1, 2, 3):
+    for p in (1, 2, 3, 4, 5, 6, 7):
         try:
             raw += naver_mv(market, p)
         except Exception as e:

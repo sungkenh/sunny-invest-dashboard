@@ -2609,7 +2609,7 @@ async function loadKrHeatmap(force){
   if(!force && (document.hidden || !hmVisible)) return;
   const mkt=hmMkt||'kospi';
   const body=document.getElementById('hm-body');
-  const n = mkt==='sp500' ? 500 : ((body && body.clientWidth && body.clientWidth<560) ? 50 : 100);   // S&P500 은 트레이딩뷰처럼 전체 표시
+  const n = mkt==='sp500' ? 500 : ((body && body.clientWidth && body.clientWidth<560) ? 50 : 200);   // S&P500 은 전체, 국내는 시총 상위 200 (모바일 50)
   krLoading=true;
   const hmApi=isUSm(mkt) ? '/api/usheatmap?us='+mkt+'&n='+n : '/api/krheatmap?mkt='+mkt+'&n='+n;
   const hmFile=isUSm(mkt) ? 'data/usheatmap_'+mkt+'.json' : 'data/krheatmap_'+mkt+'.json';
