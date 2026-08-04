@@ -42,40 +42,26 @@ jobs:
           }
           sample 1; sleep 35; sample 2; sleep 35; sample 3
 
-      - name: WTI 실시간 후보 프로브 (TradingView·stooq·yahoo 지연 확인)
+      - name: WTI 스위스쿼트 CFD vs 지연 선물 — 10분 수렴 검증 (1분×13)
         run: |
-          probe() {
-            echo "==== probe round $1 @ $(date -u +%H:%M:%S) ===="
-            echo "== swissquote XAU/USD (형식 확인용 — 금 CFD)"
-            curl -s "https://forex-data-feed.swissquote.com/public-quotes/bboquotes/instrument/XAU/USD" \
-              -H "User-Agent: Mozilla/5.0" | head -c 300; echo
-            for ins in "OIL/USD" "WTI/USD" "LIGHT/USD" "USOIL/USD"; do
-              echo "== swissquote $ins"
-              curl -s "https://forex-data-feed.swissquote.com/public-quotes/bboquotes/instrument/$ins" \
-                -H "User-Agent: Mozilla/5.0" | head -c 200; echo
-            done
-            echo "== dukascopy instrumentList (LIGHT 검색)"
-            curl -s "https://freeserv.dukascopy.com/2.0/index.php?path=api/instrumentList&jsonp=cb" \
-              -H "User-Agent: Mozilla/5.0" -H "Referer: https://freeserv.dukascopy.com/" | grep -o '[A-Z.]*LIGHT[A-Z./]*' | head -5; echo
-            echo "== dukascopy quotes LIGHT.CMD/USD"
-            curl -s "https://freeserv.dukascopy.com/2.0/index.php?path=quotes/index&instruments=LIGHT.CMD%2FUSD&jsonp=cb" \
-              -H "User-Agent: Mozilla/5.0" -H "Referer: https://freeserv.dukascopy.com/" | head -c 400; echo
-            echo "== yahoo CL=F meta (delay 필드)"
-            curl -s "https://query1.finance.yahoo.com/v8/finance/chart/CL=F?interval=1m&range=1d" -H "User-Agent: Mozilla/5.0" | python3 -c "
+          for i in $(seq 1 13); do
+            ts=$(date -u +%H:%M:%S)
+            sq=$(curl -s "https://forex-data-feed.swissquote.com/public-quotes/bboquotes/instrument/OIL/USD" \
+              -H "User-Agent: Mozilla/5.0" | python3 -c "
           import json,sys
           try:
-              m=json.load(sys.stdin)['chart']['result'][0]['meta']
-              print('price=%s time=%s delayedBy=%s exch=%s' % (m.get('regularMarketPrice'), m.get('regularMarketTime'), m.get('exchangeDataDelayedBy'), m.get('exchangeName')))
-          except Exception as e: print('ERR', e)"
-            echo "== naver polling CLcv1 (기준 비교)"
-            curl -s -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" \
+              d=json.load(sys.stdin)[0]['spreadProfilePrices']
+              p=next((x for x in d if x['spreadProfile'] in ('elite','Elite')), d[-1])
+              print('%.3f' % ((p['bid']+p['ask'])/2))
+          except Exception as e: print('ERR')")
+            nv=$(curl -s -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" \
               "https://polling.finance.naver.com/api/realtime/marketindex/energy/CLcv1" | python3 -c "
           import json,sys
           r=(json.load(sys.stdin).get('datas') or [{}])[0]
-          print('close=%s chg=%s time=%s' % (r.get('closePrice'), r.get('compareToPreviousClosePrice'), r.get('localTradedAt')))"
-            echo
-          }
-          probe 1; sleep 40; probe 2
+          print('%s@%s' % (r.get('closePrice'), (r.get('localTradedAt') or '')[11:19]))")
+            echo "[$i] $ts sq_mid=$sq naver_delayed=$nv"
+            [ $i -lt 13 ] && sleep 55
+          done
 
       - name: 폴링 marketindex 실시간 후보 (지연 없는 대안 탐색)
         run: |
