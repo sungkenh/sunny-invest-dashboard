@@ -62,14 +62,14 @@ def naver_bond(rc):
     return naver_mi([('bond', rc)])
 
 
-def naver_poll_fut(rc):
-    """나스닥100 선물(NQcv1) 등 — 폴링 선물 API. 등락 부호는 방향 코드(1·2=상승, 4·5=하락, 3=보합)."""
-    u = 'https://polling.finance.naver.com/api/realtime/worldstock/futures/%s' % urllib.parse.quote(rc)
+def naver_poll(path):
+    """네이버 앱 폴링 API(7초 주기) — 선물·시장지표 공용. 등락 부호는 방향 코드(1·2=상승, 4·5=하락, 3=보합)."""
+    u = 'https://polling.finance.naver.com/api/realtime/%s' % path
     hdr = {'User-Agent': 'Mozilla/5.0', 'Referer': 'https://m.stock.naver.com/'}
     d = json.loads(urllib.request.urlopen(urllib.request.Request(u, headers=hdr), timeout=10).read())
     row = (d.get('datas') or [None])[0]
     if not row:
-        raise RuntimeError('no fut %s' % rc)
+        raise RuntimeError('no poll %s' % path)
 
     def num(x):
         try:
@@ -78,7 +78,7 @@ def naver_poll_fut(rc):
             return None
     price = num(row.get('closePrice'))
     if price is None:
-        raise RuntimeError('no fut px')
+        raise RuntimeError('no poll px')
     code = str((row.get('compareToPreviousPrice') or {}).get('code') or '')
     s = -1 if code in ('4', '5') else (0 if code == '3' else 1)
     chg = num(row.get('compareToPreviousClosePrice'))
@@ -86,13 +86,19 @@ def naver_poll_fut(rc):
     return price, (chg * s if chg is not None else None), (pct * s if pct is not None else None)
 
 
+def naver_poll_fut(rc):
+    """나스닥100 선물(NQcv1) 등."""
+    return naver_poll('worldstock/futures/%s' % urllib.parse.quote(rc))
+
+
 # 네이버 우선 지표 — 카테고리·코드는 실서비스 프로브로 확정 (금·WTI 는 COMEX·NYMEX 선물 연속물, 지연 10분)
+# 금·WTI 는 폴링(poll) 엔드포인트 우선 — 등락폭·방향까지 네이버 자체 값 사용. 실패 시 productDetail 폴백.
 NAVER_MI = {
-    'ust10y': [('bond', 'US10YT=RR')],
-    'usdkrw': [('exchange', 'FX_USDKRW')],
-    'usdjpy': [('exchangeWorld', 'JPY=X'), ('exchangeWorld', 'JPY='), ('exchange', 'FX_USDJPY')],
-    'gold':   [('metals', 'GCcv1')],
-    'wti':    [('energy', 'CLcv1')],
+    'ust10y': {'tries': [('bond', 'US10YT=RR')]},
+    'usdkrw': {'tries': [('exchange', 'FX_USDKRW')]},
+    'usdjpy': {'tries': [('exchangeWorld', 'JPY=X'), ('exchangeWorld', 'JPY='), ('exchange', 'FX_USDJPY')]},
+    'gold':   {'poll': 'marketindex/metals/GCcv1', 'tries': [('metals', 'GCcv1')]},
+    'wti':    {'poll': 'marketindex/energy/CLcv1', 'tries': [('energy', 'CLcv1')]},
 }
 
 
@@ -156,7 +162,14 @@ for k, s in SYMS.items():
     # 미국채·환율·금·WTI: 네이버 시장지표 우선(가격·등락) + 야후 스파크라인. 실패 시 야후 전체로 폴백.
     if k in NAVER_MI:
         try:
-            price, chg, pct = naver_mi(NAVER_MI[k])
+            cfg = NAVER_MI[k]
+            if cfg.get('poll'):
+                try:
+                    price, chg, pct = naver_poll(cfg['poll'])
+                except Exception:
+                    price, chg, pct = naver_mi(cfg['tries'])
+            else:
+                price, chg, pct = naver_mi(cfg['tries'])
             if chg is None:
                 try:
                     _, pc = quote(s)

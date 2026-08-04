@@ -76,28 +76,30 @@ async function naverMI(tries) {
   throw lastErr || new Error('naver mi fail');
 }
 const naverBond = (rc) => naverMI([['bond', rc]]);
-// 나스닥100 선물(NQcv1, 미니) — 폴링 선물 API (프로브 확정). 등락 부호는 방향 코드(1·2=상승, 4·5=하락, 3=보합)
-async function naverPollFut(rc) {
-  const u = 'https://polling.finance.naver.com/api/realtime/worldstock/futures/' + encodeURIComponent(rc);
+// 네이버 실시간 폴링 API (앱이 7초 주기로 쓰는 전용 엔드포인트) — 선물·원자재 공용.
+// 등락 부호는 방향 코드(1·2=상승, 4·5=하락, 3=보합). 금·WTI·CME 선물은 거래소 규정상 10분 지연.
+async function naverPoll(path) {
+  const u = 'https://polling.finance.naver.com/api/realtime/' + path;
   const r = await fetch(u, { headers: { 'User-Agent': UA, 'Referer': 'https://m.stock.naver.com/' } });
   const d = await r.json();
   const row = d && d.datas && d.datas[0];
   const num = (x) => parseFloat(String(x == null ? '' : x).replace(/,/g, ''));
   const px = row && num(row.closePrice);
-  if (!isFinite(px)) throw new Error('no fut ' + rc);
+  if (!isFinite(px)) throw new Error('no poll ' + path);
   const dir = String((row.compareToPreviousPrice || {}).code || '');
   const s = (dir === '4' || dir === '5') ? -1 : (dir === '3' ? 0 : 1);
   const chg = num(row.compareToPreviousClosePrice), pct = num(row.fluctuationsRatio);
   return { price: round(px, 4), chg: isFinite(chg) ? round(chg * s, 4) : null, pct: isFinite(pct) ? round(pct * s, 2) : null };
 }
+const naverPollFut = (rc) => naverPoll('worldstock/futures/' + encodeURIComponent(rc));
 
 // 네이버 우선 지표 — 카테고리·코드는 실서비스 프로브로 확정 (금·WTI 는 COMEX·NYMEX 선물 연속물, 지연 10분)
 const NAVER_MI = {
-  ust10y: { tries: [['bond', 'US10YT=RR']] },
-  usdkrw: { tries: [['exchange', 'FX_USDKRW']] },
+  ust10y: { tries: [['bond', 'US10YT=RR']] },                        // 레피니티브 실시간(틱 빈도 낮음)
+  usdkrw: { tries: [['exchange', 'FX_USDKRW']] },                    // 하나은행 고시 — 수 분 간격 갱신
   usdjpy: { tries: [['exchangeWorld', 'JPY=X'], ['exchangeWorld', 'JPY='], ['exchange', 'FX_USDJPY']] },
-  gold:   { tries: [['metals', 'GCcv1']] },
-  wti:    { tries: [['energy', 'CLcv1']] },
+  gold:   { poll: 'marketindex/metals/GCcv1', tries: [['metals', 'GCcv1']] },
+  wti:    { poll: 'marketindex/energy/CLcv1', tries: [['energy', 'CLcv1']] },
 };
 
 async function treasury2y() {
@@ -147,7 +149,11 @@ async function __cfHandler(event) {
     // 미국채·환율·금·WTI: 네이버 시장지표 우선(가격·등락) + 야후 스파크라인. 실패 시 야후 전체로 폴백.
     if (NAVER_MI[k]) {
       try {
-        const [nb, ch] = await Promise.all([naverMI(NAVER_MI[k].tries), chartQuote(s).catch(() => null)]);
+        const cfg = NAVER_MI[k];
+        const [nb, ch] = await Promise.all([
+          (cfg.poll ? naverPoll(cfg.poll).catch(() => naverMI(cfg.tries)) : naverMI(cfg.tries)),
+          chartQuote(s).catch(() => null),
+        ]);
         res[k] = { sym: s, price: nb.price,
           chg: nb.chg != null ? nb.chg : (ch ? ch.chg : null),
           pct: nb.pct != null ? nb.pct : (ch ? ch.pct : 0),
