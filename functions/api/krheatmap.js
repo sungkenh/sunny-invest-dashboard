@@ -2,7 +2,7 @@
 // 네이버 시총 랭킹(실시간·delayTime 0) + 정적 업종맵(data/kr_sectors.json) 조인.
 //   랭킹 응답에 ETF가 섞여 있고(코스피 top100에 14개) 우선주·스팩·거래정지도 포함되므로 반드시 필터링한다.
 //   필터로 종목이 줄어들기 때문에 n개를 채우려면 페이지를 더 받아야 한다(코스피 page1 100건 → 84건만 생존).
-// subrequest 예산: 랭킹 1~7 + kr_sectors.json 1 = 최대 8 (실패 시 스냅샷 +1) / Cloudflare 무료 50
+// subrequest 예산: 랭킹 1~10 + kr_sectors.json 1 = 최대 11 (실패 시 스냅샷 +1) / Cloudflare 무료 50
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36';
 const CACHE = {};                 // `${mkt}|${n}` → {ts, data}
 const TTL = 5 * 1000;             // 클라이언트 5초 폴링에 맞춤 (네이버 앱 자체 폴링은 7초)
@@ -65,7 +65,7 @@ async function loadSnapshot(rawUrl, mkt) {
 }
 
 // 필터로 종목이 깎이므로 여유 있게 페이지를 받는다
-const pagesFor = (n) => (n <= 50 ? 1 : (n <= 100 ? 2 : (n <= 200 ? 3 : 7)));
+const pagesFor = (n) => (n <= 50 ? 1 : (n <= 100 ? 2 : (n <= 200 ? 3 : 10)));   // 코스피는 하위 랭킹에 ETF 밀집(700건 중 269 필터) → 500 채우려면 10페이지
 
 async function __cfHandler(event) {
   const p = event.queryStringParameters || {};
