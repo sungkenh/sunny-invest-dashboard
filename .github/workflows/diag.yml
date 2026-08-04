@@ -42,6 +42,44 @@ jobs:
           }
           sample 1; sleep 35; sample 2; sleep 35; sample 3
 
+      - name: WTI 실시간 후보 프로브 (TradingView·stooq·yahoo 지연 확인)
+        run: |
+          probe() {
+            echo "==== probe round $1 @ $(date -u +%H:%M:%S) ===="
+            echo "== tv scanner symbol USOIL"
+            curl -s "https://scanner.tradingview.com/symbol?symbol=TVC%3AUSOIL&fields=close,change,change_abs,update_mode,last_bar_update_time" \
+              -H "User-Agent: Mozilla/5.0" | head -c 400; echo
+            echo "== tv cfd scan USOIL"
+            curl -s -X POST "https://scanner.tradingview.com/cfd/scan" -H "User-Agent: Mozilla/5.0" \
+              -H "Content-Type: application/json" \
+              -d '{"symbols":{"tickers":["TVC:USOIL"]},"columns":["close","change","change_abs","update_mode"]}' | head -c 400; echo
+            echo "== tv global scan USOIL+UKOIL"
+            curl -s -X POST "https://scanner.tradingview.com/global/scan" -H "User-Agent: Mozilla/5.0" \
+              -H "Content-Type: application/json" \
+              -d '{"symbols":{"tickers":["TVC:USOIL","TVC:UKOIL"]},"columns":["close","change","change_abs","update_mode"]}' | head -c 400; echo
+            echo "== tv futures scan NYMEX:CL1!"
+            curl -s -X POST "https://scanner.tradingview.com/futures/scan" -H "User-Agent: Mozilla/5.0" \
+              -H "Content-Type: application/json" \
+              -d '{"symbols":{"tickers":["NYMEX:CL1!"]},"columns":["close","change","change_abs","update_mode"]}' | head -c 400; echo
+            echo "== stooq cl.f csv"
+            curl -s "https://stooq.com/q/l/?s=cl.f&f=sd2t2ohlcv&h&e=csv" -H "User-Agent: Mozilla/5.0" | head -c 300; echo
+            echo "== yahoo CL=F meta (delay 필드)"
+            curl -s "https://query1.finance.yahoo.com/v8/finance/chart/CL=F?interval=1m&range=1d" -H "User-Agent: Mozilla/5.0" | python3 -c "
+          import json,sys
+          try:
+              m=json.load(sys.stdin)['chart']['result'][0]['meta']
+              print('price=%s time=%s delayedBy=%s exch=%s' % (m.get('regularMarketPrice'), m.get('regularMarketTime'), m.get('exchangeDataDelayedBy'), m.get('exchangeName')))
+          except Exception as e: print('ERR', e)"
+            echo "== naver polling CLcv1 (기준 비교)"
+            curl -s -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" \
+              "https://polling.finance.naver.com/api/realtime/marketindex/energy/CLcv1" | python3 -c "
+          import json,sys
+          r=(json.load(sys.stdin).get('datas') or [{}])[0]
+          print('close=%s chg=%s time=%s' % (r.get('closePrice'), r.get('compareToPreviousClosePrice'), r.get('localTradedAt')))"
+            echo
+          }
+          probe 1; sleep 40; probe 2
+
       - name: 폴링 marketindex 실시간 후보 (지연 없는 대안 탐색)
         run: |
           for u in "https://polling.finance.naver.com/api/realtime/marketindex/exchange/FX_USDKRW" \
