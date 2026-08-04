@@ -46,17 +46,20 @@ jobs:
         run: |
           probe() {
             echo "==== probe round $1 @ $(date -u +%H:%M:%S) ===="
-            echo "== swissquote LIGHT.CMD/USD (WTI CFD 실시간 후보)"
-            curl -s "https://forex-data-feed.swissquote.com/public-quotes/bboquotes/instrument/LIGHT.CMD/USD" \
-              -H "User-Agent: Mozilla/5.0" | head -c 600; echo
-            echo "== cnbc @CL.1 restQuote"
-            curl -s "https://quote.cnbc.com/quote-html-webservice/restQuote/symbolType/symbol?symbols=%40CL.1&requestMethod=itv&noform=1&partnerId=2&fund=1&exthrs=1&output=json" \
-              -H "User-Agent: Mozilla/5.0" | head -c 700; echo
-            echo "== investing.com 8849 chart"
-            curl -s "https://api.investing.com/api/financialdata/8849/historical/chart/?interval=PT1M&pointscount=60" \
-              -H "User-Agent: Mozilla/5.0" -H "domain-id: www" -H "Referer: https://www.investing.com/" | head -c 300; echo
-            echo "== google finance CLW00 html title"
-            curl -s "https://www.google.com/finance/quote/CLW00:NYMEX" -H "User-Agent: Mozilla/5.0" | grep -o 'data-last-price="[^"]*"' | head -2; echo
+            echo "== swissquote XAU/USD (형식 확인용 — 금 CFD)"
+            curl -s "https://forex-data-feed.swissquote.com/public-quotes/bboquotes/instrument/XAU/USD" \
+              -H "User-Agent: Mozilla/5.0" | head -c 300; echo
+            for ins in "OIL/USD" "WTI/USD" "LIGHT/USD" "USOIL/USD"; do
+              echo "== swissquote $ins"
+              curl -s "https://forex-data-feed.swissquote.com/public-quotes/bboquotes/instrument/$ins" \
+                -H "User-Agent: Mozilla/5.0" | head -c 200; echo
+            done
+            echo "== dukascopy instrumentList (LIGHT 검색)"
+            curl -s "https://freeserv.dukascopy.com/2.0/index.php?path=api/instrumentList&jsonp=cb" \
+              -H "User-Agent: Mozilla/5.0" -H "Referer: https://freeserv.dukascopy.com/" | grep -o '[A-Z.]*LIGHT[A-Z./]*' | head -5; echo
+            echo "== dukascopy quotes LIGHT.CMD/USD"
+            curl -s "https://freeserv.dukascopy.com/2.0/index.php?path=quotes/index&instruments=LIGHT.CMD%2FUSD&jsonp=cb" \
+              -H "User-Agent: Mozilla/5.0" -H "Referer: https://freeserv.dukascopy.com/" | head -c 400; echo
             echo "== yahoo CL=F meta (delay 필드)"
             curl -s "https://query1.finance.yahoo.com/v8/finance/chart/CL=F?interval=1m&range=1d" -H "User-Agent: Mozilla/5.0" | python3 -c "
           import json,sys
