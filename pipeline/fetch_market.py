@@ -224,8 +224,8 @@ try:
     if chg is None and prev_daily:
         chg = price - prev_daily
         pct = (price - prev_daily) / prev_daily * 100
-    res['ust2y'] = {'sym': 'UST2Y', 'price': round(price, 3),
-                    'chg': round(chg, 3) if chg is not None else None,
+    res['ust2y'] = {'sym': 'UST2Y', 'price': round(price, 4),
+                    'chg': round(chg, 4) if chg is not None else None,
                     'pct': round(pct, 2) if pct is not None else None,
                     'sp': (tr or {}).get('sp', []), 'src': 'naver'}
 except Exception:
