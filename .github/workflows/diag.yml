@@ -9,16 +9,6 @@ jobs:
   diag:
     runs-on: ubuntu-latest
     steps:
-      - name: krheatmap n 확대 검증 (임시)
-        run: |
-          for q in "mkt=kospi&n=500" "mkt=kospi&n=200" "mkt=kosdaq&n=500"; do
-            echo "== /api/krheatmap?$q"
-            curl -s "https://sunny-invest-dashboard.pages.dev/api/krheatmap?$q" | python3 -c "
-          import json,sys
-          d=json.load(sys.stdin)
-          print('source=%s n=%s count=%s filtered=%s partial=%s' % (d.get('source'), d.get('n'), d.get('count'), d.get('filtered'), d.get('partial')))"
-          done
-
       - name: 시간차 샘플링 (3회 × 35초)
         run: |
           sample() {

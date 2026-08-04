@@ -86,7 +86,8 @@ def keep(s):
 def build_snapshot(mkt, sectors, n=500):
     market = 'KOSPI' if mkt == 'kospi' else 'KOSDAQ'
     raw = []
-    for p in (1, 2, 3, 4, 5, 6, 7):
+    for p in range(1, 11):    # 코스피는 하위 랭킹에 ETF 밀집 → 500 채우려면 10페이지
+
         try:
             raw += naver_mv(market, p)
         except Exception as e:
