@@ -1,5 +1,5 @@
 {
- "_updated": "2026-08-04T08:29:33",
+ "_updated": "2026-08-04T13:58:33",
  "mkt": "us",
  "benchmark": "S&P 500",
  "riskOff": false,
@@ -13,109 +13,112 @@
    "op": "op-buy",
    "opTxt": "비중확대",
    "warns": [],
-   "conf": 62,
-   "confBand": "보통",
-   "score": 46,
+   "conf": 92,
+   "confBand": "높음",
+   "score": 79,
    "pts": [
-    "최근 6개월 +35.4% · S&P 500 대비 +27.9%p — 지수 상회 (12개월 +70.2%)",
-    "구성 4종목 중 0개 50일선 위 · 3개 3개월 상승 — 폭 38%, 참여 제한적",
-    "52주 고점 대비 -11.6% · 20일 이격 -3.7% · 변동성 지수 대비 4.5배 — 종합 +46/100 (리스크 −10)"
+    "최근 6개월 +44.3% · S&P 500 대비 +34.6%p — 지수 상회 (12개월 +79.1%)",
+    "구성 4종목 중 2개 50일선 위 · 3개 3개월 상승 — 폭 63%, 참여 광범위",
+    "52주 고점 대비 -6.9% · 20일 이격 +1.6% · 변동성 지수 대비 4.1배 — 종합 +79/100 (리스크 −10)"
    ],
-   "perf": 0.41,
+   "perf": 3.34,
    "lead": {
-    "name": "엔비디아",
-    "pct": 2.93
+    "name": "AMD",
+    "pct": 5.3
    },
    "picks": [
     {
      "name": "엔비디아",
-     "pct": 2.93
+     "pct": 1.46
     },
     {
      "name": "브로드컴",
-     "pct": 0.37
+     "pct": 4.23
     },
     {
      "name": "AMD",
-     "pct": -1.9
+     "pct": 5.3
     },
     {
      "name": "TSMC",
-     "pct": 0.23
+     "pct": 2.36
     }
    ],
    "cat": {
     "ti": "AI Chip Demand Is Raising Prices and Delaying TVs, Receivers, and Audio Gear",
     "link": "https://news.google.com/rss/articles/CBMibkFVX3lxTFB0ZEswWnpXMmx4SlNSQmF2Q0pQN1BLTDRyUGluZGR4cEs3WFdFcHNudS0tMDVzbWZNb2pxYnpDd1ljbXBWQ0diX1lzTzdRYnhfQXA3NjRab0FsY0owSXFxU3g4VFVhRFMyNlZoYzd3?oc=5",
-    "src": "ecoustics.com",
-    "tm": "1시간 전"
+    "src": "eCoustics",
+    "tm": "3시간 전"
    },
    "metrics": {
-    "r126": 0.3541,
-    "rs": 0.2793,
-    "breadth": 0.375,
-    "ext20": -0.0374,
-    "rsi14": 46.3,
-    "volRatio": 4.54,
-    "curDD": -0.1157,
+    "r126": 0.443,
+    "rs": 0.3458,
+    "breadth": 0.625,
+    "ext20": 0.0155,
+    "rsi14": 52.7,
+    "volRatio": 4.06,
+    "curDD": -0.0694,
     "penalty": 10,
-    "driver": 56
+    "driver": 89
    }
   },
   {
    "nm": "빅테크 · 소프트웨어",
    "desk": "테크 데스크",
    "thesis": "AI 수익화 초기 국면 — 클라우드·광고 현금흐름이 투자를 뒷받침",
-   "op": "op-sell",
-   "opTxt": "비중축소",
-   "warns": [],
-   "conf": 63,
-   "confBand": "보통",
-   "score": -53,
-   "pts": [
-    "최근 6개월 -5.9% · S&P 500 대비 -13.4%p — 지수 하회 (12개월 +4.4%)",
-    "구성 4종목 중 1개 50일선 위 · 1개 3개월 상승 — 폭 25%, 참여 제한적",
-    "52주 고점 대비 -9.7% · 20일 이격 +1.2% · 변동성 지수 대비 2.6배 — 종합 -53/100 (리스크 −10)"
+   "op": "op-hold",
+   "opTxt": "중립",
+   "warns": [
+    "지수 동반 상승 — 초과성과 없음",
+    "참고용 · 저신뢰"
    ],
-   "perf": 3.42,
+   "conf": 39,
+   "confBand": "낮음",
+   "score": -13,
+   "pts": [
+    "최근 6개월 +3.7% · S&P 500 대비 -6.0%p — 지수 하회 (12개월 +13.6%)",
+    "구성 4종목 중 3개 50일선 위 · 2개 3개월 상승 — 폭 63%, 참여 광범위",
+    "52주 고점 대비 -1.7% · 20일 이격 +9.4% · 변동성 지수 대비 2.8배 — 종합 -13/100 (리스크 −10)"
+   ],
+   "perf": 5.44,
    "lead": {
-    "name": "알파벳",
-    "pct": 6.73
+    "name": "팔란티어",
+    "pct": 21.95
    },
    "picks": [
     {
      "name": "마이크로소프트",
-     "pct": 3.02
+     "pct": 0.3
     },
     {
      "name": "알파벳",
-     "pct": 6.73
+     "pct": 0.45
     },
     {
      "name": "메타",
-     "pct": 3.28
+     "pct": -0.94
     },
     {
      "name": "팔란티어",
-     "pct": 0.65
+     "pct": 21.95
     }
    ],
    "cat": {
-    "ti": "Orchard: An open framework for scalable agentic AI",
-    "link": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOeE41QWVkRWZIRS1JNW1UQ2ItdllValRYMk1Uby11emRxWTdzcWFORmRUWThpRk1ZY25OdFFoNVBRYlgwa3VHcWd2SExZdWlhbTZhYTRMWl90cUNXRndVZXJXd29XemVHWk5Ed3VFcThVc09DbWNoeUo4RnhOb0lFSUp3RHhfQkNZMzhzeGxoemdNamJyVlVyaHFQNDk?oc=5",
-    "src": "microsoft.com",
-    "tm": "16시간 전"
+    "ti": "Palantir forecasts greater demand from US groups for its AI software",
+    "link": "https://news.google.com/rss/articles/CBMihAFBVV95cUxOWVZwalZaWlltd21saExvWGY0R0ZCcG5CUjNYaFQ0ZjNDRFl3V2hRZDhBT0dkVXdJWFFCdEhwTnJSc1pOQ1lqdW93WlQ0aHY5V0lvanNZU2h6Z1dUUERCSGstX1N1ZzY0NGprcFhteEdieXl5ODFUNkxaT1htekp5V2VMbl8?oc=5",
+    "src": "Financial Times",
+    "tm": "17시간 전"
    },
    "metrics": {
-    "r126": -0.0593,
-    "rs": -0.134,
-    "breadth": 0.25,
-    "ext20": 0.0117,
-    "rsi14": 54.3,
-    "volRatio": 2.57,
-    "curDD": -0.0968,
+    "r126": 0.0369,
+    "rs": -0.0603,
+    "breadth": 0.625,
+    "ext20": 0.0943,
+    "rsi14": 68.2,
+    "volRatio": 2.83,
+    "curDD": -0.0174,
     "penalty": 10,
-    "driver": -43
+    "driver": -3
    }
   },
   {
@@ -130,51 +133,51 @@
    ],
    "conf": 39,
    "confBand": "낮음",
-   "score": -24,
+   "score": -16,
    "pts": [
-    "최근 6개월 +4.6% · S&P 500 대비 -2.9%p — 지수 하회 (12개월 -7.5%)",
-    "구성 4종목 중 0개 50일선 위 · 0개 3개월 상승 — 폭 0%, 참여 제한적",
-    "52주 고점 대비 -14.1% · 20일 이격 -2.8% · 변동성 지수 대비 3.5배 — 종합 -24/100 (리스크 −10)"
+    "최근 6개월 +6.9% · S&P 500 대비 -2.8%p — 지수 하회 (12개월 -7.0%)",
+    "구성 4종목 중 1개 50일선 위 · 0개 3개월 상승 — 폭 13%, 참여 제한적",
+    "52주 고점 대비 -13.5% · 20일 이격 -1.8% · 변동성 지수 대비 3.1배 — 종합 -16/100 (리스크 −10)"
    ],
-   "perf": 0.12,
+   "perf": -3.16,
    "lead": {
     "name": "GE버노바",
-    "pct": 0.85
+    "pct": 0.56
    },
    "picks": [
     {
      "name": "GE버노바",
-     "pct": 0.85
+     "pct": 0.56
     },
     {
      "name": "비스트라",
-     "pct": -0.29
+     "pct": -4.47
     },
     {
      "name": "콘스텔레이션",
-     "pct": -0.31
+     "pct": -2.13
     },
     {
      "name": "NRG에너지",
-     "pct": 0.24
+     "pct": -6.62
     }
    ],
    "cat": {
     "ti": "Google signs 155MW solar PPA with RWE in Oklahoma",
     "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOWXRYeW1wLVdLb0RabmpOUnFqcmVFNHRrSUJHbUZiMHR6T1R0cWhTazEzMk9Yck1US1lxcGZaRU1DbVBhaGJCaU1lWGFkb1p5WS1Bb0xYUkM5WWhfTEZRdWNSWTB4VU1KUjRNckJyQklzRTBreUFzeXJPaG9Pb2pQVS1qQlRobWJ4cWU1d3NJd256UzFacWtTVg?oc=5",
     "src": "Data Center Dynamics",
-    "tm": "17시간 전"
+    "tm": "22시간 전"
    },
    "metrics": {
-    "r126": 0.0462,
-    "rs": -0.0286,
-    "breadth": 0.0,
-    "ext20": -0.0277,
-    "rsi14": 46.0,
-    "volRatio": 3.47,
-    "curDD": -0.1406,
+    "r126": 0.0694,
+    "rs": -0.0278,
+    "breadth": 0.125,
+    "ext20": -0.0183,
+    "rsi14": 47.2,
+    "volRatio": 3.11,
+    "curDD": -0.1353,
     "penalty": 10,
-    "driver": -14
+    "driver": -6
    }
   },
   {
@@ -184,35 +187,35 @@
    "op": "op-hold",
    "opTxt": "중립",
    "warns": [],
-   "conf": 59,
+   "conf": 60,
    "confBand": "보통",
-   "score": -20,
+   "score": -24,
    "pts": [
-    "최근 6개월 -2.9% · S&P 500 대비 -10.4%p — 지수 하회 (12개월 +22.2%)",
+    "최근 6개월 -3.3% · S&P 500 대비 -13.0%p — 지수 하회 (12개월 +22.0%)",
     "구성 4종목 중 4개 50일선 위 · 3개 3개월 상승 — 폭 88%, 참여 광범위",
-    "52주 고점 대비 -9.7% · 20일 이격 +4.7% · 변동성 지수 대비 2.1배 — 종합 -20/100 (리스크 −6)"
+    "52주 고점 대비 -9.8% · 20일 이격 +4.0% · 변동성 지수 대비 1.9배 — 종합 -24/100 (리스크 −4)"
    ],
-   "perf": 0.91,
+   "perf": -0.65,
    "lead": {
-    "name": "록히드마틴",
-    "pct": 1.5
+    "name": "제너럴다이내믹스",
+    "pct": -0.47
    },
    "picks": [
     {
      "name": "RTX",
-     "pct": 0.39
+     "pct": -0.57
     },
     {
      "name": "록히드마틴",
-     "pct": 1.5
+     "pct": -0.82
     },
     {
      "name": "노스롭그루먼",
-     "pct": 1.43
+     "pct": -0.73
     },
     {
      "name": "제너럴다이내믹스",
-     "pct": 0.32
+     "pct": -0.47
     }
    ],
    "cat": {
@@ -222,71 +225,71 @@
     "tm": "4일 전"
    },
    "metrics": {
-    "r126": -0.0295,
-    "rs": -0.1042,
+    "r126": -0.033,
+    "rs": -0.1302,
     "breadth": 0.875,
-    "ext20": 0.0469,
-    "rsi14": 65.7,
-    "volRatio": 2.08,
-    "curDD": -0.097,
-    "penalty": 6,
-    "driver": -14
+    "ext20": 0.0404,
+    "rsi14": 63.9,
+    "volRatio": 1.95,
+    "curDD": -0.0984,
+    "penalty": 4,
+    "driver": -20
    }
   },
   {
    "nm": "헬스케어 · 비만치료",
    "desk": "헬스케어 데스크",
    "thesis": "GLP-1 시장 확대와 대형 M&A가 파이프라인 가치를 재산정",
-   "op": "op-buy",
-   "opTxt": "비중확대",
+   "op": "op-hold",
+   "opTxt": "중립",
    "warns": [],
-   "conf": 91,
-   "confBand": "높음",
-   "score": 63,
+   "conf": 66,
+   "confBand": "보통",
+   "score": 21,
    "pts": [
-    "최근 6개월 +11.7% · S&P 500 대비 +4.3%p — 지수 상회 (12개월 +36.3%)",
-    "구성 4종목 중 4개 50일선 위 · 4개 3개월 상승 — 폭 100%, 참여 광범위",
-    "52주 고점 대비 -5.1% · 20일 이격 -2.8% · 변동성 지수 대비 1.8배 — 종합 +63/100 (리스크 −3)"
+    "최근 6개월 +9.8% · S&P 500 대비 +0.1%p — 시장 수준 (12개월 +34.3%)",
+    "구성 4종목 중 2개 50일선 위 · 4개 3개월 상승 — 폭 75%, 참여 광범위",
+    "52주 고점 대비 -6.5% · 20일 이격 -3.7% · 변동성 지수 대비 1.6배 — 종합 +21/100 (리스크 −1)"
    ],
-   "perf": -3.37,
+   "perf": -0.12,
    "lead": {
-    "name": "일라이릴리",
-    "pct": -0.53
+    "name": "노보노디스크",
+    "pct": 0.67
    },
    "picks": [
     {
      "name": "일라이릴리",
-     "pct": -0.53
+     "pct": 0.56
     },
     {
      "name": "노보노디스크",
-     "pct": -8.78
+     "pct": 0.67
     },
     {
      "name": "유나이티드헬스",
-     "pct": -1.68
+     "pct": -1.99
     },
     {
      "name": "애브비",
-     "pct": -2.51
+     "pct": 0.27
     }
    ],
    "cat": {
     "ti": "Eli Lilly to offer early access to next-gen obesity drug to some patients",
     "link": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxQSUF6THY1UW04aGlCR241STFzUE94MXlyMjZFSVNWaG9aYkRPVFVvdW5FRVZ3NHd3RXQzSjkybFhCWEhZZVpNTExxSDlwNDNRWW95SG0xcGVUVVozU09SMHR3RUR5b3Q2SFNYaTZvbzBWbV9fNTA4WjVOTGk1cUdhYkN2bl9rR19VcmpFV256VktIb243aHpZQ1RxNVR5ZldFNkpKUk9NNVFjb2Nmd1NxcFBDVzFnMURv?oc=5",
-    "src": "Reuters",
-    "tm": "9시간 전"
+    "src": "reuters.com",
+    "tm": "15시간 전"
    },
    "metrics": {
-    "r126": 0.1174,
-    "rs": 0.0427,
-    "breadth": 1.0,
-    "ext20": -0.0275,
-    "rsi14": 45.7,
-    "volRatio": 1.82,
-    "curDD": -0.0513,
-    "penalty": 3,
-    "driver": 66
+    "r126": 0.0978,
+    "rs": 0.0006,
+    "breadth": 0.75,
+    "ext20": -0.0368,
+    "rsi14": 42.0,
+    "volRatio": 1.57,
+    "curDD": -0.0648,
+    "penalty": 1,
+    "driver": 22
    }
   },
   {
@@ -298,33 +301,33 @@
    "warns": [],
    "conf": 87,
    "confBand": "높음",
-   "score": 55,
+   "score": 56,
    "pts": [
-    "최근 6개월 +13.7% · S&P 500 대비 +6.2%p — 지수 상회 (12개월 +35.9%)",
+    "최근 6개월 +14.4% · S&P 500 대비 +4.7%p — 지수 상회 (12개월 +38.4%)",
     "구성 4종목 중 2개 50일선 위 · 4개 3개월 상승 — 폭 75%, 참여 광범위",
-    "52주 고점 대비 -5.0% · 20일 이격 -1.0% · 변동성 지수 대비 2.5배 — 종합 +55/100 (리스크 −10)"
+    "52주 고점 대비 -3.3% · 20일 이격 +0.7% · 변동성 지수 대비 2.3배 — 종합 +56/100 (리스크 −8)"
    ],
-   "perf": 0.04,
+   "perf": 1.24,
    "lead": {
-    "name": "뱅크오브아메리카",
-    "pct": 0.36
+    "name": "골드만삭스",
+    "pct": 2.21
    },
    "picks": [
     {
      "name": "JP모건",
-     "pct": 0.27
+     "pct": 1.57
     },
     {
      "name": "골드만삭스",
-     "pct": -0.63
+     "pct": 2.21
     },
     {
      "name": "뱅크오브아메리카",
-     "pct": 0.36
+     "pct": 0.5
     },
     {
      "name": "모건스탠리",
-     "pct": 0.17
+     "pct": 0.69
     }
    ],
    "cat": {
@@ -334,71 +337,73 @@
     "tm": "5일 전"
    },
    "metrics": {
-    "r126": 0.1366,
-    "rs": 0.0619,
+    "r126": 0.1444,
+    "rs": 0.0472,
     "breadth": 0.75,
-    "ext20": -0.0104,
-    "rsi14": 50.4,
-    "volRatio": 2.52,
-    "curDD": -0.0503,
-    "penalty": 10,
-    "driver": 65
+    "ext20": 0.0071,
+    "rsi14": 55.3,
+    "volRatio": 2.27,
+    "curDD": -0.033,
+    "penalty": 8,
+    "driver": 64
    }
   },
   {
    "nm": "에너지",
    "desk": "에너지 데스크",
    "thesis": "공급 규율과 지정학 프리미엄 vs 수요 둔화의 균형",
-   "op": "op-buy",
-   "opTxt": "비중확대",
-   "warns": [],
-   "conf": 82,
-   "confBand": "높음",
-   "score": 48,
-   "pts": [
-    "최근 6개월 +10.6% · S&P 500 대비 +3.2%p — 지수 상회 (12개월 +38.9%)",
-    "구성 4종목 중 3개 50일선 위 · 2개 3개월 상승 — 폭 63%, 참여 광범위",
-    "52주 고점 대비 -8.3% · 20일 이격 +4.9% · 변동성 지수 대비 1.8배 — 종합 +48/100 (리스크 −3)"
+   "op": "op-hold",
+   "opTxt": "중립",
+   "warns": [
+    "지수 동반 상승 — 초과성과 없음"
    ],
-   "perf": 1.0,
+   "conf": 53,
+   "confBand": "보통",
+   "score": 31,
+   "pts": [
+    "최근 6개월 +8.7% · S&P 500 대비 -1.1%p — 시장 수준 (12개월 +35.8%)",
+    "구성 4종목 중 3개 50일선 위 · 0개 3개월 상승 — 폭 38%, 참여 제한적",
+    "52주 고점 대비 -10.3% · 20일 이격 +1.5% · 변동성 지수 대비 1.6배 — 종합 +31/100 (리스크 −1)"
+   ],
+   "perf": -1.41,
    "lead": {
-    "name": "셰브론",
-    "pct": 2.35
+    "name": "SLB",
+    "pct": 0.92
    },
    "picks": [
     {
      "name": "엑슨모빌",
-     "pct": -0.97
+     "pct": -2.47
     },
     {
      "name": "셰브론",
-     "pct": 2.35
+     "pct": -2.34
     },
     {
      "name": "코노코필립스",
-     "pct": 1.22
+     "pct": -1.75
     },
     {
      "name": "SLB",
-     "pct": 1.39
+     "pct": 0.92
     }
    ],
    "cat": {
     "ti": "OPEC+ oil output hike is irrelevant for now, not for later",
     "link": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxOZ1F5SEtvVzlTU0VibXRmNGx4ZldyYllQcHBfSEkzRHVLVGdrNUxMLUZtQXZsT1pTWjJ4Z1F0ekFyN3NkWjRITjdCc2NtcmpFZ0k2OWN5Z25WOVVFVHpJNEVWQkU3emxZYkUtVFhFand1cWVHSWUyRUpQa1FOOUtPWlRKUzRVQUs3V3oxcWphVzVKUUhSSUNZaHNtdHVkM1U5VXE2Q0ZPNzE4UG5WQmdVS2cwZlU3UnNN?oc=5",
-    "src": "Reuters",
-    "tm": "2시간 전"
+    "src": "reuters.com",
+    "tm": "7시간 전"
    },
    "metrics": {
-    "r126": 0.1063,
-    "rs": 0.0316,
-    "breadth": 0.625,
-    "ext20": 0.0486,
-    "rsi14": 62.2,
-    "volRatio": 1.83,
-    "curDD": -0.0829,
-    "penalty": 3,
-    "driver": 51
+    "r126": 0.0866,
+    "rs": -0.0106,
+    "breadth": 0.375,
+    "ext20": 0.0155,
+    "rsi14": 54.1,
+    "volRatio": 1.64,
+    "curDD": -0.1034,
+    "penalty": 1,
+    "driver": 32
    }
   }
  ]
