@@ -16,6 +16,34 @@ jobs:
           echo "planFor 함수: $(echo "$s" | grep -c 'function planFor')"
           echo "atrLast 함수: $(echo "$s" | grep -c 'function atrLast')"
 
+      - name: VTWO 필드 구조·네이버 종목 폴링 전체 필드 (임시)
+        run: |
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36"
+          echo "== VTWO entity 첫 2건 전체 필드"
+          curl -s "https://investor.vanguard.com/investment-products/etfs/profile/api/VTWO/portfolio-holding/stock" \
+            -H "User-Agent: $UA" -H "Accept: application/json" | python3 -c "
+          import json,sys
+          d=json.load(sys.stdin)
+          ent=(d.get('fund') or {}).get('entity') or []
+          print('entity 수:', len(ent))
+          for e in ent[:2]: print(json.dumps(e, ensure_ascii=False)[:500])
+          # marketValue 내림차순인지 앞 20건 확인
+          def mv(e):
+              try: return float(str(e.get('marketValue') or e.get('marketVal') or 0).replace(',',''))
+              except: return 0
+          vals=[mv(e) for e in ent[:20]]
+          print('정렬:', 'DESC' if vals==sorted(vals,reverse=True) else vals[:6])"
+          echo "== VTWO 2페이지 (start=501)"
+          curl -s "https://investor.vanguard.com/investment-products/etfs/profile/api/VTWO/portfolio-holding/stock?start=501&count=500" \
+            -H "User-Agent: $UA" -H "Accept: application/json" | python3 -c "
+          import json,sys
+          d=json.load(sys.stdin)
+          ent=(d.get('fund') or {}).get('entity') or []
+          print('p2 entity 수:', len(ent), '| 첫 티커:', (ent[0] if ent else {}))" 2>/dev/null | head -c 400; echo
+          echo "== 네이버 종목 폴링 1건 전체 JSON"
+          curl -s -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" \
+            "https://polling.finance.naver.com/api/realtime/worldstock/stock/RGTI.O" | python3 -m json.tool | head -60
+
       - name: 러셀2000 목록 소스 3차 프로브 (임시)
         run: |
           UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36"
