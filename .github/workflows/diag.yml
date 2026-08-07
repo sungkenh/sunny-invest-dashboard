@@ -16,6 +16,35 @@ jobs:
           echo "planFor 함수: $(echo "$s" | grep -c 'function planFor')"
           echo "atrLast 함수: $(echo "$s" | grep -c 'function atrLast')"
 
+      - name: 핀비즈 러셀2000 스크리너 프로브 (임시)
+        run: |
+          echo "== finviz screener f=idx_rut 시총 내림차순 1페이지"
+          curl -s "https://finviz.com/screener.ashx?v=111&f=idx_rut&o=-marketcap&r=1" \
+            -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36" \
+            -H "Referer: https://finviz.com/" | python3 -c "
+          import re,sys
+          h=sys.stdin.read()
+          rows=re.findall(r'quote\.ashx\?t=([A-Z.\-]+)\&', h)
+          total=re.search(r'#1 / (\d+) Total', h) or re.search(r'Total: \D*(\d+)', h)
+          print('HTML길이', len(h), '| 티커수(중복포함)', len(rows), '| 앞10:', list(dict.fromkeys(rows))[:10])
+          print('총 종목 표기:', total.group(1) if total else '(패턴 미발견)')
+          print('MarketCap 열 존재:', 'Market Cap' in h)"
+          echo "== 501번째부터 (r=501) — 페이징 확인"
+          curl -s "https://finviz.com/screener.ashx?v=111&f=idx_rut&o=-marketcap&r=501" \
+            -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36" \
+            -H "Referer: https://finviz.com/" | python3 -c "
+          import re,sys
+          h=sys.stdin.read()
+          rows=list(dict.fromkeys(re.findall(r'quote\.ashx\?t=([A-Z.\-]+)\&', h)))
+          print('r=501 티커 앞5:', rows[:5])"
+          echo "== 네이버 폴링: 소형주 한글명·전일비 필드"
+          curl -s -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" \
+            "https://polling.finance.naver.com/api/realtime/worldstock/stock/RGTI.O,SOUN.O" | python3 -c "
+          import json,sys
+          d=json.load(sys.stdin)
+          for s in (d.get('datas') or []):
+              print(s.get('reutersCode'), '|', s.get('stockName'), '|', s.get('closePrice'), s.get('compareToPreviousClosePrice'), s.get('fluctuationsRatio'), (s.get('compareToPreviousPrice') or {}).get('code'), '| over:', bool(s.get('overMarketPriceInfo')))"
+
       - name: 러셀2000 대안 소스 프로브 (임시)
         run: |
           echo "== iShares IWM holdings CSV (러셀2000 구성 원천)"
