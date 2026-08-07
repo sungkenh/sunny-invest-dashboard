@@ -256,10 +256,10 @@
     <table class="sig">
       <thead><tr>
         <th style="width:30px">#</th><th>종목</th><th class="num">현재가</th><th class="num">등락률</th>
-        <th>판정</th><th>신호 근거</th><th>추천 기법 (장 성격 기반)</th><th>120·200일선</th><th class="num">MDD(1년)</th><th class="num" id="th-frgn">외국인(5일)</th>
+        <th>판정</th><th>신호 근거</th><th>추천 기법 (장 성격 기반)</th><th class="num">목표·손절 (제안)</th><th>120·200일선</th><th class="num">MDD(1년)</th><th class="num" id="th-frgn">외국인(5일)</th>
         <th>RSI(14)</th><th>MACD</th><th>히스토그램</th>
       </tr></thead>
-      <tbody id="tbody"><tr><td colspan="13"><div class="note-empty">시세와 차트를 불러와 계산을 시작합니다…</div></td></tr></tbody>
+      <tbody id="tbody"><tr><td colspan="14"><div class="note-empty">시세와 차트를 불러와 계산을 시작합니다…</div></td></tr></tbody>
     </table>
   </div>
 </main>
@@ -277,6 +277,10 @@
   <b>120·200일선</b> 열은 일봉 기준 장기 이동평균 대비 위치(↑ 지지 / ↓ 깨짐)와 이격률로, 어느 모드에서든 일봉으로 계산합니다
   (120일선 = 경기선, 200일선 = 장기 추세선 — 200일선 이탈은 장기 추세 훼손 신호로 봅니다).
   스윙·단타 모드에서는 표시 종목의 일봉을 별도 수집하므로 스캔 직후 잠시 «—»였다가 채워질 수 있습니다.<br>
+  <b>목표·손절 (제안)</b> 열은 매수 판정(강력 매수·매수 신호·조기 매수) 종목에만 표시되며, 현재 봉 주기의 <b>ATR(14) 변동성</b>으로 산정합니다 —
+  손절가 = 최근 10봉 저점과 (진입가 − 1×ATR) 중 보수적(낮은) 값(리스크 상한 2×ATR), 목표가 = 진입가 + 리스크×2(<b>손익비 1:2</b>).
+  괄호의 %가 목표 도달 시 기대 수익률·손절 시 손실률입니다. 단타는 분봉 ATR이라 좁게, 장기는 일봉 ATR이라 넓게 자동 산정됩니다.
+  이는 기계적 산식에 따른 참고값이지 수익을 보장하는 권유가 아니며, 실제 주문 시 호가 단위·수수료·슬리피지를 감안하세요.<br>
   <b>MDD(1년)</b> 열은 최근 약 1년(국내 330거래일·미국 1년) 일봉 종가 기준 <b>최대 낙폭</b>(기간 내 고점→저점 최대 하락률)이며,
   아래 «현재»는 현재가의 기간 내 전고점 대비 낙폭입니다. MDD가 깊을수록(−30% 이하 파랑, −15% 이하 주황) 변동성·하방 위험이 큰 종목이니 손절 폭과 비중 설정에 참고하세요.<br>
   지표는 종가 기준 MACD(12,26,9)·RSI(14, Wilder)·볼린저밴드(20,2)·스토캐스틱 슬로우(14,3,3)로 계산하며,
@@ -638,6 +642,19 @@ function agg120(ohlc){
   }
   return out;
 }
+/* ATR(14, Wilder) 마지막 값 — 봉 주기의 평균 변동폭(목표가·손절가 산정용) */
+function atrLast(hi,lo,closes,n){
+  n=n||14;
+  const L=closes.length, trs=[];
+  for(let i=1;i<L;i++){
+    if(!isFinite(hi[i])||!isFinite(lo[i])||!isFinite(closes[i-1])) continue;
+    trs.push(Math.max(hi[i]-lo[i], Math.abs(hi[i]-closes[i-1]), Math.abs(lo[i]-closes[i-1])));
+  }
+  if(trs.length<n) return null;
+  let a=0; for(let i=0;i<n;i++) a+=trs[i]; a/=n;
+  for(let i=n;i<trs.length;i++) a=(a*(n-1)+trs[i])/n;
+  return a;
+}
 /* 외국인 소진율 배열 → {now, d5, d20} (%p 변화). 데이터 없으면 null */
 function frgnStats(f){
   if(!f||!f.length) return null;
@@ -851,6 +868,27 @@ function ddStats(u,ch){
   const hi=Math.max(peak,px);
   return { mdd:mdd*100, cur:(px/hi-1)*100 };
 }
+/* 매도 계획(제안): 매수 판정 종목의 목표가·손절가 — ATR 변동성 기반, 손익비 1:2
+   손절 = 최근 10봉 저점과 (진입가 − 1×ATR) 중 낮은(보수적) 쪽, 단 리스크 상한 2×ATR
+   목표 = 진입가 + 리스크×2. 봉 주기의 ATR을 쓰므로 단타/스윙/장기 관점에 맞게 자동으로 스케일된다 */
+function planFor(u,bars,j){
+  if(!j||!['buy2','buy1','ebuy'].includes(j.v)) return null;
+  const c=bars.c,h=bars.h,l=bars.l,L=c.length;
+  const entry=u.price>0?u.price:c[L-1];
+  const atr=atrLast(h,l,c,14);
+  if(!atr||!(atr>0)||!(entry>0)) return null;
+  const lows=l.slice(-10).filter(v=>isFinite(v)&&v>0);
+  const swingLow=lows.length?Math.min.apply(null,lows):entry-atr;
+  let stop=Math.min(swingLow, entry-1.0*atr);   // 지지선(최근 저점) 아래 or 1×ATR — 보수적(낮은) 쪽
+  stop=Math.max(stop, entry-2.0*atr);           // 리스크 상한 2×ATR (지지선이 너무 멀면 변동성 기준으로 컷)
+  if(!(stop>0&&stop<entry)) return null;
+  const risk=entry-stop;
+  // 표시 반올림: 원화는 원 단위, 달러는 센트 단위 (호가 단위 근사)
+  const rd=isUSm(u.mkt)?(v=>Math.round(v*100)/100):(v=>Math.round(v));
+  const target=rd(entry+2*risk), stopR=rd(stop);  // 손익비 1:2
+  return { entry, stop:stopR, target,
+    tgtPct:(target/entry-1)*100, stopPct:(stopR/entry-1)*100 };
+}
 /* 지수 국면: 야후 지수 일봉 1y + /api/market 실시간 표시값 */
 const INDEX_SYM={kospi:'^KS11',kosdaq:'^KQ11',sp500:'^GSPC',nasdaq:'^NDX',kretf:'^KS11',usetf:'^GSPC'};
 const INDEX_NAME={kospi:'코스피',kosdaq:'코스닥',sp500:'S&amp;P500',nasdaq:'나스닥100',kretf:'코스피 (한국 ETF 기준지수)',usetf:'S&amp;P500 (미국 ETF 기준지수)'};
@@ -965,7 +1003,7 @@ function compute(){
     const j=judge(bars.c,bars.h,bars.l,LOOK);
     const fd=frgnOf(u,ch);
     const rg=REGIME[u.mkt]&&REGIME[u.mkt].rg;
-    ROWS.push({u,ch,j,fd,ms:maStats(u,ch),dd:ddStats(u,ch),tech:j?techniqueFor(u,j,rg,fd):null});
+    ROWS.push({u,ch,j,fd,ms:maStats(u,ch),dd:ddStats(u,ch),plan:planFor(u,bars,j),tech:j?techniqueFor(u,j,rg,fd):null});
   }
   FULLN=ROWS.length;
   const recency=x=>x.j?Math.min(x.j.gc??99,x.j.zu??99,x.j.dc??99,x.j.zd??99):99;
@@ -1098,6 +1136,13 @@ function maCell(ms){
       +n+(up?'↑':'↓')+' '+(d>0?'+':'')+d.toFixed(1)+'%</span>';
   return one('120',ms.up120,ms.d120)+one('200',ms.up200,ms.d200);
 }
+/* 목표·손절 셀: 매수 판정 종목만 — 목표가(+기대수익)·손절가(리스크). ATR 기반 손익비 1:2 */
+function planCell(p,us){
+  if(!p) return '<span class="flat">—</span>';
+  const tip='진입 '+fmtPx(p.entry,us)+' 기준 · 손절 = 최근 10봉 저점/1×ATR 중 보수적 값(최대 2×ATR) · 목표 = 리스크×2 (손익비 1:2)';
+  return '<span class="mono up" title="'+esc(tip)+'">목표 '+fmtPx(p.target,us)+' <b>+'+p.tgtPct.toFixed(1)+'%</b></span>'
+    +'<br><small class="mono down">손절 '+fmtPx(p.stop,us)+' '+p.stopPct.toFixed(1)+'%</small>';
+}
 /* MDD 셀: 기간 최대 낙폭(위)·현재 전고점 대비 낙폭(아래). −30% 이하 파랑, −15% 이하 주황 */
 function ddCell(dd){
   if(!dd||!isFinite(dd.mdd)) return '<span class="flat">—</span>';
@@ -1125,7 +1170,7 @@ function render(){
     ROWS.length?('매수 '+buyN+' · 임박 '+nearN+' · 매도 '+sellN
       +(FULLN>ROWS.length?' — 전체 '+FULLN+'종목 중 포지션 상위 '+ROWS.length+' 제안':' / '+ROWS.length+'종목')):'';
   if(!rows.length){
-    tb.innerHTML='<tr><td colspan="13"><div class="note-empty">'+
+    tb.innerHTML='<tr><td colspan="14"><div class="note-empty">'+
       (ROWS.length? '현재 조건(최근 '+LOOK+unit()+' 이내 크로스 + RSI 기준)을 충족하는 종목이 없습니다.<br>'
         +'«신호 인정» 범위를 늘리거나 필터를 «전체»로 바꿔 임박·추세 유지 종목까지 확인해 보세요.'
         : (SCANNING?'차트 수집 중…':'데이터가 아직 없습니다. «다시 스캔»을 눌러 주세요.'))+'</div></td></tr>';
@@ -1145,6 +1190,7 @@ function render(){
       +'<td><span class="vd '+vd[1]+'">'+vd[0]+'</span></td>'
       +'<td>'+chips(j,x.ms)+'</td>'
       +'<td><div class="tech">'+(x.tech?'<b>'+esc(x.tech.t)+'</b><span>'+esc(x.tech.why)+'</span>':'—')+'</div></td>'
+      +'<td class="num">'+planCell(x.plan,us)+'</td>'
       +'<td>'+maCell(x.ms)+'</td>'
       +'<td class="num">'+ddCell(x.dd)+'</td>'
       +'<td class="num">'+frgnCell(x.fd)+'</td>'
@@ -1307,12 +1353,18 @@ function detailRow(x){
   const wrap=document.querySelector('.tbl-wrap');
   const W=Math.max(560,Math.min(920,(wrap?wrap.clientWidth:960)-380));
   const fd=x.fd;
-  return '<tr class="drow"><td colspan="13"><div class="dwrap">'
+  return '<tr class="drow"><td colspan="14"><div class="dwrap">'
     +'<div class="dchart">'+detailChartSVG(x,W)+'</div>'
     +'<div class="dinfo">'
     +'<div class="box"><h5>판정 근거</h5>'+judgeReason(x)+'</div>'
     +(x.tech?'<div class="box"><h5>추천 기법 · '+esc((REGIME[u.mkt]&&REGIME[u.mkt].rg&&REGIME_INFO[REGIME[u.mkt].rg.regime].name)||'국면 미확정')
       +'</h5><b>'+esc(x.tech.t)+'</b><br>'+esc(x.tech.why)+'</div>':'')
+    +(x.plan?'<div class="box"><h5>매도 계획 (제안 · 손익비 1:2)</h5>'
+      +'목표가 <b class="mono up">'+fmtPx(x.plan.target,isUSm(u.mkt))+'</b> (<b class="up">+'+x.plan.tgtPct.toFixed(1)+'%</b>) · '
+      +'손절가 <b class="mono down">'+fmtPx(x.plan.stop,isUSm(u.mkt))+'</b> (<b class="down">'+x.plan.stopPct.toFixed(1)+'%</b>)'
+      +'<br><span style="color:var(--muted2);font-size:11px">진입 '+fmtPx(x.plan.entry,isUSm(u.mkt))+' 기준 · 현재 봉 주기의 ATR(14) 변동성으로 산정. '
+      +'손절 = 최근 10봉 저점과 1×ATR 중 보수적 값(리스크 상한 2×ATR), 목표 = 리스크의 2배. '
+      +'목표 도달 시 분할 매도, 손절선 이탈 시 전량 매도가 원칙입니다.</span></div>':'')
     +'<div class="box"><h5>외국인 수급</h5>'
       +(fd?('소진율 <b class="mono">'+fd.now.toFixed(2)+'%</b> · 5일 <b class="mono '+cls(fd.d5)+'">'+(fd.d5>0?'+':'')+fd.d5.toFixed(2)+'%p</b>'
         +(fd.d20!=null?' · 20일 <b class="mono '+cls(fd.d20)+'">'+(fd.d20>0?'+':'')+fd.d20.toFixed(2)+'%p</b>':'')
