@@ -16,6 +16,38 @@ jobs:
           echo "planFor 함수: $(echo "$s" | grep -c 'function planFor')"
           echo "atrLast 함수: $(echo "$s" | grep -c 'function atrLast')"
 
+      - name: 러셀2000 대안 소스 프로브 (임시)
+        run: |
+          echo "== iShares IWM holdings CSV (러셀2000 구성 원천)"
+          curl -sL "https://www.ishares.com/us/products/239710/ishares-russell-2000-etf/1467271812596.ajax?fileType=csv&fileName=IWM_holdings&dataType=fund" \
+            -H "User-Agent: Mozilla/5.0" | head -c 900; echo; echo "---"
+          echo "== 네이버 worldstock 폴링 다중 종목 (3개)"
+          curl -s -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" \
+            "https://polling.finance.naver.com/api/realtime/worldstock/stock/AAPL.O,MSFT.O,IONQ.N" | python3 -c "
+          import json,sys
+          try:
+              d=json.load(sys.stdin); st=d.get('datas') or []
+              print('datas:', len(st))
+              for s in st[:3]: print('  ', s.get('reutersCode'), s.get('closePrice'), s.get('fluctuationsRatio'), (s.get('compareToPreviousPrice') or {}).get('code'), s.get('stockName'))
+          except Exception as e: print('ERR', e)"
+          echo "== 다중 종목 한도 (같은 코드 40개 반복)"
+          codes=$(python3 -c "print(','.join(['AAPL.O','MSFT.O','NVDA.O','TSLA.O','AMZN.O','GOOGL.O','META.O','AVGO.O']*5))")
+          curl -s -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" \
+            "https://polling.finance.naver.com/api/realtime/worldstock/stock/$codes" | python3 -c "
+          import json,sys
+          try:
+              d=json.load(sys.stdin); print('40코드 요청 → datas:', len(d.get('datas') or []))
+          except Exception as e: print('ERR', e)"
+          echo "== 러셀 소형주 실시세 확인 (IONQ.N 등 임의 소형주)"
+          curl -s -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" \
+            "https://polling.finance.naver.com/api/realtime/worldstock/stock/RGTI.O,APLD.O,SOUN.O" | python3 -c "
+          import json,sys
+          try:
+              d=json.load(sys.stdin); st=d.get('datas') or []
+              print('소형주 datas:', len(st))
+              for s in st: print('  ', s.get('reutersCode'), s.get('closePrice'), s.get('marketValue'))
+          except Exception as e: print('ERR', e)"
+
       - name: 러셀2000 네이버 소스 프로브 (임시)
         run: |
           H='-H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/"'
