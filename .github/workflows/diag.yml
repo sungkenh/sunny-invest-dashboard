@@ -16,6 +16,28 @@ jobs:
           echo "planFor 함수: $(echo "$s" | grep -c 'function planFor')"
           echo "atrLast 함수: $(echo "$s" | grep -c 'function atrLast')"
 
+      - name: 러셀2000 목록 소스 3차 프로브 (임시)
+        run: |
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36"
+          echo "== ① iShares IWM 제품 페이지에서 실제 CSV 링크 추출"
+          curl -sL "https://www.ishares.com/us/products/239710/ishares-russell-2000-etf" -H "User-Agent: $UA" \
+            | grep -o '[^"]*\.ajax?fileType=csv[^"]*' | head -3
+          echo "== ② Vanguard VTWO 보유종목 API"
+          curl -s "https://investor.vanguard.com/investment-products/etfs/profile/api/VTWO/portfolio-holding/stock" \
+            -H "User-Agent: $UA" -H "Accept: application/json" | head -c 400; echo
+          echo "== ③ stockanalysis.com 러셀2000 리스트"
+          curl -s "https://stockanalysis.com/list/russell-2000-stocks/" -H "User-Agent: $UA" | python3 -c "
+          import re,sys
+          h=sys.stdin.read()
+          print('HTML길이', len(h))
+          m=re.findall(r'\"s\":\"([A-Z.\-]{1,6})\",\"n\":\"([^\"]+)\"', h)
+          print('심볼·이름 파싱:', len(m), '| 앞5:', m[:5])
+          mc=re.findall(r'\"marketCap\":([0-9.e+]+)', h)
+          print('marketCap 필드:', len(mc), '| 앞3:', mc[:3])"
+          echo "== ③b stockanalysis 내부 API"
+          curl -s "https://api.stockanalysis.com/api/screener/s/f?m=marketCap&s=desc&c=s,n,marketCap&i=russell2000" \
+            -H "User-Agent: $UA" | head -c 500; echo
+
       - name: 핀비즈 러셀2000 스크리너 프로브 (임시)
         run: |
           echo "== finviz screener f=idx_rut 시총 내림차순 1페이지"
