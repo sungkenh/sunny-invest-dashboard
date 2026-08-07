@@ -16,6 +16,36 @@ jobs:
           echo "planFor 함수: $(echo "$s" | grep -c 'function planFor')"
           echo "atrLast 함수: $(echo "$s" | grep -c 'function atrLast')"
 
+      - name: 러셀2000 네이버 소스 프로브 (임시)
+        run: |
+          H='-H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/"'
+          for idx in ".RUT" "RUT" ".RUA"; do
+            echo "== index/$idx/enrollStocks p1"
+            curl -s -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" \
+              "https://api.stock.naver.com/index/$idx/enrollStocks?page=1&pageSize=100" | python3 -c "
+          import json,sys
+          try:
+              d=json.load(sys.stdin)
+              st=d.get('stocks') or []
+              tp=d.get('totalCount') or d.get('total') or '?'
+              print('total=%s page1=%d' % (tp, len(st)))
+              for s in st[:3]:
+                  print('  ', s.get('symbolCode'), s.get('stockName'), s.get('marketValue'), (s.get('stockExchangeType') or {}).get('code'))
+              caps=[float(s.get('marketValueRaw') or 0) for s in st[:20]]
+              print('  cap 정렬 확인(앞20):', 'DESC' if caps==sorted(caps,reverse=True) else caps[:5])
+          except Exception as e: print('ERR', e, sys.stdin.read()[:120] if not sys.stdin.closed else '')"
+          done
+          echo "== index/.RUT/enrollStocks p5·p6 (500위권 존재 확인)"
+          for p in 5 6; do
+            curl -s -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" \
+              "https://api.stock.naver.com/index/.RUT/enrollStocks?page=$p&pageSize=100" | python3 -c "
+          import json,sys
+          try:
+              d=json.load(sys.stdin); st=d.get('stocks') or []
+              print('p$p:', len(st), '건', (st[0].get('symbolCode') if st else ''))
+          except Exception as e: print('p$p ERR', e)"
+          done
+
       - name: 시간차 샘플링 (3회 × 35초)
         run: |
           sample() {
