@@ -9,6 +9,13 @@ jobs:
   diag:
     runs-on: ubuntu-latest
     steps:
+      - name: 목표·손절 배포 확인 (임시)
+        run: |
+          s=$(curl -sL "https://sunny-invest-dashboard.pages.dev/signals")
+          echo "목표손절 헤더: $(echo "$s" | grep -c '목표·손절')"
+          echo "planFor 함수: $(echo "$s" | grep -c 'function planFor')"
+          echo "atrLast 함수: $(echo "$s" | grep -c 'function atrLast')"
+
       - name: 시간차 샘플링 (3회 × 35초)
         run: |
           sample() {
