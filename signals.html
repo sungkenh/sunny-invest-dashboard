@@ -197,7 +197,7 @@
   </div>
   <span class="fl">시장</span>
   <div class="seg" id="seg-mkt">
-    <button data-v="kospi">코스피 50</button><button data-v="kosdaq">코스닥 50</button><button data-v="sp500">S&amp;P500</button><button data-v="nasdaq">나스닥</button><button data-v="kretf">한국 ETF</button><button data-v="usetf">미국 ETF</button>
+    <button data-v="kospi">코스피 50</button><button data-v="kosdaq">코스닥 50</button><button data-v="sp500">S&amp;P500</button><button data-v="nasdaq">나스닥</button><button data-v="russell2000">러셀 2000</button><button data-v="kretf">한국 ETF</button><button data-v="usetf">미국 ETF</button>
   </div>
   <span class="fl" id="fl-itv" hidden>분봉</span>
   <div class="seg" id="seg-itv" hidden>
@@ -267,8 +267,9 @@
 <footer>
   데이터 제공: <a href="https://m.stock.naver.com/" target="_blank" rel="noopener">네이버 금융</a>(실시간 현재가·시총 상위 유니버스·일봉·외국인 소진율) ·
   <a href="https://finance.yahoo.com/" target="_blank" rel="noopener">야후 파이낸스</a>(분봉·지수 차트).
-  유니버스는 국내 = 코스피·코스닥 <b>시가총액 상위 50종목</b>, 미국 = <b>S&amp;P500 편입 전 종목·나스닥 시총 상위 500</b>을
+  유니버스는 국내 = 코스피·코스닥 <b>시가총액 상위 50종목</b>, 미국 = <b>S&amp;P500 편입 전 종목·나스닥 시총 상위 500·러셀 2000 시총 상위 500</b>을
   전부 스캔한 뒤 <b>매수·매도 포지션 강도 상위 50종목</b>만 제안합니다(ETF·ETN·우선주·스팩 제외).
+  러셀 2000 편입 목록은 네이버에 없어 <b>Vanguard VTWO(러셀2000 ETF) 보유내역</b>을 원천으로 매일 갱신하며, 시세는 네이버 실시간입니다.
   미국은 정규장(22:30~05:00 KST) 외 프리·애프터마켓 체결가를 현재가에 반영하며, 장 성격은 S&amp;P500(^GSPC)·나스닥100(^NDX) 지수로 판별합니다.
   <b>ETF 시장</b>은 지수·섹터·레버리지·인버스 대표 상품 엄선 목록(한국 16 · 미국 24)으로, 시세는 차트 데이터 기준이라 개별주 대비 수십 초 지연될 수 있습니다.
   <b>인버스는 기초지수와 반대로 움직이는 별도 상품</b>으로서 자체 가격에 대한 신호이며, 레버리지·인버스는 음의 복리(변동성 잠식) 특성상 장기 보유에 부적합합니다.<br>
@@ -339,7 +340,7 @@ async function fetchLive(api,file){
 }
 const cls = n => n>0?'up':(n<0?'down':'flat');
 const esc = s => String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-const US_MKTS=['sp500','nasdaq','usetf'];
+const US_MKTS=['sp500','nasdaq','russell2000','usetf'];
 const isUSm = m => US_MKTS.indexOf(m)>=0;         // 달러 표기·야후 직결·미국 세션
 const isETFm = m => m==='kretf'||m==='usetf';
 
@@ -711,7 +712,7 @@ function techniqueFor(u,j,rg,fd){
 /* ── 상태 ── */
 const store=(k,v)=>{ try{ if(v===undefined) return localStorage.getItem('alphadesk.sig.'+k); localStorage.setItem('alphadesk.sig.'+k,v); }catch(e){ return null; } };
 let MODE  =['day','swing','long'].includes(store('mode'))?store('mode'):'swing';
-let MKT   =['kospi','kosdaq','sp500','nasdaq','kretf','usetf'].includes(store('mkt'))?store('mkt'):'kospi';
+let MKT   =['kospi','kosdaq','sp500','nasdaq','russell2000','kretf','usetf'].includes(store('mkt'))?store('mkt'):'kospi';
 let ITV   =['1m','5m','15m'].includes(store('itv'))?store('itv'):'5m';
 let SITV  =['60m','120m'].includes(store('sitv'))?store('sitv'):'60m';
 let LOOK  =[3,5,10].includes(+store('look'))?+store('look'):5;
@@ -890,9 +891,9 @@ function planFor(u,bars,j){
     tgtPct:(target/entry-1)*100, stopPct:(stopR/entry-1)*100 };
 }
 /* 지수 국면: 야후 지수 일봉 1y + /api/market 실시간 표시값 */
-const INDEX_SYM={kospi:'^KS11',kosdaq:'^KQ11',sp500:'^GSPC',nasdaq:'^NDX',kretf:'^KS11',usetf:'^GSPC'};
-const INDEX_NAME={kospi:'코스피',kosdaq:'코스닥',sp500:'S&amp;P500',nasdaq:'나스닥100',kretf:'코스피 (한국 ETF 기준지수)',usetf:'S&amp;P500 (미국 ETF 기준지수)'};
-const MARKET_KEY={kospi:'kospi',kosdaq:'kosdaq',sp500:'spx',nasdaq:'ndx',kretf:'kospi',usetf:'spx'};   // data/market.json 필드명
+const INDEX_SYM={kospi:'^KS11',kosdaq:'^KQ11',sp500:'^GSPC',nasdaq:'^NDX',russell2000:'^RUT',kretf:'^KS11',usetf:'^GSPC'};
+const INDEX_NAME={kospi:'코스피',kosdaq:'코스닥',sp500:'S&amp;P500',nasdaq:'나스닥100',russell2000:'러셀 2000',kretf:'코스피 (한국 ETF 기준지수)',usetf:'S&amp;P500 (미국 ETF 기준지수)'};
+const MARKET_KEY={kospi:'kospi',kosdaq:'kosdaq',sp500:'spx',nasdaq:'ndx',russell2000:'rut',kretf:'kospi',usetf:'spx'};   // data/market.json 필드명 (rut 은 없음 → 실시간 표시 생략)
 async function loadRegime(mkt,force){
   const c=REGIME[mkt];
   if(!force&&c&&Date.now()-c.ts<REGIME_TTL) return;
@@ -1176,7 +1177,7 @@ function render(){
         : (SCANNING?'차트 수집 중…':'데이터가 아직 없습니다. «다시 스캔»을 눌러 주세요.'))+'</div></td></tr>';
     return;
   }
-  const MKCHIP={kospi:'KOSPI',kosdaq:'KOSDAQ',sp500:'S&amp;P500',nasdaq:'NASDAQ',kretf:'ETF·KR',usetf:'ETF·US'};
+  const MKCHIP={kospi:'KOSPI',kosdaq:'KOSDAQ',sp500:'S&amp;P500',nasdaq:'NASDAQ',russell2000:'RUSSELL',kretf:'ETF·KR',usetf:'ETF·US'};
   tb.innerHTML=rows.map((x,i)=>{
     const u=x.u, j=x.j, vd=VD[j.v], us=isUSm(u.mkt);
     const fresh=Math.min(j.gc??99,j.dc??99,j.zu??99,j.zd??99)===0;

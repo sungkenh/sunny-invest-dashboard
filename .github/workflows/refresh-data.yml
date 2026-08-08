@@ -66,6 +66,7 @@ jobs:
           python fetch_us_sectors.py || echo "::warning::us_sectors(핀비즈 섹터맵) 수집 실패(스킵)"
           python fetch_us_heatmap.py || echo "::warning::us_heatmap(미국 히트맵 스냅샷) 수집 실패(스킵)"
           python fetch_us_perf.py   || echo "::warning::us_perf(미국 기간수익률 기준가) 수집 실패(스킵)"
+          python fetch_russell.py   || echo "::warning::russell2000(러셀 유니버스·스냅샷) 수집 실패(스킵)"
 
       - name: 결과를 data/ 로 복사
         run: |

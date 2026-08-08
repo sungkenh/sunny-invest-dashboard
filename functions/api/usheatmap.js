@@ -1,8 +1,11 @@
-// 미국 주식 실시간 히트맵 — /api/usheatmap?us=sp500|nasdaq&n=50|100|200
-//   sp500  : 지수 편입종목 API(index/.INX/enrollStocks, 시총순 정렬·NYSE+나스닥 혼합)
-//   nasdaq : 나스닥 거래소 시총 랭킹 전체(상위 N — 나스닥100을 포함하는 상위집합)
-// 둘 다 delayTime 0 실시간, 한글 업종 그룹 내장, overMarketPriceInfo 로 프리·애프터마켓 체결가 제공
-// (직접 폴링으로 초단위 체결 전진 확인). subrequest 예산: 페이지 1~6 + 섹터 1 (실패 시 스냅샷 +1) / 무료 50
+// 미국 주식 실시간 히트맵 — /api/usheatmap?us=sp500|nasdaq|russell2000&n=50|100|200|500
+//   sp500       : 지수 편입종목 API(index/.INX/enrollStocks, 시총순 정렬·NYSE+나스닥 혼합)
+//   nasdaq      : 나스닥 거래소 시총 랭킹 전체(상위 N — 나스닥100을 포함하는 상위집합)
+//   russell2000 : 네이버에 러셀 편입 API 가 없어 파이프라인 스냅샷(data/usheatmap_russell2000.json,
+//                 VTWO 보유내역 기반 시총 상위 500)을 유니버스로 쓰고, 시세만
+//                 네이버 폴링 다중 조회(40코드/호출)로 실시간 덮어쓴다.
+// 모두 delayTime 0 실시간, overMarketPriceInfo 로 프리·애프터마켓 체결가 제공.
+// subrequest 예산: sp500·nasdaq 페이지 1~6 + 섹터 1 / russell2000 스냅샷 1 + 폴링 ~13 / 무료 50
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36';
 const CACHE = {};                 // `us|${n}` → {ts, data}
 const TTL = 5 * 1000;             // 클라이언트 5초 폴링에 맞춤 (네이버 앱 자체 폴링은 7초)
@@ -88,15 +91,73 @@ async function loadSnapshot(rawUrl, us) {
 // 시총순 정렬이므로 n=100 까지 1페이지, n=200 은 2페이지, n=500 은 6페이지(503종목 커버)
 const pagesFor = (n) => (n <= 100 ? 1 : (n <= 200 ? 2 : 6));
 
+// 러셀2000: 스냅샷 유니버스 + 네이버 폴링 다중 조회로 시세 실시간화
+async function russellData(event, n) {
+  const snap = await loadSnapshot(event.rawUrl, 'russell2000');
+  if (!snap || !Array.isArray(snap.items) || !snap.items.length) {
+    return { _updated: iso(), source: 'error', mkt: 'russell2000', n, marketStatus: '', delay: 0, count: 0, items: [] };
+  }
+  const items = snap.items.slice(0, n).map((it) => Object.assign({}, it));
+  const rcs = items.map((it) => it.rc).filter(Boolean);
+  let live = 0, mktStatus = snap.marketStatus || '', overStatus = '';
+  const calls = [];
+  for (let i = 0; i < rcs.length; i += 40) calls.push(rcs.slice(i, i + 40));
+  const res = await Promise.all(calls.map((chunk) =>
+    fetch('https://polling.finance.naver.com/api/realtime/worldstock/stock/' + chunk.join(','),
+      { headers: { 'User-Agent': UA, 'Referer': 'https://m.stock.naver.com/' } })
+      .then((r) => r.json()).catch(() => null)
+  ));
+  const rows = {};
+  for (const d of res) for (const r of ((d && d.datas) || [])) if (r.reutersCode) rows[r.reutersCode] = r;
+  for (const it of items) {
+    const r = rows[it.rc];
+    if (!r) continue;
+    const px = num(r.closePrice);
+    if (!isFinite(px) || px <= 0) continue;
+    // ⚠ 폴링 등락 필드는 부호 없음 — 방향 코드(1·2=상승, 4·5=하락, 3=보합)를 곱한다
+    const dir = String((r.compareToPreviousPrice || {}).code || '');
+    const s = (dir === '4' || dir === '5') ? -1 : (dir === '3' ? 0 : 1);
+    const pct = num(r.fluctuationsRatio);
+    it.price = px;
+    if (isFinite(pct)) it.pct = pct * s;
+    const o = r.overMarketPriceInfo;
+    if (o && o.overPrice != null && isFinite(num(o.overPrice))) {
+      it.o = { p: num(o.overPrice), pct: num(o.fluctuationsRatio),
+               t: o.tradingSessionType || '', s: o.overMarketStatus || '' };
+      overStatus = o.tradingSessionType || overStatus;
+    }
+    const st = r.tradeStopType || {};
+    if (st.code && st.code !== '1') it.h = 1; else delete it.h;
+    if (r.marketStatus) mktStatus = r.marketStatus;
+    live++;
+  }
+  const halted = items.reduce((a, i) => a + (i.h ? 1 : 0), 0);
+  return {
+    _updated: iso(), source: live ? 'naver' : 'snapshot', mkt: 'russell2000', n,
+    marketStatus: mktStatus, overStatus: overStatus || undefined, delay: 0,
+    count: items.length, live: live || undefined,
+    halted: halted || undefined,
+    partial: res.some((x) => !x) || undefined,
+    snapshotUpdated: snap._updated,
+    items,
+  };
+}
+
 async function __cfHandler(event) {
   const p = event.queryStringParameters || {};
-  const us = (p.us === 'nasdaq') ? 'nasdaq' : 'sp500';
+  const us = (p.us === 'nasdaq') ? 'nasdaq' : (p.us === 'russell2000' ? 'russell2000' : 'sp500');
   let n = parseInt(p.n, 10);
   if (ALLOWED_N.indexOf(n) < 0) n = 100;
 
   const key = us + '|' + n;
   const c = CACHE[key];
   if (c && c.data && Date.now() - c.ts < TTL) return ok(c.data);
+
+  if (us === 'russell2000') {
+    const data = await russellData(event, n);
+    CACHE[key] = { ts: data.source === 'naver' ? Date.now() : Date.now() - (TTL - 5000), data };
+    return ok(data, data.source !== 'naver');
+  }
 
   const pages = pagesFor(n);
   const res = await Promise.all(

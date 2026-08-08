@@ -2529,7 +2529,7 @@ async function searchAndAdd(q){
 /* ---- 시가총액 히트맵 ----
    코스피/코스닥/S&P500/나스닥 전부 네이버 실시간 데이터로 자체 트리맵을 그린다(전용 히트맵 페이지와 동일 엔진).
    자동: 한국 장(평일 08:00~20:00 KST) → 코스피, 그 외 → S&P500(미국 프리·정규·애프터 실시간, 휴장 시 종가) */
-const HM_SETS=[{k:'자동',v:'auto'},{k:'코스피',v:'kospi'},{k:'코스닥',v:'kosdaq'},{k:'S&P500',v:'sp500'},{k:'나스닥',v:'nasdaq'}];
+const HM_SETS=[{k:'자동',v:'auto'},{k:'코스피',v:'kospi'},{k:'코스닥',v:'kosdaq'},{k:'S&P500',v:'sp500'},{k:'나스닥',v:'nasdaq'},{k:'러셀2000',v:'russell2000'}];
 let HM_MODE=(()=>{ try{ let v=localStorage.getItem('alphadesk.hmsrc');
   v=({KOSPI:'kospi',KOSDAQ:'kosdaq',SPX500:'sp500',NASDAQ100:'nasdaq'})[v]||v;   // 구버전(TradingView 시절) 값 호환
   return HM_SETS.some(s=>s.v===v)?v:'auto'; }catch(e){ return 'auto'; } })();
@@ -2538,7 +2538,7 @@ let krData=null, krTimer=null, krLoading=false, krPending=false, hmVisible=false
 
 function krSessionOpen(){ const t=kstParts(), k=kospiSession(t.dow,t.h*60+t.m).k; return k==='open'||k==='ext'; }
 function usSessionOpen(){ const t=kstParts(), k=nasdaqSession(t.dow,t.h*60+t.m).k; return k!=='closed'; }
-const isUSm=m=>m==='sp500'||m==='nasdaq';
+const isUSm=m=>m==='sp500'||m==='nasdaq'||m==='russell2000';
 function hmEffective(){ return HM_MODE==='auto' ? (krSessionOpen()?'kospi':'sp500') : HM_MODE; }
 const mktOpen=m=>isUSm(m)?usSessionOpen():krSessionOpen();
 function renderHmDataset(){
@@ -2609,7 +2609,7 @@ async function loadKrHeatmap(force){
   if(!force && (document.hidden || !hmVisible)) return;
   const mkt=hmMkt||'kospi';
   const body=document.getElementById('hm-body');
-  const n = mkt==='sp500' ? 500 : ((body && body.clientWidth && body.clientWidth<560) ? 50 : 200);   // S&P500 은 전체, 국내는 시총 상위 200 (모바일 50)
+  const n = (mkt==='sp500'||mkt==='russell2000') ? 500 : ((body && body.clientWidth && body.clientWidth<560) ? 50 : 200);   // S&P500·러셀은 상위 500, 국내는 시총 상위 200 (모바일 50)
   krLoading=true;
   const hmApi=isUSm(mkt) ? '/api/usheatmap?us='+mkt+'&n='+n : '/api/krheatmap?mkt='+mkt+'&n='+n;
   const hmFile=isUSm(mkt) ? 'data/usheatmap_'+mkt+'.json' : 'data/krheatmap_'+mkt+'.json';
