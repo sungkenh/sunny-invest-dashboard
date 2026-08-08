@@ -6,8 +6,9 @@
   (네이버에는 러셀 지수 편입종목 API 가 없어 — .RUT enrollStocks 0건 — ETF 보유내역을 원천으로 쓴다)
 
 시세·한글명·거래소: 네이버 해외주식 폴링 API 다중 조회(콤마 구분, 40개/호출)
-  티커의 거래소 접미사(.O 나스닥 / .N NYSE / .A AMEX)를 모르므로 세 후보를 모두 질의해
-  응답에 존재하는 코드로 확정한다(없는 코드는 조용히 무시됨 — 프로브로 확인).
+  네이버 로이터코드 접미사는 나스닥 '.O', NYSE 무접미사(일부 '.K'), AMEX '.K'
+  (기존 sp500 스냅샷 실측: NYS 무접미사 297·K 44, NSQ O 158, AMX K 1).
+  세 후보를 모두 질의해 응답에 존재하는 코드로 확정한다(없는 코드는 조용히 무시됨).
 
 시가총액: yfinance fast_info (야후 티커는 '.'→'-'). 실패 종목은
   '보유액×중앙값 배율'로 근사(비중 정렬이 목적이라 순위 왜곡 없음).
@@ -73,11 +74,11 @@ def naver_poll_many(codes):
 
 
 def resolve_naver(tickers):
-    """티커 → 네이버 row. 접미사 .O/.N/.A 후보를 40개 단위로 묶어 질의."""
+    """티커 → 네이버 row. 접미사 .O/무접미사/.K 후보를 40개 단위로 묶어 질의."""
     cand = []
     for t in tickers:
         base = t.replace('/', '.')          # BRK/B 형태 방어
-        for suf in ('.O', '.N', '.A'):
+        for suf in ('.O', '', '.K'):
             cand.append((t, base + suf))
     found = {}
     for i in range(0, len(cand), 40):
