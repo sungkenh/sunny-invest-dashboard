@@ -100,6 +100,8 @@
   .levchip{display:inline-block;font-size:9px;font-weight:800;border-radius:4px;padding:0 5px;margin-left:5px;vertical-align:1px;
     color:var(--gold);border:1px solid var(--gold)}
   .levchip.inv{color:var(--down);border-color:var(--down)}
+  .valchip{display:inline-block;font-size:9px;font-weight:800;border-radius:4px;padding:0 5px;margin-left:5px;vertical-align:1px;
+    color:#22c55e;border:1px solid rgba(34,197,94,.55);white-space:nowrap}
   .machip{display:inline-block;font-size:10px;font-weight:700;border-radius:5px;padding:1px 6px;margin:1px 3px 1px 0;
     background:var(--chip);border:1px solid var(--border);white-space:nowrap}
   .machip.ok{color:var(--up);border-color:rgba(246,70,93,.4)}
@@ -213,7 +215,7 @@
   </div>
   <span class="fl">필터</span>
   <div class="seg" id="seg-filter">
-    <button data-v="all">전체</button><button data-v="buy">매수</button><button data-v="near">임박</button><button data-v="sell">매도</button>
+    <button data-v="all">전체</button><button data-v="buy">매수</button><button data-v="near">임박</button><button data-v="sell">매도</button><button data-v="val">💎 저평가</button>
   </div>
   <button class="btn" id="btn-notif" hidden>🔔 알림</button>
   <button class="btn" id="btn-rescan">↻ 다시 스캔</button>
@@ -282,6 +284,11 @@
   손절가 = 최근 10봉 저점과 (진입가 − 1×ATR) 중 보수적(낮은) 값(리스크 상한 2×ATR), 목표가 = 진입가 + 리스크×2(<b>손익비 1:2</b>).
   괄호의 %가 목표 도달 시 기대 수익률·손절 시 손실률입니다. 단타는 분봉 ATR이라 좁게, 장기는 일봉 ATR이라 넓게 자동 산정됩니다.
   이는 기계적 산식에 따른 참고값이지 수익을 보장하는 권유가 아니며, 실제 주문 시 호가 단위·수수료·슬리피지를 감안하세요.<br>
+  <b>💎 저평가 발굴 필터</b>는 네이버 밸류에이션 기준 <b>흑자 PER ≤ 10배(미국 15배) · ROE ≥ 8%(PBR÷PER 근사) ·
+  52주 고점 대비 −20% 이하</b>를 동시에 충족하는 종목입니다 — 실적은 나오는데 섹터 소외 등으로 저가에 밀려난 후보를 찾는 용도로,
+  미국 시장은 표시 상위 50이 아닌 <b>스캔한 전체 유니버스</b>에서 찾습니다(ETF·적자 기업 제외).
+  다만 일회성 이익·경기순환 고점에서는 PER이 낮아 보이는 <b>밸류 트랩</b>이 섞일 수 있으니,
+  매수·조기 매수 신호와 겹치는 종목을 우선 검토하고 낙폭의 원인(실적 악화 여부)을 반드시 확인하세요.<br>
   <b>MDD(1년)</b> 열은 최근 약 1년(국내 330거래일·미국 1년) 일봉 종가 기준 <b>최대 낙폭</b>(기간 내 고점→저점 최대 하락률)이며,
   아래 «현재»는 현재가의 기간 내 전고점 대비 낙폭입니다. MDD가 깊을수록(−30% 이하 파랑, −15% 이하 주황) 변동성·하방 위험이 큰 종목이니 손절 폭과 비중 설정에 참고하세요.<br>
   지표는 종가 기준 MACD(12,26,9)·RSI(14, Wilder)·볼린저밴드(20,2)·스토캐스틱 슬로우(14,3,3)로 계산하며,
@@ -716,7 +723,7 @@ let MKT   =['kospi','kosdaq','sp500','nasdaq','russell2000','kretf','usetf'].inc
 let ITV   =['1m','5m','15m'].includes(store('itv'))?store('itv'):'5m';
 let SITV  =['60m','120m'].includes(store('sitv'))?store('sitv'):'60m';
 let LOOK  =[3,5,10].includes(+store('look'))?+store('look'):5;
-let FILTER=['all','buy','near','sell'].includes(store('filter'))?store('filter'):'all';
+let FILTER=['all','buy','near','sell','val'].includes(store('filter'))?store('filter'):'all';
 let NOTIF =store('notif')==='1';
 let OPENED=null;                          // 펼쳐진 종목 코드
 
@@ -735,7 +742,9 @@ let UNIV={kospi:null,kosdaq:null,sp500:null,nasdaq:null};
 const CHARTS={};                          // `${code}|${key}` → {ts, closes, dates, f, lastDate, src}
 const DAILY={};                           // 일봉 컨텍스트(스윙·단타): code → {ts, closes, f}
 let REGIME={kospi:null,kosdaq:null,sp500:null,nasdaq:null};   // {ts, rg, closes, live:{price,pct}}
-let ROWS=[], SCANNING=false, SCAN_AT=null, FAILN=0, FULLN=0;
+let ROWS=[], ROWS_ALL=[], SCANNING=false, SCAN_AT=null, FAILN=0, FULLN=0;
+const VAL={};                             // 밸류에이션 캐시: `${mkt}|${code}` → {ts, v, inflight}
+const VAL_TTL=30*60*1000;
 const modeKey=()=> MODE==='day'?ITV:(MODE==='swing'?SITV:'1d');
 const activeMkts=()=> [MKT];
 const US_TOP=50;                          // 미국: 전체 스캔 후 포지션 강도 상위 50만 제안
@@ -890,6 +899,48 @@ function planFor(u,bars,j){
   return { entry, stop:stopR, target,
     tgtPct:(target/entry-1)*100, stopPct:(stopR/entry-1)*100 };
 }
+/* 저평가 발굴: 네이버 밸류에이션(/api/valuation)으로 흑자 저PER + ROE 양호 + 52주 고점 대비
+   큰 낙폭(시장 소외)을 동시에 충족하는 종목을 찾는다. ROE는 PBR÷PER 근사(네이버가 직접 안 줌) */
+const valKey=u=> isUSm(u.mkt)?'us|'+(u.rc||u.code):'kr|'+u.code;
+const valOf=u=>{ const c=VAL[valKey(u)]; return (c&&c.v)||null; };
+const VAL_CRIT={kr:{per:10,roe:8,drop:-20},us:{per:15,roe:8,drop:-20}};
+function valDrop(x){                       // 52주 고점 대비 현재가 낙폭(%)
+  const v=valOf(x.u);
+  if(v&&v.hi52>0&&x.u.price>0) return (x.u.price/v.hi52-1)*100;
+  return x.dd?x.dd.cur:null;
+}
+function isCheap(x){
+  if(isETFm(x.u.mkt)) return false;        // ETF 는 PER·PBR 개념이 없음
+  const v=valOf(x.u); if(!v||!(v.per>0)||v.roe==null) return false;
+  const c=VAL_CRIT[isUSm(x.u.mkt)?'us':'kr'];
+  const dp=valDrop(x);
+  return v.per<=c.per && v.roe>=c.roe && dp!=null && dp<=c.drop;
+}
+async function ensureVals(items){
+  const need=[];
+  for(const u of items){
+    if(isETFm(u.mkt)) continue;
+    const k=valKey(u), c=VAL[k];
+    if(c&&(c.inflight||Date.now()-c.ts<VAL_TTL)) continue;
+    VAL[k]={ts:Date.now(),v:null,inflight:true}; need.push(k);
+  }
+  if(!need.length) return;
+  const g={kr:[],us:[]};
+  for(const k of need){ const i=k.indexOf('|'); g[k.slice(0,i)].push(k.slice(i+1)); }
+  const calls=[];
+  for(const m of ['kr','us']) for(let i=0;i<g[m].length;i+=20) calls.push({m,codes:g[m].slice(i,i+20)});
+  let done=0;
+  await pool(calls,4,async b=>{
+    try{
+      const d=await getJSON('/api/valuation?mkt='+b.m+'&codes='+b.codes.map(encodeURIComponent).join(','));
+      for(const c of b.codes) VAL[b.m+'|'+c]={ts:Date.now(), v:(d.vals&&d.vals[c])||null};
+    }catch(e){ for(const c of b.codes) delete VAL[b.m+'|'+c]; }   // 실패 → 다음 스캔 때 재시도
+    done++; if(calls.length>3) note('밸류에이션(PER·PBR) 수집 중 '+done+'/'+calls.length+'…');
+    render();
+  });
+  if(calls.length>3) note('');
+}
+
 /* 지수 국면: 야후 지수 일봉 1y + /api/market 실시간 표시값 */
 const INDEX_SYM={kospi:'^KS11',kosdaq:'^KQ11',sp500:'^GSPC',nasdaq:'^NDX',russell2000:'^RUT',kretf:'^KS11',usetf:'^GSPC'};
 const INDEX_NAME={kospi:'코스피',kosdaq:'코스닥',sp500:'S&amp;P500',nasdaq:'나스닥100',russell2000:'러셀 2000',kretf:'코스피 (한국 ETF 기준지수)',usetf:'S&amp;P500 (미국 ETF 기준지수)'};
@@ -1008,6 +1059,7 @@ function compute(){
   }
   FULLN=ROWS.length;
   const recency=x=>x.j?Math.min(x.j.gc??99,x.j.zu??99,x.j.dc??99,x.j.zd??99):99;
+  ROWS_ALL=ROWS.slice();                    // 미국 상위 50 절단 전 전체 — 저평가 발굴은 전체에서 찾는다
   // 미국: 전체 유니버스를 판정한 뒤 매수·매도 포지션 강도 상위 50만 제안
   if(isUSm(MKT)&&ROWS.length>US_TOP){
     const strength={buy2:6,sell2:6,buy1:5,sell1:5,ebuy:4,esell:4,nbuy:3,nsell:3,up1:1,dn1:1,neu:0};
@@ -1021,15 +1073,19 @@ function compute(){
     ROWS.length=US_TOP;
   }
   const rank={buy2:0,buy1:1,ebuy:2,nbuy:3,up1:4,neu:5,dn1:6,nsell:7,esell:8,sell1:9,sell2:10};
-  ROWS.sort((a,b)=>{
+  const rankCmp=(a,b)=>{
     const ra=a.j?rank[a.j.v]:9, rb=b.j?rank[b.j.v]:9;
     if(ra!==rb) return ra-rb;
     const ca=recency(a), cb=recency(b);
     if(ca!==cb) return ca-cb;
     return b.u.cap-a.u.cap;
-  });
+  };
+  ROWS.sort(rankCmp);
+  ROWS_ALL.sort(rankCmp);
   render();
   maybeNotify();
+  // 밸류에이션 지연 수집(캐시 30분): 표시 종목 우선, 저평가 필터일 땐 스캔한 전체 유니버스
+  ensureVals((FILTER==='val'?ROWS_ALL:ROWS).map(x=>x.u));
 }
 
 /* ── 시장 국면 카드 ── */
@@ -1165,14 +1221,22 @@ function render(){
   if(FILTER==='buy')  rows=rows.filter(x=>['buy2','buy1','ebuy'].includes(x.j.v));
   if(FILTER==='near') rows=rows.filter(x=>['nbuy','nsell','ebuy','esell'].includes(x.j.v));
   if(FILTER==='sell') rows=rows.filter(x=>['sell2','sell1','esell'].includes(x.j.v));
+  if(FILTER==='val')  rows=ROWS_ALL.filter(x=>x.j&&isCheap(x));   // 저평가는 절단 전 전체에서
   const nOf=ks=>ROWS.filter(x=>x.j&&ks.includes(x.j.v)).length;
   const buyN=nOf(['buy2','buy1','ebuy']), sellN=nOf(['sell2','sell1','esell']), nearN=nOf(['nbuy','nsell','ebuy','esell']);
+  const valN=ROWS_ALL.reduce((a,x)=>a+((x.j&&isCheap(x))?1:0),0);
   document.getElementById('st-count').textContent=
-    ROWS.length?('매수 '+buyN+' · 임박 '+nearN+' · 매도 '+sellN
+    ROWS.length?('매수 '+buyN+' · 임박 '+nearN+' · 매도 '+sellN+(valN?' · 💎 저평가 '+valN:'')
       +(FULLN>ROWS.length?' — 전체 '+FULLN+'종목 중 포지션 상위 '+ROWS.length+' 제안':' / '+ROWS.length+'종목')):'';
   if(!rows.length){
+    const valPend=Object.keys(VAL).some(k=>VAL[k].inflight);
     tb.innerHTML='<tr><td colspan="14"><div class="note-empty">'+
-      (ROWS.length? '현재 조건(최근 '+LOOK+unit()+' 이내 크로스 + RSI 기준)을 충족하는 종목이 없습니다.<br>'
+      (FILTER==='val'&&ROWS.length
+        ? (isETFm(MKT)?'ETF는 PER·PBR 개념이 없어 저평가 발굴을 지원하지 않습니다. 개별주 시장을 선택해 주세요.'
+          : valPend?'밸류에이션(PER·PBR) 수집 중입니다… 잠시 후 자동으로 표시됩니다.'
+          : '저평가 조건(흑자 PER '+(isUSm(MKT)?'15':'10')+'배 이하 · ROE 8% 이상 · 52주 고점 대비 −20% 이하)을 동시에 충족하는 종목이 없습니다.<br>'
+            +'시장 전반이 고점권일수록 비는 것이 정상입니다 — 다른 시장도 확인해 보세요.')
+        : ROWS.length? '현재 조건(최근 '+LOOK+unit()+' 이내 크로스 + RSI 기준)을 충족하는 종목이 없습니다.<br>'
         +'«신호 인정» 범위를 늘리거나 필터를 «전체»로 바꿔 임박·추세 유지 종목까지 확인해 보세요.'
         : (SCANNING?'차트 수집 중…':'데이터가 아직 없습니다. «다시 스캔»을 눌러 주세요.'))+'</div></td></tr>';
     return;
@@ -1182,9 +1246,11 @@ function render(){
     const u=x.u, j=x.j, vd=VD[j.v], us=isUSm(u.mkt);
     const fresh=Math.min(j.gc??99,j.dc??99,j.zu??99,j.zd??99)===0;
     const lev=u.lev?'<span class="levchip'+(u.lev.indexOf('-')===0?' inv':'')+'">'+esc(u.lev.indexOf('-')===0?'인버스 '+u.lev.slice(1):'레버리지 '+u.lev)+'</span>':'';
+    const vl=valOf(u);
+    const valc=isCheap(x)?'<span class="valchip">💎 PER '+vl.per.toFixed(1)+' · ROE '+vl.roe.toFixed(0)+'%</span>':'';
     return '<tr class="srow'+(fresh?' fresh':'')+'" data-code="'+u.code+'">'
       +'<td class="mono" style="color:var(--muted2)">'+(i+1)+'</td>'
-      +'<td class="name"><b>'+esc(u.name)+'</b>'+lev+'<span class="mkchip">'+MKCHIP[u.mkt]+'</span>'
+      +'<td class="name"><b>'+esc(u.name)+'</b>'+lev+valc+'<span class="mkchip">'+MKCHIP[u.mkt]+'</span>'
         +'<small class="mono">'+u.code+'</small>'+(u.cap?' <span class="cap">'+fmtCap(u.cap,us)+'</span>':'')+'</td>'
       +'<td class="num mono">'+fmtPx(u.price,us)+'</td>'
       +'<td class="num mono '+cls(u.pct)+'">'+(u.pct>0?'+':'')+u.pct.toFixed(2)+'%</td>'
@@ -1350,7 +1416,7 @@ function judgeReason(x){
   return '<b>'+vd+'</b> — '+parts.join(' ')+'.';
 }
 function detailRow(x){
-  const u=x.u, j=x.j;
+  const u=x.u, j=x.j, vl=valOf(u), cheap=isCheap(x), dp=valDrop(x), uss=isUSm(u.mkt);
   const wrap=document.querySelector('.tbl-wrap');
   const W=Math.max(560,Math.min(920,(wrap?wrap.clientWidth:960)-380));
   const fd=x.fd;
@@ -1366,6 +1432,18 @@ function detailRow(x){
       +'<br><span style="color:var(--muted2);font-size:11px">진입 '+fmtPx(x.plan.entry,isUSm(u.mkt))+' 기준 · 현재 봉 주기의 ATR(14) 변동성으로 산정. '
       +'손절 = 최근 10봉 저점과 1×ATR 중 보수적 값(리스크 상한 2×ATR), 목표 = 리스크의 2배. '
       +'목표 도달 시 분할 매도, 손절선 이탈 시 전량 매도가 원칙입니다.</span></div>':'')
+    +(vl?'<div class="box"><h5>밸류에이션'+(cheap?' · <span style="color:#22c55e">💎 저평가</span>':'')+'</h5>'
+      +'PER <b class="mono">'+(vl.per!=null?vl.per.toFixed(2)+'배':(vl.eps!=null&&vl.eps<0?'적자':'—'))+'</b>'
+      +(vl.cnsPer!=null?' <small style="color:var(--muted2)">(컨센서스 '+vl.cnsPer.toFixed(2)+'배)</small>':'')
+      +' · PBR <b class="mono">'+(vl.pbr!=null?vl.pbr.toFixed(2)+'배':'—')+'</b>'
+      +' · ROE(근사) <b class="mono">'+(vl.roe!=null?vl.roe.toFixed(1)+'%':'—')+'</b>'
+      +' · 배당 <b class="mono">'+(vl.divYield!=null?vl.divYield.toFixed(2)+'%':'—')+'</b>'
+      +(dp!=null?'<br>52주 고점 대비 <b class="mono '+cls(dp)+'">'+dp.toFixed(1)+'%</b>'
+        +(vl.hi52?' <small class="mono" style="color:var(--muted2)">(고점 '+fmtPx(vl.hi52,uss)+' · 저점 '+(vl.lo52?fmtPx(vl.lo52,uss):'—')+')</small>':''):'')
+      +'<br><span style="color:var(--muted2);font-size:11px">'
+      +(cheap?'흑자 저PER + ROE 양호 + 52주 고점 대비 큰 낙폭 — 실적 대비 소외 구간일 수 있습니다. 낙폭 원인이 실적 악화가 아닌지 뉴스·실적 발표를 함께 확인하세요.'
+             :'ROE는 PBR÷PER 근사값입니다. 저평가 판정 기준: 흑자 PER '+(uss?'15':'10')+'배 이하 · ROE 8% 이상 · 52주 고점 대비 −20% 이하.')
+      +'</span></div>':'')
     +'<div class="box"><h5>외국인 수급</h5>'
       +(fd?('소진율 <b class="mono">'+fd.now.toFixed(2)+'%</b> · 5일 <b class="mono '+cls(fd.d5)+'">'+(fd.d5>0?'+':'')+fd.d5.toFixed(2)+'%p</b>'
         +(fd.d20!=null?' · 20일 <b class="mono '+cls(fd.d20)+'">'+(fd.d20>0?'+':'')+fd.d20.toFixed(2)+'%p</b>':'')
@@ -1495,7 +1573,7 @@ segInit('seg-mkt',MKT,v=>{ MKT=v; store('mkt',v); OPENED=null; drawRegimes(); sc
 segInit('seg-itv',ITV,v=>{ ITV=v; store('itv',v); scan(false); });
 segInit('seg-sitv',SITV,v=>{ SITV=v; store('sitv',v); scan(false); });
 segInit('seg-look',LOOK,v=>{ LOOK=+v; store('look',v); compute(); });
-segInit('seg-filter',FILTER,v=>{ FILTER=v; store('filter',v); render(); });
+segInit('seg-filter',FILTER,v=>{ FILTER=v; store('filter',v); render(); if(v==='val') ensureVals(ROWS_ALL.map(x=>x.u)); });
 document.getElementById('btn-rescan').addEventListener('click',()=>scan(true));
 syncItvVis(); syncNotifBtn(); pruneNtf(); drawRegimes();
 
