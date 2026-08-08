@@ -129,7 +129,7 @@
 <div class="filterbar">
   <span class="fl">시장</span>
   <div class="seg" id="seg-mkt">
-    <button data-v="kospi">코스피</button><button data-v="kosdaq">코스닥</button><button data-v="sp500">S&amp;P500</button><button data-v="nasdaq">나스닥</button>
+    <button data-v="kospi">코스피</button><button data-v="kosdaq">코스닥</button><button data-v="sp500">S&amp;P500</button><button data-v="nasdaq">나스닥</button><button data-v="russell2000">러셀2000</button>
   </div>
   <span class="fl">종목 수</span>
   <div class="seg" id="seg-n"></div>
@@ -456,8 +456,8 @@ function krTreemap(host,items,opts){
 const ALLOWED_N=[50,100,200,500];
 const nOpts=()=>[50,100,200,500];   // 전 시장 최대 500 지원 (코스피·코스닥은 시총 상위 500)
 const qs=new URLSearchParams(location.search);
-const MKTS=['kospi','kosdaq','sp500','nasdaq'];
-const isUS=()=>MKT==='sp500'||MKT==='nasdaq';
+const MKTS=['kospi','kosdaq','sp500','nasdaq','russell2000'];
+const isUS=()=>MKT==='sp500'||MKT==='nasdaq'||MKT==='russell2000';
 let MKT=(()=>{ const norm=v=>v==='us'?'sp500':v;   // 구버전 '미국' 선택값 호환
   const q=norm(qs.get('mkt')); if(MKTS.includes(q)) return q;
   try{ const v=norm(localStorage.getItem('alphadesk.hmmkt')); if(MKTS.includes(v)) return v; }catch(e){}
@@ -465,7 +465,7 @@ let MKT=(()=>{ const norm=v=>v==='us'?'sp500':v;   // 구버전 '미국' 선택�
 let N=(()=>{ try{ const v=parseInt(localStorage.getItem('alphadesk.hmpage'),10); if(ALLOWED_N.includes(v)) return v; }catch(e){}
   return 100; })();
 if(!nOpts().includes(N)) N=200;                                // 현 시장이 500 미지원이면 강하
-if(MKT==='sp500') N=500;                                       // S&P500 진입은 항상 전체 500 부터
+if(MKT==='sp500'||MKT==='russell2000') N=500;                        // 지수 전체·상위 500 시장은 500부터
 let DATA=null, loading=false, pending=false, timer=null, ZOOM=null, _rot=0;
 
 function note(m){ document.getElementById('hm-note').textContent=m||''; }
@@ -516,7 +516,7 @@ async function load(force){
   if(loading){ if(force) pending=true; return; }
   if(!force && document.hidden) return;
   const mkt=MKT, n=N;
-  const isus=(mkt==='sp500'||mkt==='nasdaq');
+  const isus=(mkt==='sp500'||mkt==='nasdaq'||mkt==='russell2000');
   const api=isus ? '/api/usheatmap?us='+mkt+'&n='+n : '/api/krheatmap?mkt='+mkt+'&n='+n;
   const file=isus ? 'data/usheatmap_'+mkt+'.json' : 'data/krheatmap_'+mkt+'.json';
   loading=true;
@@ -543,7 +543,7 @@ document.getElementById('seg-mkt').addEventListener('click',e=>{
   MKT=b.dataset.v; try{ localStorage.setItem('alphadesk.hmmkt',MKT); }catch(e){}
   history.replaceState(null,'','?mkt='+MKT);
   ZOOM=null;                                                         // 시장이 바뀌면 섹터 구성도 바뀐다
-  if(MKT==='sp500') N=500;                                           // S&P500 은 500종목 전체가 기본
+  if(MKT==='sp500'||MKT==='russell2000') N=500;                            // 지수 전체·상위 500 시장은 500이 기본
   else if(!nOpts().includes(N)){ N=200; try{ localStorage.setItem('alphadesk.hmpage','200'); }catch(e){} }
   renderSegs(); restart();
 });
