@@ -9,6 +9,18 @@ jobs:
   diag:
     runs-on: ubuntu-latest
     steps:
+      - name: 체크아웃 (러셀 디버그용·임시)
+        uses: actions/checkout@v4
+      - name: 파이썬 (임시)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: fetch_russell.py 단독 실행 — 실제 오류 확인 (임시)
+        run: |
+          pip install -q yfinance
+          cd pipeline && python fetch_russell.py; echo "exit=$?"
+          ls -la data/usheatmap_russell2000.json 2>/dev/null || echo "산출 파일 없음"
+
       - name: 시간차 샘플링 (3회 × 35초)
         run: |
           sample() {
