@@ -9,37 +9,6 @@ jobs:
   diag:
     runs-on: ubuntu-latest
     steps:
-      - name: 재무제표 엔드포인트 프로브 (임시)
-        run: |
-          H1='User-Agent: Mozilla/5.0'
-          H2='Referer: https://m.stock.naver.com/'
-          for u in "https://m.stock.naver.com/api/stock/005930/finance/annual" \
-                   "https://m.stock.naver.com/api/stock/005930/finance/quarter" \
-                   "https://api.stock.naver.com/stock/AAPL.O/finance/annual" \
-                   "https://api.stock.naver.com/stock/AAPL.O/finance/quarter" \
-                   "https://api.stock.naver.com/stock/JPM/finance/annual"; do
-            echo "== $u"
-            curl -s -H "$H1" -H "$H2" "$u" | python3 -c "
-          import json,sys
-          raw=sys.stdin.read()
-          try:
-              d=json.loads(raw)
-              print(' 최상위 키:', list(d.keys())[:20] if isinstance(d,dict) else type(d))
-              fi=d.get('financeInfo') if isinstance(d,dict) else None
-              if fi:
-                  print(' financeInfo 키:', list(fi.keys())[:20])
-                  rows=fi.get('rowList') or []
-                  print(' rowList', len(rows), '행')
-                  for rr in rows[:6]:
-                      cols=rr.get('columns') or {}
-                      ks=list(cols.keys())[:8]
-                      print('  ·', rr.get('title'), '| 기간:', ks, '| 값예:', [ (cols.get(k) or {}).get('value') for k in ks[:3] ])
-              else:
-                  print(' (financeInfo 없음) 본문 앞부분:', raw[:300])
-          except Exception as e:
-              print(' JSON 아님:', raw[:200], '| ERR', e)"
-          done
-
       - name: 시간차 샘플링 (3회 × 35초)
         run: |
           sample() {
