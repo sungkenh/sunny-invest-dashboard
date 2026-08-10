@@ -271,6 +271,16 @@
   .fin-chart h5 .lg i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:3px;vertical-align:-1px}
   .fin-tip{position:absolute;pointer-events:none;background:var(--panel2,#0d1526);border:1px solid var(--border);border-radius:8px;
     padding:6px 9px;font-size:0.6875rem;display:none;z-index:6;box-shadow:0 6px 18px rgba(0,0,0,.4);line-height:1.65;white-space:nowrap}
+  .fin-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:980px){.fin-grid{grid-template-columns:1fr}}
+  .fin-grid .fin-chart{margin-bottom:0}
+  .fin-grid{margin-bottom:10px}
+  /* 핵심 요약 스트립 */
+  .fin-sum{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+  .fin-kpi{flex:1;min-width:118px;border:1px solid var(--border);border-radius:10px;background:var(--panel);padding:7px 10px}
+  .fin-kpi .k{font-size:0.625rem;color:var(--muted2);font-weight:700}
+  .fin-kpi .v{font-size:0.9375rem;font-weight:800;margin-top:1px}
+  .fin-kpi .s{font-size:0.625rem;color:var(--muted2);margin-top:1px}
   .fin-tbl-wrap{overflow:auto;border:1px solid var(--border);border-radius:10px;max-height:420px}
   table.fin{border-collapse:separate;border-spacing:0;width:100%;font-size:0.6875rem;min-width:560px}
   table.fin th,table.fin td{padding:5px 9px;border-bottom:1px solid #141d31;white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums}
@@ -2675,21 +2685,21 @@ function finBarsSVG(view,us){
     svg+='<rect data-fi="'+i+'" x="'+(PX+i/n*PW).toFixed(1)+'" y="0" width="'+(PW/n).toFixed(1)+'" height="'+H+'" fill="transparent"/>';
   return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block">'+svg+'</svg>';
 }
-/* 수익성·건전성 꺾은선 (ROE·영업이익률·순이익률·부채비율) */
-function finLinesSVG(view){
-  const series=view.lines.filter(s=>s.row&&s.row.view.some(v=>v!=null));
-  const n=view.cols.length; if(!n||!series.length) return '';
-  const W=640,H=150,PX=40,PB=24,PT=8,PW=W-PX-8;
+/* 범용 다중 꺾은선 (수익성·밸류에이션·배당 공용) — yFmt 로 축 단위 지정 */
+function finMultiLine(cols,seriesIn,yFmt,H){
+  const series=(seriesIn||[]).filter(s=>s&&s.row&&s.row.view.some(v=>v!=null));
+  const n=cols.length; if(!n||!series.length) return '';
+  const W=640; H=H||150; const PX=42,PB=24,PT=8,PW=W-PX-8;
   let mx=-Infinity,mn=Infinity;
   for(const s of series) for(const v of s.row.view) if(v!=null){ if(v>mx)mx=v; if(v<mn)mn=v; }
   if(!(mx>mn)){ mx=mn+1; }
-  const pad=(mx-mn)*0.12||1; mx+=pad; mn-=pad;
+  const pad=(mx-mn)*0.12||1; mx+=pad; mn-=pad; if(mn>0&&mn<pad*2) mn=0;
   const Y=v=>PT+(mx-v)/(mx-mn)*(H-PT-PB);
   const X=i=>PX+(i+0.5)/n*PW;
   let svg='';
   for(const g of [0,0.5,1]){ const gv=mn+(mx-mn)*g;
     svg+='<line x1="'+PX+'" x2="'+(PX+PW)+'" y1="'+Y(gv).toFixed(1)+'" y2="'+Y(gv).toFixed(1)+'" stroke="var(--border)" stroke-width="0.6" stroke-dasharray="3 3"/>'
-       +'<text x="'+(PX-5)+'" y="'+(Y(gv)+3)+'" font-size="8.5" fill="var(--muted2)" text-anchor="end">'+gv.toFixed(0)+'%</text>'; }
+       +'<text x="'+(PX-5)+'" y="'+(Y(gv)+3)+'" font-size="8.5" fill="var(--muted2)" text-anchor="end">'+yFmt(gv)+'</text>'; }
   if(mn<0&&mx>0) svg+='<line x1="'+PX+'" x2="'+(PX+PW)+'" y1="'+Y(0).toFixed(1)+'" y2="'+Y(0).toFixed(1)+'" stroke="var(--muted2)" stroke-width="0.8"/>';
   for(const s of series){ let path='',pen=0;
     for(let i=0;i<n;i++){ const v=s.row.view[i]; if(v==null){pen=0;continue;} path+=(pen?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1); pen=1;
@@ -2697,8 +2707,36 @@ function finLinesSVG(view){
     svg+='<path d="'+path+'" fill="none" stroke="'+s.c+'" stroke-width="1.4"/>';
   }
   for(let i=0;i<n;i++)
-    svg+='<text x="'+X(i).toFixed(1)+'" y="'+(H-7)+'" font-size="8.5" fill="'+(view.cols[i].est?'var(--accent2)':'var(--muted2)')+'" text-anchor="middle">'+view.cols[i].lab+(view.cols[i].est?'(E)':'')+'</text>'
+    svg+='<text x="'+X(i).toFixed(1)+'" y="'+(H-7)+'" font-size="8.5" fill="'+(cols[i].est?'var(--accent2)':'var(--muted2)')+'" text-anchor="middle">'+cols[i].lab+(cols[i].est?'(E)':'')+'</text>'
       +'<rect data-fi="'+i+'" x="'+(PX+i/n*PW).toFixed(1)+'" y="0" width="'+(PW/n).toFixed(1)+'" height="'+H+'" fill="transparent"/>';
+  return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block">'+svg+'</svg>';
+}
+/* 성장률(YoY) 묶음 막대 — 연간=전기 대비 · 분기=전년 동기 대비 */
+function finGrowthSVG(cols,grow){
+  const series=[['매출',grow.sales,'var(--accent)'],['영업이익',grow.op,'#f4b000'],['순이익',grow.ni,'#22c55e']].filter(s=>s[1]&&s[1].some(v=>v!=null));
+  const n=cols.length; if(!n||!series.length) return '';
+  const W=640,H=150,PX=42,PB=24,PT=8,PW=W-PX-8;
+  let mx=0,mn=0;
+  for(const s of series) for(const v of s[1]) if(v!=null){ if(v>mx)mx=v; if(v<mn)mn=v; }
+  if(!(mx>mn)) return '';
+  mx*=1.1; if(mn<0) mn*=1.1;
+  const Y=v=>PT+(mx-v)/(mx-mn)*(H-PT-PB);
+  const X=i=>PX+(i+0.5)/n*PW;
+  const gw=Math.min(42,PW/n*0.66), bw=gw/series.length;
+  let svg='<line x1="'+PX+'" x2="'+(PX+PW)+'" y1="'+Y(0).toFixed(1)+'" y2="'+Y(0).toFixed(1)+'" stroke="var(--muted2)" stroke-width="0.8"/>';
+  for(const g of [0.5,1]){ const gv=mn+(mx-mn)*g;
+    svg+='<text x="'+(PX-5)+'" y="'+(Y(gv)+3)+'" font-size="8.5" fill="var(--muted2)" text-anchor="end">'+(gv>0?'+':'')+gv.toFixed(0)+'%</text>'; }
+  for(let i=0;i<n;i++){
+    const cx=X(i);
+    series.forEach((s,si)=>{
+      const v=s[1][i]; if(v==null) return;
+      const x=cx-gw/2+si*bw, y0=Y(0), y1=Y(v);
+      svg+='<rect x="'+x.toFixed(1)+'" y="'+Math.min(y0,y1).toFixed(1)+'" width="'+(bw-1.5).toFixed(1)+'" height="'+Math.max(1,Math.abs(y0-y1)).toFixed(1)
+        +'" fill="'+s[2]+'" opacity="'+(cols[i].est?0.45:0.9)+'" rx="1.5"/>';
+    });
+    svg+='<text x="'+cx.toFixed(1)+'" y="'+(H-7)+'" font-size="8.5" fill="'+(cols[i].est?'var(--accent2)':'var(--muted2)')+'" text-anchor="middle">'+cols[i].lab+(cols[i].est?'(E)':'')+'</text>'
+      +'<rect data-fi="'+i+'" x="'+(PX+i/n*PW).toFixed(1)+'" y="0" width="'+(PW/n).toFixed(1)+'" height="'+H+'" fill="transparent"/>';
+  }
   return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block">'+svg+'</svg>';
 }
 function finPeriodLab(key,mkt){          // '202312' → '23.12 · '2023.09.30' → '23.9
@@ -2722,59 +2760,130 @@ async function finRender(force){
     return;
   }
   const us=wlValMeta(SEL).mkt==='us';
-  // 표시 열: 분기는 최근 8개(추정 포함), 연간은 전체
+  // 표시 열: 분기는 최근 8개(추정 포함), 연간은 전체 — 성장률은 절단 전 전체 열로 계산
   const keep=d.cols.map((c,i)=>i);
   const idx=FIN_PERIOD==='quarter'&&keep.length>8?keep.slice(-8):keep;
   const cols=idx.map(i=>({key:d.cols[i].key,est:!!d.cols[i].est,lab:finPeriodLab(d.cols[i].key,d.mkt)}));
-  const pick=names=>{ const r=finRowOf(d,names); return r?{title:r.title,view:idx.map(i=>r.vals[i]),raw:idx.map(i=>r.raw[i])}:null; };
+  const fRow=names=>finRowOf(d,names);
+  const sl=r=>r?{title:r.title||'',view:idx.map(i=>r.vals[i]),raw:idx.map(i=>r.raw?r.raw[i]:'')}:null;
+  const fSales=fRow(['매출액']), fOp=fRow(['영업이익','EBIT']), fNi=fRow(['당기순이익','지배주주순이익','세후손익','순이익']);
+  const opName=fRow(['영업이익'])?'영업이익':(fRow(['EBIT'])?'EBIT':'영업이익');
+  // 이익률: 제공 행 우선, 없으면 매출 대비 파생 (미국 = EBIT 마진·순이익률 계산)
+  const ratioOf=(num,den)=>(num&&den)?{vals:den.vals.map((s,i)=>(s>0&&num.vals[i]!=null)?num.vals[i]/s*100:null)}:null;
+  const fOpmRaw=fRow(['영업이익률']), fNimRaw=fRow(['순이익률']);
+  const fOpm=fOpmRaw||ratioOf(fOp,fSales), fNim=fNimRaw||ratioOf(fNi,fSales);
+  // YoY 성장률: 연간 = 전기 대비 · 분기 = 전년 동기(4분기 전) 대비
+  const lag=FIN_PERIOD==='quarter'?4:1;
+  const growF=r=>r?d.cols.map((c,i)=>{ if(i<lag) return null; const a=r.vals[i],b=r.vals[i-lag];
+    return (a!=null&&b!=null&&b>0)?(a/b-1)*100:null; }):null;
+  const gSalesF=growF(fSales), gOpF=growF(fOp), gNiF=growF(fNi);
+  const slA=a=>a?idx.map(i=>a[i]):null;
   const view={cols,
-    sales:pick(['매출액']), op:pick(['영업이익']), ni:pick(['당기순이익','지배주주순이익','순이익']),
-    opm:pick(['영업이익률']),
-    lines:[{row:pick(['ROE']),c:'#f4b000',l:'ROE'},{row:pick(['영업이익률']),c:'#e879f9',l:'영업이익률'},
-           {row:pick(['순이익률']),c:'#22c55e',l:'순이익률'},{row:pick(['부채비율']),c:'#3b82f6',l:'부채비율'}]};
+    sales:sl(fSales), op:sl(fOp), ni:sl(fNi),
+    opm:fOpm?{view:idx.map(i=>fOpm.vals[i])}:null,
+    nim:fNim?{view:idx.map(i=>fNim.vals[i])}:null,
+    grow:{sales:slA(gSalesF), op:slA(gOpF), ni:slA(gNiF)},
+    per:sl(fRow(['PER'])), pbr:sl(fRow(['PBR'])),
+    eps:sl(fRow(['EPS'])), dps:sl(fRow(['주당배당금'])), divy:sl(fRow(['배당수익률','시가배당률'])),
+    roe:sl(fRow(['ROE','ROA'])), debt:sl(fRow(['부채비율'])),
+  };
+  view.lines=[{row:view.roe,c:'#f4b000',l:fRow(['ROE'])?'ROE':'ROA'},
+    {row:view.opm,c:'#e879f9',l:opName+'률'+(fOpmRaw?'':'·파생')},
+    {row:view.nim,c:'#22c55e',l:'순이익률'+(fNimRaw?'':'·파생')},
+    {row:view.debt,c:'#3b82f6',l:'부채비율'}];
+  // 핵심 요약(KPI): 마지막 확정(비추정) 기간 기준
+  let la=-1; d.cols.forEach((c,i)=>{ if(!c.est) la=i; });
+  const yoyTxt=r=>{
+    if(!r||la<lag) return null;
+    const a=r.vals[la], b=r.vals[la-lag];
+    if(a==null||b==null) return null;
+    if(b<0&&a>0) return ['흑자전환','up'];
+    if(a<0&&b<0) return ['적자 지속','down'];
+    if(a<0) return ['적자전환','down'];
+    if(!(b>0)) return null;
+    const v=(a/b-1)*100; return [(v>0?'+':'')+v.toFixed(1)+'%', v>0?'up':(v<0?'down':'flat')];
+  };
+  const kSales=yoyTxt(fSales), kOp=yoyTxt(fOp), kNi=yoyTxt(fNi);
+  const kOpm=(fOpm&&la>=0)?fOpm.vals[la]:null, kOpmP=(fOpm&&la>=lag)?fOpm.vals[la-lag]:null;
+  const roeRow=fRow(['ROE','ROA']), debtRow=fRow(['부채비율']);
+  const kRoe=(roeRow&&la>=0)?roeRow.vals[la]:null;
+  const kDebt=(debtRow&&la>=0)?debtRow.vals[la]:null;
+  const kpi=(k,v,cls2,s)=> v==null?'':'<div class="fin-kpi"><div class="k">'+k+'</div><div class="v '+(cls2||'')+'">'+v+'</div>'+(s?'<div class="s">'+s+'</div>':'')+'</div>';
+  const laLab=la>=0?finPeriodLab(d.cols[la].key,d.mkt):'';
+  const yoyLbl=FIN_PERIOD==='quarter'?'전년 동기 대비':'전년 대비';
+  const sum='<div class="fin-sum">'
+    +kpi('매출 성장', kSales&&kSales[0], kSales&&kSales[1], laLab+' 확정 · '+yoyLbl)
+    +kpi(opName+' 성장', kOp&&kOp[0], kOp&&kOp[1], yoyLbl)
+    +kpi('순이익 성장', kNi&&kNi[0], kNi&&kNi[1], yoyLbl)
+    +kpi(opName+'률', kOpm!=null?kOpm.toFixed(1)+'%':null, '', (kOpm!=null&&kOpmP!=null)?('전년 '+kOpmP.toFixed(1)+'% → '+((kOpm-kOpmP)>=0?'+':'')+(kOpm-kOpmP).toFixed(1)+'%p'):'')
+    +kpi(fRow(['ROE'])?'ROE':'ROA', kRoe!=null?kRoe.toFixed(1)+'%':null, '', '수익성')
+    +kpi('부채비율', kDebt!=null?kDebt.toFixed(1)+'%':null, (kDebt!=null&&kDebt>200)?'down':'', kDebt!=null?(kDebt>200?'높음 주의':'재무 건전성'):'')
+    +'</div>';
   const seg='<div class="fin-bar">'
     +'<button class="px-tf'+(FIN_PERIOD==='annual'?' on':'')+'" data-fp="annual">연간</button>'
     +'<button class="px-tf'+(FIN_PERIOD==='quarter'?' on':'')+'" data-fp="quarter">분기</button>'
     +'<span class="fin-note">단위: '+esc2(d.unit||(us?'USD(백만)':'억원'))+' · <span style="color:var(--accent2)">파랑 열 = 컨센서스 추정(E)</span> · 출처 네이버</span></div>';
-  const lg1='<span class="lg"><i style="background:var(--accent)"></i>매출액</span><span class="lg"><i style="background:#f4b000"></i>영업이익</span>'
-    +'<span class="lg"><i style="background:#22c55e"></i>순이익</span><span class="lg"><i style="background:#e879f9"></i>영업이익률(선)</span>';
-  const lg2=view.lines.filter(s=>s.row&&s.row.view.some(v=>v!=null)).map(s=>'<span class="lg"><i style="background:'+s.c+'"></i>'+s.l+'</span>').join('');
+  const lg=s=>'<span class="lg"><i style="background:'+s[1]+'"></i>'+s[0]+'</span>';
+  const lg1=[['매출액','var(--accent)'],[opName,'#f4b000'],['순이익','#22c55e'],[opName+'률(선)','#e879f9']].map(lg).join('');
+  const lg2=view.lines.filter(s=>s.row&&s.row.view.some(v=>v!=null)).map(s=>lg([s.l,s.c])).join('');
+  const lgG=[['매출','var(--accent)'],[opName,'#f4b000'],['순이익','#22c55e']].map(lg).join('');
+  const gSvg=finGrowthSVG(cols,view.grow);
+  const vSeries=[{row:view.per,c:'#f4b000',l:'PER'},{row:view.pbr,c:'#3b82f6',l:'PBR'}];
+  const lgV=vSeries.filter(s=>s.row&&s.row.view.some(v=>v!=null)).map(s=>lg([s.l,s.c])).join('');
+  const vSvg=lgV?finMultiLine(cols,vSeries,v=>v.toFixed(0)+'배'):'';
+  const dSvg=view.dps&&view.dps.view.some(v=>v!=null)
+    ?finMultiLine(cols,[{row:view.dps,c:'#22c55e',l:'주당배당금'}],v=>Math.round(v).toLocaleString())
+    :(view.divy&&view.divy.view.some(v=>v!=null)?finMultiLine(cols,[{row:view.divy,c:'#22c55e',l:'배당수익률'}],v=>v.toFixed(1)+'%'):'');
+  const linesSvg=lg2?finMultiLine(cols,view.lines,v=>v.toFixed(0)+'%'):'';
   const tbl='<div class="fin-tbl-wrap"><table class="fin"><thead><tr><th>항목</th>'
     +cols.map(c=>'<th'+(c.est?' class="est"':'')+'>'+c.lab+(c.est?' (E)':'')+'</th>').join('')+'</tr></thead><tbody>'
     +d.rows.map(r=>'<tr><td>'+esc2(r.title)+'</td>'
       +idx.map((i,k)=>{ const rv=r.raw[i]||'—';
         return '<td class="'+(cols[k].est?'est ':'')+(String(rv).indexOf('-')===0&&rv!=='-'?'neg':'')+'">'+esc2(rv==='' ?'—':rv)+'</td>'; }).join('')
       +'</tr>').join('')+'</tbody></table></div>';
-  pane.innerHTML=seg
+  pane.innerHTML=seg+sum
     +'<div class="fin-chart" id="fin-c1"><h5>실적 추이'+(FIN_PERIOD==='quarter'?' (분기)':' (연간)')+' '+lg1+'</h5>'+finBarsSVG(view,us)+'<div class="fin-tip" id="fin-tip1"></div></div>'
-    +(lg2?'<div class="fin-chart" id="fin-c2"><h5>수익성 · 건전성 (%) '+lg2+'</h5>'+finLinesSVG(view)+'<div class="fin-tip" id="fin-tip2"></div></div>':'')
+    +'<div class="fin-grid">'
+    +(gSvg?'<div class="fin-chart" id="fin-c3"><h5>성장률 YoY ('+yoyLbl+') '+lgG+'</h5>'+gSvg+'<div class="fin-tip" id="fin-tip3"></div></div>':'')
+    +(linesSvg?'<div class="fin-chart" id="fin-c2"><h5>수익성 · 건전성 (%) '+lg2+'</h5>'+linesSvg+'<div class="fin-tip" id="fin-tip2"></div></div>':'')
+    +(vSvg?'<div class="fin-chart" id="fin-c4"><h5>밸류에이션 추이 (배) '+lgV+'</h5>'+vSvg+'<div class="fin-tip" id="fin-tip4"></div></div>':'')
+    +(dSvg?'<div class="fin-chart" id="fin-c5"><h5>주주환원 — '+(view.dps&&view.dps.view.some(v=>v!=null)?'주당배당금(원)':'배당수익률(%)')+'</h5>'+dSvg+'<div class="fin-tip" id="fin-tip5"></div></div>':'')
+    +'</div>'
     +tbl
-    +'<div class="srep-note">막대에 마우스를 올리면 기간별 상세 값이 표시됩니다. 컨센서스(E)는 증권가 추정 평균으로 실제 발표치와 다를 수 있습니다. '
-    +(us?'미국 종목 단위는 USD 백만(차트 축은 B=10억 달러)입니다.':'금액 단위는 억원(차트 축은 조원 환산)입니다.')+'</div>';
+    +'<div class="srep-note">차트에 마우스를 올리면 기간별 상세 값이 표시됩니다. 컨센서스(E)는 증권가 추정 평균으로 실제 발표치와 다를 수 있습니다. '
+    +'성장률 YoY는 '+(FIN_PERIOD==='quarter'?'전년 동기(4개 분기 전) 대비':'전년 대비')+'이며, 직전 기준치가 적자면 표시하지 않습니다(요약 카드에는 흑자전환·적자전환으로 표기). '
+    +(us?'미국 종목 단위는 USD 백만(차트 축 B = 10억 달러)이고 영업이익 대신 EBIT, ROE 대신 ROA가 제공되며 이익률은 매출 대비 파생 계산입니다.':'금액 단위는 억원(차트 축 조원 환산)입니다.')+'</div>';
   // 기간 토글
   pane.querySelectorAll('[data-fp]').forEach(b=>b.addEventListener('click',()=>{
     FIN_PERIOD=b.dataset.fp; try{ localStorage.setItem('alphadesk.finperiod',FIN_PERIOD); }catch(e){}
     finRender(true);
   }));
-  // 호버 툴팁 (기간별 상세)
+  // 호버 툴팁 (기간별 상세 — 모든 차트 공용)
   const tipFor=(host,tip)=>{
     host.addEventListener('mousemove',e=>{
       const t=e.target.closest('[data-fi]'); const el=document.getElementById(tip);
       if(!t||!el){ if(el) el.style.display='none'; return; }
       const i=+t.dataset.fi, c=cols[i];
-      const line=(lab,r,pct)=> r&&r.view[i]!=null?('<br>'+lab+' <b class="mono">'+(pct?r.view[i].toFixed(1)+'%':finFmt(r.view[i],us))+'</b>'):'';
+      const line=(lab,r,fmt)=> (r&&r.view&&r.view[i]!=null)?('<br>'+lab+' <b class="mono">'+fmt(r.view[i])+'</b>'):'';
+      const money=v=>finFmt(v,us), pct=v=>v.toFixed(1)+'%', mult=v=>v.toFixed(2)+'배';
+      const ga=k=>view.grow[k]&&view.grow[k][i]!=null?('<br>'+({sales:'매출',op:opName,ni:'순이익'})[k]+' YoY <b class="mono">'+(view.grow[k][i]>0?'+':'')+view.grow[k][i].toFixed(1)+'%</b>'):'';
       el.innerHTML='<b>'+c.lab+(c.est?' (컨센서스 E)':'')+'</b>'
-        +line('매출액',view.sales)+line('영업이익',view.op)+line('순이익',view.ni)
-        +line('영업이익률',view.opm,1)+line('ROE',view.lines[0].row,1)+line('순이익률',view.lines[2].row,1)+line('부채비율',view.lines[3].row,1);
+        +line('매출액',view.sales,money)+line(opName,view.op,money)+line('순이익',view.ni,money)
+        +ga('sales')+ga('op')+ga('ni')
+        +line(opName+'률',view.opm,pct)+line('순이익률',view.nim,pct)
+        +line(view.lines[0].l,view.roe,pct)+line('부채비율',view.debt,pct)
+        +line('PER',view.per,mult)+line('PBR',view.pbr,mult)
+        +line('주당배당금',view.dps,v=>Math.round(v).toLocaleString()+'원')+line('배당수익률',view.divy,pct);
       const r=host.getBoundingClientRect();
       el.style.display='block';
-      el.style.left=Math.min(e.clientX-r.left+14, r.width-190)+'px';
+      el.style.left=Math.min(e.clientX-r.left+14, r.width-200)+'px';
       el.style.top=Math.max(6,e.clientY-r.top-10)+'px';
     });
     host.addEventListener('mouseleave',()=>{ const el=document.getElementById(tip); if(el) el.style.display='none'; });
   };
-  const c1=document.getElementById('fin-c1'); if(c1) tipFor(c1,'fin-tip1');
-  const c2=document.getElementById('fin-c2'); if(c2) tipFor(c2,'fin-tip2');
+  for(const [cid,tid] of [['fin-c1','fin-tip1'],['fin-c2','fin-tip2'],['fin-c3','fin-tip3'],['fin-c4','fin-tip4'],['fin-c5','fin-tip5']]){
+    const el=document.getElementById(cid); if(el) tipFor(el,tid);
+  }
 }
 const esc2=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 document.querySelector('.tab[data-t="fin"]').addEventListener('click',()=>finRender());
