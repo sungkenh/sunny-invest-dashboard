@@ -9,26 +9,6 @@ jobs:
   diag:
     runs-on: ubuntu-latest
     steps:
-      - name: 지수 PER·PBR 엔드포인트 프로브 (임시)
-        run: |
-          H1='User-Agent: Mozilla/5.0'
-          H2='Referer: https://m.stock.naver.com/'
-          for u in "https://m.stock.naver.com/api/index/KOSPI/basic" \
-                   "https://m.stock.naver.com/api/index/KOSPI/integration" \
-                   "https://m.stock.naver.com/api/index/KOSDAQ/integration"; do
-            echo "== $u"
-            curl -s -H "$H1" -H "$H2" "$u" | python3 -c "
-          import json,sys
-          try:
-              d=json.load(sys.stdin)
-              print(' 키:', list(d.keys())[:30])
-              for arrk in ('totalInfos','indexTotalInfos'):
-                  for t in (d.get(arrk) or []): print('  %s: %s = %s' % (arrk, t.get('code'), t.get('value')))
-              for k,v in d.items():
-                  if isinstance(v,(str,int,float)) and any(x in k.lower() for x in ('per','pbr','yield','ratio')): print('  직접필드', k,'=',v)
-          except Exception as e: print(' ERR', e)"
-          done
-
       - name: 시간차 샘플링 (3회 × 35초)
         run: |
           sample() {
