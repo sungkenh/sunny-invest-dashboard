@@ -248,6 +248,41 @@
   .wl .pc{font-size:0.75rem;text-align:right}
   .wl .del{color:var(--muted2);font-size:0.875rem;text-align:center}
   .wl .del:hover{color:var(--up)}
+  /* 관심종목 매수시기 칩 (판정·PBR-ROE 회귀) */
+  .wl-sig{display:flex;gap:4px;margin-top:3px;flex-wrap:wrap}
+  .wl-chip{font-size:0.5938rem;font-weight:800;border-radius:4px;padding:0 4px;border:1px solid var(--border);color:var(--muted2);white-space:nowrap}
+  .wl-chip.buy{color:var(--up);border-color:var(--up)}
+  .wl-chip.sell{color:var(--down);border-color:var(--down)}
+  .wl-chip.cheap{color:#22c55e;border-color:rgba(34,197,94,.55)}
+  .wl-chip.rich{color:var(--down);border-color:var(--down)}
+  /* 매수 타이밍 진단 (심층 분석 카드 상단) */
+  .wl-diag{margin:0 14px 10px;border:1px solid var(--border);border-radius:10px;padding:10px 12px;
+    background:var(--panel2,#0d1526);font-size:0.75rem;line-height:1.7}
+  .wl-diag b.v{font-size:0.8125rem}
+  .wl-diag .go{color:var(--accent);font-weight:700;cursor:pointer;text-decoration:none;font-size:0.6875rem}
+  .wl-diag .go:hover{text-decoration:underline}
+  .wl-diag .sum{margin-top:5px;border-top:1px dashed var(--border);padding-top:6px}
+  /* 재무제표 탭 */
+  .fin-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+  .fin-note{font-size:0.6562rem;color:var(--muted2);margin-left:auto}
+  .fin-chart{border:1px solid var(--border);border-radius:10px;background:var(--panel);padding:9px 10px 4px;margin-bottom:10px;position:relative}
+  .fin-chart h5{margin:0 0 5px;font-size:0.6875rem;color:var(--muted);font-weight:800;display:flex;gap:10px;flex-wrap:wrap}
+  .fin-chart h5 .lg{font-weight:700;color:var(--muted2)}
+  .fin-chart h5 .lg i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:3px;vertical-align:-1px}
+  .fin-tip{position:absolute;pointer-events:none;background:var(--panel2,#0d1526);border:1px solid var(--border);border-radius:8px;
+    padding:6px 9px;font-size:0.6875rem;display:none;z-index:6;box-shadow:0 6px 18px rgba(0,0,0,.4);line-height:1.65;white-space:nowrap}
+  .fin-tbl-wrap{overflow:auto;border:1px solid var(--border);border-radius:10px;max-height:420px}
+  table.fin{border-collapse:separate;border-spacing:0;width:100%;font-size:0.6875rem;min-width:560px}
+  table.fin th,table.fin td{padding:5px 9px;border-bottom:1px solid #141d31;white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums}
+  table.fin th:first-child,table.fin td:first-child{text-align:left;position:sticky;left:0;background:var(--panel);font-weight:700;z-index:1}
+  table.fin thead th{color:var(--muted);font-weight:800;border-bottom:1px solid var(--border);background:var(--panel);position:sticky;top:0;z-index:2}
+  table.fin thead th:first-child{z-index:3}
+  table.fin th.est,table.fin td.est{color:var(--accent2);background:rgba(59,130,246,.07)}
+  table.fin tbody tr:hover td{background:#101a2e}
+  table.fin tbody tr:hover td:first-child{background:#13233f}
+  table.fin td.neg{color:var(--down)}
+  body.light table.fin tbody tr:hover td{background:#eef2f8}
+  body.light table.fin tbody tr:hover td:first-child{background:#e2e9f5}
 
   /* 일정 */
   .sch{display:flex;gap:10px;padding:9px 6px;border-bottom:1px solid #141d31}
@@ -703,15 +738,18 @@
   <div class="col">
     <div class="card deep">
       <div class="head" id="deep-head"></div>
+      <div class="wl-diag" id="wl-diag" style="display:none"></div>
       <div id="tv-chart" class="tv-chart"></div>
       <div class="tabs" id="deep-tabs">
         <div class="tab on" data-t="m">개요 · 투자지표</div>
+        <div class="tab" data-t="fin">📊 재무제표</div>
         <div class="tab" data-t="c">기업 생태계</div>
         <div class="tab" data-t="r">연관 종목</div>
         <div class="tab" data-t="news">최신 뉴스</div>
         <div class="tab" data-t="report">증권사 리포트</div>
       </div>
       <div class="tabpane on" id="pane-m"></div>
+      <div class="tabpane" id="pane-fin"></div>
       <div class="tabpane" id="pane-c"></div>
       <div class="tabpane" id="pane-r"></div>
       <div class="tabpane" id="pane-news"></div>
@@ -1205,7 +1243,7 @@ function renderWL(){
     const hasPx = r.px!=null;
     const cur = (r.mk==='kr') ? '₩' : '$';   // 한국 ₩ · 미국 $
     return `<tr data-sym="${r.sym}" class="${r.sym===SEL?'sel':''}">
-      <td><span class="sym">${r.name}</span><span class="mk">${(r.mk||'').toUpperCase()}</span></td>
+      <td><span class="sym">${r.name}</span><span class="mk">${(r.mk||'').toUpperCase()}</span>${wlSigChips(r.sym)}</td>
       <td class="px mono">${hasPx?`<span class="cur">${cur}</span>${fmt(r.px)}`:'…'}</td>
       <td class="pc ${cls(r.pct||0)} mono">${hasPx?arr(r.pct)+' '+sign(r.pct)+'%':''}</td>
       <td class="del" data-del="${r.sym}">×</td>
@@ -1216,6 +1254,10 @@ function renderWL(){
       SEL=tr.dataset.sym; renderWL(); renderDeep();
     });
   });
+  renderWLDiag();
+  // 재무제표 탭이 열려 있는데 다른 종목을 고르면 그 종목으로 갱신
+  const pf=document.getElementById('pane-fin');
+  if(pf&&pf.classList.contains('on')&&FIN_LAST&&FIN_LAST.indexOf(SEL+'|')!==0) finRender();
 }
 // 검색 결과에서 호출: sym=yfinance 심볼(예: 005930.KS, NVDA), name=표시명, mk=kr|us
 function addWL(sym,name,mk){
@@ -2424,6 +2466,7 @@ function updateLiveBadge(n){
 
 /* ---- 관심종목 실시간 시세: data/quotes.json ---- */
 async function loadWatch(){
+  wlSigRefresh();                          // 매수시기 진단(10분 캐시 — 대부분 즉시 반환, quote 조기 return 과 무관하게 먼저)
   const syms=[...new Set(WL.map(x=>x.sym))];
   const apply=q=>{ WL.forEach(it=>{ const v=q[it.sym]; if(v && typeof v.price==='number'){ it.px=v.price; it.pct=v.pct; } }); renderWL(); renderDeep(); };
   if(syms.length){
@@ -2437,6 +2480,304 @@ async function loadWatch(){
     if(r.ok) apply(await r.json());
   }catch(e){}
 }
+
+/* ===== 관심종목 매수시기 진단 — 일봉 MACD·RSI 판정 + PBR-ROE 회귀 적정 PBR =====
+   판정: 최근 5거래일 내 MACD(12,26,9) 골든크로스 + RSI(14)≥50 → 매수 신호(반대는 매도),
+         크로스가 없으면 MACD-시그널 배열과 RSI 로 상승/하락/중립 — 매매 시그널 페이지 장기 모드와 같은 기준.
+   회귀: 잔여이익모형 justified PBR=(ROE−g)/(r−g)를 시장 평균 가격선으로 근사한
+         코스피 12MF 회귀식 y=0.0696×ROE+0.2953 — 현 PBR 이 −10% 이하면 저평가(매수 검토 구간). */
+const WLSIG={};                            // sym → {ts, j, val, gap}
+const WLSIG_TTL=10*60*1000;
+const WLREG_A=0.0696, WLREG_B=0.2953;
+function wlJudge(closes){
+  const v=(closes||[]).filter(x=>isFinite(x)&&x>0);
+  if(v.length<40) return null;
+  const {macd,signal}=macdArr(v), rs=rsiArr(v,14), L=v.length, rsi=rs[L-1];
+  const cross=(a,b)=>{ for(let i=L-1;i>=Math.max(1,L-5);i--){ if(a[i]!=null&&b[i]!=null&&a[i-1]!=null&&b[i-1]!=null&&a[i]>b[i]&&a[i-1]<=b[i-1]) return L-1-i; } return null; };
+  const gc=cross(macd,signal), dc=cross(signal,macd), m=macd[L-1], s=signal[L-1];
+  if(gc!=null&&rsi>=50) return {v:'buy',t:'매수 신호',ago:gc,rsi};
+  if(dc!=null&&rsi<50)  return {v:'sell',t:'매도 신호',ago:dc,rsi};
+  if(m!=null&&s!=null&&m>s&&rsi>=50) return {v:'up',t:'상승 추세',rsi};
+  if(m!=null&&s!=null&&m<s&&rsi<50)  return {v:'down',t:'하락 추세',rsi};
+  return {v:'neu',t:'중립',rsi};
+}
+function wlValMeta(sym){                   // 밸류 조회용 시장·코드 (kr: 6자리 / us: 티커 — 서버가 .O·.K 접미사 자동 탐색)
+  const m=String(sym).match(/^(\d{6})\.(KS|KQ)$/);
+  return m?{mkt:'kr',code:m[1]}:{mkt:'us',code:String(sym)};
+}
+function wlGap(val){
+  if(!val||!(val.pbr>0)||!(val.roe>0)) return null;
+  const fair=WLREG_A*val.roe+WLREG_B;
+  return fair>0?{fair,gap:(val.pbr/fair-1)*100}:null;
+}
+const wlGapLabel=g=> g.gap<=-30?['크게 저평가','cheap']:(g.gap<=-10?['저평가','cheap']:(g.gap<10?['적정 범위','']:['고평가','rich']));
+let WLSIG_BUSY=false;
+async function wlSigRefresh(){
+  if(WLSIG_BUSY) return; WLSIG_BUSY=true;
+  try{
+    const need=WL.filter(x=>{ const c=WLSIG[x.sym]; return !c||Date.now()-c.ts>WLSIG_TTL; });
+    if(!need.length) return;
+    need.forEach(x=>{ WLSIG[x.sym]=Object.assign({},WLSIG[x.sym]||{},{ts:Date.now()}); });
+    await Promise.all(need.map(async x=>{           // 1) 일봉 차트 → 기술적 판정
+      try{
+        const r=await fetch('/api/chart?sym='+encodeURIComponent(x.sym)+'&range=1y&interval=1d');
+        if(!r.ok) return;
+        const d=await r.json();
+        WLSIG[x.sym].j=wlJudge((d.ohlc||[]).map(b=>b.close));
+      }catch(e){}
+    }));
+    const groups={kr:[],us:[]};                     // 2) 밸류에이션 → 회귀 괴리
+    need.forEach(x=>{ const m=wlValMeta(x.sym); if(groups[m.mkt].indexOf(m.code)<0) groups[m.mkt].push(m.code); });
+    for(const mkt of ['kr','us']){
+      for(let i=0;i<groups[mkt].length;i+=20){
+        try{
+          const codes=groups[mkt].slice(i,i+20);
+          const r=await fetch('/api/valuation?mkt='+mkt+'&codes='+codes.map(encodeURIComponent).join(','));
+          if(!r.ok) continue;
+          const d=await r.json();
+          for(const x of need){
+            const m=wlValMeta(x.sym);
+            if(m.mkt===mkt&&codes.indexOf(m.code)>=0&&d.vals){ const v=d.vals[m.code]||null; WLSIG[x.sym].val=v; WLSIG[x.sym].gap=wlGap(v); }
+          }
+        }catch(e){}
+      }
+    }
+    renderWL();
+  } finally { WLSIG_BUSY=false; }
+}
+function wlSigChips(sym){
+  const c=WLSIG[sym]; if(!c||(!c.j&&!c.gap)) return '';
+  let h='';
+  if(c.j){
+    const k=c.j.v==='buy'?'buy':(c.j.v==='sell'?'sell':'');
+    h+='<span class="wl-chip '+k+'">'+(c.j.v==='buy'?'▲ ':(c.j.v==='sell'?'▼ ':''))+c.j.t
+      +(c.j.ago!=null?(c.j.ago===0?'·오늘':'·'+c.j.ago+'일 전'):'')+'</span>';
+  }
+  if(c.gap){ const gl=wlGapLabel(c.gap);
+    h+='<span class="wl-chip '+gl[1]+'" title="적정 PBR(ROE 회귀) '+c.gap.fair.toFixed(2)+'배 대비 현 PBR — y=0.0696×ROE+0.2953">회귀 '
+      +(c.gap.gap>0?'+':'')+c.gap.gap.toFixed(0)+'% '+gl[0]+'</span>'; }
+  return h?('<div class="wl-sig">'+h+'</div>'):'';
+}
+function renderWLDiag(){
+  const el=document.getElementById('wl-diag'); if(!el) return;
+  const it=WL.find(x=>x.sym===SEL), c=SEL?WLSIG[SEL]:null;
+  if(!it||!c||(!c.j&&!c.gap)){ el.style.display='none'; el.innerHTML=''; return; }
+  const j=c.j, v=c.val, g=c.gap;
+  const vdCls=j?(j.v==='buy'?'up':(j.v==='sell'?'down':'')):'';
+  const head=j?('<b class="v '+vdCls+'">'+(j.v==='buy'?'▲ ':(j.v==='sell'?'▼ ':''))+j.t+'</b>'
+    +(j.ago!=null?' — MACD '+(j.v==='buy'?'골든':'데드')+'크로스 '+(j.ago===0?'오늘':j.ago+'거래일 전')+' 발생':'')
+    +(j.rsi!=null?' · RSI(14) '+j.rsi.toFixed(1)+(j.rsi>=50?' ≥ 50':' < 50'):'')
+    +' <small style="color:var(--muted2)">(일봉 기준)</small>'):'';
+  let reg='';
+  if(g){ const gl=wlGapLabel(g), gc=g.gap<=-10?'up':(g.gap>=10?'down':'');
+    reg='적정 PBR(ROE 회귀) <b class="mono">'+g.fair.toFixed(2)+'배</b> · 현 PBR <b class="mono">'+v.pbr.toFixed(2)+'배</b>'
+      +' → 괴리 <b class="mono '+gc+'">'+(g.gap>0?'+':'')+g.gap.toFixed(1)+'%</b> <b class="'+gc+'">['+gl[0]+']</b>'
+      +' <small style="color:var(--muted2)">y=0.0696×ROE+0.2953</small>';
+  } else if(v&&v.eps!=null&&v.eps<0){ reg='적정 PBR(ROE 회귀) — <span style="color:var(--muted2)">적자 기업(PER 없음)이라 산출 불가</span>'; }
+  let meta='';
+  if(v){ const drop=(v.hi52>0&&it.px>0)?((it.px/v.hi52-1)*100):null;
+    meta='PER <b class="mono">'+(v.per!=null?v.per.toFixed(1)+'배':'적자')+'</b> · ROE(근사) <b class="mono">'+(v.roe!=null?v.roe.toFixed(1)+'%':'—')+'</b>'
+      +' · 배당 <b class="mono">'+(v.divYield!=null?v.divYield.toFixed(2)+'%':'—')+'</b>'
+      +(drop!=null?' · 52주 고점 대비 <b class="mono">'+drop.toFixed(0)+'%</b>':'');
+  }
+  const buyish=j&&j.v==='buy', cheap=g&&g.gap<=-10;
+  const sum= buyish&&cheap ? '✅ <b>기술적 매수 신호와 회귀 저평가가 겹칩니다 — 매수 검토 구간입니다.</b>'
+    : buyish ? '기술적 매수 신호는 있으나 밸류에이션은 '+(g?wlGapLabel(g)[0]:'미확인')+' — 비중을 줄인 진입을 고려하세요.'
+    : cheap ? '수익성 대비 저평가 상태지만 기술적 매수 신호는 아직입니다 — 반등 신호(골든크로스) 확인 후 진입이 안전합니다.'
+    : (j&&j.v==='sell') ? '매도 신호 구간 — 신규 매수보다 리스크 관리가 우선입니다.'
+    : '뚜렷한 매수 근거가 아직 없습니다 — 신호 대기.';
+  el.innerHTML='<b>🎯 매수 타이밍 진단</b> — '+(it.name||SEL)
+    +'<span style="float:right"><a class="go" href="javascript:void 0" id="wl-diag-go">매매 시그널 ⭐관심에서 상세 분석 →</a></span>'
+    +'<br>'+[head,reg,meta].filter(Boolean).join('<br>')
+    +'<div class="sum">'+sum+'</div>';
+  el.style.display='';
+  const go=document.getElementById('wl-diag-go'); if(go) go.onclick=openSignalsWatch;
+}
+/* 대시보드 관심종목 → 매매 시그널 ⭐관심 목록으로 합치고 이동 */
+function openSignalsWatch(){
+  try{
+    const cur=JSON.parse(localStorage.getItem('alphadesk.sig.watchlist')||'[]');
+    for(const x of WL){
+      const m=String(x.sym).match(/^(\d{6})\.(KS|KQ)$/);
+      const c=m?{code:m[1],mkt:m[2]==='KQ'?'kosdaq':'kospi',name:x.name}:{code:String(x.sym),mkt:'us',name:x.name||x.sym};
+      if(!cur.some(w=>w.code===c.code&&w.mkt===c.mkt)) cur.push(c);
+    }
+    localStorage.setItem('alphadesk.sig.watchlist', JSON.stringify(cur));
+    localStorage.setItem('alphadesk.sig.mkt','watch');
+  }catch(e){}
+  location.href='signals.html';
+}
+
+/* ===== 재무제표 분석 탭 — /api/finance(네이버) · 연간/분기 토글 · 인터랙티브 SVG 차트 + 전체 표 =====
+   국내: 억원 단위 16개 항목(매출·이익·이익률·ROE·부채비율·EPS·PER·BPS·PBR·배당 등)
+   미국: USD 백만 단위 동일 구조. isConsensus='Y' 열은 증권가 컨센서스 추정치(E) — 파랑 표시. */
+const FIN={};                              // `${sym}|${period}` → {ts, data}
+let FIN_PERIOD=(()=>{ try{ return localStorage.getItem('alphadesk.finperiod')==='quarter'?'quarter':'annual'; }catch(e){ return 'annual'; } })();
+let FIN_LAST='';
+async function finLoad(sym,period){
+  const k=sym+'|'+period, c=FIN[k];
+  if(c&&Date.now()-c.ts<6*60*60*1000) return c.data;
+  const m=wlValMeta(sym);
+  try{
+    const r=await fetch('/api/finance?mkt='+m.mkt+'&code='+encodeURIComponent(m.code)+'&period='+period);
+    if(!r.ok) throw 0;
+    const d=await r.json();
+    if(d&&!d.error) FIN[k]={ts:Date.now(),data:d};
+    return d;
+  }catch(e){ return null; }
+}
+function finRowOf(d,names){
+  for(const n of names){ const r=(d.rows||[]).find(x=>x.title===n||String(x.title).indexOf(n)===0); if(r) return r; }
+  return null;
+}
+function finFmt(v,us){
+  if(v==null||!isFinite(v)) return '—';
+  const a=Math.abs(v), s=v<0?'-':'';
+  if(us) return s+(a>=1000?(a/1000).toFixed(1)+'B':Math.round(a).toLocaleString()+'M');
+  return s+(a>=10000?(a/10000).toFixed(1)+'조':Math.round(a).toLocaleString()+'억');
+}
+/* 매출·영업이익·순이익 묶음 막대 + 영업이익률 꺾은선 (호버 시 기간별 상세 툴팁) */
+function finBarsSVG(view,us){
+  const {cols,sales,op,ni,opm}=view;
+  const n=cols.length; if(!n||!sales) return '';
+  const W=640,H=210,PX=46,PB=26,PT=8,PW=W-PX-8;
+  let mx=0,mn=0;
+  for(const r of [sales,op,ni]) if(r) for(const v of r.view){ if(v!=null){ if(v>mx)mx=v; if(v<mn)mn=v; } }
+  if(!(mx>mn)) return '';
+  mx*=1.06; if(mn<0) mn*=1.1;
+  const Y=v=>PT+(mx-v)/(mx-mn)*(H-PT-PB);
+  const X=i=>PX+(i+0.5)/n*PW;
+  const gw=Math.min(46,PW/n*0.72), bw=gw/3;
+  const C={s:'var(--accent)',o:'#f4b000',n:'#22c55e'};
+  let svg='<line x1="'+PX+'" x2="'+(PX+PW)+'" y1="'+Y(0).toFixed(1)+'" y2="'+Y(0).toFixed(1)+'" stroke="var(--muted2)" stroke-width="0.8"/>';
+  for(const g of [0.5,1]){ const gv=mn+(mx-mn)*g;
+    svg+='<line x1="'+PX+'" x2="'+(PX+PW)+'" y1="'+Y(gv).toFixed(1)+'" y2="'+Y(gv).toFixed(1)+'" stroke="var(--border)" stroke-width="0.6" stroke-dasharray="3 3"/>'
+       +'<text x="'+(PX-5)+'" y="'+(Y(gv)+3)+'" font-size="8.5" fill="var(--muted2)" text-anchor="end">'+finFmt(gv,us)+'</text>'; }
+  const bars=[['s',sales],['o',op],['n',ni]].filter(x=>x[1]);
+  for(let i=0;i<n;i++){
+    const cx=X(i);
+    bars.forEach((b,bi)=>{
+      const v=b[1].view[i]; if(v==null) return;
+      const x=cx-gw/2+bi*bw, y0=Y(0), y1=Y(v);
+      svg+='<rect x="'+x.toFixed(1)+'" y="'+Math.min(y0,y1).toFixed(1)+'" width="'+(bw-1.5).toFixed(1)+'" height="'+Math.max(1,Math.abs(y0-y1)).toFixed(1)
+        +'" fill="'+C[b[0]]+'" opacity="'+(cols[i].est?0.45:0.9)+'" rx="1.5"/>';
+    });
+    svg+='<text x="'+cx.toFixed(1)+'" y="'+(H-8)+'" font-size="8.5" fill="'+(cols[i].est?'var(--accent2)':'var(--muted2)')+'" text-anchor="middle">'+cols[i].lab+(cols[i].est?'(E)':'')+'</text>';
+  }
+  if(opm){ let path='',pen=0, pmx=0,pmn=0;
+    for(const v of opm.view){ if(v!=null){ if(v>pmx)pmx=v; if(v<pmn)pmn=v; } }
+    if(pmx>pmn){ const PY=v=>PT+(pmx*1.15-v)/(pmx*1.15-pmn*1.15+(pmx===pmn?1:0))*(H-PT-PB);
+      for(let i=0;i<n;i++){ const v=opm.view[i]; if(v==null){pen=0;continue;} path+=(pen?'L':'M')+X(i).toFixed(1)+' '+PY(v).toFixed(1); pen=1;
+        svg+='<circle cx="'+X(i).toFixed(1)+'" cy="'+PY(v).toFixed(1)+'" r="2.2" fill="#e879f9"/>'; }
+      svg+='<path d="'+path+'" fill="none" stroke="#e879f9" stroke-width="1.4" opacity=".9"/>';
+    } }
+  for(let i=0;i<n;i++)   // 호버 영역 (기간별)
+    svg+='<rect data-fi="'+i+'" x="'+(PX+i/n*PW).toFixed(1)+'" y="0" width="'+(PW/n).toFixed(1)+'" height="'+H+'" fill="transparent"/>';
+  return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block">'+svg+'</svg>';
+}
+/* 수익성·건전성 꺾은선 (ROE·영업이익률·순이익률·부채비율) */
+function finLinesSVG(view){
+  const series=view.lines.filter(s=>s.row&&s.row.view.some(v=>v!=null));
+  const n=view.cols.length; if(!n||!series.length) return '';
+  const W=640,H=150,PX=40,PB=24,PT=8,PW=W-PX-8;
+  let mx=-Infinity,mn=Infinity;
+  for(const s of series) for(const v of s.row.view) if(v!=null){ if(v>mx)mx=v; if(v<mn)mn=v; }
+  if(!(mx>mn)){ mx=mn+1; }
+  const pad=(mx-mn)*0.12||1; mx+=pad; mn-=pad;
+  const Y=v=>PT+(mx-v)/(mx-mn)*(H-PT-PB);
+  const X=i=>PX+(i+0.5)/n*PW;
+  let svg='';
+  for(const g of [0,0.5,1]){ const gv=mn+(mx-mn)*g;
+    svg+='<line x1="'+PX+'" x2="'+(PX+PW)+'" y1="'+Y(gv).toFixed(1)+'" y2="'+Y(gv).toFixed(1)+'" stroke="var(--border)" stroke-width="0.6" stroke-dasharray="3 3"/>'
+       +'<text x="'+(PX-5)+'" y="'+(Y(gv)+3)+'" font-size="8.5" fill="var(--muted2)" text-anchor="end">'+gv.toFixed(0)+'%</text>'; }
+  if(mn<0&&mx>0) svg+='<line x1="'+PX+'" x2="'+(PX+PW)+'" y1="'+Y(0).toFixed(1)+'" y2="'+Y(0).toFixed(1)+'" stroke="var(--muted2)" stroke-width="0.8"/>';
+  for(const s of series){ let path='',pen=0;
+    for(let i=0;i<n;i++){ const v=s.row.view[i]; if(v==null){pen=0;continue;} path+=(pen?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1); pen=1;
+      svg+='<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(v).toFixed(1)+'" r="2" fill="'+s.c+'"/>'; }
+    svg+='<path d="'+path+'" fill="none" stroke="'+s.c+'" stroke-width="1.4"/>';
+  }
+  for(let i=0;i<n;i++)
+    svg+='<text x="'+X(i).toFixed(1)+'" y="'+(H-7)+'" font-size="8.5" fill="'+(view.cols[i].est?'var(--accent2)':'var(--muted2)')+'" text-anchor="middle">'+view.cols[i].lab+(view.cols[i].est?'(E)':'')+'</text>'
+      +'<rect data-fi="'+i+'" x="'+(PX+i/n*PW).toFixed(1)+'" y="0" width="'+(PW/n).toFixed(1)+'" height="'+H+'" fill="transparent"/>';
+  return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block">'+svg+'</svg>';
+}
+function finPeriodLab(key,mkt){          // '202312' → '23.12 · '2023.09.30' → '23.9
+  const d=String(key).replace(/\D/g,'');
+  return d.length>=6 ? "'"+d.slice(2,4)+'.'+String(+d.slice(4,6)) : String(key);
+}
+async function finRender(force){
+  const pane=document.getElementById('pane-fin'); if(!pane) return;
+  const it=WL.find(x=>x.sym===SEL);
+  if(!it){ pane.innerHTML='<div class="sn-empty">관심 종목을 먼저 선택하세요.</div>'; FIN_LAST=''; return; }
+  const key=SEL+'|'+FIN_PERIOD;
+  if(!force&&FIN_LAST===key&&pane.childElementCount) return;
+  FIN_LAST=key;
+  pane.innerHTML='<div class="sn-empty">📊 재무제표 불러오는 중… ('+(it.name||SEL)+')</div>';
+  const d=await finLoad(SEL,FIN_PERIOD);
+  if(FIN_LAST!==key) return;                            // 로딩 중 다른 종목·기간으로 전환됨
+  if(!d||!d.cols||!d.cols.length||!d.rows||!d.rows.length){
+    pane.innerHTML='<div class="sn-empty">이 종목의 재무제표 데이터가 없습니다.<br><small>'
+      +(wlValMeta(SEL).mkt==='us'?'일부 미국 종목·ETF는 네이버가 재무 데이터를 제공하지 않습니다.':'ETF·스팩·일부 종목은 제공되지 않습니다.')
+      +'</small></div>';
+    return;
+  }
+  const us=wlValMeta(SEL).mkt==='us';
+  // 표시 열: 분기는 최근 8개(추정 포함), 연간은 전체
+  const keep=d.cols.map((c,i)=>i);
+  const idx=FIN_PERIOD==='quarter'&&keep.length>8?keep.slice(-8):keep;
+  const cols=idx.map(i=>({key:d.cols[i].key,est:!!d.cols[i].est,lab:finPeriodLab(d.cols[i].key,d.mkt)}));
+  const pick=names=>{ const r=finRowOf(d,names); return r?{title:r.title,view:idx.map(i=>r.vals[i]),raw:idx.map(i=>r.raw[i])}:null; };
+  const view={cols,
+    sales:pick(['매출액']), op:pick(['영업이익']), ni:pick(['당기순이익','지배주주순이익','순이익']),
+    opm:pick(['영업이익률']),
+    lines:[{row:pick(['ROE']),c:'#f4b000',l:'ROE'},{row:pick(['영업이익률']),c:'#e879f9',l:'영업이익률'},
+           {row:pick(['순이익률']),c:'#22c55e',l:'순이익률'},{row:pick(['부채비율']),c:'#3b82f6',l:'부채비율'}]};
+  const seg='<div class="fin-bar">'
+    +'<button class="px-tf'+(FIN_PERIOD==='annual'?' on':'')+'" data-fp="annual">연간</button>'
+    +'<button class="px-tf'+(FIN_PERIOD==='quarter'?' on':'')+'" data-fp="quarter">분기</button>'
+    +'<span class="fin-note">단위: '+esc2(d.unit||(us?'USD(백만)':'억원'))+' · <span style="color:var(--accent2)">파랑 열 = 컨센서스 추정(E)</span> · 출처 네이버</span></div>';
+  const lg1='<span class="lg"><i style="background:var(--accent)"></i>매출액</span><span class="lg"><i style="background:#f4b000"></i>영업이익</span>'
+    +'<span class="lg"><i style="background:#22c55e"></i>순이익</span><span class="lg"><i style="background:#e879f9"></i>영업이익률(선)</span>';
+  const lg2=view.lines.filter(s=>s.row&&s.row.view.some(v=>v!=null)).map(s=>'<span class="lg"><i style="background:'+s.c+'"></i>'+s.l+'</span>').join('');
+  const tbl='<div class="fin-tbl-wrap"><table class="fin"><thead><tr><th>항목</th>'
+    +cols.map(c=>'<th'+(c.est?' class="est"':'')+'>'+c.lab+(c.est?' (E)':'')+'</th>').join('')+'</tr></thead><tbody>'
+    +d.rows.map(r=>'<tr><td>'+esc2(r.title)+'</td>'
+      +idx.map((i,k)=>{ const rv=r.raw[i]||'—';
+        return '<td class="'+(cols[k].est?'est ':'')+(String(rv).indexOf('-')===0&&rv!=='-'?'neg':'')+'">'+esc2(rv==='' ?'—':rv)+'</td>'; }).join('')
+      +'</tr>').join('')+'</tbody></table></div>';
+  pane.innerHTML=seg
+    +'<div class="fin-chart" id="fin-c1"><h5>실적 추이'+(FIN_PERIOD==='quarter'?' (분기)':' (연간)')+' '+lg1+'</h5>'+finBarsSVG(view,us)+'<div class="fin-tip" id="fin-tip1"></div></div>'
+    +(lg2?'<div class="fin-chart" id="fin-c2"><h5>수익성 · 건전성 (%) '+lg2+'</h5>'+finLinesSVG(view)+'<div class="fin-tip" id="fin-tip2"></div></div>':'')
+    +tbl
+    +'<div class="srep-note">막대에 마우스를 올리면 기간별 상세 값이 표시됩니다. 컨센서스(E)는 증권가 추정 평균으로 실제 발표치와 다를 수 있습니다. '
+    +(us?'미국 종목 단위는 USD 백만(차트 축은 B=10억 달러)입니다.':'금액 단위는 억원(차트 축은 조원 환산)입니다.')+'</div>';
+  // 기간 토글
+  pane.querySelectorAll('[data-fp]').forEach(b=>b.addEventListener('click',()=>{
+    FIN_PERIOD=b.dataset.fp; try{ localStorage.setItem('alphadesk.finperiod',FIN_PERIOD); }catch(e){}
+    finRender(true);
+  }));
+  // 호버 툴팁 (기간별 상세)
+  const tipFor=(host,tip)=>{
+    host.addEventListener('mousemove',e=>{
+      const t=e.target.closest('[data-fi]'); const el=document.getElementById(tip);
+      if(!t||!el){ if(el) el.style.display='none'; return; }
+      const i=+t.dataset.fi, c=cols[i];
+      const line=(lab,r,pct)=> r&&r.view[i]!=null?('<br>'+lab+' <b class="mono">'+(pct?r.view[i].toFixed(1)+'%':finFmt(r.view[i],us))+'</b>'):'';
+      el.innerHTML='<b>'+c.lab+(c.est?' (컨센서스 E)':'')+'</b>'
+        +line('매출액',view.sales)+line('영업이익',view.op)+line('순이익',view.ni)
+        +line('영업이익률',view.opm,1)+line('ROE',view.lines[0].row,1)+line('순이익률',view.lines[2].row,1)+line('부채비율',view.lines[3].row,1);
+      const r=host.getBoundingClientRect();
+      el.style.display='block';
+      el.style.left=Math.min(e.clientX-r.left+14, r.width-190)+'px';
+      el.style.top=Math.max(6,e.clientY-r.top-10)+'px';
+    });
+    host.addEventListener('mouseleave',()=>{ const el=document.getElementById(tip); if(el) el.style.display='none'; });
+  };
+  const c1=document.getElementById('fin-c1'); if(c1) tipFor(c1,'fin-tip1');
+  const c2=document.getElementById('fin-c2'); if(c2) tipFor(c2,'fin-tip2');
+}
+const esc2=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+document.querySelector('.tab[data-t="fin"]').addEventListener('click',()=>finRender());
 /* ---- 실시간 뉴스: /api/news(라이브, last-good 보관) → data/news.json 스냅샷 → 브라우저 보관본 ---- */
 const NEWS_LS='alphadesk.newscache';
 const DEMO_NEWS=SAMPLE_NEWS.slice();        // 완전 오프라인일 때만 쓰는 예시(진짜 뉴스엔 절대 안 섞임)

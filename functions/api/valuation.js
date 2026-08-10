@@ -35,14 +35,28 @@ function parseInfos(arr) {
   return (v.per == null && v.pbr == null && v.eps == null) ? null : v;
 }
 
-async function fetchOne(mkt, code) {
-  const url = mkt === 'kr'
-    ? 'https://m.stock.naver.com/api/stock/' + encodeURIComponent(code) + '/integration'
-    : 'https://api.stock.naver.com/stock/' + encodeURIComponent(code) + '/basic';
-  const r = await fetch(url, { headers: { 'User-Agent': UA, 'Referer': 'https://m.stock.naver.com/' } });
-  if (!r.ok) throw new Error(mkt + ' ' + code + ' ' + r.status);
-  const j = await r.json();
-  return parseInfos(mkt === 'kr' ? j.totalInfos : j.stockItemTotalInfos);
+const NHDR = { 'User-Agent': UA, 'Referer': 'https://m.stock.naver.com/' };
+async function fetchOne(mkt, code, budget) {
+  if (mkt === 'kr') {
+    budget.n++;
+    const r = await fetch('https://m.stock.naver.com/api/stock/' + encodeURIComponent(code) + '/integration', { headers: NHDR });
+    if (!r.ok) throw new Error('kr ' + code + ' ' + r.status);
+    return parseInfos((await r.json()).totalInfos);
+  }
+  // us: 접미사 없는 야후식 티커(NVDA)도 받도록 무접미사 → .O(나스닥) → .K(AMEX 등) 순서로 시도
+  const cands = code.indexOf('.') >= 0 ? [code] : [code, code + '.O', code + '.K'];
+  let responded = false;
+  for (const c of cands) {
+    if (budget.n >= 40) break;                       // 무료 subrequest 50 한도 보호
+    budget.n++;
+    const r = await fetch('https://api.stock.naver.com/stock/' + encodeURIComponent(c) + '/basic', { headers: NHDR }).catch(() => null);
+    if (!r || !r.ok) continue;                       // 미존재 코드는 404 — 다음 후보
+    responded = true;
+    const v = parseInfos((await r.json()).stockItemTotalInfos);
+    if (v) return v;
+  }
+  if (!responded) throw new Error('us ' + code);     // 전 후보 네트워크 실패/예산 소진 → 캐시하지 않고 재시도 대상
+  return null;
 }
 
 async function __cfHandler(event) {
@@ -57,8 +71,9 @@ async function __cfHandler(event) {
     if (hit && Date.now() - hit.ts < TTL) vals[c] = hit.v;
     else misses.push(c);
   }
+  const budget = { n: 0 };                         // 호출당 외부요청 카운터 (us 접미사 탐색 포함)
   await Promise.all(misses.map((c) =>
-    fetchOne(mkt, c)
+    fetchOne(mkt, c, budget)
       .then((v) => { CACHE[mkt + '|' + c] = { ts: Date.now(), v }; vals[c] = v; })
       .catch(() => { vals[c] = null; })            // 실패는 캐시하지 않음 — 다음 호출 때 재시도
   ));
