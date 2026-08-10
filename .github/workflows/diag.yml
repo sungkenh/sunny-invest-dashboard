@@ -9,6 +9,33 @@ jobs:
   diag:
     runs-on: ubuntu-latest
     steps:
+      - name: 재무 항목 전체 목록 프로브 (임시)
+        run: |
+          H1='User-Agent: Mozilla/5.0'
+          H2='Referer: https://m.stock.naver.com/'
+          for u in "https://m.stock.naver.com/api/stock/005930/finance/annual" \
+                   "https://api.stock.naver.com/stock/AAPL.O/finance/annual" \
+                   "https://api.stock.naver.com/stock/AAPL.O/finance/quarter"; do
+            echo "== $u — 행 제목 전체"
+            curl -s -H "$H1" -H "$H2" "$u" | python3 -c "
+          import json,sys
+          d=json.load(sys.stdin)
+          fi=d.get('financeInfo') or d
+          rows=fi.get('rowList') or []
+          for r in rows:
+              cols=r.get('columns') or {}
+              k=sorted(cols.keys())[-1] if cols else None
+              print('  ·', r.get('title'), '=', (cols.get(k) or {}).get('value') if k else '')"
+          done
+          echo "== 와이즈리포트 재무상태표 후보 (cF1001)"
+          curl -s -H "$H1" -H "Referer: https://navercomp.wisereport.co.kr/" \
+            "https://navercomp.wisereport.co.kr/v2/company/ajax/cF1001.aspx?cmp_cd=005930&fin_typ=0&freq_typ=Y" | head -c 400; echo
+          echo "== 네이버 finance 하위 후보"
+          for p in "finance" "finance/cashflow" "finance/balance" "financeSummary"; do
+            printf '  /%s → ' "$p"
+            curl -s -o /dev/null -w '%{http_code}\n' -H "$H1" -H "$H2" "https://m.stock.naver.com/api/stock/005930/$p"
+          done
+
       - name: 시간차 샘플링 (3회 × 35초)
         run: |
           sample() {
