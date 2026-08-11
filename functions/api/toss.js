@@ -144,7 +144,15 @@ async function fnKeycheck(env, p) {
   return { id: shape(env.TOSS_CLIENT_ID), secret: shape(env.TOSS_CLIENT_SECRET), token };
 }
 
-const FNS = { stockInvestors: [fnStockInvestors, TTL_TREND], idxInvestors: [fnIdxInvestors, TTL_TREND], calendar: [fnCalendar, TTL_CAL], keycheck: [fnKeycheck, 1] };
+/* 발신(egress) IP 진단 — 토스 IP 허용 목록 등록용. 이 함수가 실행되는 Cloudflare 콜로의 외부 IP 를 반환 */
+async function fnEgress(env, p) {
+  if (p.k !== 'diag2026') return { error: 'forbidden' };
+  const get = async (u) => { try { const r = await fetch(u); return (await r.text()).trim().slice(0, 60); } catch (e) { return 'fail'; } };
+  const [a, b] = await Promise.all([get('https://api.ipify.org'), get('https://ifconfig.me/ip')]);
+  return { egressIp: a, egressIp2: b, colo: p._colo || '', note: 'Cloudflare 엣지 콜로별로 다를 수 있음 — 여러 번·여러 기기에서 확인 권장' };
+}
+
+const FNS = { stockInvestors: [fnStockInvestors, TTL_TREND], idxInvestors: [fnIdxInvestors, TTL_TREND], calendar: [fnCalendar, TTL_CAL], keycheck: [fnKeycheck, 1], egress: [fnEgress, 1] };
 
 export async function onRequest(context) {
   const { request, env } = context;
@@ -153,6 +161,7 @@ export async function onRequest(context) {
   }
   const url = new URL(request.url);
   const p = Object.fromEntries(url.searchParams);
+  p._colo = (request.cf && request.cf.colo) || '';   // 요청을 처리한 엣지 콜로(진단용)
 
   if (!env || !env.TOSS_CLIENT_ID || !env.TOSS_CLIENT_SECRET) {
     return ok({ _updated: iso(), enabled: false }, 600);   // 키 미설정 — 프런트 기능 숨김
