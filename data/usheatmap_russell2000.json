@@ -1,5 +1,5 @@
 {
- "_updated": "2026-08-11T07:20:26",
+ "_updated": "2026-08-11T13:08:33",
  "source": "snapshot",
  "mkt": "russell2000",
  "n": 500,
@@ -976,6 +976,17 @@
    "ind": "Biotechnology"
   },
   {
+   "code": "CORZ",
+   "rc": "CORZ.O",
+   "name": "코어 사이언티픽",
+   "mk": "NSQ",
+   "price": 19.44,
+   "pct": 7.47,
+   "cap": 6246858344.65431,
+   "sector": "기술",
+   "ind": "Software - Infrastructure"
+  },
+  {
    "code": "RUSHA",
    "rc": "RUSHA.O",
    "name": "러시 엔터프라이즈 Class A",
@@ -1018,17 +1029,6 @@
    "cap": 6225693798.429016,
    "sector": "산업재",
    "ind": "Rental & Leasing Services"
-  },
-  {
-   "code": "CORZ",
-   "rc": "CORZ.O",
-   "name": "코어 사이언티픽",
-   "mk": "NSQ",
-   "price": 19.44,
-   "pct": 7.47,
-   "cap": 6212771450.677872,
-   "sector": "기술",
-   "ind": "Software - Infrastructure"
   },
   {
    "code": "HWC",
@@ -2126,7 +2126,7 @@
    "mk": "NYS",
    "price": 38.28,
    "pct": 2.99,
-   "cap": 4708082620.904907,
+   "cap": 4708646025.926941,
    "sector": "유틸리티",
    "ind": "Utilities - Regulated Gas"
   },
@@ -2170,7 +2170,7 @@
    "mk": "NYS",
    "price": 33.6,
    "pct": 1.08,
-   "cap": 4651905710.342705,
+   "cap": 4654696291.015976,
    "sector": "기술",
    "ind": "Software - Infrastructure"
   },
@@ -2346,7 +2346,7 @@
    "mk": "NYS",
    "price": 86.45,
    "pct": 1.34,
-   "cap": 4462671342.113937,
+   "cap": 4463500397.584671,
    "sector": "소재",
    "ind": "Specialty Chemicals"
   },
@@ -2368,7 +2368,7 @@
    "mk": "NYS",
    "price": 38.65,
    "pct": 1.68,
-   "cap": 4439951816.436638,
+   "cap": 4440073100.141426,
    "sector": "부동산",
    "ind": "REIT - Retail"
   },
@@ -2973,7 +2973,7 @@
    "mk": "NYS",
    "price": 16.73,
    "pct": 3.07,
-   "cap": 3943506521.9583817,
+   "cap": 3944006497.9947014,
    "sector": "부동산",
    "ind": "REIT - Residential"
   },
@@ -3110,17 +3110,6 @@
    "ind": "Oil & Gas Equipment & Services"
   },
   {
-   "code": "OPCH",
-   "rc": "OPCH.O",
-   "name": "옵션 케어 헬스",
-   "mk": "NSQ",
-   "price": 24.5,
-   "pct": 2.98,
-   "cap": 3847173848.0,
-   "sector": "헬스케어",
-   "ind": "Medical Care Facilities"
-  },
-  {
    "code": "CALM",
    "rc": "CALM.O",
    "name": "칼 메인 푸즈",
@@ -3149,7 +3138,7 @@
    "mk": "NYS",
    "price": 67.52,
    "pct": 1.08,
-   "cap": 3832020099.0810776,
+   "cap": 3832665927.8489685,
    "sector": "소재",
    "ind": "Building Materials"
   },
@@ -3363,6 +3352,17 @@
    "ind": "Luxury Goods"
   },
   {
+   "code": "OPCH",
+   "rc": "OPCH.O",
+   "name": "옵션 케어 헬스",
+   "mk": "NSQ",
+   "price": 24.5,
+   "pct": 2.98,
+   "cap": 3669738453.5,
+   "sector": "헬스케어",
+   "ind": "Medical Care Facilities"
+  },
+  {
    "code": "REZI",
    "rc": "REZI.K",
    "name": "레지디오 테크놀러지",
@@ -3490,7 +3490,7 @@
    "mk": "NSQ",
    "price": 48.88,
    "pct": 0.62,
-   "cap": 3576896481.76157,
+   "cap": 3572416189.7436676,
    "sector": "경기소비재",
    "ind": "Footwear & Accessories"
   },
@@ -4221,17 +4221,6 @@
    "ind": "Medical Devices"
   },
   {
-   "code": "CALY",
-   "rc": "CALY.K",
-   "name": "캘러웨이 골프",
-   "mk": "NYS",
-   "price": 17.05,
-   "pct": 3.07,
-   "cap": 3064866312.005863,
-   "sector": "경기소비재",
-   "ind": "Leisure"
-  },
-  {
    "code": "CWT",
    "rc": "CWT",
    "name": "캘리포니아 워터 서비스 그룹",
@@ -4252,6 +4241,17 @@
    "cap": 3058915212.9869385,
    "sector": "소재",
    "ind": "Aluminum"
+  },
+  {
+   "code": "CALY",
+   "rc": "CALY.K",
+   "name": "캘러웨이 골프",
+   "mk": "NYS",
+   "price": 17.05,
+   "pct": 3.07,
+   "cap": 3043604246.8572807,
+   "sector": "경기소비재",
+   "ind": "Leisure"
   },
   {
    "code": "OUST",
@@ -5426,7 +5426,7 @@
    "mk": "NYS",
    "price": 128.41,
    "pct": 4.52,
-   "cap": 2291930444.7132874,
+   "cap": 2294472962.785797,
    "sector": "기술",
    "ind": "Electronic Components"
   },
