@@ -9,6 +9,22 @@ jobs:
   diag:
     runs-on: ubuntu-latest
     steps:
+      - name: 토스 llms.txt 문서 프로브 (임시)
+        run: |
+          UA='User-Agent: Mozilla/5.0'
+          B='https://developers.tossinvest.com'
+          echo "== llms.txt"
+          curl -s -H "$UA" "$B/llms.txt" | head -120
+          echo
+          echo "== 관련 문서(md) 수집: 인증·시장지표·투자자·캘린더"
+          curl -s -H "$UA" "$B/llms.txt" | grep -oE 'https?://[^ )]+|/[a-zA-Z0-9/._-]+\.md' | sort -u > /tmp/urls.txt || true
+          cat /tmp/urls.txt | head -40
+          for u in $(grep -iE 'auth|token|indicator|investor|calendar|market' /tmp/urls.txt | head -12); do
+            case "$u" in http*) full="$u";; *) full="$B$u";; esac
+            echo "===== $full"
+            curl -s -H "$UA" "$full" | head -c 3500; echo
+          done
+
       - name: 토스 Open API 스펙 프로브 (임시)
         run: |
           UA='User-Agent: Mozilla/5.0'
