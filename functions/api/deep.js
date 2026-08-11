@@ -192,7 +192,8 @@ async function __cfHandler(event) {
   if (!sym) return resp({ error: 'no sym' });
   const fresh = qp.fresh != null;   // 사용자 새로고침 → 캐시 우회
   const ck = sym.toUpperCase();
-  if (!fresh && DCACHE[ck] && Date.now() - DCACHE[ck].ts < TTL) return resp(DCACHE[ck].data);   // 워밍 캐시 즉시 반환
+  // 워밍 캐시 즉시 반환 — 단, 부실(degraded) 결과는 60초만 유지해 재생성 기회를 빨리 준다
+  if (!fresh && DCACHE[ck] && Date.now() - DCACHE[ck].ts < (DCACHE[ck].deg ? 60 * 1000 : TTL)) return resp(DCACHE[ck].data, DCACHE[ck].deg);
 
   const kr = isKR(sym);
   const ASOF = new Date().toISOString().slice(0, 16).replace('T', ' ');
@@ -201,6 +202,8 @@ async function __cfHandler(event) {
   const cr = await getCrumbCached();             // crumb 캐시(첫 호출만 ≈700ms)
   const qs = await quoteSummary(sym, cr);
   const meta = qs ? null : await chartMeta(sym);
+  const degraded = !qs;                          // quoteSummary 실패 → 지표 대부분 누락(스텁) — 캐시 짧게, 클라이언트 자동 재생성
+  if (!qs && !meta) return resp({ error: 'unavailable', sym }, true);   // 완전 실패 — 짧은 캐시로 곧 재시도
 
   const sd = (qs && qs.summaryDetail) || {};
   const fd = (qs && qs.financialData) || {};
@@ -314,19 +317,21 @@ async function __cfHandler(event) {
     px: px || 0, pct, asof: ASOF, curated: false,
     overview, metrics, chain, rel, rep, peers,
   };
-  DCACHE[ck] = { ts: Date.now(), data };
-  return resp(data);
+  if (degraded) data.degraded = true;
+  DCACHE[ck] = { ts: Date.now(), data, deg: degraded };
+  return resp(data, degraded);
 };
 
-function resp(obj) {
+function resp(obj, short) {
+  // short(부실·실패) 응답은 짧게만 캐시 — 스텁이 엣지·브라우저에 30분 고착되는 것을 방지
   return {
     statusCode: 200,
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
       'Access-Control-Allow-Origin': '*',
       // 생성 결과를 CDN 엣지에 캐시(30분) → 같은 종목 재요청은 즉시(첫 사용자만 생성)
-      'Cache-Control': 'public, max-age=300',
-      'Netlify-CDN-Cache-Control': 'public, s-maxage=1800, stale-while-revalidate=3600',
+      'Cache-Control': short ? 'public, max-age=30' : 'public, max-age=300',
+      'Netlify-CDN-Cache-Control': short ? 'public, s-maxage=60' : 'public, s-maxage=1800, stale-while-revalidate=3600',
     },
     body: JSON.stringify(obj),
   };
