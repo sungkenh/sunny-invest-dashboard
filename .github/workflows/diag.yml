@@ -9,57 +9,59 @@ jobs:
   diag:
     runs-on: ubuntu-latest
     steps:
-      - name: 토스 공식 스펙 정밀 프로브 (임시)
+      - name: 토스 스키마 상세 프로브 (임시)
         run: |
           UA='User-Agent: Mozilla/5.0'
           O='https://openapi.tossinvest.com/openapi-docs'
-          echo "== overview.md (요율·에러 모델 등)"
-          curl -s -H "$UA" "$O/overview.md" | head -c 4000; echo
-          echo "== openapi.json 다운로드"
-          code=$(curl -s -o /tmp/spec.json -w '%{http_code}' -H "$UA" "$O/latest/openapi.json")
-          echo " http=$code size=$(wc -c < /tmp/spec.json)"
-          if [ "$code" = "200" ]; then
-            python3 - <<'EOF2'
-          import json
+          curl -s -H "$UA" "$O/latest/openapi.json" -o /tmp/spec.json
+          echo "size=$(wc -c < /tmp/spec.json)"
+          python3 - <<'EOF2'
+          import json,re
           d=json.load(open('/tmp/spec.json'))
-          print('title:', (d.get('info') or {}).get('title'), '| version:', (d.get('info') or {}).get('version'))
-          print('servers:', d.get('servers'))
-          print('--- 전체 경로 목록 ---')
-          for p,ops in (d.get('paths') or {}).items():
-              for m,op in ops.items():
-                  if isinstance(op,dict): print(m.upper(), p, '|', op.get('tags'), '|', op.get('summary'))
-          EOF2
-            echo "== 시장지표·캘린더·토큰 상세 (파라미터·응답 스키마)"
-            python3 - <<'EOF2'
-          import json
-          d=json.load(open('/tmp/spec.json'))
+          comps=(d.get('components') or {}).get('schemas') or {}
           def resolve(s,depth=0):
-              if depth>6 or not isinstance(s,dict): return s
-              if '$ref' in s:
-                  node=d
-                  for part in s['$ref'].lstrip('#/').split('/'): node=node.get(part,{})
-                  return resolve(node,depth+1)
-              if s.get('type')=='array': return {'type':'array','items':resolve(s.get('items',{}),depth+1)}
-              if 'properties' in s:
-                  return {'type':'object','properties':{k:resolve(v,depth+1) for k,v in s['properties'].items()}}
+              if depth>7: return s
+              if isinstance(s,dict):
+                  if '$ref' in s:
+                      node=d
+                      for part in s['$ref'].lstrip('#/').split('/'): node=node.get(part,{})
+                      return resolve(node,depth+1)
+                  return {k:resolve(v,depth+1) for k,v in s.items()}
+              if isinstance(s,list): return [resolve(x,depth+1) for x in s]
               return s
+          want=['ApiResponse','StockInvestorTradingResponse','InvestorTradingResponse',
+                'KrMarketCalendarResponse','UsMarketCalendarResponse','MarketIndicatorPriceResponse',
+                'MarketIndicatorCandlePageResponse']
+          for w in want:
+              if w in comps:
+                  print('#####',w)
+                  print(json.dumps(resolve(comps[w]), ensure_ascii=False)[:2600])
+          # 파라미터 심볼 형식·예시
+          print('##### 파라미터 상세 (수급·지표·캘린더·랭킹)')
           for p,ops in (d.get('paths') or {}).items():
-              low=p.lower()+' '.join(str(op.get('tags')) for op in ops.values() if isinstance(op,dict)).lower()
-              if any(k in low for k in ('indicator','investor','calendar','token','oauth')):
+              if any(k in p for k in ('investor-trading','market-indicators','market-calendar','short-selling')):
                   for m,op in ops.items():
                       if not isinstance(op,dict): continue
-                      print('======',m.upper(),p,'|',op.get('summary'))
-                      print(' params:', [(q.get('name'),q.get('in'),(q.get('schema') or {}).get('type'),q.get('required')) for q in (op.get('parameters') or [])])
-                      rb=op.get('requestBody')
-                      if rb:
-                          try: print(' 요청 본문:', json.dumps(resolve(list(rb['content'].values())[0]['schema']), ensure_ascii=False)[:600])
-                          except Exception: pass
-                      try:
-                          sch=resolve(op['responses']['200']['content']['application/json']['schema'])
-                          print(' 응답:', json.dumps(sch, ensure_ascii=False)[:1600])
-                      except Exception as e: print(' 응답 스키마 추출 실패:', e)
+                      print('==',m.upper(),p)
+                      for q in (op.get('parameters') or []):
+                          q=resolve(q)
+                          print('  ·',q.get('name'),q.get('in'),'|',str(q.get('description'))[:160],'| ex:',q.get('example'),(q.get('schema') or {}).get('enum'))
           EOF2
-          fi
+          echo "== 스펙 원문에서 지표 심볼·요율 검색"
+          python3 - <<'EOF2'
+          import json,re
+          raw=open('/tmp/spec.json',encoding='utf-8').read()
+          for kw in ('KOSPI','KOSDAQ','U001','429','Rate','rate limit','호출 한도'):
+              idx=[m.start() for m in re.finditer(re.escape(kw),raw)][:3]
+              for i in idx: print('...',raw[max(0,i-140):i+160].replace('\n',' '),'\n---')
+          EOF2
+          echo "== overview.md 요율·에러 부분"
+          curl -s -H "$UA" "$O/overview.md" | python3 -c "
+          import sys
+          t=sys.stdin.read()
+          i=t.find('한도'); j=t.find('Rate'); k=t.find('에러')
+          for pos in [p for p in (i,j,k) if p>=0][:3]:
+              print(t[max(0,pos-200):pos+1200]); print('======')"
 
       - name: 시간차 샘플링 (3회 × 35초)
         run: |
