@@ -9,6 +9,28 @@ jobs:
   diag:
     runs-on: ubuntu-latest
     steps:
+      - name: 운영 배포 검증 — 토스 연동 (임시)
+        run: |
+          B='https://sunny-invest-dashboard.pages.dev'
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            n=$(curl -sL "$B/signals" | grep -c "ensureToss" || true)
+            echo "try $i: 토스 마커 = $n"
+            [ "$n" -ge 1 ] && break
+            sleep 20
+          done
+          echo "== /api/toss (키 등록 전 — enabled:false 기대)"
+          curl -sL "$B/api/toss?fn=idxInvestors&mkt=KOSPI" ; echo
+          curl -sL "$B/api/toss?fn=calendar&nation=kr" ; echo
+          echo "== 페이지 마커"
+          H=$(curl -sL "$B/")
+          for m in "tf-card" "loadTossFlow" "loadTossCal" "투자자별 매매동향" "DEEP_RETRY_MS"; do
+            echo "  index $m : $(echo "$H" | grep -c "$m")"
+          done
+          S=$(curl -sL "$B/signals")
+          for m in "ensureToss" "tossOf" "TOSS_ON" "토스증권 공식" "휴장일"; do
+            echo "  signals $m : $(echo "$S" | grep -c "$m")"
+          done
+
       - name: 시간차 샘플링 (3회 × 35초)
         run: |
           sample() {
