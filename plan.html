@@ -87,6 +87,12 @@
   .stchip.pull{color:var(--accent2);border-color:var(--accent2)}
   .stchip.pyr{color:var(--up);border-color:rgba(246,70,93,.55)}
   .stchip.wait{color:var(--muted2)}
+  .prio{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;
+    background:var(--accent);color:#fff;font-size:11px;font-weight:800}
+  .pctl{display:inline-flex;flex-direction:column;gap:1px;margin-right:2px}
+  .pbtn{border:1px solid var(--border);background:var(--chip);color:var(--muted);border-radius:4px;
+    font-size:8px;line-height:1;padding:2px 4px;cursor:pointer}
+  .pbtn:hover{color:var(--accent);border-color:var(--accent)}
   .vd{display:inline-block;font-size:11px;font-weight:800;padding:3px 9px;border-radius:6px;letter-spacing:.2px;white-space:nowrap}
   .vd.buy2{background:var(--up);color:#fff} .vd.buy1{border:1px solid var(--up);color:var(--up)}
   .vd.ebuy{border:1px dashed var(--up);color:var(--up);background:rgba(246,70,93,.1)}
@@ -660,6 +666,27 @@ function sellLadder(E,stop,atr,his,rd,Q){
     ] };
 }
 
+/* 우선순위 예산 배분 — items는 우선순위 정렬 상태. 시드와 오픈리스크(6%) 예산을 위에서부터 소진:
+   상위 종목이 예산을 먼저 가져가고, 하위 종목은 잔여 예산 안에서만 배정(부족하면 축소·0).
+   held = {cost, risk}: 이미 투입된 보유분은 해당 순위에서 예산을 선점한다. */
+function applyBudget(items,seed){
+  let budget=seed>0?seed:0, riskBudget=seed>0?seed*PORT_RISK_MAX/100:0;
+  return items.map(it=>{
+    const base=it.A||0;
+    if(!(seed>0)) return {A:base,cut:null};
+    const r=(it.frame&&it.frame.entry>0)?(it.frame.entry-it.frame.rawStop)/it.frame.entry:0;
+    let A=base, cut=null;
+    if(base>0){
+      if(A>Math.max(0,budget)){ A=Math.max(0,budget); cut='시드 잔여 소진 — 우선순위 하위'; }
+      if(r>0&&A*r>Math.max(0,riskBudget)){ A=Math.max(0,riskBudget)/r; cut='오픈리스크 6% 예산 소진 — 우선순위 하위'; }
+    }
+    const heldCost=it.held?it.held.cost:0, heldRisk=it.held?it.held.risk:0;
+    budget-=Math.max(heldCost,A);
+    riskBudget-=Math.max(heldRisk,A*r);
+    return {A,cut};
+  });
+}
+
 /* 보유 포지션 뷰 — 현 손익·진행 R·배정 상한 대비 잔여 추가매수 가능액 */
 function positionView(pos,frame,price,fx,A){
   if(!pos||!(pos.avg>0)||!(pos.qty>0)||!(price>0)) return null;
@@ -677,8 +704,10 @@ let SEED=parseInt(String(PLN('seed')||'').replace(/\D/g,''),10)||0;
 let PRESET=['con','std','agg'].includes(PLN('preset'))?PLN('preset'):'std';
 let POS={};  try{ POS=JSON.parse(PLN('pos')||'{}')||{}; }catch(e){ POS={}; }
 let UIST={collapsed:{}}; try{ const u=JSON.parse(PLN('ui')||'{}'); if(u&&u.collapsed) UIST=u; }catch(e){}
+let PRIO=[]; try{ const p=JSON.parse(PLN('prio')||'[]'); if(Array.isArray(p)) PRIO=p; }catch(e){}
 const savePos=()=>PLN('pos',JSON.stringify(POS));
 const saveUi=()=>PLN('ui',JSON.stringify(UIST));
+const savePrio=()=>PLN('prio',JSON.stringify(PRIO));
 
 /* ── 관심종목 합집합: 시그널 ⭐ 관심(alphadesk.sig.watchlist) ∪ 대시보드 관심(alphadesk.wl2) ── */
 function loadPlanList(){
@@ -702,6 +731,19 @@ function loadPlanList(){
   return out;
 }
 const posKey=u=>u.code+'|'+u.mkt;
+/* 저장된 우선순위(alphadesk.plan.prio) 순서로 정렬 — 미등록 종목은 뒤에 원래 순서대로 */
+function sortByPrio(list){
+  const idx=k=>{ const i=PRIO.indexOf(k); return i<0?1e9:i; };
+  return list.map((u,i)=>[u,idx(posKey(u)),i]).sort((a,b)=>(a[1]-b[1])||(a[2]-b[2])).map(x=>x[0]);
+}
+function movePrio(k,dir){
+  const i=PRIO.indexOf(k); if(i<0) return;
+  const j=i+dir; if(j<0||j>=PRIO.length) return;
+  PRIO.splice(i,1); PRIO.splice(j,0,k);
+  savePrio();
+  LIST=sortByPrio(LIST);
+  recompute();
+}
 
 /* ── 데이터 수집 (일봉 전용) ── */
 const CH={};                       // code|mkt → {ts,closes,his,los,lastDate}
@@ -802,15 +844,21 @@ function moneyCell(amt,us){
   if(amt==null) return '<td class="num flat">—</td>';
   return '<td class="num mono">'+fmtWon(amt)+(us?'<br><small class="flat">'+fmtPx(amt/(USDKRW||1),true)+'</small>':'')+'</td>';
 }
-function cardHTML(x){
+function prioCtl(k,i){
+  return '<span class="prio" title="우선순위 — 시드·오픈리스크 예산을 위에서부터 배정">'+(i+1)+'</span>'
+    +'<span class="pctl"><button class="pbtn" data-up="'+esc(k)+'" title="우선순위 올리기">▲</button>'
+    +'<button class="pbtn" data-dn="'+esc(k)+'" title="우선순위 내리기">▼</button></span>';
+}
+function cardHTML(x,i){
   const u=x.u;
-  if(x.err) return '<div class="pcard"><div class="phead"><b class="nm">'+esc(u.name)+'</b>'
+  if(x.err) return '<div class="pcard" data-k="'+esc(posKey(u))+'"><div class="phead">'+prioCtl(posKey(u),i)+'<b class="nm">'+esc(u.name)+'</b>'
     +'<span class="mkchip">'+esc(u.mkt.toUpperCase())+'</span>'
     +'<span class="flat" style="margin-left:auto;font-size:12px">'+esc(x.err)+'</span></div></div>';
   const st=STYLE_INFO[x.style], k=posKey(u), collapsed=!!UIST.collapsed[k];
   const lev=u.lev?'<span class="levchip'+(String(u.lev).indexOf('-')===0?' inv':'')+'">'+esc(String(u.lev).indexOf('-')===0?'인버스 '+u.lev.slice(1):'레버리지 '+u.lev)+'</span>':'';
   let h='<div class="pcard" data-k="'+esc(k)+'">'
     +'<div class="phead" data-toggle="'+esc(k)+'">'
+    +prioCtl(k,i)
     +'<b class="nm">'+esc(u.name)+'</b><span class="mkchip">'+esc(isUSm(u.mkt)?'US':(u.mkt==='kosdaq'?'KOSDAQ':'KOSPI'))+'</span>'+lev
     +'<span class="vd '+x.j.v+'">'+VD[x.j.v]+'</span>'
     +'<span class="stchip '+st.cls+'">'+st.label+'</span>'
@@ -883,8 +931,10 @@ function cardHTML(x){
 }
 let LIST=[], RESULTS=[];
 function summaryHTML(){
+  const prioNote='<div class="boxnote" style="margin-top:6px">카드 순서 = <b>우선순위</b> — 각 카드의 ▲▼로 조정합니다. '
+    +'시드와 오픈리스크 6% 예산을 상위 종목부터 배정하므로, 예산이 부족하면 하위 종목 배정이 자동으로 축소·생략됩니다.</div>';
   if(!SEED) return '<h5>포트폴리오 요약</h5><div class="boxnote">상단에 시드 금액을 입력하면 배정 합계·현금 잔여·총 오픈리스크를 계산합니다. '
-    +'권장: 종목 수 5~10개, 현금 예비 10~30% 유지.</div>';
+    +'권장: 종목 수 5~10개, 현금 예비 10~30% 유지.</div>'+prioNote;
   let alloc=0, risk=0, planned=0;
   for(const x of RESULTS){
     if(!x||x.err) continue;
@@ -910,7 +960,7 @@ function summaryHTML(){
     +(riskPct>PORT_RISK_MAX?'<div style="margin-top:4px"><span class="chip bad">오픈리스크 초과 — 신규 진입 축소 필요</span></div>':'')
     +'</div>'
     +(alloc>SEED?'<div class="sumitem"><span class="chip bad">배정 합계가 시드를 초과 — 종목 수를 줄이거나 보수 프리셋으로</span></div>':'')
-    +'</div>';
+    +'</div>'+prioNote;
 }
 function methodHTML(){
   return '<h5>방법론 — 무엇을 근거로 계산하나</h5><div class="boxnote">'
@@ -936,11 +986,34 @@ function render(){
       +'<a href="index.html" style="color:var(--accent2)">대시보드 관심 종목</a> 또는 '
       +'<a href="signals.html" style="color:var(--accent2)">매매 시그널 ⭐ 관심</a>에서 종목을 담으면 여기에 플랜이 생성됩니다.</div></div>';
   } else {
-    el.innerHTML=RESULTS.map(cardHTML).join('');
+    el.innerHTML=RESULTS.map((x,i)=>cardHTML(x,i)).join('');
   }
   document.getElementById('method').innerHTML=methodHTML();
 }
-function recompute(){ RESULTS=LIST.map(computeOne); render(); }
+function recompute(){
+  RESULTS=LIST.map(computeOne);
+  // 우선순위 예산 배분 — 카드 순서(=우선순위)대로 시드·오픈리스크 예산을 소진
+  const items=RESULTS.map(x=>{
+    if(x.err) return {A:0,frame:null};
+    const held=x.pv?{cost:x.pv.cost, risk:Math.max(0,(x.pos.avg-x.frame.rawStop))*x.pos.qty*(x.fx||1)}:null;
+    return {A:(x.alloc&&x.style!=='wait')?x.alloc.A:0, frame:x.frame, held};
+  });
+  const adj=applyBudget(items,SEED);
+  RESULTS.forEach((x,i)=>{
+    if(x.err||!x.alloc) return;
+    const a=adj[i];
+    if(a.cut!=null&&a.A<x.alloc.A-1e-6){
+      x.alloc.A=a.A; x.alloc.bound=a.cut;
+      if(x.ladder&&x.fx){
+        x.sumAlloc=fillQty(x.ladder,a.A,x.fx);
+        const la=ladderAvg(x.ladder);
+        if(la) x.sell=sellLadder(la.E,x.frame.rawStop,x.frame.atr,x.ch.his,x.frame.rd,la.Q);
+      }
+      if(x.pv) x.pv.remain=Math.max(0,a.A-x.pv.cost);
+    }
+  });
+  render();
+}
 
 /* ── 이벤트 ── */
 const seedIn=document.getElementById('plan-seed');
@@ -969,6 +1042,9 @@ document.getElementById('cards').addEventListener('input',e=>{
   clearTimeout(window.__posT); window.__posT=setTimeout(recompute,500);   // 입력 멈춘 뒤 재계산(커서 보존)
 });
 document.getElementById('cards').addEventListener('click',e=>{
+  const up=e.target.closest('[data-up]'), dn=e.target.closest('[data-dn]');
+  if(up){ movePrio(up.dataset.up,-1); return; }
+  if(dn){ movePrio(dn.dataset.dn,+1); return; }
   const cp=e.target.closest('[data-clearpos]');
   if(cp){ delete POS[cp.dataset.clearpos]; savePos(); recompute(); return; }
   if(e.target.closest('input,button,a')) return;
@@ -978,7 +1054,8 @@ document.getElementById('cards').addEventListener('click',e=>{
 
 /* ── 초기화 ── */
 (async function init(){
-  LIST=loadPlanList();
+  LIST=sortByPrio(loadPlanList());
+  PRIO=LIST.map(posKey); savePrio();   // 신규 종목 포함해 우선순위 목록 정규화
   render();   // 빈 상태/로딩 상태 먼저
   if(!LIST.length) return;
   document.getElementById('cards').innerHTML='<div class="box"><div class="note-empty">차트 수집·계산 중…</div></div>';
