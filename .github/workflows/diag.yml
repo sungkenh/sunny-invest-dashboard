@@ -9,59 +9,32 @@ jobs:
   diag:
     runs-on: ubuntu-latest
     steps:
-      - name: 토스 스키마 상세 프로브 (임시)
+      - name: 토스 하위 스키마 프로브 (임시)
         run: |
           UA='User-Agent: Mozilla/5.0'
-          O='https://openapi.tossinvest.com/openapi-docs'
-          curl -s -H "$UA" "$O/latest/openapi.json" -o /tmp/spec.json
-          echo "size=$(wc -c < /tmp/spec.json)"
+          curl -s -H "$UA" "https://openapi.tossinvest.com/openapi-docs/latest/openapi.json" -o /tmp/spec.json
           python3 - <<'EOF2'
-          import json,re
+          import json
           d=json.load(open('/tmp/spec.json'))
           comps=(d.get('components') or {}).get('schemas') or {}
           def resolve(s,depth=0):
-              if depth>7: return s
+              if depth>8: return s
               if isinstance(s,dict):
                   if '$ref' in s:
                       node=d
                       for part in s['$ref'].lstrip('#/').split('/'): node=node.get(part,{})
                       return resolve(node,depth+1)
-                  return {k:resolve(v,depth+1) for k,v in s.items()}
+                  return {k:resolve(v,depth+1) for k,v in s.items() if k not in ('description','example')}
               if isinstance(s,list): return [resolve(x,depth+1) for x in s]
               return s
-          want=['ApiResponse','StockInvestorTradingResponse','InvestorTradingResponse',
-                'KrMarketCalendarResponse','UsMarketCalendarResponse','MarketIndicatorPriceResponse',
-                'MarketIndicatorCandlePageResponse']
-          for w in want:
+          for w in ['InvestorTradingVolume','StockInstitutionTradingVolume','ForeignerHolding','CfdBalance',
+                    'InvestorTradingAmount','InstitutionTradingAmount','PreMarketSession','RegularMarketSession','AfterMarketSession']:
               if w in comps:
                   print('#####',w)
-                  print(json.dumps(resolve(comps[w]), ensure_ascii=False)[:2600])
-          # 파라미터 심볼 형식·예시
-          print('##### 파라미터 상세 (수급·지표·캘린더·랭킹)')
-          for p,ops in (d.get('paths') or {}).items():
-              if any(k in p for k in ('investor-trading','market-indicators','market-calendar','short-selling')):
-                  for m,op in ops.items():
-                      if not isinstance(op,dict): continue
-                      print('==',m.upper(),p)
-                      for q in (op.get('parameters') or []):
-                          q=resolve(q)
-                          print('  ·',q.get('name'),q.get('in'),'|',str(q.get('description'))[:160],'| ex:',q.get('example'),(q.get('schema') or {}).get('enum'))
+                  print(json.dumps(resolve(comps[w]), ensure_ascii=False)[:1500])
+              else:
+                  print('#####',w,'— 스펙에 없음')
           EOF2
-          echo "== 스펙 원문에서 지표 심볼·요율 검색"
-          python3 - <<'EOF2'
-          import json,re
-          raw=open('/tmp/spec.json',encoding='utf-8').read()
-          for kw in ('KOSPI','KOSDAQ','U001','429','Rate','rate limit','호출 한도'):
-              idx=[m.start() for m in re.finditer(re.escape(kw),raw)][:3]
-              for i in idx: print('...',raw[max(0,i-140):i+160].replace('\n',' '),'\n---')
-          EOF2
-          echo "== overview.md 요율·에러 부분"
-          curl -s -H "$UA" "$O/overview.md" | python3 -c "
-          import sys
-          t=sys.stdin.read()
-          i=t.find('한도'); j=t.find('Rate'); k=t.find('에러')
-          for pos in [p for p in (i,j,k) if p>=0][:3]:
-              print(t[max(0,pos-200):pos+1200]); print('======')"
 
       - name: 시간차 샘플링 (3회 × 35초)
         run: |
