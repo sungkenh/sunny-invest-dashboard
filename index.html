@@ -2211,9 +2211,47 @@ function articleHref(link){
   if(!link) return '#';
   return /news\.google\.com\/rss\/articles/.test(link) ? '/api/go?u='+encodeURIComponent(link) : link;
 }
+/* 국내 개별주는 '공시'(네이버 금융 공시 목록), 그 외(미국·ETF 등)는 기존 최신 뉴스 */
+const NOTICES={};   // code → {ts, items}
+const isKrCode=b=>/^\d{6}$/.test(b);
+function newsTabLabel(base){
+  const t=document.querySelector('.tab[data-t="news"]');
+  if(t) t.textContent=isKrCode(base)?'공시':'최신 뉴스';
+}
+function renderNotices(sym,row){
+  const pane=document.getElementById('pane-news'); if(!pane) return;
+  const base=baseSym(sym), c=NOTICES[base], name=(row?row.name:sym)||sym;
+  const key='ntc|'+base+'|'+(c?((c.items?c.items.length:'e')+'@'+c.ts):'loading');
+  if(pane.dataset.key===key) return;
+  pane.dataset.key=key;
+  if(c && c.items && c.items.length){
+    pane.innerHTML=`<div class="snews">${c.items.slice(0,10).map((n,i)=>
+      `<a href="${calEsc(n.link||'#')}" ${n.link?'target="_blank" rel="noopener"':'onclick="return false"'}>
+        <span class="sn-rk mono">${i+1}</span>
+        <span style="min-width:0"><span class="st">${calEsc(n.title)}</span><div class="sm">${calEsc(n.info||'')}${n.date?' · '+calEsc(n.date):''}</div></span>
+      </a>`).join('')}</div>`;
+  } else if(c){
+    pane.innerHTML=`<div class="snews"><div class="sn-empty">‘${name}’ 공시를 찾지 못했습니다.<br><span style="font-size:0.6875rem">네이버 금융 종목 공시 목록 기준 · 잠시 후 자동 재시도됩니다.</span></div></div>`;
+  } else {
+    pane.innerHTML=`<div class="snews"><div class="sn-empty">‘${name}’ 공시를 불러오는 중…</div></div>`;
+  }
+}
+async function loadNotices(sym,row){
+  const base=baseSym(sym), c=NOTICES[base];
+  if(c && Date.now()-c.ts < 600000 && c.items && c.items.length) return;   // 10분 캐시(실패는 재시도)
+  try{
+    const r=await fetch('/api/notice?code='+base,{cache:'default'});
+    if(r.ok){ const d=await r.json(); NOTICES[base]={ts:Date.now(), items:(d&&Array.isArray(d.items))?d.items:null}; }
+    else NOTICES[base]={ts:Date.now(), items:null};
+  }catch(e){ NOTICES[base]={ts:Date.now(), items:null}; }
+  if(baseSym(SEL)===base) renderNotices(sym,row);
+}
 function renderStockNews(sym, row){
   const pane=document.getElementById('pane-news'); if(!pane) return;
-  const base=baseSym(sym), c=STOCKNEWS[base], name=(row?row.name:sym)||sym;
+  const base=baseSym(sym);
+  newsTabLabel(base);
+  if(isKrCode(base)){ renderNotices(sym,row); return; }
+  const c=STOCKNEWS[base], name=(row?row.name:sym)||sym;
   const key=base+'|'+(c?(c.items.length+'@'+c.ts):'loading');
   if(pane.dataset.key===key) return;            // 동일 내용 재렌더 방지(10초 renderDeep에도 스크롤 유지)
   pane.dataset.key=key;
@@ -2230,7 +2268,9 @@ function renderStockNews(sym, row){
   }
 }
 async function loadStockNews(sym, row){
-  const base=baseSym(sym), c=STOCKNEWS[base];
+  const base=baseSym(sym);
+  if(isKrCode(base)) return loadNotices(sym,row);   // 국내 개별주 → 공시 목록
+  const c=STOCKNEWS[base];
   if(c && Date.now()-c.ts < 600000) return;     // 10분 캐시
   const name=(row?row.name:sym)||sym;
   let items=null;
