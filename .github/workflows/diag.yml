@@ -9,6 +9,65 @@ jobs:
   diag:
     runs-on: ubuntu-latest
     steps:
+      - name: 토스 Open API 스펙 프로브 (임시)
+        run: |
+          UA='User-Agent: Mozilla/5.0'
+          echo "== 문서 페이지에서 스펙 URL 탐색"
+          curl -s -H "$UA" "https://developers.tossinvest.com/docs/market-indicators" -o /tmp/doc.html || true
+          echo " HTML 크기: $(wc -c < /tmp/doc.html)"
+          grep -oE '"[^"]*\.(json|yaml|yml)"|/openapi[^"]*|/swagger[^"]*|/api-docs[^"]*' /tmp/doc.html | sort -u | head -20 || true
+          grep -oE 'src="[^"]*"|href="[^"]*"' /tmp/doc.html | sort -u | head -30 || true
+          echo "== 스펙 후보 직접 시도"
+          for u in "https://developers.tossinvest.com/openapi.json" \
+                   "https://developers.tossinvest.com/docs/openapi.json" \
+                   "https://developers.tossinvest.com/api-docs" \
+                   "https://developers.tossinvest.com/openapi.yaml" \
+                   "https://openapi.tossinvest.com/openapi.json" \
+                   "https://developers.tossinvest.com/spec.json"; do
+            printf '%s → ' "$u"
+            code=$(curl -s -o /tmp/spec -w '%{http_code}' -H "$UA" "$u")
+            echo "$code ($(wc -c < /tmp/spec) bytes) $(head -c 120 /tmp/spec | tr -d '\n')"
+            if [ "$code" = "200" ] && head -c 1 /tmp/spec | grep -q '{'; then cp /tmp/spec /tmp/spec.json; fi
+          done
+          if [ -f /tmp/spec.json ]; then
+            echo "== 스펙 파싱: 토큰·시장지표·수급·캘린더 경로"
+            python3 - <<'EOF'
+          import json
+          d=json.load(open('/tmp/spec.json'))
+          print('title:', (d.get('info') or {}).get('title'), '| servers:', d.get('servers'))
+          for p,ops in (d.get('paths') or {}).items():
+              for m,op in ops.items():
+                  if not isinstance(op,dict): continue
+                  tags=op.get('tags') or []
+                  t=' '.join(tags)+' '+str(op.get('summary',''))+' '+p
+                  if any(k in t.lower() for k in ('token','oauth','auth','indicator','investor','calendar','market','index','수급','지표','캘린더','투자자')):
+                      print(m.upper(), p, '|', tags, '|', op.get('summary'))
+          EOF
+            echo "== 수급·캘린더 응답 스키마 상세"
+            python3 - <<'EOF'
+          import json
+          d=json.load(open('/tmp/spec.json'))
+          def resolve(s,depth=0):
+              if depth>4 or not isinstance(s,dict): return s
+              if '$ref' in s:
+                  node=d
+                  for part in s['$ref'].lstrip('#/').split('/'): node=node.get(part,{})
+                  return resolve(node,depth+1)
+              return s
+          for p,ops in (d.get('paths') or {}).items():
+              low=p.lower()
+              if any(k in low for k in ('investor','calendar','indicator')):
+                  for m,op in ops.items():
+                      if not isinstance(op,dict): continue
+                      print('===',m.upper(),p)
+                      print(' params:', [ (q.get('name'),q.get('in'),(q.get('schema') or {}).get('type')) for q in (op.get('parameters') or []) ])
+                      try:
+                          sch=resolve(op['responses']['200']['content']['application/json']['schema'])
+                          print(' 응답 스키마:', json.dumps(sch, ensure_ascii=False)[:1200])
+                      except Exception as e: print(' 스키마 추출 실패', e)
+          EOF
+          fi
+
       - name: 시간차 샘플링 (3회 × 35초)
         run: |
           sample() {
