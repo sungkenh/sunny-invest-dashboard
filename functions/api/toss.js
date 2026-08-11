@@ -29,11 +29,16 @@ function tri(o) {
 }
 
 async function issueToken(env) {
-  const creds = { grant_type: 'client_credentials', client_id: env.TOSS_CLIENT_ID, client_secret: env.TOSS_CLIENT_SECRET };
-  // 스펙엔 본문 스키마만 있고 미디어타입 확인이 안 돼 JSON → form-encoded 순서로 시도 (표준 OAuth2 는 form)
+  // 등록 실수(복사 시 공백·줄바꿈·따옴표) 방어: trim 후 사용
+  const id = String(env.TOSS_CLIENT_ID || '').trim().replace(/^["']|["']$/g, '');
+  const secret = String(env.TOSS_CLIENT_SECRET || '').trim().replace(/^["']|["']$/g, '');
+  const creds = { grant_type: 'client_credentials', client_id: id, client_secret: secret };
+  // 스펙엔 본문 스키마만 있고 미디어타입 확인이 안 돼 JSON → form → Basic 헤더 순서로 시도 (표준 OAuth2 호환 폭 최대화)
   const attempts = [
     { headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(creds) },
     { headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(creds).toString() },
+    { headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Authorization': 'Basic ' + btoa(id + ':' + secret) },
+      body: 'grant_type=client_credentials' },
   ];
   let last = '';
   for (const a of attempts) {
@@ -126,7 +131,20 @@ async function fnCalendar(env, p) {
   };
 }
 
-const FNS = { stockInvestors: [fnStockInvestors, TTL_TREND], idxInvestors: [fnIdxInvestors, TTL_TREND], calendar: [fnCalendar, TTL_CAL] };
+/* 키 등록 형태 진단 — 비밀값 미노출(길이·접두 2자·공백 포함 여부만). 원인 파악 후 제거 예정 */
+async function fnKeycheck(env, p) {
+  if (p.k !== 'diag2026') return { error: 'forbidden' };
+  const shape = (v) => {
+    const raw = String(v || '');
+    const t = raw.trim().replace(/^["']|["']$/g, '');
+    return { len: raw.length, trimmedLen: t.length, prefix2: t.slice(0, 2), hasWhitespace: /\s/.test(raw), hadQuotes: /^["']|["']$/.test(raw.trim()) };
+  };
+  let token = 'not-tried';
+  try { await issueToken(env); token = 'ok'; } catch (e) { token = String(e && e.message || e).slice(0, 80); }
+  return { id: shape(env.TOSS_CLIENT_ID), secret: shape(env.TOSS_CLIENT_SECRET), token };
+}
+
+const FNS = { stockInvestors: [fnStockInvestors, TTL_TREND], idxInvestors: [fnIdxInvestors, TTL_TREND], calendar: [fnCalendar, TTL_CAL], keycheck: [fnKeycheck, 1] };
 
 export async function onRequest(context) {
   const { request, env } = context;
