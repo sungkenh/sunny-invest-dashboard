@@ -884,12 +884,14 @@ let DEEPDATA = {};          // data/deep.json 로드 결과(우선)
 const DEEP_PENDING = {};    // /api/deep 온디맨드 진행/시도 플래그
 /* 생성한 심층분석을 브라우저에 영구 저장 → 재방문·새로고침 시 /api/deep 재호출 없이 즉시 표시.
    재생성은 사용자가 '새로고침' 버튼을 눌렀을 때만. 포맷 변경 시 VER 올리면 구캐시 자동 무효화. */
-const DEEP_LS = 'alphadesk.deepcache', DEEP_CACHE_VER = 2;
+const DEEP_LS = 'alphadesk.deepcache', DEEP_CACHE_VER = 3;   // v3: 과거 스텁(부실) 고착 캐시 무효화
+const DEEP_LS_TTL = 7 * 24 * 60 * 60 * 1000;                 // 7일 지난 캐시는 재생성(지표 신선도)
 function deepCacheRead(){ try{ return JSON.parse(localStorage.getItem(DEEP_LS)||'{}'); }catch(e){ return {}; } }
 function deepCacheWrite(o){ try{ localStorage.setItem(DEEP_LS, JSON.stringify(o)); }catch(e){} }
-function deepCacheSet(base,d){ const c=deepCacheRead(); c[base]={ts:Date.now(),v:DEEP_CACHE_VER,d}; deepCacheWrite(c); }
+function deepCacheSet(base,d){ if(d&&d.degraded) return; const c=deepCacheRead(); c[base]={ts:Date.now(),v:DEEP_CACHE_VER,d}; deepCacheWrite(c); }
 function deepCacheDel(base){ const c=deepCacheRead(); if(c[base]){ delete c[base]; deepCacheWrite(c); } }
-function seedDeepFromCache(){ const c=deepCacheRead(); for(const k in c){ const e=c[k]; if(e&&e.v===DEEP_CACHE_VER&&e.d&&!DEEPDATA[k]) DEEPDATA[k]=e.d; } }
+function seedDeepFromCache(){ const c=deepCacheRead(); for(const k in c){ const e=c[k];
+  if(e&&e.v===DEEP_CACHE_VER&&e.d&&!e.d.degraded&&Date.now()-e.ts<DEEP_LS_TTL&&!DEEPDATA[k]) DEEPDATA[k]=e.d; } }
 const DEEP_SEED = {
   'NVDA':{
     name:'엔비디아 (NVIDIA)', mk:'US', px:131.26, pct:+2.10,
@@ -1020,20 +1022,28 @@ const DEEP_RETRY_MS=45*1000;
 let DEEP_Q=Promise.resolve();
 async function ensureDeep(sym,row){
   const base=(sym||'').replace(/\.(KS|KQ)$/,'');
-  if(DEEPDATA[sym]||DEEPDATA[base]) return;
+  const cur=DEEPDATA[sym]||DEEPDATA[base];
+  if(cur&&!cur.degraded) return;                            // 완전한 데이터 보유 — 재생성 불필요
   const p=DEEP_PENDING[base];
   if(p&&(p.busy||Date.now()-p.ts<DEEP_RETRY_MS)) return;   // 진행 중이거나 실패 후 45초 이내
   DEEP_PENDING[base]={ts:Date.now(),busy:true};
   DEEP_Q=DEEP_Q.then(async()=>{
-    if(DEEPDATA[base]){ delete DEEP_PENDING[base]; return; }
+    const cur2=DEEPDATA[base];
+    if(cur2&&!cur2.degraded){ delete DEEP_PENDING[base]; return; }
     let ok=false;
     try{
-      const r=await fetch('/api/deep?sym='+encodeURIComponent(sym),{cache:'default'});  // 엣지/브라우저 캐시 활용
+      // 스텁(부실) 데이터 재생성 시에는 fresh=1 로 엣지 캐시 우회
+      const url='/api/deep?sym='+encodeURIComponent(sym)+(cur2&&cur2.degraded?'&fresh=1':'');
+      const r=await fetch(url,{cache:cur2?'reload':'default'});
       if(r.ok){ const d=await r.json();
-        if(d&&!d.error&&!DEEPDATA[base]){ DEEPDATA[base]=d; deepCacheSet(base,d); ok=true; if(SEL===sym) renderDeep(); } }
+        if(d&&!d.error){
+          DEEPDATA[base]=d;
+          if(!d.degraded){ deepCacheSet(base,d); ok=true; }  // 스텁은 영구 캐시하지 않음 — 45초 뒤 자동 재생성
+          if(SEL===sym) renderDeep();
+        } }
     }catch(e){}
     if(ok) delete DEEP_PENDING[base];
-    else DEEP_PENDING[base]={ts:Date.now(),busy:false};    // 실패 — 45초 뒤 자동 재시도 허용
+    else DEEP_PENDING[base]={ts:Date.now(),busy:false};    // 실패/스텁 — 45초 뒤 자동 재시도 허용
     await new Promise(res=>setTimeout(res,400));           // 연속 생성 사이 간격(레이트리밋 완화)
   }).catch(()=>{});
 }
