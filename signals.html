@@ -286,7 +286,8 @@
   <b>ETF 시장</b>은 지수·섹터·레버리지·인버스 대표 상품 엄선 목록(한국 16 · 미국 24)으로, 시세는 차트 데이터 기준이라 개별주 대비 수십 초 지연될 수 있습니다.
   <b>인버스는 기초지수와 반대로 움직이는 별도 상품</b>으로서 자체 가격에 대한 신호이며, 레버리지·인버스는 음의 복리(변동성 잠식) 특성상 장기 보유에 부적합합니다.<br>
   장 성격은 지수 일봉의 <b>20·60일 이동평균 배열·기울기와 ADX(14) 추세 강도</b>로 판별합니다(ADX 20 미만 = 횡보).
-  외국인 수급은 <b>외국인 보유한도 소진율</b>의 최근 변화량(%p)으로, 정확한 순매수 금액이 아닌 근사 지표입니다.<br>
+  <b>외국인(5일)</b> 열은 토스증권 Open API 키가 등록된 경우 <b>공식 투자자별 매매동향(등록외국인·기관 순매수 주식 수, 5거래일 합)</b>을 표시하고,
+  키가 없거나 조회 실패 시 <b>외국인 보유한도 소진율</b>의 최근 변화량(%p, 근사 지표)으로 폴백합니다. 당일 수급은 잠정치로 장중 계속 갱신됩니다.<br>
   <b>120·200일선</b> 열은 일봉 기준 장기 이동평균 대비 위치(↑ 지지 / ↓ 깨짐)와 이격률로, 어느 모드에서든 일봉으로 계산합니다
   (120일선 = 경기선, 200일선 = 장기 추세선 — 200일선 이탈은 장기 추세 훼손 신호로 봅니다).
   스윙·단타 모드에서는 표시 종목의 일봉을 별도 수집하므로 스캔 직후 잠시 «—»였다가 채워질 수 있습니다.<br>
@@ -960,6 +961,36 @@ function pbrGap(v){
   return { fair, gap:(v.pbr/fair-1)*100 };
 }
 const pbrGapLabel=g=> g.gap<=-30?['크게 저평가','up','']:(g.gap<=-10?['저평가','up','']:(g.gap<10?['적정 범위','flat','mid']:['고평가','down','hi']));
+/* 토스증권 공식 투자자별 매매동향(/api/toss) — 국내 개별주 외국인·기관·개인 순매수(주).
+   Cloudflare 환경변수에 토스 키가 등록된 경우에만 활성(enabled:false 면 소진율 근사로 폴백). */
+const TSS={};                             // code → {ts, recs, inflight}
+const TSS_TTL=30*60*1000;
+let TOSS_ON=null;                         // null=미확인 · true=활성 · false=키 미설정
+function tossOf(code){ const c=TSS[code]; return (c&&c.recs&&c.recs.length)?c.recs:null; }
+function tossSum(recs,k,n){ let s=0,c=0; for(const r of recs){ const t=r[k]; if(t&&t.net!=null&&isFinite(t.net)){ s+=t.net; if(++c>=n) break; } } return c?s:null; }
+async function ensureToss(items){
+  if(TOSS_ON===false) return;
+  const need=[], seen=new Set();
+  for(const u of items){
+    if(isUSm(u.mkt)||isETFm(u.mkt)||!/^\d{6}$/.test(u.code)) continue;   // 국내 개별주 전용
+    if(seen.has(u.code)) continue; seen.add(u.code);
+    const c=TSS[u.code];
+    if(c&&(c.inflight||Date.now()-c.ts<TSS_TTL)) continue;
+    TSS[u.code]={ts:Date.now(),recs:null,inflight:true};
+    need.push(u.code);
+  }
+  if(!need.length) return;
+  await pool(need,4,async code=>{
+    if(TOSS_ON===false){ delete TSS[code]; return; }
+    try{
+      const d=await getJSON('/api/toss?fn=stockInvestors&code='+code+'&n=12');
+      if(d.enabled===false){ TOSS_ON=false; delete TSS[code]; return; }
+      TOSS_ON=true;
+      TSS[code]={ts:Date.now(),recs:d.records||[]};
+    }catch(e){ delete TSS[code]; }
+  });
+  render();
+}
 async function ensureVals(items){
   const need=[];
   for(const u of items){
@@ -1133,6 +1164,7 @@ function compute(){
   maybeNotify();
   // 밸류에이션 지연 수집(캐시 30분): 표시 종목 우선, 저평가 필터일 땐 스캔한 전체 유니버스
   ensureVals((FILTER==='val'?ROWS_ALL:ROWS).map(x=>x.u));
+  ensureToss(ROWS.map(x=>x.u));            // 토스 투자자별 수급(국내 개별주, 30분 캐시)
 }
 
 /* ── 시장 국면 카드 ── */
@@ -1255,7 +1287,19 @@ function ddCell(dd){
   return '<span class="mono" style="color:'+col+'" title="'+esc(tip)+'">'+dd.mdd.toFixed(1)+'%</span>'
     +'<br><small class="mono" style="color:var(--muted2)">현재 '+dd.cur.toFixed(1)+'%</small>';
 }
-function frgnCell(fd){
+const fmtShares=v=>{ const a=Math.abs(v), s=v>0?'+':(v<0?'−':'');
+  return s+(a>=1e8?(a/1e8).toFixed(1)+'억주':(a>=1e4?(a/1e4).toFixed(1)+'만주':Math.round(a).toLocaleString()+'주')); };
+function frgnCell(x){
+  // 1순위: 토스 공식 투자자별 매매동향(순매수 주식 수) — 키 등록 시
+  const recs=tossOf(x.u.code);
+  if(recs){
+    const f5=tossSum(recs,'frgn',5), i5=tossSum(recs,'inst',5);
+    if(f5!=null)
+      return '<span class="mono '+cls(f5)+'" title="토스증권 투자자별 매매동향 — 등록외국인 순매수 최근 5거래일 합(주)">외 '+fmtShares(f5)+'</span>'
+        +(i5!=null?'<br><small class="mono '+cls(i5)+'">기관 '+fmtShares(i5)+'</small>':'');
+  }
+  // 폴백: 외국인 보유한도 소진율 변화(근사)
+  const fd=x.fd;
   if(!fd||fd.d5==null||!isFinite(fd.d5)) return '<span class="flat">—</span>';
   const c=fd.d5>0.02?'up':(fd.d5<-0.02?'down':'flat');
   const tip='소진율 '+fd.now.toFixed(2)+'%'+(fd.d20!=null?' · 20일 '+(fd.d20>0?'+':'')+fd.d20.toFixed(2)+'%p':'');
@@ -1311,7 +1355,7 @@ function render(){
       +'<td class="num">'+planCell(x.plan,us)+'</td>'
       +'<td>'+maCell(x.ms)+'</td>'
       +'<td class="num">'+ddCell(x.dd)+'</td>'
-      +'<td class="num">'+frgnCell(x.fd)+'</td>'
+      +'<td class="num">'+frgnCell(x)+'</td>'
       +'<td>'+rsiCell(j.rsi)+'</td>'
       +'<td class="macdcell mono">'+fmtM(j.macd)+'<br><small>시그널 '+fmtM(j.sig)+'</small></td>'
       +'<td>'+sparkSVG(j)+'</td>'
@@ -1498,11 +1542,27 @@ function detailRow(x){
       +(cheap?'흑자 저PER + ROE 양호 + 52주 고점 대비 큰 낙폭 — 실적 대비 소외 구간일 수 있습니다. 낙폭 원인이 실적 악화가 아닌지 뉴스·실적 발표를 함께 확인하세요.'
              :'ROE는 PBR÷PER 근사값입니다. 저평가 판정 기준: 흑자 PER '+(uss?'15':'10')+'배 이하 · ROE 8% 이상 · 52주 고점 대비 −20% 이하.')
       +'</span></div>':'')
-    +'<div class="box"><h5>외국인 수급</h5>'
-      +(fd?('소진율 <b class="mono">'+fd.now.toFixed(2)+'%</b> · 5일 <b class="mono '+cls(fd.d5)+'">'+(fd.d5>0?'+':'')+fd.d5.toFixed(2)+'%p</b>'
-        +(fd.d20!=null?' · 20일 <b class="mono '+cls(fd.d20)+'">'+(fd.d20>0?'+':'')+fd.d20.toFixed(2)+'%p</b>':'')
-        +'<br><span style="color:var(--muted2);font-size:11px">'+(fd.d5>=0.1?'외국인 순매수 유입 흐름':fd.d5<=-0.1?'외국인 이탈 흐름 — 매수 신호 신뢰도 감점':'외국인 수급 중립')+'</span>')
-      :'<span style="color:var(--muted2)">'+(isUSm(u.mkt)?'미국 종목 — 외국인 소진율 지표는 국내 전용입니다':'데이터 없음')+'</span>')+'</div>'
+    +'<div class="box"><h5>'+(tossOf(u.code)?'투자자별 수급 (토스증권 공식)':'외국인 수급')+'</h5>'
+      +(function(){
+        const recs=tossOf(u.code);
+        if(recs){
+          const last=recs[0]||{};
+          const f5=tossSum(recs,'frgn',5), i5=tossSum(recs,'inst',5), p5=tossSum(recs,'indi',5);
+          const hold=(recs.find(r=>r.hold&&r.hold.rate!=null)||{}).hold;
+          const v=(lab,x)=> x!=null?(lab+' <b class="mono '+cls(x)+'">'+fmtShares(x)+'</b>'):'';
+          const lastLine=[v('외',last.frgn&&last.frgn.net),v('기관',last.inst&&last.inst.net),v('개인',last.indi&&last.indi.net)].filter(Boolean).join(' · ');
+          return (lastLine?('최근일('+esc(String(last.date||'').slice(5))+') '+lastLine+'<br>'):'')
+            +'5일 합 '+[v('외',f5),v('기관',i5),v('개인',p5)].filter(Boolean).join(' · ')
+            +(hold?'<br>외국인 보유율 <b class="mono">'+hold.rate.toFixed(2)+'%</b>':'')
+            +'<br><span style="color:var(--muted2);font-size:11px">'
+            +(f5!=null&&f5>0?'외국인 순매수 유입':f5!=null&&f5<0?'외국인 순매도 — 매수 신호 신뢰도 감점':'외국인 수급 중립')
+            +' · 순매수 주식 수 기준(등록외국인) · 당일은 잠정치 · 출처 토스증권 Open API</span>';
+        }
+        return fd?('소진율 <b class="mono">'+fd.now.toFixed(2)+'%</b> · 5일 <b class="mono '+cls(fd.d5)+'">'+(fd.d5>0?'+':'')+fd.d5.toFixed(2)+'%p</b>'
+          +(fd.d20!=null?' · 20일 <b class="mono '+cls(fd.d20)+'">'+(fd.d20>0?'+':'')+fd.d20.toFixed(2)+'%p</b>':'')
+          +'<br><span style="color:var(--muted2);font-size:11px">'+(fd.d5>=0.1?'외국인 순매수 유입 흐름':fd.d5<=-0.1?'외국인 이탈 흐름 — 매수 신호 신뢰도 감점':'외국인 수급 중립')+'</span>')
+        :'<span style="color:var(--muted2)">'+(isUSm(u.mkt)?'미국 종목 — 외국인 수급 지표는 국내 전용입니다':'데이터 없음')+'</span>';
+      })()+'</div>'
     +'<div class="box"><h5>주요 수치</h5><table>'
       +'<tr><td>MACD / 시그널</td><td class="mono">'+fmtM(j.macd)+' / '+fmtM(j.sig)+'</td></tr>'
       +'<tr><td>MA20 / MA60</td><td class="mono">'+(j.ma20?Math.round(j.ma20).toLocaleString():'—')+' / '+(j.ma60?Math.round(j.ma60).toLocaleString():'—')+'</td></tr>'
@@ -1611,12 +1671,32 @@ function paintStatus(){
   if(sess==='open'&&anyLive){ b.className='live-badge'; b.textContent='장중 LIVE'; }
   else if(anyLive){ b.className='live-badge stale'; b.textContent=sess==='ext'?'시간외':'장 종료'; }
   else { b.className='live-badge stale'; b.textContent='스냅샷'; }
+  // 토스 공식 캘린더로 확인된 휴장일 표시 (키 등록 시)
+  const holKey=MKT==='watch'?'kr':(isUSm(MKT)?'us':'kr');
+  if(TCAL_SIG&&TCAL_SIG[holKey]===false&&sess!=='open') b.textContent='휴장일';
   if(!SCANNING&&SCAN_AT){
     const nm=MODE==='long'?'일봉':(MODE==='swing'?({'60m':'60분봉','120m':'120분봉'}[SITV]):({'1m':'1분봉','5m':'5분봉','15m':'15분봉'}[ITV]));
     document.getElementById('st-scan').textContent=
       nm+' 스캔 '+agoText(new Date(SCAN_AT).toISOString())+(FAILN?' · '+FAILN+'종목 수집 실패':'');
   }
 }
+
+/* 토스 개장일 캘린더 — index 와 같은 localStorage 키(alphadesk.tosscal, 24시간) 공유 */
+let TCAL_SIG=null;
+(async function loadTossCalSig(){
+  try{
+    const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul'}).format(new Date());
+    const c=JSON.parse(localStorage.getItem('alphadesk.tosscal')||'null');
+    if(c&&c.date===today){ TCAL_SIG={kr:c.kr,us:c.us}; paintStatus(); return; }
+    const get=async n=>{ try{ const r=await fetch('/api/toss?fn=calendar&nation='+n,{cache:'default'}); if(r.ok) return await r.json(); }catch(e){} return null; };
+    const kr=await get('kr');
+    if(!kr||kr.enabled===false){ try{ localStorage.setItem('alphadesk.tosscal',JSON.stringify({date:today,kr:null,us:null})); }catch(e){} return; }
+    const us=await get('us');
+    TCAL_SIG={ kr:(kr.today&&kr.today.open===false)?false:null, us:(us&&us.today&&us.today.open===false)?false:null };
+    try{ localStorage.setItem('alphadesk.tosscal',JSON.stringify({date:today,kr:TCAL_SIG.kr,us:TCAL_SIG.us})); }catch(e){}
+    paintStatus();
+  }catch(e){}
+})();
 
 /* ── 필터바 ── */
 function segInit(id,cur,fn){

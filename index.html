@@ -742,6 +742,14 @@
       <div class="head" style="flex-wrap:wrap;gap:6px"><h3>🏛️ 연기금 매매동향</h3><span class="tag" id="nps-when">일별</span></div>
       <div class="body" id="nps-body" style="padding:8px 12px"></div>
     </div>
+
+    <div class="card" id="tf-card" style="display:none">
+      <div class="head" style="flex-wrap:wrap;gap:6px"><h3>💰 투자자별 매매동향</h3>
+        <div class="seg" id="tf-seg"><button data-m="KOSPI" class="on">코스피</button><button data-m="KOSDAQ">코스닥</button></div>
+        <span class="tag" id="tf-when">토스증권</span>
+      </div>
+      <div class="body" id="tf-body" style="padding:8px 12px"></div>
+    </div>
   </div>
 
   <!-- 중앙: 심층 분석 + 테마 리포트 -->
@@ -991,8 +999,8 @@ function deepFor(sym,row){
   return {
     name:(row?row.name:sym)+' ('+sym+')', mk:row?(row.mk==='kr'?'KR':'US'):'-',
     px:row&&row.px!=null?row.px:0, pct:row&&row.pct!=null?row.pct:0, fallback:true,
-    overview:'이 종목의 심층 분석(개요·투자지표·밸류체인·연관종목·전문가 리포트)을 실시간 생성하고 있습니다…',
-    metrics:[{k:'데이터',v:'생성 중…',x:'잠시만 기다려 주세요'}],
+    overview:'이 종목의 심층 분석(개요·투자지표·밸류체인·연관종목·전문가 리포트)을 실시간 생성하고 있습니다… 일시 실패 시 45초 간격으로 자동 재시도합니다.',
+    metrics:[{k:'데이터',v:'생성 중…',x:'여러 종목을 한 번에 담으면 순차 생성되어 다소 걸립니다'}],
     chain:[], rel:{},
     rep:{op:'op-hold',opTxt:'생성 중',desk:'리서치 큐',asof:'',
       thesis:'종목 심층 데이터를 실시간 생성하는 중입니다. 잠시 후 개요·투자지표·밸류체인·연관종목·리포트가 자동으로 채워집니다.',
@@ -1006,16 +1014,28 @@ async function loadDeep(){
     if(r.ok){ const j=await r.json(); if(j&&typeof j==='object'){ for(const k in j) DEEPDATA[k]=j[k]; if(SEL) renderDeep(); } }  // 병합(저장본 시드 보존, 큐레이션 우선)
   }catch(e){}
 }
-/* 신규 종목 온디맨드 생성: /api/deep. 세션당 1회 + 저장본 있으면 호출 안 함, 큐레이션 덮어쓰지 않음 */
+/* 신규 종목 온디맨드 생성: /api/deep — 직렬 큐로 폭주 방지(대량 등록 시 야후 레이트리밋 회피),
+   실패는 45초 후 자동 재시도(renderDeep 주기 호출이 트리거). 저장본 있으면 호출 안 함, 큐레이션 덮어쓰지 않음 */
+const DEEP_RETRY_MS=45*1000;
+let DEEP_Q=Promise.resolve();
 async function ensureDeep(sym,row){
   const base=(sym||'').replace(/\.(KS|KQ)$/,'');
-  if(DEEPDATA[sym]||DEEPDATA[base]||DEEP_PENDING[base]) return;
-  DEEP_PENDING[base]=1;   // 실패해도 유지 → 재시도 폭주 방지
-  try{
-    const r=await fetch('/api/deep?sym='+encodeURIComponent(sym),{cache:'default'});  // 엣지/브라우저 캐시 활용
-    if(r.ok){ const d=await r.json();
-      if(d&&!d.error&&!DEEPDATA[base]){ DEEPDATA[base]=d; deepCacheSet(base,d); if(SEL===sym) renderDeep(); } }
-  }catch(e){}
+  if(DEEPDATA[sym]||DEEPDATA[base]) return;
+  const p=DEEP_PENDING[base];
+  if(p&&(p.busy||Date.now()-p.ts<DEEP_RETRY_MS)) return;   // 진행 중이거나 실패 후 45초 이내
+  DEEP_PENDING[base]={ts:Date.now(),busy:true};
+  DEEP_Q=DEEP_Q.then(async()=>{
+    if(DEEPDATA[base]){ delete DEEP_PENDING[base]; return; }
+    let ok=false;
+    try{
+      const r=await fetch('/api/deep?sym='+encodeURIComponent(sym),{cache:'default'});  // 엣지/브라우저 캐시 활용
+      if(r.ok){ const d=await r.json();
+        if(d&&!d.error&&!DEEPDATA[base]){ DEEPDATA[base]=d; deepCacheSet(base,d); ok=true; if(SEL===sym) renderDeep(); } }
+    }catch(e){}
+    if(ok) delete DEEP_PENDING[base];
+    else DEEP_PENDING[base]={ts:Date.now(),busy:false};    // 실패 — 45초 뒤 자동 재시도 허용
+    await new Promise(res=>setTimeout(res,400));           // 연속 생성 사이 간격(레이트리밋 완화)
+  }).catch(()=>{});
 }
 /* 사용자 '새로고침' — 저장본·세션·서버·엣지 캐시를 모두 우회해 강제 재생성 */
 async function refreshDeep(sym){
@@ -1023,13 +1043,86 @@ async function refreshDeep(sym){
   const base=(sym||'').replace(/\.(KS|KQ)$/,'');
   delete DEEPDATA[base]; delete DEEPDATA[sym];
   deepCacheDel(base); deepCacheDel(sym);
-  DEEP_PENDING[base]=1;          // renderDeep의 deepFor→ensureDeep 재진입 차단(아래에서 직접 재생성)
+  DEEP_PENDING[base]={ts:Date.now(),busy:true};   // renderDeep의 deepFor→ensureDeep 재진입 차단(아래에서 직접 재생성)
   if(SEL===sym) renderDeep();   // '생성 중…' 즉시 표시
+  let ok=false;
   try{
     const r=await fetch('/api/deep?sym='+encodeURIComponent(sym)+'&fresh='+Date.now(),{cache:'reload'});
     if(r.ok){ const d=await r.json();
-      if(d&&!d.error){ DEEPDATA[base]=d; deepCacheSet(base,d); if(SEL===sym) renderDeep(); } }
+      if(d&&!d.error){ DEEPDATA[base]=d; deepCacheSet(base,d); ok=true; if(SEL===sym) renderDeep(); } }
   }catch(e){}
+  if(ok) delete DEEP_PENDING[base];
+  else DEEP_PENDING[base]={ts:Date.now(),busy:false};   // 실패 — 45초 뒤 자동 재시도
+}
+
+/* ===== 토스증권 Open API (키 등록 시 활성 — /api/toss, 미등록이면 자동 숨김) =====
+   ① 투자자별 매매동향 카드(코스피/코스닥 외국인·기관·개인 일별 순매수 대금)
+   ② 개장일 캘린더 → 휴장일에 세션 pill '휴장' 표시 (24시간 localStorage 캐시) */
+let TF_MKT='KOSPI';
+const TCAL={kr:null,us:null};             // false=휴장 확인 · null=미확인/키 없음
+const tfFmt=v=>{ const a=Math.abs(v)/1e8, s=v>0?'+':(v<0?'−':'');
+  return s+(a>=1e4?(a/1e4).toFixed(2)+'조':Math.round(a).toLocaleString()+'억'); };
+function tfBarsSVG(recs){
+  const rows=recs.slice(0,15).reverse();  // 과거→최신
+  const series=[['frgn','#f4b000'],['inst','#3b82f6'],['indi','#22c55e']];
+  const W=460,H=150,PX=46,PB=20,PT=8,PW=W-PX-6;
+  let mx=0,mn=0;
+  for(const r of rows) for(const s of series){ const v=r[s[0]]&&r[s[0]].net; if(v!=null){ if(v>mx)mx=v; if(v<mn)mn=v; } }
+  if(!(mx>mn)) return '<div class="nps-empty">데이터 없음</div>';
+  mx*=1.08; if(mn<0) mn*=1.08;
+  const Y=v=>PT+(mx-v)/(mx-mn)*(H-PT-PB), X=i=>PX+(i+0.5)/rows.length*PW;
+  const gw=Math.min(21,PW/rows.length*0.7), bw=gw/3;
+  let svg='<line x1="'+PX+'" x2="'+(PX+PW)+'" y1="'+Y(0).toFixed(1)+'" y2="'+Y(0).toFixed(1)+'" stroke="var(--muted2)" stroke-width="0.8"/>';
+  for(const g of [mx*0.65,mn*0.65]) if(Math.abs(g)>1e7)
+    svg+='<text x="'+(PX-4)+'" y="'+(Y(g)+3).toFixed(1)+'" font-size="8.5" fill="var(--muted2)" text-anchor="end">'+tfFmt(g)+'</text>';
+  rows.forEach((r,i)=>{
+    series.forEach((s,si)=>{ const v=r[s[0]]&&r[s[0]].net; if(v==null) return;
+      const x=X(i)-gw/2+si*bw, y0=Y(0), y1=Y(v);
+      svg+='<rect x="'+x.toFixed(1)+'" width="'+(bw-1).toFixed(1)+'" y="'+Math.min(y0,y1).toFixed(1)
+        +'" height="'+Math.max(1,Math.abs(y0-y1)).toFixed(1)+'" fill="'+s[1]+'" opacity="0.9" rx="1"/>'; });
+    if(i%3===0||i===rows.length-1)
+      svg+='<text x="'+X(i).toFixed(1)+'" y="'+(H-6)+'" font-size="8.5" fill="var(--muted2)" text-anchor="middle">'+String(r.date||'').slice(5)+'</text>';
+  });
+  return '<svg viewBox="0 0 460 '+H+'" width="100%" style="display:block">'+svg+'</svg>';
+}
+async function loadTossFlow(){
+  const card=document.getElementById('tf-card'); if(!card) return;
+  try{
+    const r=await fetch('/api/toss?fn=idxInvestors&mkt='+TF_MKT+'&n=20',{cache:'default'});
+    if(!r.ok) return;
+    const d=await r.json();
+    if(d.enabled===false){ card.style.display='none'; return; }
+    if(!d.records||!d.records.length) return;
+    card.style.display='';
+    const last=d.records[0];
+    const line=(lab,x)=> (x&&x.net!=null)?('<span style="white-space:nowrap">'+lab+' <b class="mono '+cls(x.net)+'">'+tfFmt(x.net)+'</b></span>'):'';
+    document.getElementById('tf-when').textContent=String(last.date||'').slice(5)+' 기준 · 토스증권';
+    document.getElementById('tf-body').innerHTML=
+      '<div style="display:flex;gap:12px;flex-wrap:wrap;font-size:0.78rem;margin-bottom:6px">'
+      +[line('외국인',last.frgn),line('기관',last.inst),line('개인',last.indi)].filter(Boolean).join('')+'</div>'
+      +tfBarsSVG(d.records)
+      +'<div style="font-size:0.6562rem;color:var(--muted2);margin-top:5px">'
+      +'<i style="display:inline-block;width:8px;height:8px;background:#f4b000;border-radius:2px;margin-right:3px"></i>외국인'
+      +'<i style="display:inline-block;width:8px;height:8px;background:#3b82f6;border-radius:2px;margin:0 3px 0 9px"></i>기관'
+      +'<i style="display:inline-block;width:8px;height:8px;background:#22c55e;border-radius:2px;margin:0 3px 0 9px"></i>개인'
+      +' — '+(TF_MKT==='KOSPI'?'코스피':'코스닥')+' 일별 순매수 대금(외국인=등록+미등록 합계) · 당일은 잠정치 · 토스증권 Open API</div>';
+  }catch(e){}
+}
+document.querySelectorAll('#tf-seg button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#tf-seg button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on'); TF_MKT=b.dataset.m; loadTossFlow();
+}));
+async function loadTossCal(){
+  const today=calToday();
+  const c=lsRead('alphadesk.tosscal');
+  if(c&&c.date===today){ TCAL.kr=c.kr; TCAL.us=c.us; return; }
+  const get=async n=>{ try{ const r=await fetch('/api/toss?fn=calendar&nation='+n,{cache:'default'}); if(r.ok) return await r.json(); }catch(e){} return null; };
+  const kr=await get('kr');
+  if(!kr||kr.enabled===false){ lsWrite('alphadesk.tosscal',{date:today,kr:null,us:null}); return; }
+  const us=await get('us');
+  TCAL.kr=(kr.today&&kr.today.open===false)?false:null;
+  TCAL.us=(us&&us.today&&us.today.open===false)?false:null;
+  lsWrite('alphadesk.tosscal',{date:today,kr:TCAL.kr,us:TCAL.us});
 }
 
 /* ---- 핵심 일정(경제지표·실적) — data/calendar.json ---- */
@@ -2344,6 +2437,9 @@ function tick(){
   document.getElementById('clock').textContent=t.yy+'년 '+t.mon+'월 '+t.day+'일('+t.wk+') '+t.hh+':'+t.mm+':'+t.ss;
   paintMkt('krx', kospiSession(t.dow,mins));
   paintMkt('us',  nasdaqSession(t.dow,mins));
+  // 토스 공식 캘린더로 확인된 휴장일이면 '휴장' 표시 (시계 기반 판정 오버라이드)
+  if(TCAL.kr===false){ const b=document.getElementById('krx-st'); if(b) b.textContent='휴장'; }
+  if(TCAL.us===false){ const b=document.getElementById('us-st'); if(b) b.textContent='휴장'; }
   if(typeof hmAutoTick==='function') hmAutoTick();   // 08:00/20:00 세션 경계에서 히트맵 자동 전환
   if(typeof krData!=='undefined' && krData) hmBadge(krData);   // 배지 '몇 초 전' 매초 갱신
 }
@@ -3449,7 +3545,7 @@ cloudInit();                                                                   /
 loadMarket(); loadWatch(); loadBTC(); loadDeep();                              // 임계(상단 시세·관심종목·심층)
 idleLoad(()=>{ loadCalendar(); loadFearGreed(); }, 1);
 idleLoad(()=>{ loadNewsLive(); loadThemes(); }, 2);
-idleLoad(()=>{ loadNps(); }, 3);                                               // 연기금 매매동향
+idleLoad(()=>{ loadNps(); loadTossFlow(); loadTossCal(); }, 3);                // 연기금·토스 수급·휴장 캘린더
 idleLoad(()=>{ loadStripCandles(); }, 4);                                      // 지표 미니캔들(합성 프리뷰 이미 표시)
 renderHmControls2();
 setupHeatmapLazy();
@@ -3459,6 +3555,7 @@ setInterval(tick,1000);
 setInterval(loadMarket,5000);                    // 지표 5초(거의 실시간)
 setInterval(loadStripCandles,180000);            // 지표 미니 캔들 3분(장중 봉 갱신)
 setInterval(loadWatch,10000);                    // 관심종목 10초
+setInterval(loadTossFlow,600000);                // 토스 투자자별 수급 10분
 setInterval(loadBTC,5000);                       // 비트코인 5초(바이낸스 실시간)
 setInterval(loadNewsLive,60000);                 // 뉴스 60초
 setInterval(loadCalendar,300000);                // 일정 5분
