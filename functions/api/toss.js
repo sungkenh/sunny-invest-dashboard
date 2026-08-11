@@ -29,15 +29,26 @@ function tri(o) {
 }
 
 async function issueToken(env) {
-  const r = await fetch(BASE + '/oauth2/token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ grant_type: 'client_credentials', client_id: env.TOSS_CLIENT_ID, client_secret: env.TOSS_CLIENT_SECRET }),
-  });
-  if (!r.ok) throw new Error('token ' + r.status);
-  const j = await r.json();
-  if (!j.access_token) throw new Error('token empty');
-  return { v: j.access_token, exp: Date.now() + Math.max(60, (j.expires_in || 86400) - 300) * 1000 };
+  const creds = { grant_type: 'client_credentials', client_id: env.TOSS_CLIENT_ID, client_secret: env.TOSS_CLIENT_SECRET };
+  // 스펙엔 본문 스키마만 있고 미디어타입 확인이 안 돼 JSON → form-encoded 순서로 시도 (표준 OAuth2 는 form)
+  const attempts = [
+    { headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(creds) },
+    { headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(creds).toString() },
+  ];
+  let last = '';
+  for (const a of attempts) {
+    const r = await fetch(BASE + '/oauth2/token', { method: 'POST', headers: a.headers, body: a.body });
+    if (r.ok) {
+      const j = await r.json();
+      if (j.access_token) return { v: j.access_token, exp: Date.now() + Math.max(60, (j.expires_in || 86400) - 300) * 1000 };
+      last = 'token empty'; continue;
+    }
+    let code = '';
+    try { code = (((await r.json()) || {}).error || {}).code || ''; } catch (e) {}
+    last = 'token ' + r.status + (code ? ' ' + code : '');   // 진단용 에러 코드(비밀값 미포함)
+    if (r.status >= 500) break;
+  }
+  throw new Error(last || 'token fail');
 }
 
 async function getToken(env, force) {
