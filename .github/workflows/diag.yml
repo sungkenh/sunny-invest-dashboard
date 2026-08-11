@@ -5,15 +5,17 @@ jobs:
   diag:
     runs-on: ubuntu-latest
     steps:
-      - name: 네이버 종목 공시 API 후보 프로브
+      - name: 공시 소스 2차 프로브
         run: |
-          H='-H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/"'
           for u in \
-            "https://m.stock.naver.com/api/stock/005930/notice?pageSize=10&page=1" \
-            "https://m.stock.naver.com/front-api/stock/notice?code=005930&pageSize=10" \
-            "https://m.stock.naver.com/api/stocks/notice/005930?pageSize=10" \
-            "https://api.stock.naver.com/notice/domestic/005930?pageSize=10" \
-            "https://m.stock.naver.com/front-api/news/notice?code=005930"; do
+            "https://m.stock.naver.com/api/stock/005930/announcement?pageSize=10&page=1" \
+            "https://m.stock.naver.com/api/news/notice/005930?pageSize=10&page=1" \
+            "https://m.stock.naver.com/api/news/stock/005930?pageSize=3&page=1" \
+            "https://api.stock.naver.com/stock/005930/announcement?pageSize=10"; do
             echo "== $u"
-            curl -s --max-time 15 -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" "$u" | head -c 500; echo; echo
+            curl -s --max-time 15 -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" "$u" | head -c 400; echo; echo
           done
+          echo "== finance.naver news_notice HTML"
+          curl -s --max-time 15 -H "User-Agent: Mozilla/5.0" "https://finance.naver.com/item/news_notice.naver?code=005930&page=1" | iconv -f euc-kr -t utf-8 2>/dev/null | grep -o '<a[^>]*>[^<]\{6,60\}</a>' | head -8
+          echo "== DART 기업별 RSS"
+          curl -s --max-time 15 "https://dart.fss.or.kr/api/todayRSS.xml" | head -c 300; echo
