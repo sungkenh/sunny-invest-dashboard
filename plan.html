@@ -857,6 +857,9 @@ function moneyCell(amt,us){
   if(amt==null) return '<td class="num flat">—</td>';
   return '<td class="num mono">'+fmtWon(amt)+(us?'<br><small class="flat">'+fmtPx(amt/(USDKRW||1),true)+'</small>':'')+'</td>';
 }
+/* 가격 표시: 미국 주식은 $ 아래 ₩ 환산 병기 (환율 미수신 시 $만) */
+const priceBoth=(v,us)=>(us&&USDKRW&&v!=null)?fmtPx(v,true)+'<br><small class="flat">'+fmtWon(v*USDKRW)+'</small>':fmtPx(v,us);
+const wonSuffix=(v,us)=>(us&&USDKRW&&v!=null)?' (≈'+fmtWon(v*USDKRW)+')':'';
 function prioCtl(k,i){
   return '<input class="prio-in" data-prio="'+esc(k)+'" value="'+(i+1)+'" inputmode="numeric"'
     +' title="우선순위 — 숫자를 직접 입력하거나 ▲▼로 조정. 시드·오픈리스크 예산을 위에서부터 배정">'
@@ -877,12 +880,14 @@ function cardHTML(x,i){
     +'<span class="vd '+x.j.v+'">'+VD[x.j.v]+'</span>'
     +'<span class="stchip '+st.cls+'">'+st.label+'</span>'
     +'<span class="px mono">'+fmtPx(x.price,x.us)
+    +(x.us&&USDKRW?'<small class="flat">'+fmtWon(x.price*USDKRW)+'</small>':'')
     +(u.pct!=null?'<small class="'+cls(u.pct)+'">'+(u.pct>0?'+':'')+Number(u.pct).toFixed(2)+'%</small>':'')+'</span>'
     +'</div>';
   if(collapsed) return h+'</div>';
   h+='<div class="boxnote" style="margin-top:4px">'+st.desc
-    +' · ATR(14) '+fmtPx(x.frame.rd(x.frame.atr),x.us)+' · 손절 '+fmtPx(x.frame.stop,x.us)
-    +' · 1R 목표 '+fmtPx(x.frame.rd(x.frame.entry+x.frame.risk),x.us)+'</div>';
+    +' · ATR(14) '+fmtPx(x.frame.rd(x.frame.atr),x.us)
+    +' · 손절 '+fmtPx(x.frame.stop,x.us)+wonSuffix(x.frame.stop,x.us)
+    +' · 1R 목표 '+fmtPx(x.frame.rd(x.frame.entry+x.frame.risk),x.us)+wonSuffix(x.frame.rd(x.frame.entry+x.frame.risk),x.us)+'</div>';
   // 배정
   const a=x.alloc;
   if(SEED>0&&x.style!=='wait'){
@@ -900,7 +905,7 @@ function cardHTML(x,i){
   if(x.ladder&&x.ladder.length){
     h+='<div class="lsec">▼ 분할 매수 계획</div><table class="lad"><tr><th>차수</th><th>가격</th><th>근거</th><th class="num">비중</th><th class="num">금액</th><th class="num">주수</th></tr>';
     for(const t of x.ladder){
-      h+='<tr><td>'+t.n+'차</td><td class="num mono">'+fmtPx(t.price,x.us)+'</td><td>'+esc(t.why)+'</td>'
+      h+='<tr><td>'+t.n+'차</td><td class="num mono">'+priceBoth(t.price,x.us)+'</td><td>'+esc(t.why)+'</td>'
         +'<td class="num">'+t.w+'%</td>'+moneyCell(t.amt,x.us)
         +'<td class="num mono">'+(t.qty!=null?t.qty.toLocaleString()+'주':'—')+'</td></tr>';
     }
@@ -916,7 +921,7 @@ function cardHTML(x,i){
     for(const s of sellBase.steps){
       const nm=s.kind==='stop'?'<b class="down">'+s.name+'</b>':(s.kind==='tp'?'<b class="up">'+s.name+'</b>':s.name);
       h+='<tr'+(s.kind==='stop'?' style="background:rgba(59,130,246,.08)"':'')+'><td>'+nm+'</td>'
-        +'<td class="num mono">'+(s.price!=null?fmtPx(s.price,x.us):'—')+'</td>'
+        +'<td class="num mono">'+(s.price!=null?priceBoth(s.price,x.us):'—')+'</td>'
         +'<td class="num mono '+(s.pct!=null?(s.pct>=0?'up':'down'):'')+'">'+(s.pct!=null?(s.pct>0?'+':'')+s.pct.toFixed(1)+'%':'—')+'</td>'
         +'<td class="num mono">'+(s.qty!=null?s.qty.toLocaleString()+'주':s.share)+'</td><td class="boxnote">'+esc(s.note)+'</td></tr>';
     }
@@ -924,11 +929,15 @@ function cardHTML(x,i){
   } else if(x.style==='wait'&&!x.pos){
     h+='<div class="boxnote" style="margin-top:6px">현재 매도 계열 판정 — 신규 진입을 계획하지 않습니다. 보유 중이라면 아래에 평단·수량을 입력하면 보유분 매도 계획을 계산합니다.</div>';
   }
-  // 보유 포지션 입력
+  // 보유 포지션 입력 — 입력 중(DRAFT)에는 재렌더돼도 값이 보존된다
+  const dr=DRAFT[k];
+  const avgVal=dr!=null?dr.avg:(x.pos&&x.pos.avg?x.pos.avg:'');
+  const qtyVal=dr!=null?dr.qty:(x.pos&&x.pos.qty?x.pos.qty:'');
   h+='<div class="lsec">보유 포지션 (선택 입력 — 브라우저에만 저장)</div>'
-    +'<div class="posrow">평단 <input data-avg="'+esc(k)+'" inputmode="decimal" value="'+(x.pos&&x.pos.avg?x.pos.avg:'')+'" placeholder="'+(x.us?'$':'원')+'">'
-    +' 수량 <input data-qty="'+esc(k)+'" inputmode="numeric" value="'+(x.pos&&x.pos.qty?x.pos.qty:'')+'" placeholder="주">'
-    +(x.pos?' <button class="btn" data-clearpos="'+esc(k)+'" style="padding:4px 10px">지우기</button>':'')+'</div>';
+    +'<div class="posrow">평단 <input data-avg="'+esc(k)+'" inputmode="decimal" value="'+esc(avgVal)+'" placeholder="'+(x.us?'$':'원')+'">'
+    +' 수량 <input data-qty="'+esc(k)+'" inputmode="numeric" value="'+esc(qtyVal)+'" placeholder="주">'
+    +(x.pos?' <button class="btn" data-clearpos="'+esc(k)+'" style="padding:4px 10px">지우기</button>':'')+'</div>'
+    +(dr!=null?'<div class="boxnote">평단과 수량을 모두 입력하면 자동 반영됩니다.</div>':'');
   if(x.pv){
     const pv=x.pv;
     h+='<div class="posinfo">평가 <b class="mono '+cls(pv.pl)+'">'+(pv.pl>0?'+':'')+fmtWon(pv.pl)+' ('+(pv.plPct>0?'+':'')+pv.plPct.toFixed(1)+'%)</b>'
@@ -1044,30 +1053,42 @@ function segInit(id,cur,fn){
 const descOf=k=>{ const p=PRESETS[k]; return '1회 리스크 '+p.risk+'% · 종목당 ≤'+p.maxW+'% · Kelly '+(p.kelly===0.25?'¼':'½'); };
 segInit('seg-preset',PRESET,v=>{ PRESET=v; PLN('preset',v); document.getElementById('preset-desc').textContent=descOf(v); recompute(); });
 document.getElementById('preset-desc').textContent=descOf(PRESET);
+/* 평단·수량: 입력 중에는 DRAFT에만 담고(재렌더에도 값 유지), 확정(change=포커스 아웃)될 때만
+   저장·재계산한다 — 입력 도중 재계산이 카드를 다시 그려 값이 지워지던 문제 방지 */
+const DRAFT={};
 document.getElementById('cards').addEventListener('input',e=>{
   const a=e.target.closest('[data-avg]'), q=e.target.closest('[data-qty]');
   const k=(a&&a.dataset.avg)||(q&&q.dataset.qty);
   if(!k) return;
   const card=e.target.closest('.pcard');
-  const avg=parseFloat(String((card.querySelector('[data-avg]')||{}).value||'').replace(/,/g,''))||0;
-  const qty=parseInt(String((card.querySelector('[data-qty]')||{}).value||'').replace(/\D/g,''),10)||0;
-  if(avg>0&&qty>0) POS[k]={avg,qty}; else delete POS[k];
-  savePos();
-  clearTimeout(window.__posT); window.__posT=setTimeout(recompute,500);   // 입력 멈춘 뒤 재계산(커서 보존)
+  DRAFT[k]={ avg:String((card.querySelector('[data-avg]')||{}).value||''),
+             qty:String((card.querySelector('[data-qty]')||{}).value||'') };
 });
 document.getElementById('cards').addEventListener('change',e=>{
   const p=e.target.closest('[data-prio]');
-  if(p) movePrioTo(p.dataset.prio, p.value);
+  if(p){ movePrioTo(p.dataset.prio, p.value); return; }
+  const a=e.target.closest('[data-avg]'), q=e.target.closest('[data-qty]');
+  const k=(a&&a.dataset.avg)||(q&&q.dataset.qty);
+  if(!k) return;
+  const d=DRAFT[k]||{avg:String((a||{}).value||''),qty:String((q||{}).value||'')};
+  const avg=parseFloat(String(d.avg).replace(/,/g,''))||0;
+  const qty=parseInt(String(d.qty).replace(/\D/g,''),10)||0;
+  if(avg>0&&qty>0){ POS[k]={avg,qty}; delete DRAFT[k]; savePos(); recompute(); }
+  else if(!String(d.avg).trim()&&!String(d.qty).trim()){    // 둘 다 비움 = 포지션 삭제
+    delete DRAFT[k];
+    if(POS[k]){ delete POS[k]; savePos(); recompute(); }
+  }
+  // 한쪽만 입력된 상태(초안)는 저장·재계산하지 않음 — DRAFT가 값을 보존
 });
 document.getElementById('cards').addEventListener('keydown',e=>{
-  if(e.key==='Enter'&&e.target.closest('[data-prio]')) e.target.blur();   // Enter = 확정(blur → change)
+  if(e.key==='Enter'&&e.target.closest('[data-prio],[data-avg],[data-qty]')) e.target.blur();   // Enter = 확정
 });
 document.getElementById('cards').addEventListener('click',e=>{
   const up=e.target.closest('[data-up]'), dn=e.target.closest('[data-dn]');
   if(up){ movePrio(up.dataset.up,-1); return; }
   if(dn){ movePrio(dn.dataset.dn,+1); return; }
   const cp=e.target.closest('[data-clearpos]');
-  if(cp){ delete POS[cp.dataset.clearpos]; savePos(); recompute(); return; }
+  if(cp){ delete POS[cp.dataset.clearpos]; delete DRAFT[cp.dataset.clearpos]; savePos(); recompute(); return; }
   if(e.target.closest('input,button,a')) return;
   const t=e.target.closest('[data-toggle]');
   if(t){ const k=t.dataset.toggle; UIST.collapsed[k]=!UIST.collapsed[k]; saveUi(); render(); }
