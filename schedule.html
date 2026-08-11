@@ -489,7 +489,7 @@ async function loadCalendar(){
       } else { events.push(le); idx[evKey(le)]=events.length-1; }   // 스냅샷에 아직 없는 신규 이벤트
     });
   }
-  EVENTS=events; TODAY=(snap&&snap.today)||(live&&live.today)||todayKST();
+  EVENTS=events; TODAY=todayKST();   // '오늘'은 항상 KST 현재 날짜 — 스냅샷 생성 시점(UTC) 날짜 사용 금지
   lsWrite(CAL_LS, {events:events, today:TODAY});   // 직전 일정 보관(다음 진입 즉시 시드)
   document.getElementById('offline').style.display='none';
   renderAll();

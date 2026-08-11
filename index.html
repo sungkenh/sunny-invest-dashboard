@@ -1471,7 +1471,7 @@ async function loadCalendar(){
       } else { events.push(le); idx[calEvKey(le)]=events.length-1; }
     });
   }
-  CAL_EVENTS=events; CAL_TODAY=(snap&&snap.today)||(live&&live.today)||calToday(); renderSched();
+  CAL_EVENTS=events; CAL_TODAY=calToday(); renderSched();   // '오늘'은 항상 KST 현재 날짜 — 스냅샷 생성 시점(UTC) 날짜에 끌려가면 새벽·자정 넘김에 일정이 안 움직인다 (5분 주기 재로드로 자정 자동 롤오버)
   lsWrite(CAL_LS, {events:events, today:CAL_TODAY});   // 직전 일정 보관(다음 진입 즉시 시드)
 }
 /* ---- 테마별 전문가 데스크 — /api/themes (없으면 data/themes.json, 둘 다 없으면 큐레이션 폴백) ---- */
