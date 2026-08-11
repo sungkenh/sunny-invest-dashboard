@@ -87,8 +87,9 @@
   .stchip.pull{color:var(--accent2);border-color:var(--accent2)}
   .stchip.pyr{color:var(--up);border-color:rgba(246,70,93,.55)}
   .stchip.wait{color:var(--muted2)}
-  .prio{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;
-    background:var(--accent);color:#fff;font-size:11px;font-weight:800}
+  .prio-in{width:30px;text-align:center;background:var(--accent);border:1px solid var(--accent);border-radius:8px;
+    color:#fff;font-size:11px;font-weight:800;padding:3px 0;font-family:inherit}
+  .prio-in:focus{outline:none;background:var(--panel);color:var(--text);border-color:var(--accent)}
   .pctl{display:inline-flex;flex-direction:column;gap:1px;margin-right:2px}
   .pbtn{border:1px solid var(--border);background:var(--chip);color:var(--muted);border-radius:4px;
     font-size:8px;line-height:1;padding:2px 4px;cursor:pointer}
@@ -744,6 +745,18 @@ function movePrio(k,dir){
   LIST=sortByPrio(LIST);
   recompute();
 }
+/* 우선순위 숫자 직접 입력: pos(1부터)로 이동 — 범위 밖은 클램프, 무효 입력은 원상 복구 */
+function movePrioTo(k,pos){
+  const i=PRIO.indexOf(k); if(i<0){ render(); return; }
+  const n=parseInt(pos,10);
+  if(!Number.isFinite(n)){ render(); return; }
+  const j=Math.max(0,Math.min(PRIO.length-1,n-1));
+  if(j===i){ render(); return; }
+  PRIO.splice(i,1); PRIO.splice(j,0,k);
+  savePrio();
+  LIST=sortByPrio(LIST);
+  recompute();
+}
 
 /* ── 데이터 수집 (일봉 전용) ── */
 const CH={};                       // code|mkt → {ts,closes,his,los,lastDate}
@@ -845,7 +858,8 @@ function moneyCell(amt,us){
   return '<td class="num mono">'+fmtWon(amt)+(us?'<br><small class="flat">'+fmtPx(amt/(USDKRW||1),true)+'</small>':'')+'</td>';
 }
 function prioCtl(k,i){
-  return '<span class="prio" title="우선순위 — 시드·오픈리스크 예산을 위에서부터 배정">'+(i+1)+'</span>'
+  return '<input class="prio-in" data-prio="'+esc(k)+'" value="'+(i+1)+'" inputmode="numeric"'
+    +' title="우선순위 — 숫자를 직접 입력하거나 ▲▼로 조정. 시드·오픈리스크 예산을 위에서부터 배정">'
     +'<span class="pctl"><button class="pbtn" data-up="'+esc(k)+'" title="우선순위 올리기">▲</button>'
     +'<button class="pbtn" data-dn="'+esc(k)+'" title="우선순위 내리기">▼</button></span>';
 }
@@ -1040,6 +1054,13 @@ document.getElementById('cards').addEventListener('input',e=>{
   if(avg>0&&qty>0) POS[k]={avg,qty}; else delete POS[k];
   savePos();
   clearTimeout(window.__posT); window.__posT=setTimeout(recompute,500);   // 입력 멈춘 뒤 재계산(커서 보존)
+});
+document.getElementById('cards').addEventListener('change',e=>{
+  const p=e.target.closest('[data-prio]');
+  if(p) movePrioTo(p.dataset.prio, p.value);
+});
+document.getElementById('cards').addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&e.target.closest('[data-prio]')) e.target.blur();   // Enter = 확정(blur → change)
 });
 document.getElementById('cards').addEventListener('click',e=>{
   const up=e.target.closest('[data-up]'), dn=e.target.closest('[data-dn]');
