@@ -188,8 +188,13 @@ async function chartMeta(sym) {
 
 async function __cfHandler(event) {
   const qp = event.queryStringParameters || {};
-  const sym = (qp.sym || '').trim();
+  let sym = (qp.sym || '').trim();
   if (!sym) return resp({ error: 'no sym' });
+  // KR 6자리 코드가 접미사 없이 오면 야후가 못 찾음 → .KS(코스피) 우선, 없으면 .KQ(코스닥) 자동 판별
+  if (/^\d{6}$/.test(sym)) {
+    const m = await chartMeta(sym + '.KS');
+    sym = m ? sym + '.KS' : sym + '.KQ';
+  }
   const fresh = qp.fresh != null;   // 사용자 새로고침 → 캐시 우회
   const ck = sym.toUpperCase();
   // 워밍 캐시 즉시 반환 — 단, 부실(degraded) 결과는 60초만 유지해 재생성 기회를 빨리 준다
