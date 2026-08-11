@@ -85,10 +85,11 @@
   .prog i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
 
   .tbl-wrap{border:1px solid var(--border);border-radius:12px;overflow:auto;background:var(--panel)}
-  table.sig{width:100%;border-collapse:collapse;min-width:1340px}
-  table.sig th{position:sticky;top:0;background:var(--panel2);color:var(--muted2);font-size:11px;font-weight:800;
-    text-align:left;padding:9px 12px;border-bottom:1px solid var(--border);letter-spacing:.3px;white-space:nowrap;z-index:2}
-  table.sig td{padding:9px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle;white-space:nowrap}
+  table.sig{width:100%;border-collapse:collapse}   /* min-width 강제 없음 — 1200px대 화면도 스크롤 없이 */
+  table.sig th{position:sticky;top:0;background:var(--panel2);color:var(--muted2);font-size:10.5px;font-weight:800;
+    text-align:left;padding:7px 8px;border-bottom:1px solid var(--border);letter-spacing:.2px;white-space:nowrap;z-index:2}
+  table.sig td{padding:6px 8px;border-bottom:1px solid var(--border);font-size:12.5px;vertical-align:middle;white-space:normal}
+  table.sig td.num{white-space:nowrap}   /* 숫자 셀만 줄바꿈 금지 — 나머지는 접혀서 표가 화면 폭에 맞음 */
   table.sig tbody tr.srow{cursor:pointer}
   table.sig tbody tr.srow:hover{background:var(--panel2)}
   table.sig tbody tr:last-child td{border-bottom:none}
@@ -114,7 +115,7 @@
   .cap{color:var(--muted2);font-size:10.5px}
   tr.srow.fresh td:first-child{box-shadow:inset 3px 0 0 var(--gold)}
 
-  .vd{display:inline-block;font-size:11px;font-weight:800;padding:3px 9px;border-radius:6px;letter-spacing:.2px}
+  .vd{display:inline-block;font-size:11px;font-weight:800;padding:3px 9px;border-radius:6px;letter-spacing:.2px;white-space:nowrap}
   .vd.buy2{background:var(--up);color:#fff}
   .vd.buy1{background:rgba(246,70,93,.16);color:var(--up);border:1px solid var(--up)}
   .vd.ebuy{color:var(--up);border:1px dashed var(--up);background:rgba(246,70,93,.10)}
@@ -129,12 +130,15 @@
   body.light .vd.buy1{background:rgba(212,36,58,.08)}
   body.light .vd.sell1{background:rgba(47,107,219,.08)}
 
-  .chip{display:inline-block;font-size:10.5px;font-weight:700;border-radius:5px;padding:2px 7px;margin-right:4px;
-    background:var(--chip);border:1px solid var(--border);color:var(--muted)}
+  .chip{display:inline-block;font-size:10.5px;font-weight:700;border-radius:5px;padding:2px 6px;margin:1px 3px 1px 0;
+    background:var(--chip);border:1px solid var(--border);color:var(--muted);white-space:nowrap}
   .chip.b{color:var(--up);border-color:rgba(246,70,93,.45)}
   .chip.s{color:var(--down);border-color:rgba(59,130,246,.45)}
   .chip.soon{border-style:dashed}
-  .tech{font-size:11px;line-height:1.5;max-width:230px;white-space:normal}
+  .chip.warn{color:var(--gold);border-color:rgba(212,164,76,.5)}
+  .cdot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px;vertical-align:1px}
+  .cdot.ok{background:#22c55e} .cdot.warn{background:var(--gold)}   /* 확인=초록(방향 무관) · 경고=금색 */
+  .tech{font-size:11px;line-height:1.5;max-width:200px;white-space:normal}
   .tech b{display:inline-block;font-size:10.5px;font-weight:800;color:var(--accent2);border:1px solid var(--accent2);
     border-radius:5px;padding:1px 7px;margin-bottom:2px}
   .tech span{color:var(--muted2);display:block;font-size:10.5px}
@@ -223,6 +227,10 @@
   <div class="seg" id="seg-look">
     <button data-v="3">3봉 이내</button><button data-v="5">5봉 이내</button><button data-v="10">10봉 이내</button>
   </div>
+  <span class="fl">신호 속도</span>
+  <div class="seg" id="seg-speed">
+    <button data-v="std">표준</button><button data-v="fast">⚡ 빠름</button>
+  </div>
   <span class="fl">필터</span>
   <div class="seg" id="seg-filter">
     <button data-v="all">전체</button><button data-v="buy">매수</button><button data-v="near">임박</button><button data-v="sell">매도</button><button data-v="val">💎 저평가</button>
@@ -244,7 +252,11 @@
       최근 N봉 내 ①·② 발생 + ③ 충족 = <b>매수 신호</b>, 모두 겹치면 <b>강력 매수</b>.<br>
       MACD+RSI의 후행성 보완: <b>히스토그램 반전 · 스토캐스틱(14,3,3) 과매도 골든 · RSI 30 탈출 ·
       상승 다이버전스 · BB 하단 복귀</b> 중 <b>2개 이상</b> 겹치면 크로스 확정 전에 <b>조기 매수</b>로,
-      갭 축소 외삽으로는 <b>매수 임박</b>으로 먼저 표시하고, 발생 시점에 🔔 브라우저 알림을 보냅니다.
+      갭 축소 외삽으로는 <b>매수 임박</b>으로 먼저 표시하고, 발생 시점에 🔔 브라우저 알림을 보냅니다.<br>
+      «신호 속도: <b>⚡빠름</b>»은 MACD 8·17·9 + RSI 9로 같은 기준을 더 짧은 주기로 계산해 신호를 1~3봉
+      먼저 잡는 대신 거짓 신호(휩쏘)가 늘어납니다 — 종목 상세의 <b>«신호 성과 검증»</b>에서 표준과의
+      과거 적중률 차이를 확인하고 선택하세요. 신호봉의 <b>거래량</b>(20봉 평균 대비)과 <b>토스 수급</b>이
+      신호 방향과 일치하면 확인 칩·초록 점으로, 어긋나면 경고 칩으로 신뢰도를 표시합니다.
     </div>
     <div class="card sell">
       <h4>▼ 매도 타이밍 기준 (정반대)</h4>
@@ -267,11 +279,11 @@
   <div class="tbl-wrap">
     <table class="sig">
       <thead><tr>
-        <th style="width:30px">#</th><th>종목</th><th class="num">현재가</th><th class="num">등락률</th>
-        <th>판정</th><th>신호 근거</th><th>추천 기법 (장 성격 기반)</th><th class="num">목표·손절 (제안)</th><th>120·200일선</th><th class="num">MDD(1년)</th><th class="num" id="th-frgn">외국인(5일)</th>
-        <th>RSI(14)</th><th>MACD</th><th>히스토그램</th>
+        <th style="width:30px">#</th><th>종목</th><th class="num">현재가</th>
+        <th>판정</th><th>신호 근거</th><th>추천 기법 (장 성격 기반)</th><th class="num">목표·손절 (제안)</th><th>120·200일선 · MDD</th><th class="num" id="th-frgn">외국인(5일)</th>
+        <th id="th-rsi">RSI(14)</th><th>MACD·히스토그램</th>
       </tr></thead>
-      <tbody id="tbody"><tr><td colspan="14"><div class="note-empty">시세와 차트를 불러와 계산을 시작합니다…</div></td></tr></tbody>
+      <tbody id="tbody"><tr><td colspan="11"><div class="note-empty">시세와 차트를 불러와 계산을 시작합니다…</div></td></tr></tbody>
     </table>
   </div>
 </main>
@@ -311,7 +323,12 @@
   실적 악화로 ROE가 떨어지면 적정 PBR도 함께 낮아지는 후행성이 있습니다. 기술적 매수 신호(판정 열)와 저평가 판정이 겹칠 때가 유효한 매수 검토 시점입니다.<br>
   <b>MDD(1년)</b> 열은 최근 약 1년(국내 330거래일·미국 1년) 일봉 종가 기준 <b>최대 낙폭</b>(기간 내 고점→저점 최대 하락률)이며,
   아래 «현재»는 현재가의 기간 내 전고점 대비 낙폭입니다. MDD가 깊을수록(−30% 이하 파랑, −15% 이하 주황) 변동성·하방 위험이 큰 종목이니 손절 폭과 비중 설정에 참고하세요.<br>
-  지표는 종가 기준 MACD(12,26,9)·RSI(14, Wilder)·볼린저밴드(20,2)·스토캐스틱 슬로우(14,3,3)로 계산하며,
+  지표는 종가 기준 MACD·RSI(Wilder)·볼린저밴드(20,2)·스토캐스틱 슬로우(14,3,3)로 계산합니다 —
+  «신호 속도» <b>표준</b>은 MACD(12,26,9)+RSI(14), <b>⚡빠름</b>은 MACD(8,17,9)+RSI(9)로 같은 로직을 더 짧은 주기에 적용해
+  신호를 1~3봉 먼저 잡는 대신 휩쏘가 늘어나며, 종목 상세의 <b>«신호 성과 검증»</b>이 이 종목 과거 봉 기준 두 프리셋의
+  적중률·평균수익(진입 후 단타·장기 20봉, 스윙 30봉 평가, 수수료 미반영)을 비교해 줍니다.
+  <b>거래량 확인</b> 칩은 신호봉 거래량이 직전 20봉 평균의 1.5배 이상(0.7배 미만이면 «빈약» 경고), <b>수급 확인</b> 칩은
+  토스 최근일 외국인·기관 순매수가 신호 방향과 일치할 때 붙는 참고 라벨로, 판정 자체를 바꾸지는 않습니다(판정 배지 앞 초록·금색 점 동일).
   장중에는 형성 중인 마지막 봉에 네이버 실시간 체결가를 반영해 자동 갱신됩니다. 🔔 알림은 이 페이지가 열려 있는 동안만 동작합니다.<br>
   MACD·RSI는 추세 후행 지표로 <b>거짓 신호(휩쏘)</b>가 빈번합니다. «조기 매수/매도»는 후행성을 보완하는 선행 지표
   (히스토그램 반전·스토캐스틱·RSI 30/70 탈출·다이버전스·볼린저 복귀) 2개 이상의 합의이지만 <b>본신호보다 실패 확률이 높은
@@ -453,12 +470,13 @@ function bollSeries(v,n,k){
   }
   return {mid,u,l};
 }
-function macdSeries(c){
-  const e12=emaSeries(c,12), e26=emaSeries(c,26);
+function macdSeries(c,f,sl,g){
+  f=f||12; sl=sl||26; g=g||9;
+  const e12=emaSeries(c,f), e26=emaSeries(c,sl);
   const m=c.map((_,i)=>(e12[i]!=null&&e26[i]!=null)?e12[i]-e26[i]:null);
-  const mv=[]; let off=-1;                     // 시그널은 MACD 유효 구간에 대한 EMA9
+  const mv=[]; let off=-1;                     // 시그널은 MACD 유효 구간에 대한 EMA(g)
   for(let i=0;i<m.length;i++){ if(m[i]!=null){ if(off<0) off=i; mv.push(m[i]); } }
-  const sv=emaSeries(mv,9);
+  const sv=emaSeries(mv,g);
   const s=new Array(c.length).fill(null);
   for(let i=0;i<sv.length;i++) if(sv[i]!=null) s[off+i]=sv[i];
   return {m,s};
@@ -512,11 +530,12 @@ function classifyRegime(hi,lo,cl){
   else if(adx!=null&&adx>=20&&dn) regime='bear';
   return {regime,adx,ma20:m20,ma60:m60,slope,close:c,ma20s:ma20,ma60s:ma60};
 }
-/* a가 b를 상향 돌파한 가장 최근 시점: 마지막 봉 기준 몇 봉 전(0=마지막 봉). 없으면 null */
-function crossUpAgo(a,b){
-  for(let i=a.length-1;i>=1;i--){
+/* a가 b를 상향 돌파한 가장 최근 시점: 기준 봉(end, 기본 마지막 봉)에서 몇 봉 전(0=기준 봉). 없으면 null */
+function crossUpAgo(a,b,end){
+  if(end==null) end=a.length-1;
+  for(let i=end;i>=1;i--){
     if(a[i]==null||b[i]==null||a[i-1]==null||b[i-1]==null) continue;
-    if(a[i]>b[i] && a[i-1]<=b[i-1]) return a.length-1-i;
+    if(a[i]>b[i] && a[i-1]<=b[i-1]) return end-i;
   }
   return null;
 }
@@ -542,10 +561,10 @@ function stochSeries(hi,lo,cl,n,ks,ds){
   return {k, d:smooth(k,ds)};
 }
 /* 히스토그램 반전: 크로스 전 갭이 2봉 연속 축소 — 골든/데드크로스 선행 신호 */
-function histTurn(m,s){
-  const L=m.length;
-  if(L<3||m[L-1]==null||s[L-1]==null||m[L-2]==null||s[L-2]==null||m[L-3]==null||s[L-3]==null) return {up:false,dn:false};
-  const h1=m[L-1]-s[L-1], h2=m[L-2]-s[L-2], h3=m[L-3]-s[L-3];
+function histTurn(m,s,end){
+  if(end==null) end=m.length-1;
+  if(end<2||m[end]==null||s[end]==null||m[end-1]==null||s[end-1]==null||m[end-2]==null||s[end-2]==null) return {up:false,dn:false};
+  const h1=m[end]-s[end], h2=m[end-1]-s[end-1], h3=m[end-2]-s[end-2];
   return { up: h1<0&&h1>h2&&h2>h3, dn: h1>0&&h1<h2&&h2<h3 };
 }
 /* 가격-MACD 히스토그램 다이버전스(단순 피벗 2점 비교, 마지막 피벗이 12봉 이내일 때만) */
@@ -559,10 +578,10 @@ function pivotIdx(arr,isMin,sep){
   }
   return out;
 }
-function divergence(closes,m,s,win){
-  const L=closes.length, from=Math.max(0,L-(win||40));
-  const cl=closes.slice(from);
-  const h=[]; for(let i=from;i<L;i++) h.push((m[i]!=null&&s[i]!=null)?m[i]-s[i]:null);
+function divergence(closes,m,s,win,end){
+  const last=(end==null)?closes.length-1:end, from=Math.max(0,last+1-(win||40));
+  const cl=closes.slice(from,last+1);
+  const h=[]; for(let i=from;i<=last;i++) h.push((m[i]!=null&&s[i]!=null)?m[i]-s[i]:null);
   const mins=pivotIdx(cl,true,5), maxs=pivotIdx(cl,false,5);
   let bull=false,bear=false;
   if(mins.length>=2){
@@ -576,52 +595,66 @@ function divergence(closes,m,s,win){
   return {bull,bear};
 }
 /* 볼린저밴드 이탈 후 복귀: below=true 는 하단 이탈→복귀(반등), false 는 상단 돌파→복귀(반락) */
-function reentryAgo(closes,band,below){
-  for(let i=closes.length-1;i>=1;i--){
+function reentryAgo(closes,band,below,end){
+  if(end==null) end=closes.length-1;
+  for(let i=end;i>=1;i--){
     if(band[i]==null||band[i-1]==null) continue;
     if(below ? (closes[i-1]<band[i-1]&&closes[i]>=band[i])
-             : (closes[i-1]>band[i-1]&&closes[i]<=band[i])) return closes.length-1-i;
+             : (closes[i-1]>band[i-1]&&closes[i]<=band[i])) return end-i;
   }
   return null;
 }
 /* 크로스 임박: MACD-시그널 갭(및 0선 거리)이 축소 중일 때 최근 2봉 평균 속도로 도달 봉수 외삽(≤3봉만) */
-function approach(m,s){
-  const L=m.length, out={gcEta:null,dcEta:null,zuEta:null,zdEta:null};
-  if(L<4||m[L-1]==null||s[L-1]==null||m[L-2]==null||s[L-2]==null||m[L-3]==null||s[L-3]==null) return out;
-  const g1=m[L-1]-s[L-1], g2=m[L-2]-s[L-2], g3=m[L-3]-s[L-3];
+function approach(m,s,end){
+  if(end==null) end=m.length-1;
+  const out={gcEta:null,dcEta:null,zuEta:null,zdEta:null};
+  if(end<3||m[end]==null||s[end]==null||m[end-1]==null||s[end-1]==null||m[end-2]==null||s[end-2]==null) return out;
+  const g1=m[end]-s[end], g2=m[end-1]-s[end-1], g3=m[end-2]-s[end-2];
   const dg=((g1-g2)+(g2-g3))/2;
   if(g1<0&&dg>0){ const e=Math.ceil(-g1/dg); if(e>=1&&e<=3) out.gcEta=e; }
   if(g1>0&&dg<0){ const e=Math.ceil(g1/-dg); if(e>=1&&e<=3) out.dcEta=e; }
-  const dm=((m[L-1]-m[L-2])+(m[L-2]-m[L-3]))/2;
-  if(m[L-1]<0&&dm>0){ const e=Math.ceil(-m[L-1]/dm); if(e>=1&&e<=3) out.zuEta=e; }
-  if(m[L-1]>0&&dm<0){ const e=Math.ceil(m[L-1]/-dm); if(e>=1&&e<=3) out.zdEta=e; }
+  const dm=((m[end]-m[end-1])+(m[end-1]-m[end-2]))/2;
+  if(m[end]<0&&dm>0){ const e=Math.ceil(-m[end]/dm); if(e>=1&&e<=3) out.zuEta=e; }
+  if(m[end]>0&&dm<0){ const e=Math.ceil(m[end]/-dm); if(e>=1&&e<=3) out.zdEta=e; }
   return out;
+}
+/* 신호 속도 프리셋 — 빠름은 표준의 ~1/2 주기(1:2 비율 유지)로 같은 로직을 시간 압축.
+   신호가 1~3봉 먼저 나오는 대신 거짓 신호(휩쏘)가 늘어난다 → «신호 성과 검증»으로 비교. */
+const SPEEDS={ std:{fast:12,slow:26,sig:9,rsiN:14,label:'표준'},
+               fast:{fast:8,slow:17,sig:9,rsiN:9,label:'빠름'} };
+/* 시리즈 1회 계산(종목·프리셋당) — judgeAt이 봉 인덱스별로 재사용 (백테스트 핵심) */
+function judgePrep(closes,hi,lo,cfg){
+  cfg=cfg||SPEEDS.std;
+  return { cfg, md:macdSeries(closes,cfg.fast,cfg.slow,cfg.sig), r:rsiSeries(closes,cfg.rsiN),
+           ma20:smaSeries(closes,20), ma60:smaSeries(closes,60),
+           bb:bollSeries(closes,20,2), st:stochSeries(hi,lo,closes,14,3,3) };
 }
 /* 종가/고가/저가 배열 → 종합 판정. look = 크로스를 '신호'로 인정하는 최근 봉 수.
    MACD+RSI 본신호에 더해, 후행성을 보완하는 선행 지표 4종(히스토그램 반전·스토캐스틱·
-   RSI 30/70 탈출·다이버전스·BB 복귀)이 2개 이상 겹치면 크로스 확정 전에 '조기' 판정. */
-function judge(closes,hi,lo,look){
-  const md=macdSeries(closes), r=rsiSeries(closes,14);
-  const L=closes.length, m=md.m, s=md.s;
-  const mm=m[L-1], ss=s[L-1], rr=r[L-1];
+   RSI 30/70 탈출·다이버전스·BB 복귀)이 2개 이상 겹치면 크로스 확정 전에 '조기' 판정.
+   end = 평가 기준 봉 인덱스(기본 마지막 봉) — 시리즈는 i 이전 데이터만 의존하므로 룩어헤드 없음. */
+function judgeAt(P,closes,hi,lo,look,end){
+  const L=closes.length; if(end==null) end=L-1;
+  const m=P.md.m, s=P.md.s, r=P.r;
+  const mm=m[end], ss=s[end], rr=r[end];
   if(mm==null||ss==null||rr==null) return null;          // 워밍업 봉 부족
   const z=constArr(L,0);
-  const gc=crossUpAgo(m,s), dc=crossUpAgo(s,m);          // 골든/데드크로스
-  const zu=crossUpAgo(m,z), zd=crossUpAgo(z,m);          // 0선 상향/하향 돌파
-  const ap=approach(m,s);
+  const gc=crossUpAgo(m,s,end), dc=crossUpAgo(s,m,end);  // 골든/데드크로스
+  const zu=crossUpAgo(m,z,end), zd=crossUpAgo(z,m,end);  // 0선 상향/하향 돌파
+  const ap=approach(m,s,end);
   const macdUp=mm>ss, above0=mm>0, rsiOk=rr>=50;
-  const ma20=smaSeries(closes,20), ma60=smaSeries(closes,60);
-  const bb=bollSeries(closes,20,2);
-  const pb=(bb.u[L-1]!=null&&bb.u[L-1]>bb.l[L-1])?(closes[L-1]-bb.l[L-1])/(bb.u[L-1]-bb.l[L-1]):null;
+  const ma20=P.ma20, ma60=P.ma60;
+  const bb=P.bb;
+  const pb=(bb.u[end]!=null&&bb.u[end]>bb.l[end])?(closes[end]-bb.l[end])/(bb.u[end]-bb.l[end]):null;
 
   // ── 선행(보완) 지표 ──
-  const ht=histTurn(m,s);
-  const st=stochSeries(hi,lo,closes,14,3,3);
-  const stK=st.k[L-1], stD=st.d[L-1];
-  const stGC=crossUpAgo(st.k,st.d), stDC=crossUpAgo(st.d,st.k);
-  const r30up=crossUpAgo(r,constArr(L,30)), r70dn=crossUpAgo(constArr(L,70),r);
-  const dv=divergence(closes,m,s,40);
-  const bbReUp=reentryAgo(closes,bb.l,true), bbReDn=reentryAgo(closes,bb.u,false);
+  const ht=histTurn(m,s,end);
+  const st=P.st;
+  const stK=st.k[end], stD=st.d[end];
+  const stGC=crossUpAgo(st.k,st.d,end), stDC=crossUpAgo(st.d,st.k,end);
+  const r30up=crossUpAgo(r,constArr(L,30),end), r70dn=crossUpAgo(constArr(L,70),r,end);
+  const dv=divergence(closes,m,s,40,end);
+  const bbReUp=reentryAgo(closes,bb.l,true,end), bbReDn=reentryAgo(closes,bb.u,false,end);
   const early={
     htUp:ht.up, htDn:ht.dn, stK, stD,
     stGC:(stGC!=null&&stGC<=look&&stK!=null&&stK<40)?stGC:null,     // 과매도권 스토캐스틱 골든
@@ -651,9 +684,13 @@ function judge(closes,hi,lo,look){
   else if((ap.dcEta!=null||ap.zdEta!=null)&&rr<=55)      v='nsell';
   else if(macdUp&&above0&&rsiOk)    v='up1';             // 3조건 유지 = 상승 추세 지속
   else if(!macdUp&&!above0&&!rsiOk) v='dn1';
-  return {v,macd:mm,sig:ss,rsi:rr,gc,dc,zu,zd,gcOK,dcOK,zuOK,zdOK,ap,early,ebN,esN,m,s,r,stKs:st.k,stDs:st.d,
+  return {v,cfg:P.cfg,macd:mm,sig:ss,rsi:rr,gc,dc,zu,zd,gcOK,dcOK,zuOK,zdOK,ap,early,ebN,esN,m,s,r,stKs:st.k,stDs:st.d,
     ma20s:ma20,ma60s:ma60,bbUs:bb.u,bbLs:bb.l,
-    ma20:ma20[L-1],ma60:ma60[L-1],bbU:bb.u[L-1],bbL:bb.l[L-1],pb,close:closes[L-1]};
+    ma20:ma20[end],ma60:ma60[end],bbU:bb.u[end],bbL:bb.l[end],pb,close:closes[end]};
+}
+function judge(closes,hi,lo,look,cfg){
+  const P=judgePrep(closes,hi,lo,cfg);
+  return judgeAt(P,closes,hi,lo,look,closes.length-1);
 }
 /* 60분봉 → 120분봉 합성: 같은 거래일(KST) 안에서 연속 2봉 병합 */
 function agg120(ohlc){
@@ -662,10 +699,10 @@ function agg120(ohlc){
   for(const b of ohlc){
     const d=day(b.time);
     if(!cur||curDay!==d||cnt===2){
-      cur={time:b.time,open:b.open,high:b.high,low:b.low,close:b.close};
+      cur={time:b.time,open:b.open,high:b.high,low:b.low,close:b.close,vol:b.vol||0};
       out.push(cur); curDay=d; cnt=1;
     } else {
-      cur.high=Math.max(cur.high,b.high); cur.low=Math.min(cur.low,b.low); cur.close=b.close; cnt=2;
+      cur.high=Math.max(cur.high,b.high); cur.low=Math.min(cur.low,b.low); cur.close=b.close; cur.vol+=(b.vol||0); cnt=2;
     }
   }
   return out;
@@ -682,6 +719,18 @@ function atrLast(hi,lo,closes,n){
   let a=0; for(let i=0;i<n;i++) a+=trs[i]; a/=n;
   for(let i=n;i<trs.length;i++) a=(a*(n-1)+trs[i])/n;
   return a;
+}
+/* 신호봉 거래량 vs 직전 20봉 평균 — ago=신호 발생 몇 봉 전, sessionOpen이면 형성 중 마지막 봉은
+   부분 거래량이라 직전 완성봉으로 대체. ≥×1.5 급증 확인 · <×0.7 빈약 경고, 그 사이는 표시 없음 */
+function volConfirm(vols,ago,sessionOpen){
+  if(!vols||vols.length<25) return null;
+  let i=vols.length-1-(ago||0);
+  if(sessionOpen&&(ago||0)===0) i--;
+  if(i<21) return null;
+  let s=0,c=0; for(let k=i-20;k<i;k++){ if(isFinite(vols[k])&&vols[k]>0){ s+=vols[k]; c++; } }
+  if(c<15||!(vols[i]>0)) return null;
+  const ratio=vols[i]/(s/c);
+  return ratio>=1.5?{st:'ok',ratio}:(ratio<0.7?{st:'weak',ratio}:null);
 }
 /* 외국인 소진율 배열 → {now, d5, d20} (%p 변화). 데이터 없으면 null */
 function frgnStats(f){
@@ -745,6 +794,7 @@ let SITV  =['60m','120m'].includes(store('sitv'))?store('sitv'):'60m';
 let LOOK  =[3,5,10].includes(+store('look'))?+store('look'):5;
 let FILTER=['all','buy','near','sell','val'].includes(store('filter'))?store('filter'):'all';
 let NOTIF =store('notif')==='1';
+let SPEED =['std','fast'].includes(store('speed'))?store('speed'):'std';   // 신호 속도 프리셋
 let OPENED=null;                          // 펼쳐진 종목 코드
 
 /* 단타=1~15분봉 · 스윙=60/120분봉(야후 60분봉, 120분은 2봉 합성) · 장기=일봉(네이버 수정주가+외국인) */
@@ -843,6 +893,7 @@ async function fetchStock(u){
     return { ts:Date.now(), src:'yahoo', prevClose:(isFinite(y.prevClose)?y.prevClose:null),
       closes:y.ohlc.map(b=>b.close), his:y.ohlc.map(b=>b.high), los:y.ohlc.map(b=>b.low),
       dates:y.ohlc.map(b=>String(b.time).replace(/-/g,'')), f:null,
+      vols:(y.vol||[]).map(b=>b.value),
       lastDate:String(y.ohlc[y.ohlc.length-1].time).replace(/-/g,'') };
   }
   if(cfg.sise){
@@ -852,6 +903,7 @@ async function fetchStock(u){
       return { ts:Date.now(), src:'naver',
         closes:d.rows.map(r=>r.c), his:d.rows.map(r=>r.h), los:d.rows.map(r=>r.l),
         dates:d.rows.map(r=>r.d), f:d.rows.map(r=>r.f),
+        vols:d.rows.map(r=>r.v),
         lastDate:d.rows[d.rows.length-1].d };
     }catch(e){ /* 야후 폴백 */ }
     const y=await getJSON('/api/chart?sym='+encodeURIComponent(symOf(u))+'&range=1y&interval=1d');
@@ -859,6 +911,7 @@ async function fetchStock(u){
     return { ts:Date.now(), src:'yahoo', prevClose:(isFinite(y.prevClose)?y.prevClose:null),
       closes:y.ohlc.map(b=>b.close), his:y.ohlc.map(b=>b.high), los:y.ohlc.map(b=>b.low),
       dates:y.ohlc.map(b=>String(b.time).replace(/-/g,'')), f:null,
+      vols:(y.vol||[]).map(b=>b.value),
       lastDate:String(y.ohlc[y.ohlc.length-1].time).replace(/-/g,'') };
   }
   const itv = MODE==='swing' ? '60m' : ITV;
@@ -866,11 +919,12 @@ async function fetchStock(u){
   const y=await getJSON('/api/chart?sym='+encodeURIComponent(symOf(u))
     +'&range='+range+'&interval='+itv);
   if(!Array.isArray(y.ohlc)||y.ohlc.length<40) throw 0;
+  if(Array.isArray(y.vol)) y.ohlc.forEach((b,i)=>{ b.vol=y.vol[i]?y.vol[i].value:0; });   // agg120 전에 병합
   const ohlc=(MODE==='swing'&&SITV==='120m')?agg120(y.ohlc):y.ohlc;
   if(ohlc.length<40) throw 0;
   return { ts:Date.now(), src:'yahoo', prevClose:(isFinite(y.prevClose)?y.prevClose:null),
     closes:ohlc.map(b=>b.close), his:ohlc.map(b=>b.high), los:ohlc.map(b=>b.low),
-    dates:ohlc.map(b=>b.time), f:null, lastDate:null };
+    dates:ohlc.map(b=>b.time), f:null, vols:ohlc.map(b=>b.vol||0), lastDate:null };
 }
 /* 일봉 컨텍스트(스윙·단타 보조): 종가 330일 → 120·200일선, 국내는 외국인 소진율 겸용. 30분 캐시 */
 async function ensureDaily(u){
@@ -1130,10 +1184,14 @@ function compute(){
     if(!ch) continue;
     if(isETFm(u.mkt)||u.w) etfQuote(u,ch);      // 관심 종목도 차트 기준 시세
     const bars=liveBars(u,ch);
-    const j=judge(bars.c,bars.h,bars.l,LOOK);
+    const j=judge(bars.c,bars.h,bars.l,LOOK,SPEEDS[SPEED]);
     const fd=frgnOf(u,ch);
     const rg=REGIME[u.mkt]&&REGIME[u.mkt].rg;
-    ROWS.push({u,ch,j,fd,ms:maStats(u,ch),dd:ddStats(u,ch),plan:planFor(u,bars,j),tech:j?techniqueFor(u,j,rg,fd):null});
+    const uv=UNIV[u.mkt];
+    // 신호봉(최근 크로스 봉, 없으면 마지막 봉)의 거래량 확인 — ch.vols 자체 인덱스만 사용(잠정 봉 불일치 방지)
+    const sigAgo=j?(a=>a<=LOOK?a:0)(Math.min(j.gc??99,j.zu??99,j.dc??99,j.zd??99)):0;
+    const vc=j?volConfirm(ch.vols,sigAgo,!!(uv&&uv.status==='OPEN')):null;
+    ROWS.push({u,ch,j,fd,vc,ms:maStats(u,ch),dd:ddStats(u,ch),plan:planFor(u,bars,j),tech:j?techniqueFor(u,j,rg,fd):null});
   }
   FULLN=ROWS.length;
   const recency=x=>x.j?Math.min(x.j.gc??99,x.j.zu??99,x.j.dc??99,x.j.zd??99):99;
@@ -1211,7 +1269,7 @@ const VD={buy2:['강력 매수','buy2'],buy1:['매수 신호','buy1'],ebuy:['조
           nsell:['매도 임박','nsell'],esell:['조기 매도','esell'],sell1:['매도 신호','sell1'],sell2:['강력 매도','sell2']};
 const unit=()=>MODES[MODE].unit;
 const agoTxt=n=> n===0 ? MODES[MODE].zero : n+unit()+' 전';
-function chips(j,ms){
+function chips(j,ms,x){
   const c=[];
   if(ms){                                    // 120·200일선 돌파/이탈 이벤트 (거래일 기준)
     if(ms.b200dn!=null&&ms.b200dn<=LOOK) c.push('<span class="chip s">200일선 이탈 · '+(ms.b200dn===0?'오늘':ms.b200dn+'거래일 전')+'</span>');
@@ -1239,6 +1297,21 @@ function chips(j,ms){
   if(e.bbReUp!=null)c.push('<span class="chip b soon">BB 하단 복귀 · '+agoTxt(e.bbReUp)+'</span>');
   if(e.bbReDn!=null)c.push('<span class="chip s soon">BB 상단 복귀 · '+agoTxt(e.bbReDn)+'</span>');
   c.push('<span class="chip '+(j.rsi>=50?'b':'s')+'">RSI '+j.rsi.toFixed(1)+(j.rsi>=50?' ≥ 50':' < 50')+'</span>');
+  // ── 확인(신뢰도) 칩: 거래량·토스 수급 — 판정에는 불개입, 라벨만 ──
+  if(x&&x.vc){
+    if(x.vc.st==='ok') c.push('<span class="chip b">거래량 확인 ×'+x.vc.ratio.toFixed(1)+'</span>');
+    else if(x.vc.st==='weak') c.push('<span class="chip warn">거래량 빈약 ×'+x.vc.ratio.toFixed(1)+'</span>');
+  }
+  if(x){
+    const fa=flowAgree(x);
+    if(fa===true){
+      const recs=tossOf(x.u.code), f1=recs?tossSum(recs,'frgn',1):null;
+      const who=(f1!=null&&(isBuyV(j.v)?f1>0:f1<0))?'외국인':'기관';
+      c.push('<span class="chip '+(isBuyV(j.v)?'b':'s')+'">수급 확인 · '+who+(isBuyV(j.v)?' 순매수':' 순매도')+'</span>');
+    } else if(fa===false){
+      c.push('<span class="chip warn">수급 '+(isBuyV(j.v)?'이탈 · 순매도 우위':'역행 · 순매수 우위')+'</span>');
+    }
+  }
   return c.join('');
 }
 const fmtM=v=> Math.abs(v)>=100 ? Math.round(v).toLocaleString('en-US') : v.toFixed(2);
@@ -1285,7 +1358,7 @@ function ddCell(dd){
   const col=dd.mdd<=-30?'var(--down)':(dd.mdd<=-15?'var(--gold)':'var(--muted)');
   const tip='기간(약 1년) 최대 낙폭 '+dd.mdd.toFixed(1)+'% · 현재 전고점 대비 '+dd.cur.toFixed(1)+'%';
   return '<span class="mono" style="color:'+col+'" title="'+esc(tip)+'">'+dd.mdd.toFixed(1)+'%</span>'
-    +'<br><small class="mono" style="color:var(--muted2)">현재 '+dd.cur.toFixed(1)+'%</small>';
+    +' <small class="mono" style="color:var(--muted2)">현재 '+dd.cur.toFixed(1)+'%</small>';
 }
 const fmtShares=v=>{ const a=Math.abs(v), s=v>0?'+':(v<0?'−':'');
   return s+(a>=1e8?(a/1e8).toFixed(1)+'억주':(a>=1e4?(a/1e4).toFixed(1)+'만주':Math.round(a).toLocaleString()+'주')); };
@@ -1305,8 +1378,71 @@ function frgnCell(x){
   const tip='소진율 '+fd.now.toFixed(2)+'%'+(fd.d20!=null?' · 20일 '+(fd.d20>0?'+':'')+fd.d20.toFixed(2)+'%p':'');
   return '<span class="mono '+c+'" title="'+esc(tip)+'">'+(fd.d5>0?'+':'')+fd.d5.toFixed(2)+'%p</span>';
 }
+/* ── 신호 성과 검증 (미니 백테스트) — 과거 봉에 같은 판정을 재적용해 표준·빠름 적중률 비교 ──
+   진입 = 비매수(비매도) 상태에서 매수(매도) 판정 최초 진입 봉 · 평가 = H봉 후 종가 수익률.
+   raw 차트 배열만 사용(liveBars의 형성 중 봉 오염 방지), 만기 창(i+H<L)만 집계. */
+/*BT-BEGIN*/
+const PERF={};                             // `${code}|${modeKey()}|${LOOK}` → {ts,H,std,fast}
+const BT_H={day:20,swing:30,long:20};
+const BT_BUY=['buy2','buy1','ebuy'], BT_SELL=['sell2','sell1','esell'];
+function backtestOne(closes,his,los,look,cfg,H){
+  const P=judgePrep(closes,his,los,cfg), L=closes.length;
+  const start=Math.max(60,cfg.slow+cfg.sig+10);
+  let inB=false,inS=false; const bRet=[],sRet=[];
+  for(let i=start;i<L;i++){
+    const j=judgeAt(P,closes,his,los,look,i); if(!j) continue;
+    const isB=BT_BUY.includes(j.v), isS=BT_SELL.includes(j.v);
+    if(isB&&!inB&&i+H<L) bRet.push(closes[i+H]/closes[i]-1);
+    if(isS&&!inS&&i+H<L) sRet.push(closes[i+H]/closes[i]-1);
+    inB=isB; inS=isS;
+  }
+  const agg=(a,winUp)=>({ n:a.length,
+    win:a.length?a.filter(r=>winUp?r>0:r<0).length/a.length*100:null,
+    avg:a.length?a.reduce((x,y)=>x+y,0)/a.length*100:null });
+  return { buy:agg(bRet,true), sell:agg(sRet,false) };
+}
+/*BT-END*/
+function ensurePerf(x){
+  const ch=x.ch; if(!ch||!ch.closes||ch.closes.length<80) return null;
+  const key=x.u.code+'|'+modeKey()+'|'+LOOK, c=PERF[key];
+  if(c&&c.ts===ch.ts) return c;            // 차트 재수집 시에만 재계산
+  const H=BT_H[MODE];
+  return PERF[key]={ ts:ch.ts, H,
+    std:backtestOne(ch.closes,ch.his,ch.los,LOOK,SPEEDS.std,H),
+    fast:backtestOne(ch.closes,ch.his,ch.los,LOOK,SPEEDS.fast,H) };
+}
+const isBuyV=v=>['buy2','buy1','ebuy','nbuy'].includes(v);
+const isSellV=v=>['sell2','sell1','esell','nsell'].includes(v);
+/* 토스 최근일 순매수와 신호 방향 일치 여부: true 일치 · false 역행 · null 데이터 없음/중립 판정 */
+function flowAgree(x){
+  const j=x.j; if(!j||(!isBuyV(j.v)&&!isSellV(j.v))) return null;
+  const recs=tossOf(x.u.code); if(!recs) return null;
+  const f1=tossSum(recs,'frgn',1), i1=tossSum(recs,'inst',1);
+  if(f1==null&&i1==null) return null;
+  const inflow=(f1!=null&&f1>0)||(i1!=null&&i1>0), outflow=(f1!=null&&f1<0)||(i1!=null&&i1<0);
+  return isBuyV(j.v) ? (inflow?true:(outflow&&!inflow?false:null))
+                     : (outflow?true:(inflow&&!outflow?false:null));
+}
+/* 판정 배지 앞 신뢰도 점: 거래량 급증(+수급 일치) 초록 · 거래량 빈약 금색 */
+function confDot(x){
+  const j=x.j; if(!j||(!isBuyV(j.v)&&!isSellV(j.v))) return '';
+  if(x.vc&&x.vc.st==='weak') return '<i class="cdot warn" title="신호봉 거래량이 20봉 평균의 70% 미만 — 신뢰도 주의"></i>';
+  if(x.vc&&x.vc.st==='ok'&&flowAgree(x)!==false)
+    return '<i class="cdot ok" title="신호봉 거래량 급증 ×'+x.vc.ratio.toFixed(1)+(flowAgree(x)?' + 토스 수급 일치':'')+' — 신뢰도 보강"></i>';
+  return '';
+}
+/* 백테스트 캐시가 이미 있을 때만 판정 셀에 미니 적중률 표시(렌더 중 계산 금지) */
+function perfChip(x){
+  const j=x.j; if(!j||(!isBuyV(j.v)&&!isSellV(j.v))) return '';
+  const p=PERF[x.u.code+'|'+modeKey()+'|'+LOOK];
+  if(!p||p.ts!==x.ch.ts) return '';
+  const s=isBuyV(j.v)?p[SPEED].buy:p[SPEED].sell;
+  if(!s||!s.n) return '';
+  return '<br><small class="cap mono" title="이 종목 과거 봉 기준 같은 방향 신호의 적중률(상세 «신호 성과 검증» 참조)">적중 '+s.win.toFixed(0)+'% · '+s.n+'회</small>';
+}
 function render(){
   document.getElementById('th-frgn').textContent=MODES[MODE].frgnLbl;
+  document.getElementById('th-rsi').textContent='RSI('+SPEEDS[SPEED].rsiN+')';
   const tb=document.getElementById('tbody');
   let rows=ROWS.filter(x=>x.j);
   if(FILTER==='buy')  rows=rows.filter(x=>['buy2','buy1','ebuy'].includes(x.j.v));
@@ -1321,7 +1457,7 @@ function render(){
       +(FULLN>ROWS.length?' — 전체 '+FULLN+'종목 중 포지션 상위 '+ROWS.length+' 제안':' / '+ROWS.length+'종목')):'';
   if(!rows.length){
     const valPend=Object.keys(VAL).some(k=>VAL[k].inflight);
-    tb.innerHTML='<tr><td colspan="14"><div class="note-empty">'+
+    tb.innerHTML='<tr><td colspan="11"><div class="note-empty">'+
       (FILTER==='val'&&ROWS.length
         ? (isETFm(MKT)?'ETF는 PER·PBR 개념이 없어 저평가 발굴을 지원하지 않습니다. 개별주 시장을 선택해 주세요.'
           : valPend?'밸류에이션(PER·PBR) 수집 중입니다… 잠시 후 자동으로 표시됩니다.'
@@ -1347,18 +1483,15 @@ function render(){
       +'<td class="mono" style="color:var(--muted2)">'+(i+1)+'</td>'
       +'<td class="name">'+star+'<b>'+esc(u.name)+'</b>'+lev+valc+regc+'<span class="mkchip">'+MKCHIP[u.mkt]+'</span>'
         +'<small class="mono">'+u.code+'</small>'+(u.cap?' <span class="cap">'+fmtCap(u.cap,us)+'</span>':'')+'</td>'
-      +'<td class="num mono">'+fmtPx(u.price,us)+'</td>'
-      +'<td class="num mono '+cls(u.pct)+'">'+(u.pct>0?'+':'')+u.pct.toFixed(2)+'%</td>'
-      +'<td><span class="vd '+vd[1]+'">'+vd[0]+'</span></td>'
-      +'<td>'+chips(j,x.ms)+'</td>'
+      +'<td class="num mono">'+fmtPx(u.price,us)+'<br><small class="'+cls(u.pct)+'">'+(u.pct>0?'+':'')+u.pct.toFixed(2)+'%</small></td>'
+      +'<td><span class="vd '+vd[1]+'">'+confDot(x)+vd[0]+'</span>'+perfChip(x)+'</td>'
+      +'<td>'+chips(j,x.ms,x)+'</td>'
       +'<td><div class="tech">'+(x.tech?'<b>'+esc(x.tech.t)+'</b><span>'+esc(x.tech.why)+'</span>':'—')+'</div></td>'
       +'<td class="num">'+planCell(x.plan,us)+'</td>'
-      +'<td>'+maCell(x.ms)+'</td>'
-      +'<td class="num">'+ddCell(x.dd)+'</td>'
+      +'<td>'+maCell(x.ms)+'<br><small class="cap">MDD</small> '+ddCell(x.dd)+'</td>'
       +'<td class="num">'+frgnCell(x)+'</td>'
       +'<td>'+rsiCell(j.rsi)+'</td>'
-      +'<td class="macdcell mono">'+fmtM(j.macd)+'<br><small>시그널 '+fmtM(j.sig)+'</small></td>'
-      +'<td>'+sparkSVG(j)+'</td>'
+      +'<td class="macdcell mono">'+sparkSVG(j)+'<br>'+fmtM(j.macd)+' <small>시그널 '+fmtM(j.sig)+'</small></td>'
       +'</tr>'
       +(OPENED===u.code?detailRow(x):'');
   }).join('');
@@ -1454,7 +1587,7 @@ function detailChartSVG(x,W){
         +'" stroke="var(--muted2)" stroke-width="0.6" stroke-dasharray="'+(g===50?'0':'3 3')+'" opacity="'+(g===50?'0.7':'0.4')+'"/>'
         +'<text x="'+(PX-6)+'" y="'+(Y(g)+3)+'" font-size="8.5" fill="var(--muted2)" text-anchor="end">'+g+'</text>';
     svg+='<path d="'+path(j.r,Y)+'" fill="none" stroke="var(--text)" stroke-width="1.2"/>';
-    svg+=lab('RSI(14) — 50 위 상승 우위 · 30 과매도 · 70 과열',top);
+    svg+=lab('RSI('+((j.cfg&&j.cfg.rsiN)||14)+') — 50 위 상승 우위 · 30 과매도 · 70 과열',top);
   }
   if(hasF){ // 패널 4: 외국인 소진율
     const {h,pad}=panels[3], top=tops[3];
@@ -1507,7 +1640,7 @@ function judgeReason(x){
     if(e.bbReDn!=null) w.push('볼린저 상단 복귀');
     parts.push('데드크로스 확정 전이지만 선행 지표 '+j.esN+'개('+w.join(', ')+')가 동시에 반락을 가리키고');
   }
-  parts.push('RSI(14)는 '+j.rsi.toFixed(1)+'로 50 '+(j.rsi>=50?'이상':'미만')+'입니다');
+  parts.push('RSI('+(j.cfg?j.cfg.rsiN:14)+')는 '+j.rsi.toFixed(1)+'로 50 '+(j.rsi>=50?'이상':'미만')+'입니다');
   return '<b>'+vd+'</b> — '+parts.join(' ')+'.';
 }
 function detailRow(x){
@@ -1516,10 +1649,23 @@ function detailRow(x){
   const wrap=document.querySelector('.tbl-wrap');
   const W=Math.max(560,Math.min(920,(wrap?wrap.clientWidth:960)-380));
   const fd=x.fd;
-  return '<tr class="drow"><td colspan="14"><div class="dwrap">'
+  return '<tr class="drow"><td colspan="11"><div class="dwrap">'
     +'<div class="dchart">'+detailChartSVG(x,W)+'</div>'
     +'<div class="dinfo">'
     +'<div class="box"><h5>판정 근거</h5>'+judgeReason(x)+'</div>'
+    +(function(){ const p=ensurePerf(x); if(!p) return '';
+      const span=MODE==='long'?'약 1년 · 일봉':(MODE==='swing'?'약 3개월 · '+SITV:'최근 '+DAY_RANGE[ITV]+' · '+ITV);
+      const cell=d=>(d&&d.n?d.win.toFixed(0)+'% · '+(d.avg>0?'+':'')+d.avg.toFixed(1)+'% ('+d.n+'회)':'표본 없음');
+      const row=(nm,d,on)=>'<tr'+(on?' style="background:var(--chip)"':'')+'><td>'+nm+'</td>'
+        +'<td class="mono">'+cell(d.buy)+'</td>'
+        +'<td class="mono">'+(d.sell&&d.sell.n?d.sell.win.toFixed(0)+'% ('+d.sell.n+'회)':'표본 없음')+'</td></tr>';
+      return '<div class="box"><h5>신호 성과 검증 ('+span+' · '+p.H+unit()+' 후 평가)</h5>'
+        +'<table><tr><td></td><td>매수 적중 · 평균수익</td><td>매도 후 하락</td></tr>'
+        +row('표준 12·26·9 / RSI14',p.std,SPEED==='std')
+        +row('⚡ 빠름 8·17·9 / RSI9',p.fast,SPEED==='fast')
+        +'</table><span style="color:var(--muted2);font-size:11px">이 종목의 과거 봉에 같은 판정 로직을 재적용한 시뮬레이션입니다 — '
+        +'수수료·슬리피지 미반영, 표본 5회 미만은 우연일 수 있습니다. ⚡빠름이 신호를 먼저 잡는 대신 적중률이 얼마나 낮아지는지 여기서 비교하세요.</span></div>';
+    })()
     +(x.tech?'<div class="box"><h5>추천 기법 · '+esc((REGIME[u.mkt]&&REGIME[u.mkt].rg&&REGIME_INFO[REGIME[u.mkt].rg.regime].name)||'국면 미확정')
       +'</h5><b>'+esc(x.tech.t)+'</b><br>'+esc(x.tech.why)+'</div>':'')
     +(x.plan?'<div class="box"><h5>매도 계획 (제안 · 손익비 1:2)</h5>'
@@ -1632,7 +1778,7 @@ function maybeNotify(){
     try{ if(localStorage.getItem(key)) continue; localStorage.setItem(key,'1'); }catch(e){ continue; }
     try{
       new Notification(title+' — '+x.u.name,{
-        tag:key, body:VD[x.j.v][0]+' · RSI '+x.j.rsi.toFixed(1)+' · '+fmtPx(x.u.price,isUSm(x.u.mkt))+' ('+(x.u.pct>0?'+':'')+x.u.pct.toFixed(2)+'%)'});
+        tag:key, body:VD[x.j.v][0]+(SPEED==='fast'?' · ⚡빠름':'')+' · RSI '+x.j.rsi.toFixed(1)+' · '+fmtPx(x.u.price,isUSm(x.u.mkt))+' ('+(x.u.pct>0?'+':'')+x.u.pct.toFixed(2)+'%)'});
     }catch(e){}
   }
 }
@@ -1721,6 +1867,7 @@ segInit('seg-mkt',MKT,v=>{ MKT=v; store('mkt',v); OPENED=null; syncWatchVis(); d
 segInit('seg-itv',ITV,v=>{ ITV=v; store('itv',v); scan(false); });
 segInit('seg-sitv',SITV,v=>{ SITV=v; store('sitv',v); scan(false); });
 segInit('seg-look',LOOK,v=>{ LOOK=+v; store('look',v); compute(); });
+segInit('seg-speed',SPEED,v=>{ SPEED=v; store('speed',v); compute(); });   // 같은 캔들 — 재수집 불필요
 segInit('seg-filter',FILTER,v=>{ FILTER=v; store('filter',v); render(); if(v==='val') ensureVals(ROWS_ALL.map(x=>x.u)); });
 document.getElementById('btn-rescan').addEventListener('click',()=>scan(true));
 /* 관심 종목 직접 추가: 국내 6자리 코드(코스닥은 .KQ 접미) 또는 미국 티커 */
