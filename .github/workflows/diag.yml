@@ -1,28 +1,55 @@
 name: diag (수동 진단)
+
+# 외부 데이터 소스 진단용 — 수동 실행 전용, 자동 트리거 없음.
+# 네이버 시장지표·폴링 API 를 시간차 샘플링해 실시간 반영 여부를 확인한다.
 on:
   workflow_dispatch: {}
+
 jobs:
   diag:
     runs-on: ubuntu-latest
     steps:
-      - name: 야간선물 소스 2차 프로브 (kred.dev · EWY prePost)
+      - name: 시간차 샘플링 (3회 × 35초)
         run: |
-          echo "== kred.dev 야간선물 페이지 (API 힌트 탐색)"
-          curl -sL --max-time 20 -H "User-Agent: Mozilla/5.0" "https://kred.dev/ko/kospi-200-night-futures" | grep -oE '(api[^"]{0,80}|"price"[^,]{0,30}|k200[^"]{0,60})' | head -15 || true
-          echo "== kred.dev api 후보"
-          for u in "https://kred.dev/api/kospi-200-night-futures" "https://kred.dev/api/k200-night"; do
-            echo "-- $u"; curl -sL --max-time 12 -H "User-Agent: Mozilla/5.0" "$u" | head -c 250; echo
+          sample() {
+            echo "---- sample $1 @ $(date -u +%H:%M:%S) ----"
+            # productDetail: 시간 필드 포함 앞부분을 그대로 출력 (어떤 timestamp 필드가 있는지 확인)
+            for pair in "bond US10YT=RR" "bond US2YT=RR" "exchange FX_USDKRW" "metals GCcv1" "energy CLcv1"; do
+              set -- $pair
+              body=$(curl -s -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" \
+                "https://m.stock.naver.com/front-api/marketIndex/productDetail?category=$1&reutersCode=$2")
+              echo "[$1/$2] $(echo "$body" | python3 -c "
+          import json,sys
+          try:
+              v=json.load(sys.stdin).get('result') or {}
+              keys=[k for k in v.keys() if 'ime' in k or 'ate' in k or 'At' in k]
+              print('close=%s chg=%s pct=%s | 시간필드: %s' % (v.get('closePrice'), v.get('compareToPreviousClosePrice'), v.get('fluctuationsRatio'), {k:v.get(k) for k in keys}))
+          except Exception as e: print('ERR', e)")"
+            done
+            # 폴링 선물 (NQcv1)
+            curl -s -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" \
+              "https://polling.finance.naver.com/api/realtime/worldstock/futures/NQcv1" | python3 -c "
+          import json,sys
+          d=json.load(sys.stdin); r=(d.get('datas') or [{}])[0]
+          print('[NQcv1 polling] close=%s chg=%s dir=%s time=%s' % (r.get('closePrice'), r.get('compareToPreviousClosePrice'), (r.get('compareToPreviousPrice') or {}).get('text'), d.get('time')))"
+            # 운영 API
+            curl -s "https://sunny-invest-dashboard.pages.dev/api/market" | python3 -c "
+          import json,sys
+          d=json.load(sys.stdin)
+          row=lambda k: '%s=%s(%s)' % (k, (d.get(k) or {}).get('price'), (d.get(k) or {}).get('src'))
+          print('[운영API]', ' '.join(row(k) for k in ('usdkrw','gold','wti','ndxfut','ust10y','ust2y')), '_updated=%s' % d.get('_updated'))"
+            echo
+          }
+          sample 1; sleep 35; sample 2; sleep 35; sample 3
+
+      - name: 폴링 marketindex 실시간 후보 (지연 없는 대안 탐색)
+        run: |
+          for u in "https://polling.finance.naver.com/api/realtime/marketindex/exchange/FX_USDKRW" \
+                   "https://polling.finance.naver.com/api/realtime/marketindex/bond/US10YT%3DRR" \
+                   "https://polling.finance.naver.com/api/realtime/marketindex/metals/GCcv1" \
+                   "https://polling.finance.naver.com/api/realtime/marketindex/energy/CLcv1" \
+                   "https://polling.finance.naver.com/api/realtime/worldstock/futures/GCcv1" \
+                   "https://polling.finance.naver.com/api/realtime/worldstock/futures/CLcv1"; do
+            echo "== $u"
+            curl -s -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" "$u" | head -c 400; echo
           done
-          echo "== 야후 EWY includePrePost — 프리·애프터 마지막 체결 추출"
-          curl -sL -H "User-Agent: Mozilla/5.0" "https://query1.finance.yahoo.com/v8/finance/chart/EWY?interval=5m&range=1d&includePrePost=true" | python3 -c "
-          import json,sys,datetime
-          res=json.load(sys.stdin)['chart']['result'][0]
-          m=res['meta']; ts=res.get('timestamp') or []; cl=res['indicators']['quote'][0].get('close') or []
-          pairs=[(t,c) for t,c in zip(ts,cl) if c is not None]
-          print('regular:', m.get('regularMarketPrice'))
-          ctp=m.get('currentTradingPeriod') or {}
-          if pairs:
-              t,c=pairs[-1]
-              print('마지막 체결(pre/post 포함):', c, '@', datetime.datetime.utcfromtimestamp(t).isoformat(), 'UTC (bar', len(pairs), ')')
-              reg=ctp.get('regular') or {}
-              print('regular 세션:', reg.get('start'), '~', reg.get('end'), '| 마지막 체결이 정규장 밖?', not (reg.get('start',0)<=t<reg.get('end',1<<40)))"
