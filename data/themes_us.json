@@ -1,5 +1,5 @@
 {
- "_updated": "2026-08-12T07:18:07",
+ "_updated": "2026-08-12T12:56:43",
  "mkt": "us",
  "benchmark": "S&P 500",
  "riskOff": false,
@@ -48,7 +48,7 @@
     "ti": "World's biggest chipmaker TSMC's sales surge 45% amid buoyant AI demand",
     "link": "https://news.google.com/rss/articles/CBMifEFVX3lxTE9oWGx0TFRvc0JiTHhDMHpIZ25ZM0c3QURGMGIwdEl5UWgtRUtIdFd3UW5taUFGNnFMQ2E2ZG12eVE2cGdYNWh4NF9YaDVBWDNDWTVwM1ltUjJKMUUwZXc0U0Q2TU9iVkh5SEF2QnBDZmlleHptdzJHdzRvTmvSAYIBQVVfeXFMT2dPYmpkcHVyekVEY2V1c09ZbWxWekFkMFpFUk5nN213VDNXWWpTQVphRmZIbFpjZEFId1RfSDQzdjBCdFF1MzhWdlZWZ0tiRWlhYm15dUkwRTBobERlWVNaSHRoSHU1SF8yWXdYeFpiWnBTanhwNjdORE8tNzhJc2VKZw?oc=5",
     "src": "CNBC",
-    "tm": "1일 전"
+    "tm": "2일 전"
    },
    "metrics": {
     "r126": 0.4413,
@@ -69,20 +69,21 @@
    "op": "op-hold",
    "opTxt": "중립",
    "warns": [
-    "지수 동반 상승 — 초과성과 없음"
+    "지수 동반 상승 — 초과성과 없음",
+    "참고용 · 저신뢰"
    ],
-   "conf": 50,
-   "confBand": "보통",
-   "score": 5,
+   "conf": 38,
+   "confBand": "낮음",
+   "score": -3,
    "pts": [
-    "최근 6개월 +8.5% · S&P 500 대비 -2.5%p — 지수 하회 (12개월 +8.4%)",
-    "구성 4종목 중 3개 50일선 위 · 3개 3개월 상승 — 폭 75%, 참여 광범위",
-    "52주 고점 대비 -1.5% · 20일 이격 +7.1% · 변동성 지수 대비 2.9배 — 종합 +5/100 (리스크 −10)"
+    "최근 6개월 +8.4% · S&P 500 대비 -2.6%p — 지수 하회 (12개월 +8.3%)",
+    "구성 4종목 중 2개 50일선 위 · 2개 3개월 상승 — 폭 50%, 참여 보통",
+    "52주 고점 대비 -1.6% · 20일 이격 +7.0% · 변동성 지수 대비 2.9배 — 종합 -3/100 (리스크 −10)"
    ],
-   "perf": -0.94,
+   "perf": -1.07,
    "lead": {
     "name": "메타",
-    "pct": 0.71
+    "pct": 0.0
    },
    "picks": [
     {
@@ -95,29 +96,29 @@
     },
     {
      "name": "메타",
-     "pct": 0.71
+     "pct": 0.0
     },
     {
      "name": "팔란티어",
-     "pct": -0.17
+     "pct": 0.0
     }
    ],
    "cat": {
-    "ti": "Why Go is an Ideal Language for AI-Assisted Software Engineering",
-    "link": "https://news.google.com/rss/articles/CBMioAFBVV95cUxQV2NGSHI4U3JJb1MtSkVneWx5NVdGN1psOWxsZFlqOGZySW9rYVc0TkhLWFVVME4zQzVaWWczUzF5VkgwR1RxNWx1SzRWdUdjcHdZVGttaHprcS1HRE1LXzVFUTJ4M0RLa0g4b2RTQ1J2T19uNDJrQ3lFN3VUaEVpN1JWNWpqM0p5TnpWdWdwUlU4Zk0wTzhkaWFTdGhZQVRz?oc=5",
-    "src": "blog.google",
-    "tm": "14시간 전"
+    "ti": "Schools spend billions on AI, but struggle to figure out what’s worth it",
+    "link": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQbXVxSElkOG1aV0JFZmk5Q3Y1WnJHbkxJbjlNaUhmMzVWQlhrbGNLTVozSHRtUUFRRGI4enJjUUVZdmZxdkg1aTF3XzF6TTF5ZlU5X0VBd1ptUTJVUUwzRW1BZDM1eGdCQlRnaWs5cjA2UTI3SGZrMk9QbTBvTElpVDU0Wm9sUkp5a3VGdlFmWnFWMTNiWXN0UWZJY0FTdUJYcTBiMWNhbw?oc=5",
+    "src": "Stateline",
+    "tm": "3시간 전"
    },
    "metrics": {
-    "r126": 0.0847,
-    "rs": -0.0249,
-    "breadth": 0.75,
-    "ext20": 0.0713,
-    "rsi14": 62.9,
+    "r126": 0.0838,
+    "rs": -0.0258,
+    "breadth": 0.5,
+    "ext20": 0.0704,
+    "rsi14": 62.7,
     "volRatio": 2.95,
-    "curDD": -0.0154,
+    "curDD": -0.0163,
     "penalty": 10,
-    "driver": 15
+    "driver": 7
    }
   },
   {
@@ -129,31 +130,31 @@
    "warns": [
     "지수 동반 상승 — 초과성과 없음"
    ],
-   "conf": 61,
+   "conf": 63,
    "confBand": "보통",
-   "score": -62,
+   "score": -68,
    "pts": [
-    "최근 6개월 +1.9% · S&P 500 대비 -9.1%p — 지수 하회 (12개월 -4.6%)",
+    "최근 6개월 +0.1% · S&P 500 대비 -10.8%p — 지수 하회 (12개월 -6.2%)",
     "구성 4종목 중 1개 50일선 위 · 0개 3개월 상승 — 폭 13%, 참여 제한적",
-    "52주 고점 대비 -14.8% · 20일 이격 -1.3% · 변동성 지수 대비 3.3배 — 종합 -62/100 (리스크 −10)"
+    "52주 고점 대비 -16.2% · 20일 이격 -3.0% · 변동성 지수 대비 3.1배 — 종합 -68/100 (리스크 −10)"
    ],
-   "perf": 1.81,
+   "perf": 0.19,
    "lead": {
-    "name": "콘스텔레이션",
-    "pct": 2.93
+    "name": "NRG에너지",
+    "pct": 0.74
    },
    "picks": [
     {
      "name": "GE버노바",
-     "pct": 2.12
+     "pct": 0.0
     },
     {
      "name": "비스트라",
-     "pct": 1.43
+     "pct": 0.0
     },
     {
      "name": "콘스텔레이션",
-     "pct": 2.93
+     "pct": 0.0
     },
     {
      "name": "NRG에너지",
@@ -163,19 +164,19 @@
    "cat": {
     "ti": "Vistra supports Texas data center pause, execs say",
     "link": "https://news.google.com/rss/articles/CBMinAFBVV95cUxQRnZIdFdKVTFINXhNNVZ2ZDFjOVdJZjJZREtndy04Nkh4cWI1aWdHdGo3QW5HaEVPb3ZfZjlWOVZjb3B5dHVKRF96YzJOUk1PaXdiOWlwNUdWbDUya3lueHVFQnF3Q0RFMXRMajhrZUdJUEJUaXZNQW9PeXFXekZ1Nm9rVHdzcm9yRkdOeXhma1NVcGdUTXliMDFJam8?oc=5",
-    "src": "Utility Dive",
+    "src": "utilitydive.com",
     "tm": "1일 전"
    },
    "metrics": {
-    "r126": 0.0188,
-    "rs": -0.0908,
+    "r126": 0.0014,
+    "rs": -0.1082,
     "breadth": 0.125,
-    "ext20": -0.0133,
-    "rsi14": 47.3,
-    "volRatio": 3.29,
-    "curDD": -0.1476,
+    "ext20": -0.0302,
+    "rsi14": 43.7,
+    "volRatio": 3.09,
+    "curDD": -0.1621,
     "penalty": 10,
-    "driver": -52
+    "driver": -58
    }
   },
   {
@@ -220,15 +221,15 @@
     "ti": "Pentagon orders plan for rapid weapons production as US munitions stockpiles dwindle - report",
     "link": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE1QZUFrbnJTU1BOT1hZQmxZNkVRemkxRGk0VzdUV1VQaDRTdl9ueUFITVR0RHNhaGU2bFFsUWd2T0pzalRzMzNtRG9fUXhPSVNPVnN2bG9LN2kxWVQ5aVdz?oc=5",
     "src": "The Jerusalem Post",
-    "tm": "2일 전"
+    "tm": "3일 전"
    },
    "metrics": {
     "r126": -0.005,
     "rs": -0.1146,
     "breadth": 1.0,
     "ext20": 0.053,
-    "rsi14": 71.3,
-    "volRatio": 1.72,
+    "rsi14": 71.1,
+    "volRatio": 1.71,
     "curDD": -0.0651,
     "penalty": 3,
     "driver": -9
@@ -243,16 +244,16 @@
    "warns": [],
    "conf": 92,
    "confBand": "높음",
-   "score": 74,
+   "score": 73,
    "pts": [
-    "최근 6개월 +17.5% · S&P 500 대비 +6.5%p — 지수 상회 (12개월 +41.1%)",
+    "최근 6개월 +17.3% · S&P 500 대비 +6.3%p — 지수 상회 (12개월 +40.8%)",
     "구성 4종목 중 3개 50일선 위 · 4개 3개월 상승 — 폭 88%, 참여 광범위",
-    "52주 고점 대비 -4.3% · 20일 이격 -0.7% · 변동성 지수 대비 1.7배 — 종합 +74/100 (리스크 −2)"
+    "52주 고점 대비 -4.5% · 20일 이격 -0.9% · 변동성 지수 대비 1.7배 — 종합 +73/100 (리스크 −2)"
    ],
-   "perf": -0.82,
+   "perf": -1.04,
    "lead": {
     "name": "애브비",
-    "pct": 0.85
+    "pct": 0.0
    },
    "picks": [
     {
@@ -269,25 +270,25 @@
     },
     {
      "name": "애브비",
-     "pct": 0.85
+     "pct": 0.0
     }
    ],
    "cat": {
-    "ti": "Lilly beats estimates on resilient demand for injectable GLP-1 drugs, widens gap with Novo",
-    "link": "https://news.google.com/rss/articles/CBMi3wFBVV95cUxNQUM2ak5mV1hSTDU0UzlDQVoxVERuOTNXT1p5OTJmbkdjaWFlVHBnLTVORDZkQmdBY0hFYlZCZzJsaV9lZTl5QXBFMUFLNDBkYmxoRi1CUXZncTVOZnE3NXFzb1dGdG93d2Q3MHpQelNsLV9jbzREblJEMmtOSTZBbTkwaGxzc3ItV0RPNGJHNk04Ti1kaEQ0UG04ekxRNk94SHBuUFprcl9kY2Y3dmxuTjh5RHBaQWdlR1Y4T0hTTjRZY1QwMnhjaXJzQTJNZjl1WlpPUFFmcVBCTkNBc253?oc=5",
-    "src": "Reuters",
-    "tm": "6일 전"
+    "ti": "Lilly sues six companies over alleged illegal sales of experimental obesity drug retatrutide",
+    "link": "https://news.google.com/rss/articles/CBMiggFBVV95cUxOOTNNRk9ZT2ZhUFc2ejJqMWRYLVFPXzJxc1ZZT0FXbjI5TXR4VndleUs5OTBjam9XdjVKay1YcXN1QmpMMkF5bmcxamlEQS1ZMEI1b09kbEVRLTJCRy1RY3k2aVRnUkk2QmlDb3BTcUNYdFhFd2c4czFBUW44REhsR2xB0gGHAUFVX3lxTE10b2drOVpFRmo1TVluR3RGcGNrR0g2bk5oU2J4cHE3alRXZ0VKR2dqekdvVC1McldEZWlJWTNEcVRYZFZEM1ZNaFBTcVVEcGtHT2JuOVR6MDlSb1lJMmR0dGVzOVROcl92OHVBbnZBWVV4UUVMczBoU2NLaXJTb3FVVEt1dFhqbw?oc=5",
+    "src": "CNBC",
+    "tm": "2시간 전"
    },
    "metrics": {
-    "r126": 0.1751,
-    "rs": 0.0654,
+    "r126": 0.1728,
+    "rs": 0.0632,
     "breadth": 0.875,
-    "ext20": -0.0071,
-    "rsi14": 50.6,
-    "volRatio": 1.71,
-    "curDD": -0.0428,
+    "ext20": -0.0089,
+    "rsi14": 50.1,
+    "volRatio": 1.72,
+    "curDD": -0.0447,
     "penalty": 2,
-    "driver": 76
+    "driver": 75
    }
   },
   {
@@ -331,7 +332,7 @@
    "cat": {
     "ti": "How the Fed's rate decision affects your bank accounts, loans, credit cards, and investments",
     "link": "https://news.google.com/rss/articles/CBMi9AFBVV95cUxOWmlpLUlySjBfQkpoWm5PMHIzLXdwNjZwMkYtT3hhWjV6eEF3WERqdWxXVzFFcTJ5RkpYdHZiS2RYTXd2blF6WFpCVnV4Y01ZWXZxckZDTVROZU5ZT3l1MVdUcEt2VGZvUlRfcHJPbWtQM3VMVXJTUlNpN0ZTaTN3SUVjZWJmM1gyLTVwNjZlbE1GMGtKMTA0c2o2RENheDZVV1QySE5fY01vNmVYRkcxb3d1dWFMcWZNTi1Od2NRa2ZVUjJLRENCbklwcU0tMkFJRXhJMkZOOFBIWXl5TGlOS1pHQko1bm9YdjgwaW9aWXRMYkdM?oc=5",
-    "src": "finance.yahoo.com",
+    "src": "Yahoo Finance",
     "tm": "14일 전"
    },
    "metrics": {
@@ -387,10 +388,10 @@
     }
    ],
    "cat": {
-    "ti": "U.S. Stocks Slip, Oil Prices Rise",
-    "link": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPTE52c1ozbzI4ekd5U2t3a1ZLRUwzLXA1ZThEMDhRUnpzbzh1ZjhlaTR6Y3ZISmI2OEI1SnJDYnh0TnlMak1RX0FfQU1KdDBFT0RDMW1HdWxscUpBSGNGMFh5VEFqVVV5X2swTGVCbFNNcm9HQjVQbjJhd28tVXFMaEF2ZXNrVUgyZkxFV01peVJ4OW05TFcyV3ZUaEFFYVJYQTd3b0pabU5aQXc?oc=5",
-    "src": "WSJ",
-    "tm": "13시간 전"
+    "ti": "Oil prices rise as attacks dent hopes for Strait of Hormuz reopening",
+    "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxQWWotc2YtdGx5bHp5YXZieWNCaVQ0SzhwRzlnbVd1MkFmdXhmUXl3YmdqR2F1Q1ctTGRpVU5GUkZIQkpia3F5bFdSYXJYYjlpSzNTaFkzRjlBVThrdl9XMjFGOXFYbTJnaE5NbEVMTmphNks4ZHpZQjh6ZjVDZzIzYkYwX0wweTEwdlRoX0lDcjdvYWU4RV80SXdWME9CeGRmUGwtUzhWX09TZWpNMnZlSC130gG3AUFVX3lxTFBhZHlEWGh6eEJFRHVWTmxxVEoyTFlRWUpsbHdFU25kWDNWM1RUWlgxNEoxR1NKOFJqOHNtX2pETkY2LVgtdUZvam41SGNVR2RabUc5NU92YnVVSWVUVnZrM0FLTFdldlV6LVlZSXpBSExmWTNpU1hHWTZBWEdyOVNSVnd5dWdaSHlseGpYcGR0Q0VjeG1mSlZVN1AxQjljMWZWY1UtTVd1cjZwdVJ6Z0ZXLVRJNElRSQ?oc=5",
+    "src": "Al Jazeera",
+    "tm": "6시간 전"
    },
    "metrics": {
     "r126": 0.0849,

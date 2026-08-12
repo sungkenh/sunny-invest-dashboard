@@ -1,8 +1,8 @@
 {
- "_updated": "2026-08-12T07:17:56",
+ "_updated": "2026-08-12T12:56:37",
  "mkt": "kr",
  "benchmark": "KOSPI",
- "riskOff": true,
+ "riskOff": false,
  "caveat": "가격(추세) 기반 상대 판단 — 밸류에이션·실적·수급 미반영. 매수/매도 신호가 아닌 비중 참고지표입니다.",
  "count": 7,
  "themes": [
@@ -15,13 +15,13 @@
    "warns": [
     "하락추세 가능 — 저가매수 아님"
    ],
-   "conf": 46,
+   "conf": 49,
    "confBand": "보통",
-   "score": 19,
+   "score": 30,
    "pts": [
-    "최근 6개월 +27.9% · KOSPI 대비 +2.0%p — 시장 수준 (12개월 +229.1%)",
+    "최근 6개월 +30.1% · KOSPI 대비 +7.6%p — 지수 상회 (12개월 +229.1%)",
     "구성 4종목 중 0개 50일선 위 · 0개 3개월 상승 — 폭 0%, 참여 제한적",
-    "52주 고점 대비 -37.9% · 20일 이격 -2.2% · 변동성 지수 대비 1.3배 — 종합 +19/100 (리스크 −0)"
+    "52주 고점 대비 -37.9% · 20일 이격 -1.4% · 변동성 지수 대비 1.5배 — 종합 +30/100 (리스크 −0)"
    ],
    "perf": 3.55,
    "lead": {
@@ -47,21 +47,21 @@
     }
    ],
    "cat": {
-    "ti": "[차이나 칩] 中 반도체 돈줄 '빅펀드'…SK하이닉스 공장 인수 나설까",
-    "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTE5DVzZycXRpenp2TXNTWTc5YWVBMm9zSnhVLU54cjkxdFkxM1JHS3pCOHdGYVVUQW5Mc1d5SnI1LXB4NTV5Y0hxaWVmOHktR0gwQ2g4MlJFMG9KLXZhYmh4U0tJNDJ2dnlEeE9ZM2xsaWw?oc=5",
-    "src": "연합인포맥스",
-    "tm": "1시간 전"
+    "ti": "SK하이닉스 美 인디애나 27일 착공식...2028년 HBM 양산",
+    "link": "https://news.google.com/rss/articles/CBMigwFBVV95cUxQRGZCa2VaUEcycDZRYkNpU2gxdmItQTU2T3h2YjRianZ6Sy1HdFFEVjVpcV9RTEJZazRHUUFZal9DVkNLODNwNFlxVXNaZHJCdXJjLXZ3SVJKOHozNFRFMUUwVjhlZ09KSUZ6dHM1dmFIeEVFU3hVNW1RWjFrQ3dudVRUQQ?oc=5",
+    "src": "조선일보",
+    "tm": "2시간 전"
    },
    "metrics": {
-    "r126": 0.2791,
-    "rs": 0.0198,
+    "r126": 0.3012,
+    "rs": 0.0763,
     "breadth": 0.0,
-    "ext20": -0.0224,
-    "rsi14": 45.1,
-    "volRatio": 1.35,
+    "ext20": -0.0135,
+    "rsi14": 45.9,
+    "volRatio": 1.45,
     "curDD": -0.379,
     "penalty": 0,
-    "driver": 19
+    "driver": 30
    }
   },
   {
@@ -73,13 +73,13 @@
    "warns": [
     "하락추세 가능 — 저가매수 아님"
    ],
-   "conf": 81,
-   "confBand": "높음",
-   "score": -70,
+   "conf": 64,
+   "confBand": "보통",
+   "score": -46,
    "pts": [
-    "최근 6개월 -5.3% · KOSPI 대비 -31.2%p — 지수 하회 (12개월 +34.8%)",
+    "최근 6개월 -5.7% · KOSPI 대비 -28.2%p — 지수 하회 (12개월 +34.8%)",
     "구성 4종목 중 2개 50일선 위 · 0개 3개월 상승 — 폭 25%, 참여 제한적",
-    "52주 고점 대비 -25.5% · 20일 이격 +6.7% · 변동성 지수 대비 1.1배 — 종합 -70/100 (리스크 −0)"
+    "52주 고점 대비 -25.5% · 20일 이격 +7.5% · 변동성 지수 대비 1.0배 — 종합 -46/100 (리스크 −0)"
    ],
    "perf": 4.73,
    "lead": {
@@ -107,19 +107,19 @@
    "cat": {
     "ti": "방산 청년 혁신가로 성장하는 가장 확실한 방법 - 전체 | 카드/한컷 | 멀티미디어",
     "link": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxNWVY1R3NvVkNBSDFGZ1JSWTFFVTh1RS04YmF3U3l1eGpYYUhiT2M4ZDRCaEJNY2NoR3BlQXFIVkViOE1qcElvMVBDVmJBZGlkRkI1M1ZFUm9TTHlydTJIQURzaVlmYVQzN0pBYy1nQ3Fob3FmVTdxUGhlcjAzNzZkcVhJQkdHMk1hUFJn?oc=5",
-    "src": "대한민국 정책브리핑",
-    "tm": "5시간 전"
+    "src": "korea.kr",
+    "tm": "11시간 전"
    },
    "metrics": {
-    "r126": -0.0527,
-    "rs": -0.312,
+    "r126": -0.0568,
+    "rs": -0.2817,
     "breadth": 0.25,
-    "ext20": 0.0667,
-    "rsi14": 52.5,
-    "volRatio": 1.09,
+    "ext20": 0.0752,
+    "rsi14": 53.4,
+    "volRatio": 1.0,
     "curDD": -0.2552,
     "penalty": 0,
-    "driver": -70
+    "driver": -46
    }
   },
   {
@@ -133,13 +133,13 @@
     "지수 동반 상승 — 초과성과 없음",
     "참고용 · 저신뢰"
    ],
-   "conf": 28,
+   "conf": 36,
    "confBand": "낮음",
-   "score": 1,
+   "score": -4,
    "pts": [
-    "최근 6개월 +19.4% · KOSPI 대비 -6.5%p — 지수 하회 (12개월 +116.7%)",
+    "최근 6개월 +15.9% · KOSPI 대비 -6.6%p — 지수 하회 (12개월 +116.7%)",
     "구성 4종목 중 0개 50일선 위 · 0개 3개월 상승 — 폭 0%, 참여 제한적",
-    "52주 고점 대비 -38.4% · 20일 이격 +7.5% · 변동성 지수 대비 1.5배 — 종합 +1/100 (리스크 −0)"
+    "52주 고점 대비 -38.4% · 20일 이격 +8.4% · 변동성 지수 대비 1.3배 — 종합 -4/100 (리스크 −0)"
    ],
    "perf": 3.44,
    "lead": {
@@ -168,18 +168,18 @@
     "ti": "인도 비하르주 23억불 SMR 추진…한국 원전수출 ‘청신호’",
     "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE5TS3Y2RmR6VXk0VUZLbkxKWmhXSDBKNF9ZdjFBaDUzLTRsV2hvaUw0R3JtNzBiSkhBUUk2TWpSY0U1NXpHb0w5NGk5dy1CaW5kdzh4TGhqS2FsTzRxTkhlOGZINTM?oc=5",
     "src": "에너지안전신문",
-    "tm": "9시간 전"
+    "tm": "15시간 전"
    },
    "metrics": {
-    "r126": 0.194,
-    "rs": -0.0653,
+    "r126": 0.1588,
+    "rs": -0.0661,
     "breadth": 0.0,
-    "ext20": 0.0754,
-    "rsi14": 51.1,
-    "volRatio": 1.54,
+    "ext20": 0.0843,
+    "rsi14": 52.2,
+    "volRatio": 1.28,
     "curDD": -0.3843,
     "penalty": 0,
-    "driver": 1
+    "driver": -4
    }
   },
   {
@@ -195,9 +195,9 @@
    "confBand": "높음",
    "score": -96,
    "pts": [
-    "최근 6개월 -21.4% · KOSPI 대비 -47.4%p — 지수 하회 (12개월 +4.5%)",
+    "최근 6개월 -22.8% · KOSPI 대비 -45.2%p — 지수 하회 (12개월 +4.5%)",
     "구성 4종목 중 1개 50일선 위 · 0개 3개월 상승 — 폭 13%, 참여 제한적",
-    "52주 고점 대비 -29.6% · 20일 이격 +2.7% · 변동성 지수 대비 0.8배 — 종합 -96/100 (리스크 −0)"
+    "52주 고점 대비 -29.6% · 20일 이격 +2.5% · 변동성 지수 대비 0.7배 — 종합 -96/100 (리스크 −0)"
    ],
    "perf": -1.2,
    "lead": {
@@ -223,18 +223,18 @@
     }
    ],
    "cat": {
-    "ti": "7월 수주 한국 16% 중국 81%…조선 격차 더 벌어졌다",
-    "link": "https://news.google.com/rss/articles/CBMia0FVX3lxTFA1Vlh3QUxXbHdkTGU0V29ZcjFsUkREbFBRemFScWp4cjlwOU9CYkJzaVhGLWtub3FKTVU5ZHM2NGxqR0tFRTd3Zkg3SVhJUmxvemE5TTQtVTdaRHY2WFVJN2x5X0o3dnZ3d0FZ?oc=5",
-    "src": "해사신문",
-    "tm": "6시간 전"
+    "ti": "LNG 연료선 수주잔량 韓 압도하는 中조선업계…\"韓과 기술격차 축소는 기정사실\" |",
+    "link": "https://news.google.com/rss/articles/CBMid0FVX3lxTE8xU05qV0xwZW1Vd2hxX2VPNC0zelZLVVJ4WHpkUkVLR2o5a2FrZjhla040M0hkelA1Tm9IZDQtLWFTcUVnYV9yQk5SR3UzWnZfd0ZxcDdlOXhJZWlxUVV4RTNjOWxQXzh1WFlLQURMaVhtZUFXXzJB?oc=5",
+    "src": "straightnews.co.kr",
+    "tm": "2시간 전"
    },
    "metrics": {
-    "r126": -0.2144,
-    "rs": -0.4737,
+    "r126": -0.2276,
+    "rs": -0.4525,
     "breadth": 0.125,
-    "ext20": 0.0267,
-    "rsi14": 48.0,
-    "volRatio": 0.8,
+    "ext20": 0.0253,
+    "rsi14": 48.8,
+    "volRatio": 0.71,
     "curDD": -0.2958,
     "penalty": 0,
     "driver": -96
@@ -249,13 +249,13 @@
    "warns": [
     "하락추세 가능 — 저가매수 아님"
    ],
-   "conf": 84,
+   "conf": 85,
    "confBand": "높음",
-   "score": -90,
+   "score": -88,
    "pts": [
-    "최근 6개월 -15.9% · KOSPI 대비 -41.9%p — 지수 하회 (12개월 +24.5%)",
-    "구성 4종목 중 1개 50일선 위 · 0개 3개월 상승 — 폭 13%, 참여 제한적",
-    "52주 고점 대비 -37.8% · 20일 이격 +10.0% · 변동성 지수 대비 1.0배 — 종합 -90/100 (리스크 −0)"
+    "최근 6개월 -16.0% · KOSPI 대비 -38.5%p — 지수 하회 (12개월 +24.5%)",
+    "구성 4종목 중 2개 50일선 위 · 0개 3개월 상승 — 폭 25%, 참여 제한적",
+    "52주 고점 대비 -37.8% · 20일 이격 +11.0% · 변동성 지수 대비 0.9배 — 종합 -88/100 (리스크 −2)"
    ],
    "perf": 3.24,
    "lead": {
@@ -281,21 +281,21 @@
     }
    ],
    "cat": {
-    "ti": "韓배터리, 전기차 수요 둔화에 북미 동맹 축소…ESS에 집중",
-    "link": "https://news.google.com/rss/articles/CBMihgFBVV95cUxOM2VuN3A2bW1FUkdXT25wUFRIZG50eWRRTXZpVHRvNDVkVGZwc1RVX3dDdE5Vc2FsWjN4VWczT0pMMGxTMVFYclczNjA0aFdpM0ViLXRXb3hDYmdGVVZpcFFEd3Z6Q1lDT0FQZlV6NDhEVDRqei1nbzhrYWVJSHVKQnREZlBIQQ?oc=5",
-    "src": "글로벌이코노믹",
-    "tm": "2시간 전"
+    "ti": "KTL, 중국품질인증센터와 전기차 배터리·충전설비 인증 협력",
+    "link": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE5LSEZETmdOaGVudUFQRjZuUjZ2WllWZDk4NWh2U0UydlNhYU8xdFBDRnU4ejJtd2ItU0VjLXliRDdBWjhySWFuSE1MT1JHdEppelhLZHd0emR3QnPSAWBBVV95cUxOTFczSE5kcF9PS0RmeDBzTmo5NWdjZmtZZ244eEYzc2dtV3dmSWR2aXlvcjVFS0toQVlwUEtCQi1aZXQyZm5LUWoybENBMmNLeW1PYU9mMm15WnNOeTFJT18?oc=5",
+    "src": "연합뉴스",
+    "tm": "5시간 전"
    },
    "metrics": {
-    "r126": -0.1593,
-    "rs": -0.4186,
-    "breadth": 0.125,
-    "ext20": 0.1004,
-    "rsi14": 53.7,
-    "volRatio": 1.01,
+    "r126": -0.16,
+    "rs": -0.3849,
+    "breadth": 0.25,
+    "ext20": 0.1103,
+    "rsi14": 55.0,
+    "volRatio": 0.89,
     "curDD": -0.3777,
-    "penalty": 0,
-    "driver": -90
+    "penalty": 2,
+    "driver": -86
    }
   },
   {
@@ -309,9 +309,9 @@
    "confBand": "보통",
    "score": -34,
    "pts": [
-    "최근 6개월 -7.9% · KOSPI 대비 -33.9%p — 지수 하회 (12개월 -2.1%)",
+    "최근 6개월 -8.0% · KOSPI 대비 -30.4%p — 지수 하회 (12개월 -2.1%)",
     "구성 4종목 중 4개 50일선 위 · 3개 3개월 상승 — 폭 88%, 참여 광범위",
-    "52주 고점 대비 -17.3% · 20일 이격 +12.2% · 변동성 지수 대비 0.5배 — 종합 -34/100 (리스크 −3)"
+    "52주 고점 대비 -17.3% · 20일 이격 +12.1% · 변동성 지수 대비 0.4배 — 종합 -34/100 (리스크 −3)"
    ],
    "perf": -3.44,
    "lead": {
@@ -337,18 +337,18 @@
     }
    ],
    "cat": {
-    "ti": "K바이오 잇달아 사들이는 ‘큰손’ 블랙록…HLB·알테오젠·유한양행 지분 확대 - 조선비즈",
-    "link": "https://news.google.com/rss/articles/CBMihwFBVV95cUxOTC05eVZQLXhpNUZRZnl3N3o3dkNyaHFqN3pHR0hwdEVxYkxKNjgyUEVOb2lyN185NE16Yk4xN3VBTXE4Q00wSnpjTkVhanhoZlZYMFEtX20zZVhqTEllbGVPRnNmSS15V296VTR6VkZxSVZMWWlocVFkZ054d1RfaFA0Y0pURkHSAZsBQVVfeXFMTmM5ampqVkdTM1FNT1lLNHRQWXlZN3kxZk4tMzlUUU9jbkdOcEdZSFRfRExTUWlyclhYLVJyZXJQMTc0T3piNFRSVUZOb29qNEtZaGhFUU9LcDZRdHNLSUNrMmM5Sk9PaDhkRlFUMV9PRHF5SHdsYlQ2T1FIZG5UTGxyMHBJSkJoRmxWaWl5SDJpeEhFZjNoMWJjd2M?oc=5",
-    "src": "Chosunbiz",
-    "tm": "10시간 전"
+    "ti": "AI가 신약 후보 찾고 실험실이 검증…대구서 '혁신연구거점' 출범",
+    "link": "https://news.google.com/rss/articles/CBMiigFBVV95cUxNdVdsRklrejJaRTlBcGg5WjJjMDlCUndadjQ0VTB1c2FlS3A2WEU0U2pLRVhhalVjclN6Z29hNlNaNjgzd055QndlZXo4YWtWQy00N1hNbVhsMzN6QU14YmlOSHVfcDZXSTk5VTc5WjVVQ1ZhUGJ6RHhtT3QzZktRRmxRTnQxS1ZGcmc?oc=5",
+    "src": "korea.kr",
+    "tm": "4시간 전"
    },
    "metrics": {
-    "r126": -0.0794,
-    "rs": -0.3387,
+    "r126": -0.0795,
+    "rs": -0.3044,
     "breadth": 0.875,
-    "ext20": 0.1217,
-    "rsi14": 64.9,
-    "volRatio": 0.47,
+    "ext20": 0.1215,
+    "rsi14": 65.8,
+    "volRatio": 0.4,
     "curDD": -0.173,
     "penalty": 3,
     "driver": -31
@@ -363,13 +363,13 @@
    "warns": [
     "지수 동반 상승 — 초과성과 없음"
    ],
-   "conf": 71,
-   "confBand": "높음",
-   "score": 50,
+   "conf": 66,
+   "confBand": "보통",
+   "score": 34,
    "pts": [
-    "최근 6개월 +18.8% · KOSPI 대비 -7.2%p — 지수 하회 (12개월 +35.7%)",
-    "구성 4종목 중 3개 50일선 위 · 4개 3개월 상승 — 폭 88%, 참여 광범위",
-    "52주 고점 대비 -6.1% · 20일 이격 -1.7% · 변동성 지수 대비 0.5배 — 종합 +50/100 (리스크 −0)"
+    "최근 6개월 +13.3% · KOSPI 대비 -9.2%p — 지수 하회 (12개월 +35.7%)",
+    "구성 4종목 중 2개 50일선 위 · 4개 3개월 상승 — 폭 75%, 참여 광범위",
+    "52주 고점 대비 -6.1% · 20일 이격 -1.3% · 변동성 지수 대비 0.5배 — 종합 +34/100 (리스크 −0)"
    ],
    "perf": -1.73,
    "lead": {
@@ -395,21 +395,21 @@
     }
    ],
    "cat": {
-    "ti": "호주 중앙은행, 기준금리 4.35% 동결…추가 인상 가능성 경고",
-    "link": "https://news.google.com/rss/articles/CBMiakFVX3lxTE1vQ2pyajc2dll5ai0yeFU1QVpPbDQ5NDdzZUpmZnlPUXEyZy15aHJnV2VfZWpkQzNIN3I2STNIYnZuaTFXYVRpRTVoMzJPWFN3aERIT0EtZnVybFlnVmhIWGxiUk9xQ08tNEE?oc=5",
-    "src": "Investing.com 한국어",
-    "tm": "1일 전"
+    "ti": "日기준금리 연내 2차례 인상 전망도…\"1.75%까지 오른다\"",
+    "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE5zcnZXeEtFV0U3alpzTjl0Qmk4NHpZNEpQbjlHX3loeElQTUgzYmRsNGRkNmIyYmNrSGVwNEJrSnNaWVlTaXBDWGtUU01QNXZVZTZQMjNXajNhNzBKZXNvS9IBYEFVX3lxTE5zcnZXeEtFV0U3alpzTjl0Qmk4NHpZNEpQbjlHX3loeElQTUgzYmRsNGRkNmIyYmNrSGVwNEJrSnNaWVlTaXBDWGtUU01QNXZVZTZQMjNXajNhNzBKZXNvSw?oc=5",
+    "src": "연합뉴스",
+    "tm": "6시간 전"
    },
    "metrics": {
-    "r126": 0.1878,
-    "rs": -0.0715,
-    "breadth": 0.875,
-    "ext20": -0.0172,
-    "rsi14": 49.0,
-    "volRatio": 0.54,
+    "r126": 0.1327,
+    "rs": -0.0922,
+    "breadth": 0.75,
+    "ext20": -0.0126,
+    "rsi14": 48.7,
+    "volRatio": 0.46,
     "curDD": -0.0606,
     "penalty": 0,
-    "driver": 50
+    "driver": 34
    }
   }
  ]
