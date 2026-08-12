@@ -161,6 +161,7 @@
     <button data-v="con">보수</button><button data-v="std">표준</button><button data-v="agg">공격</button>
   </div>
   <span id="preset-desc" class="fl" style="font-weight:600"></span>
+  <button class="btn" id="btn-autosort" title="매수 판정이 강할수록, 백테스트 적중률이 높을수록 상위로 우선순위를 자동 재배치합니다 (이후 ▲▼·숫자로 수동 조정 가능)">⚡ 시그널 순 정렬</button>
   <span class="spacer" style="flex:1"></span>
   <span class="fl" id="fx-chip"></span>
 </div>
@@ -1076,6 +1077,21 @@ function segInit(id,cur,fn){
   });
 }
 const descOf=k=>{ const p=PRESETS[k]; return '1회 리스크 '+p.risk+'% · 종목당 ≤'+p.maxW+'% · Kelly '+(p.kelly===0.25?'¼':'½'); };
+/* 시그널 순 자동 정렬: ① 매수 판정 강도 ② 백테스트 매수 적중률(표본 5회↑) 높은 순 — 우선순위(예산 배분)에 반영 */
+document.getElementById('btn-autosort').addEventListener('click',()=>{
+  if(!RESULTS.length) return;
+  const rank={buy2:0,buy1:1,ebuy:2,nbuy:3,up1:4,neu:5,dn1:6,nsell:7,esell:8,sell1:9,sell2:10};
+  const score=x=>{
+    if(!x||x.err||!x.j) return [99,1];
+    const w=(x.bt&&x.bt.buy&&x.bt.buy.n>=5&&x.bt.buy.win!=null)?x.bt.buy.win:-1;
+    return [rank[x.j.v]!=null?rank[x.j.v]:99, -w];
+  };
+  PRIO=RESULTS.map((x,i)=>({k:posKey(x.u),s:score(x),i}))
+    .sort((a,b)=>(a.s[0]-b.s[0])||(a.s[1]-b.s[1])||(a.i-b.i)).map(o=>o.k);
+  savePrio();
+  LIST=sortByPrio(LIST);
+  recompute();
+});
 segInit('seg-preset',PRESET,v=>{ PRESET=v; PLN('preset',v); document.getElementById('preset-desc').textContent=descOf(v); recompute(); });
 document.getElementById('preset-desc').textContent=descOf(PRESET);
 /* 평단·수량: 입력 중에는 DRAFT에만 담고(재렌더에도 값 유지), 확정(change=포커스 아웃)될 때만

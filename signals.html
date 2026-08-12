@@ -1207,16 +1207,8 @@ function compute(){
     });
     ROWS.length=US_TOP;
   }
-  const rank={buy2:0,buy1:1,ebuy:2,nbuy:3,up1:4,neu:5,dn1:6,nsell:7,esell:8,sell1:9,sell2:10};
-  const rankCmp=(a,b)=>{
-    const ra=a.j?rank[a.j.v]:9, rb=b.j?rank[b.j.v]:9;
-    if(ra!==rb) return ra-rb;
-    const ca=recency(a), cb=recency(b);
-    if(ca!==cb) return ca-cb;
-    return b.u.cap-a.u.cap;
-  };
-  ROWS.sort(rankCmp);
-  ROWS_ALL.sort(rankCmp);
+  ROWS.sort(rowRankCmp);
+  ROWS_ALL.sort(rowRankCmp);
   render();
   maybeNotify();
   // 밸류에이션 지연 수집(캐시 30분): 표시 종목 우선, 저평가 필터일 땐 스캔한 전체 유니버스
@@ -1427,11 +1419,33 @@ function ensurePerfAll(){
       if(!(c&&c.ts===x.ch.ts)){ ensurePerf(x); dirty=true; }
     }
     if(i<list.length) setTimeout(step,40);
-    else if(dirty) render();
+    else if(dirty){ ROWS.sort(rowRankCmp); ROWS_ALL.sort(rowRankCmp); render(); }   // 적중률 반영 재정렬
   })();
 }
 const isBuyV=v=>['buy2','buy1','ebuy','nbuy'].includes(v);
 const isSellV=v=>['sell2','sell1','esell','nsell'].includes(v);
+/* 정렬용 적중률: 판정 방향의 백테스트 적중률(표본 5회 이상·캐시 최신일 때만). 없으면 null */
+function perfWinOf(x){
+  if(!x.j) return null;
+  const p=PERF[x.u.code+'|'+modeKey()+'|'+LOOK];
+  if(!p||p.ts!==x.ch.ts) return null;
+  const d=p[SPEED]; if(!d) return null;
+  const s=isBuyV(x.j.v)?d.buy:(isSellV(x.j.v)?d.sell:null);
+  return (s&&s.n>=5&&s.win!=null)?s.win:null;
+}
+/* 표 정렬: ① 판정 강도(강력 매수 → … → 강력 매도) ② 같은 등급이면 적중률 높은 순
+   ③ 신호 최신 순 ④ 시총 순 — 적중률은 백그라운드 계산 완료 시 자동 재정렬로 반영 */
+const ROW_RANK={buy2:0,buy1:1,ebuy:2,nbuy:3,up1:4,neu:5,dn1:6,nsell:7,esell:8,sell1:9,sell2:10};
+function rowRankCmp(a,b){
+  const ra=a.j?ROW_RANK[a.j.v]:9, rb=b.j?ROW_RANK[b.j.v]:9;
+  if(ra!==rb) return ra-rb;
+  const wa=perfWinOf(a), wb=perfWinOf(b);
+  if(wa!==wb) return (wb==null?-1:wb)-(wa==null?-1:wa);
+  const rec=x=>x.j?Math.min(x.j.gc??99,x.j.zu??99,x.j.dc??99,x.j.zd??99):99;
+  const ca=rec(a), cb=rec(b);
+  if(ca!==cb) return ca-cb;
+  return b.u.cap-a.u.cap;
+}
 /* 토스 최근일 순매수와 신호 방향 일치 여부: true 일치 · false 역행 · null 데이터 없음/중립 판정 */
 function flowAgree(x){
   const j=x.j; if(!j||(!isBuyV(j.v)&&!isSellV(j.v))) return null;
