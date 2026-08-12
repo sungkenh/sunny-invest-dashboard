@@ -251,6 +251,8 @@
   /* 관심종목 매수시기 칩 (판정·PBR-ROE 회귀) */
   .wl-sig{display:flex;gap:4px;margin-top:3px;flex-wrap:wrap}
   .wl-chip{font-size:0.5938rem;font-weight:800;border-radius:4px;padding:0 4px;border:1px solid var(--border);color:var(--muted2);white-space:nowrap}
+  .xh{display:inline-block;margin-left:4px;font-size:0.5625rem;font-weight:800;color:var(--gold);
+    border:1px solid var(--gold);border-radius:3px;padding:0 3px;vertical-align:1px}   /* 프리·애프터 표시 */
   .wl-chip.buy{color:var(--up);border-color:var(--up)}
   .wl-chip.sell{color:var(--down);border-color:var(--down)}
   .wl-chip.cheap{color:#22c55e;border-color:rgba(34,197,94,.55)}
@@ -1358,7 +1360,7 @@ function renderWL(){
     return `<tr data-sym="${r.sym}" class="${r.sym===SEL?'sel':''}">
       <td><span class="sym">${r.name}</span><span class="mk">${(r.mk||'').toUpperCase()}</span>${wlSigChips(r.sym)}</td>
       <td class="px mono">${hasPx?`<span class="cur">${cur}</span>${fmt(r.px)}`:'…'}</td>
-      <td class="pc ${cls(r.pct||0)} mono">${hasPx?arr(r.pct)+' '+sign(r.pct)+'%':''}</td>
+      <td class="pc ${cls(r.pct||0)} mono">${hasPx?arr(r.pct)+' '+sign(r.pct)+'%'+(r.ext?`<span class="xh">${r.ext==='pre'?'프리':'애프터'}</span>`:''):''}</td>
       <td class="del" data-del="${r.sym}">×</td>
     </tr>`;}).join('');
   document.querySelectorAll('#wl-body tr').forEach(tr=>{
@@ -2624,7 +2626,7 @@ function updateLiveBadge(n){
 async function loadWatch(){
   wlSigRefresh();                          // 매수시기 진단(10분 캐시 — 대부분 즉시 반환, quote 조기 return 과 무관하게 먼저)
   const syms=[...new Set(WL.map(x=>x.sym))];
-  const apply=q=>{ WL.forEach(it=>{ const v=q[it.sym]; if(v && typeof v.price==='number'){ it.px=v.price; it.pct=v.pct; } }); renderWL(); renderDeep(); };
+  const apply=q=>{ WL.forEach(it=>{ const v=q[it.sym]; if(v && typeof v.price==='number'){ it.px=v.price; it.pct=v.pct; it.ext=v.ext||null; } }); renderWL(); renderDeep(); };
   if(syms.length){
     try{   // 1) 로컬 서버 실시간 API — 임의 종목도 실시간
       const r=await fetch('/api/quote?syms='+encodeURIComponent(syms.join(',')),{cache:'no-store'});
