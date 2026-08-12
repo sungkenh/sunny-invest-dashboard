@@ -29,6 +29,27 @@ async function chartQuote(sym) {
   return { price: round(price, 4), chg: round(price - pc, 4), pct: pc ? round((price - pc) / pc * 100, 2) : 0, sp };
 }
 
+// EWY(코스피 야간 프록시) — 프리·애프터마켓 포함 마지막 체결가. 정규장(22:30~05:00 KST)만 커버하던
+// 것을 프리(17:00 KST~)·애프터(~09:00 KST)까지 확장해 한국 야간 전체에서 시세가 움직인다.
+// 등락은 전일 정규장 종가 대비(야간 누적 변동). 09:00~17:00 KST 무거래 공백은 코스피 본장이 대신한다.
+async function chartQuoteXH(sym) {
+  const u = 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent(sym)
+    + '?interval=5m&range=1d&includePrePost=true';
+  const r = await fetch(u, { headers: { 'User-Agent': UA } });
+  const d = await r.json();
+  const res = d && d.chart && d.chart.result && d.chart.result[0];
+  const m = res && res.meta;
+  if (!m || typeof m.regularMarketPrice !== 'number') throw new Error('no data');
+  let price = m.regularMarketPrice;
+  const ts = res.timestamp || [], cl = ((res.indicators.quote[0]) || {}).close || [];
+  const seq = [];
+  for (let i = 0; i < cl.length; i++) if (cl[i] != null) { price = cl[i]; seq.push(cl[i]); }
+  const pc = (typeof m.chartPreviousClose === 'number') ? m.chartPreviousClose
+    : (typeof m.previousClose === 'number' ? m.previousClose : price);
+  return { price: round(price, 4), chg: round(price - pc, 4), pct: pc ? round((price - pc) / pc * 100, 2) : 0,
+    sp: downsample(seq, 40) };
+}
+
 // 국내 지수는 네이버 실시간(지연 0분) 우선 — 야후는 약 15분 지연. (해외 IP 차단 시 야후 폴백)
 const NAVER_CODE = { kospi: 'KOSPI', kosdaq: 'KOSDAQ' };
 async function naverIndex(code) {
@@ -134,6 +155,11 @@ async function __cfHandler(event) {
         res[k] = { sym: s, price: nv.price, chg: nv.chg, pct: nv.pct, sp: (ch && ch.sp) || [], src: 'naver', delay: nv.delay };
         return;
       } catch (e) { /* 야후 폴백 */ }
+    }
+    // 코스피 야간(EWY): 프리·애프터 포함 시세 우선 — 실패 시 일반 야후(정규장만)로 폴백
+    if (k === 'ewy') {
+      try { res[k] = { sym: s, ...(await chartQuoteXH(s)), src: 'yahoo-xh' }; return; }
+      catch (e) { /* 일반 야후 폴백 */ }
     }
     // 나스닥100 선물: 네이버 미니 나스닥100 선물(NQcv1) 우선 + 야후 NQ=F 스파크라인/폴백
     if (k === 'ndxfut') {
