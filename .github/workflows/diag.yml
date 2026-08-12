@@ -5,31 +5,24 @@ jobs:
   diag:
     runs-on: ubuntu-latest
     steps:
-      - name: 코스피야간(EWY)·WTI 소스 진단
+      - name: 야간선물 소스 2차 프로브 (kred.dev · EWY prePost)
         run: |
-          echo "== 운영 /api/market (ewy·wti·gold·ndxfut)"
-          curl -sL "https://sunny-invest-dashboard.pages.dev/api/market" | python3 -c "
-          import json,sys
-          d=json.load(sys.stdin)
-          for k in ('ewy','wti','gold','ndxfut','kospi'):
-              q=d.get(k) or {}
-              print(f'{k:8s}', 'price:',q.get('price'), '| chg:',q.get('chg'), '| src:',q.get('src'), '| err:',q.get('error'), '| sp:',len(q.get('sp') or []))
-          print('_updated:', d.get('_updated'))"
-          echo "== 네이버 폴링 CLcv1 (WTI 10분지연 후보)"
-          curl -s -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" "https://polling.finance.naver.com/api/realtime/marketindex/energy/CLcv1" | head -c 300; echo
-          echo "== 네이버 폴링 worldstock/futures/CLcv1"
-          curl -s -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" "https://polling.finance.naver.com/api/realtime/worldstock/futures/CLcv1" | head -c 300; echo
-          echo "== 야후 CL=F (러너 직접)"
-          curl -sL -H "User-Agent: Mozilla/5.0" "https://query1.finance.yahoo.com/v8/finance/chart/CL%3DF?interval=5m&range=1d" | python3 -c "
-          import json,sys
-          m=json.load(sys.stdin)['chart']['result'][0]['meta']
-          print('CL=F', m.get('regularMarketPrice'), 'time', m.get('regularMarketTime'))"
-          echo "== 야후 EWY (러너 직접 — pre/post 포함 확인)"
-          curl -sL -H "User-Agent: Mozilla/5.0" "https://query1.finance.yahoo.com/v8/finance/chart/EWY?interval=5m&range=1d&includePrePost=true" | python3 -c "
-          import json,sys
-          m=json.load(sys.stdin)['chart']['result'][0]['meta']
-          print('EWY', m.get('regularMarketPrice'), '| pre/post keys:', [k for k in m.keys() if 'ost' in k or 'reMarket' in k])"
-          echo "== 네이버 해외 EWY 폴링 후보"
-          for u in "https://polling.finance.naver.com/api/realtime/worldstock/stock/EWY" "https://polling.finance.naver.com/api/realtime/worldstock/stock/EWY.P" "https://api.stock.naver.com/stock/EWY.P/basic"; do
-            echo "-- $u"; curl -s -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" "$u" | head -c 260; echo
+          echo "== kred.dev 야간선물 페이지 (API 힌트 탐색)"
+          curl -sL --max-time 20 -H "User-Agent: Mozilla/5.0" "https://kred.dev/ko/kospi-200-night-futures" | grep -oE '(api[^"]{0,80}|"price"[^,]{0,30}|k200[^"]{0,60})' | head -15 || true
+          echo "== kred.dev api 후보"
+          for u in "https://kred.dev/api/kospi-200-night-futures" "https://kred.dev/api/k200-night"; do
+            echo "-- $u"; curl -sL --max-time 12 -H "User-Agent: Mozilla/5.0" "$u" | head -c 250; echo
           done
+          echo "== 야후 EWY includePrePost — 프리·애프터 마지막 체결 추출"
+          curl -sL -H "User-Agent: Mozilla/5.0" "https://query1.finance.yahoo.com/v8/finance/chart/EWY?interval=5m&range=1d&includePrePost=true" | python3 -c "
+          import json,sys,datetime
+          res=json.load(sys.stdin)['chart']['result'][0]
+          m=res['meta']; ts=res.get('timestamp') or []; cl=res['indicators']['quote'][0].get('close') or []
+          pairs=[(t,c) for t,c in zip(ts,cl) if c is not None]
+          print('regular:', m.get('regularMarketPrice'))
+          ctp=m.get('currentTradingPeriod') or {}
+          if pairs:
+              t,c=pairs[-1]
+              print('마지막 체결(pre/post 포함):', c, '@', datetime.datetime.utcfromtimestamp(t).isoformat(), 'UTC (bar', len(pairs), ')')
+              reg=ctp.get('regular') or {}
+              print('regular 세션:', reg.get('start'), '~', reg.get('end'), '| 마지막 체결이 정규장 밖?', not (reg.get('start',0)<=t<reg.get('end',1<<40)))"
