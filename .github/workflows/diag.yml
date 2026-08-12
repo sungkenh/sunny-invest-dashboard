@@ -1,55 +1,35 @@
 name: diag (수동 진단)
-
-# 외부 데이터 소스 진단용 — 수동 실행 전용, 자동 트리거 없음.
-# 네이버 시장지표·폴링 API 를 시간차 샘플링해 실시간 반영 여부를 확인한다.
 on:
   workflow_dispatch: {}
-
 jobs:
   diag:
     runs-on: ubuntu-latest
     steps:
-      - name: 시간차 샘플링 (3회 × 35초)
+      - name: 코스피야간(EWY)·WTI 소스 진단
         run: |
-          sample() {
-            echo "---- sample $1 @ $(date -u +%H:%M:%S) ----"
-            # productDetail: 시간 필드 포함 앞부분을 그대로 출력 (어떤 timestamp 필드가 있는지 확인)
-            for pair in "bond US10YT=RR" "bond US2YT=RR" "exchange FX_USDKRW" "metals GCcv1" "energy CLcv1"; do
-              set -- $pair
-              body=$(curl -s -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" \
-                "https://m.stock.naver.com/front-api/marketIndex/productDetail?category=$1&reutersCode=$2")
-              echo "[$1/$2] $(echo "$body" | python3 -c "
-          import json,sys
-          try:
-              v=json.load(sys.stdin).get('result') or {}
-              keys=[k for k in v.keys() if 'ime' in k or 'ate' in k or 'At' in k]
-              print('close=%s chg=%s pct=%s | 시간필드: %s' % (v.get('closePrice'), v.get('compareToPreviousClosePrice'), v.get('fluctuationsRatio'), {k:v.get(k) for k in keys}))
-          except Exception as e: print('ERR', e)")"
-            done
-            # 폴링 선물 (NQcv1)
-            curl -s -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" \
-              "https://polling.finance.naver.com/api/realtime/worldstock/futures/NQcv1" | python3 -c "
-          import json,sys
-          d=json.load(sys.stdin); r=(d.get('datas') or [{}])[0]
-          print('[NQcv1 polling] close=%s chg=%s dir=%s time=%s' % (r.get('closePrice'), r.get('compareToPreviousClosePrice'), (r.get('compareToPreviousPrice') or {}).get('text'), d.get('time')))"
-            # 운영 API
-            curl -s "https://sunny-invest-dashboard.pages.dev/api/market" | python3 -c "
+          echo "== 운영 /api/market (ewy·wti·gold·ndxfut)"
+          curl -sL "https://sunny-invest-dashboard.pages.dev/api/market" | python3 -c "
           import json,sys
           d=json.load(sys.stdin)
-          row=lambda k: '%s=%s(%s)' % (k, (d.get(k) or {}).get('price'), (d.get(k) or {}).get('src'))
-          print('[운영API]', ' '.join(row(k) for k in ('usdkrw','gold','wti','ndxfut','ust10y','ust2y')), '_updated=%s' % d.get('_updated'))"
-            echo
-          }
-          sample 1; sleep 35; sample 2; sleep 35; sample 3
-
-      - name: 폴링 marketindex 실시간 후보 (지연 없는 대안 탐색)
-        run: |
-          for u in "https://polling.finance.naver.com/api/realtime/marketindex/exchange/FX_USDKRW" \
-                   "https://polling.finance.naver.com/api/realtime/marketindex/bond/US10YT%3DRR" \
-                   "https://polling.finance.naver.com/api/realtime/marketindex/metals/GCcv1" \
-                   "https://polling.finance.naver.com/api/realtime/marketindex/energy/CLcv1" \
-                   "https://polling.finance.naver.com/api/realtime/worldstock/futures/GCcv1" \
-                   "https://polling.finance.naver.com/api/realtime/worldstock/futures/CLcv1"; do
-            echo "== $u"
-            curl -s -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" "$u" | head -c 400; echo
+          for k in ('ewy','wti','gold','ndxfut','kospi'):
+              q=d.get(k) or {}
+              print(f'{k:8s}', 'price:',q.get('price'), '| chg:',q.get('chg'), '| src:',q.get('src'), '| err:',q.get('error'), '| sp:',len(q.get('sp') or []))
+          print('_updated:', d.get('_updated'))"
+          echo "== 네이버 폴링 CLcv1 (WTI 10분지연 후보)"
+          curl -s -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" "https://polling.finance.naver.com/api/realtime/marketindex/energy/CLcv1" | head -c 300; echo
+          echo "== 네이버 폴링 worldstock/futures/CLcv1"
+          curl -s -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" "https://polling.finance.naver.com/api/realtime/worldstock/futures/CLcv1" | head -c 300; echo
+          echo "== 야후 CL=F (러너 직접)"
+          curl -sL -H "User-Agent: Mozilla/5.0" "https://query1.finance.yahoo.com/v8/finance/chart/CL%3DF?interval=5m&range=1d" | python3 -c "
+          import json,sys
+          m=json.load(sys.stdin)['chart']['result'][0]['meta']
+          print('CL=F', m.get('regularMarketPrice'), 'time', m.get('regularMarketTime'))"
+          echo "== 야후 EWY (러너 직접 — pre/post 포함 확인)"
+          curl -sL -H "User-Agent: Mozilla/5.0" "https://query1.finance.yahoo.com/v8/finance/chart/EWY?interval=5m&range=1d&includePrePost=true" | python3 -c "
+          import json,sys
+          m=json.load(sys.stdin)['chart']['result'][0]['meta']
+          print('EWY', m.get('regularMarketPrice'), '| pre/post keys:', [k for k in m.keys() if 'ost' in k or 'reMarket' in k])"
+          echo "== 네이버 해외 EWY 폴링 후보"
+          for u in "https://polling.finance.naver.com/api/realtime/worldstock/stock/EWY" "https://polling.finance.naver.com/api/realtime/worldstock/stock/EWY.P" "https://api.stock.naver.com/stock/EWY.P/basic"; do
+            echo "-- $u"; curl -s -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" "$u" | head -c 260; echo
           done
