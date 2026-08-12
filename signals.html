@@ -1222,6 +1222,7 @@ function compute(){
   // 밸류에이션 지연 수집(캐시 30분): 표시 종목 우선, 저평가 필터일 땐 스캔한 전체 유니버스
   ensureVals((FILTER==='val'?ROWS_ALL:ROWS).map(x=>x.u));
   ensureToss(ROWS.map(x=>x.u));            // 토스 투자자별 수급(국내 개별주, 30분 캐시)
+  ensurePerfAll();                          // 적중률 백그라운드 일괄 계산 → 판정 셀 즉시 표시
 }
 
 /* ── 시장 국면 카드 ── */
@@ -1409,6 +1410,25 @@ function ensurePerf(x){
   return PERF[key]={ ts:ch.ts, H,
     std:backtestOne(ch.closes,ch.his,ch.los,LOOK,SPEEDS.std,H),
     fast:backtestOne(ch.closes,ch.his,ch.los,LOOK,SPEEDS.fast,H) };
+}
+/* 표시 종목 전체의 적중률을 백그라운드에서 순차 계산 — 상세를 열지 않아도 판정 셀에 바로 표시.
+   프레임당 ~12ms 예산으로 나눠 UI를 막지 않고, 계산 완료 시 1회 재렌더. 캐시 히트는 스킵. */
+let PERF_RUN=0;
+function ensurePerfAll(){
+  const run=++PERF_RUN;
+  const list=ROWS.filter(x=>x&&x.j&&x.ch&&x.ch.closes&&x.ch.closes.length>=80);
+  let i=0, dirty=false;
+  (function step(){
+    if(run!==PERF_RUN) return;              // 새 스캔·모드 전환 시 이전 배치 중단
+    const t0=Date.now();
+    while(i<list.length&&Date.now()-t0<12){
+      const x=list[i++];
+      const c=PERF[x.u.code+'|'+modeKey()+'|'+LOOK];
+      if(!(c&&c.ts===x.ch.ts)){ ensurePerf(x); dirty=true; }
+    }
+    if(i<list.length) setTimeout(step,40);
+    else if(dirty) render();
+  })();
 }
 const isBuyV=v=>['buy2','buy1','ebuy','nbuy'].includes(v);
 const isSellV=v=>['sell2','sell1','esell','nsell'].includes(v);

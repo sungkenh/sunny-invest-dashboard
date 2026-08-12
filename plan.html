@@ -116,6 +116,11 @@
   table.lad tr:last-child td{border-bottom:none}
   table.lad td.num{text-align:right;white-space:nowrap}
   .lsec{margin-top:9px;font-size:11px;font-weight:800;color:var(--muted2);letter-spacing:.3px}
+  .sechead{cursor:pointer;user-select:none;display:flex;align-items:center;gap:6px}
+  .sechead:hover{color:var(--text)}
+  .secbtn{margin-left:auto;font-size:10px;font-weight:700;color:var(--muted);border:1px solid var(--border);
+    border-radius:999px;padding:1px 9px;background:var(--chip)}
+  .sechead:hover .secbtn{color:var(--accent);border-color:var(--accent)}
 
   .posrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:9px;font-size:12px}
   .posrow input{width:110px;background:var(--chip);border:1px solid var(--border);border-radius:7px;color:var(--text);
@@ -641,30 +646,40 @@ function ladderAvg(ladder){
   return ws>0?{E:wv/ws, Q:null}:null;
 }
 
-/* 매도(출구) 래더 — 손절·익절 구간을 한 표로: 손절(전량) → 익절 1R(절반+손절 본전 이동) →
-   익절 2R(잔여 절반) → 나머지 2×ATR 샹들리에 트레일. E=평단, Q=총 주수(없으면 비율만).
-   pct = 평단 대비 % (손절은 음수 — 구간 위치를 한눈에) */
-function sellLadder(E,stop,atr,his,rd,Q){
-  if(!(E>0)||!(stop>0)||!(E>stop)||!(atr>0)) return null;
-  const R0=E-stop;
+/* 매도(출구) 래더 — 구간은 매매 시그널과 동일한 기술 레벨로 고정:
+   손절 = 시그널 손절선(최근 10일 저점 vs 현재가−1×ATR 중 낮은 쪽, 상한 2×ATR),
+   익절 1R = 현재가+리스크(시그널 1R 목표), 익절 2R = 시그널 목표가(손익비 1:2), 트레일 = 2×ATR 샹들리에.
+   avg(보유 평단)가 있으면 % 기준을 평단으로 바꾸고 단계별 손익액·본전 라인을 함께 표시. */
+function sellLadder(frame,his,rd,Q,avg,fx){
+  if(!frame||!(frame.entry>0)||!(frame.rawStop>0)||!(frame.atr>0)) return null;
+  const entry=frame.entry, R0=entry-frame.rawStop;
+  if(!(R0>0)) return null;
+  const stop=rd(frame.rawStop), t1=rd(entry+R0), t2=rd(entry+2*R0);
+  const hasAvg=(avg!=null&&avg>0);
+  const base=hasAvg?avg:entry, baseName=hasAvg?'평단':'현재가';
+  const pct=v=>(v!=null&&base>0)?(v/base-1)*100:null;
   const q1=Q!=null?Math.ceil(Q/2):null;
   const q2=Q!=null?Math.ceil((Q-q1)/2):null;
   const q3=Q!=null?(Q-q1-q2):null;
   const hs=(his||[]).slice(-22).filter(v=>isFinite(v)&&v>0);
-  const trail=hs.length?rd(Math.max.apply(null,hs)-2*atr):null;
-  const pct=v=>(v!=null&&E>0)?(v/E-1)*100:null;
-  const be=rd(E);
-  return { R0, breakeven:be, stop:rd(stop),
-    steps:[
-      { kind:'stop', name:'손절',   price:rd(stop),  pct:pct(rd(stop)),  qty:Q,  share:'전량',
-        note:'손절선 종가 이탈 시 전량 매도(−1R 확정) · 1R 익절 후에는 손절선을 본전('+fmtPx(be,false).replace('원','')+'선)으로 상향' },
-      { kind:'tp',   name:'익절 1R', price:rd(E+R0),  pct:pct(rd(E+R0)),  qty:q1, share:'1/2',
-        note:'절반 매도 · 손절가를 본전으로 이동(이후 하방 리스크 제거)' },
-      { kind:'tp',   name:'익절 2R', price:rd(E+2*R0),pct:pct(rd(E+2*R0)),qty:q2, share:'1/4',
-        note:'잔여의 절반 매도' },
-      { kind:'trail',name:'트레일',  price:trail,     pct:pct(trail),     qty:q3, share:'나머지',
-        note:'2×ATR 샹들리에(최근 22봉 고점−2×ATR) 이탈 시 전량 · 매일 재계산' },
-    ] };
+  const trail=hs.length?rd(Math.max.apply(null,hs)-2*frame.atr):null;
+  const pl=(price,qty)=>(hasAvg&&price!=null&&qty!=null&&fx>0)?(price-avg)*qty*fx:null;
+  const steps=[
+    { kind:'stop', name:'손절', price:stop, pct:pct(stop), qty:Q, share:'전량', pl:pl(stop,Q),
+      note:'시그널 손절선(최근 10일 저점 vs 현재가−1×ATR, 상한 2×ATR) 종가 이탈 시 전량'
+        +(hasAvg?(stop>=avg?' · 평단 위 — 이익 보호선':' · 평단 아래 — 손실 확정 구간'):'') },
+  ];
+  if(hasAvg&&avg>frame.rawStop&&avg<entry+R0)
+    steps.push({ kind:'be', name:'본전', price:rd(avg), pct:0, qty:null, share:'—', pl:0,
+      note:'익절 1R 도달 후 손절선을 이 가격(평단)으로 상향 — 이후 하방 리스크 제거' });
+  steps.push(
+    { kind:'tp', name:'익절 1R', price:t1, pct:pct(t1), qty:q1, share:'1/2', pl:pl(t1,q1),
+      note:'시그널 1R 목표(현재가+리스크) — 절반 매도 · 손절가를 본전으로 이동' },
+    { kind:'tp', name:'익절 2R', price:t2, pct:pct(t2), qty:q2, share:'1/4', pl:pl(t2,q2),
+      note:'시그널 목표가(손익비 1:2) — 잔여의 절반 매도' },
+    { kind:'trail', name:'트레일', price:trail, pct:pct(trail), qty:q3, share:'나머지', pl:pl(trail,q3),
+      note:'2×ATR 샹들리에(최근 22봉 고점−2×ATR) 이탈 시 전량 · 매일 재계산' });
+  return { R0, stop, t1, t2, baseName, steps };
 }
 
 /* 우선순위 예산 배분 — items는 우선순위 정렬 상태. 시드와 오픈리스크(6%) 예산을 위에서부터 소진:
@@ -705,6 +720,7 @@ let SEED=parseInt(String(PLN('seed')||'').replace(/\D/g,''),10)||0;
 let PRESET=['con','std','agg'].includes(PLN('preset'))?PLN('preset'):'std';
 let POS={};  try{ POS=JSON.parse(PLN('pos')||'{}')||{}; }catch(e){ POS={}; }
 let UIST={collapsed:{}}; try{ const u=JSON.parse(PLN('ui')||'{}'); if(u&&u.collapsed) UIST=u; }catch(e){}
+if(!UIST.sec) UIST.sec={};   // 매수/매도 계획 섹션 접힘 상태: `${key}|buy` / `${key}|sell`
 let PRIO=[]; try{ const p=JSON.parse(PLN('prio')||'[]'); if(Array.isArray(p)) PRIO=p; }catch(e){}
 const savePos=()=>PLN('pos',JSON.stringify(POS));
 const saveUi=()=>PLN('ui',JSON.stringify(UIST));
@@ -836,12 +852,12 @@ function computeOne(u){
     ladder=buyLadder(style,frame,cands);
     if(fx) sumAlloc=fillQty(ladder,alloc.A,fx);
     const la=ladderAvg(ladder);
-    if(la) sell=sellLadder(la.E,frame.rawStop,frame.atr,ch.his,frame.rd,la.Q);
+    if(la) sell=sellLadder(frame,ch.his,frame.rd,la.Q,null,fx||1);
   }
-  // 보유 포지션
+  // 보유 포지션 — 매도 구간은 시그널 기술 레벨 + 평단 반영(% 기준·손익액·본전 라인)
   const pos=POS[posKey(u)];
   const pv=(pos&&fx)?positionView(pos,frame,price,fx,alloc.A):null;
-  const sellHeld=(pos&&pos.avg>0&&pos.qty>0)?sellLadder(pos.avg,Math.min(frame.rawStop,pos.avg*0.99),frame.atr,ch.his,frame.rd,pos.qty):null;
+  const sellHeld=(pos&&pos.avg>0&&pos.qty>0)?sellLadder(frame,ch.his,frame.rd,pos.qty,pos.avg,fx||1):null;
   return {u,ch,us,fx,price,j,frame,bt,alloc,style,ladder,sumAlloc,sell,pos,pv,sellHeld,bull};
 }
 
@@ -901,31 +917,40 @@ function cardHTML(x,i){
     h+='<div style="margin-top:3px"><span class="chip">백테스트 표본 부족('+x.bt.buy.n+'회) — Kelly 캡 미적용</span></div>';
   else if(a.kelly&&x.style!=='wait')
     h+='<div style="margin-top:3px"><span class="chip b">백테스트 적중 '+a.kelly.win.toFixed(0)+'% · '+a.kelly.n+'회 → Kelly 캡 '+(a.kelly.cap>0?fmtWon(a.kelly.cap):'0원 (승률 열위)')+'</span></div>';
-  // 매수 래더
+  // 매수 래더 (접기/펴기)
   if(x.ladder&&x.ladder.length){
-    h+='<div class="lsec">▼ 분할 매수 계획</div><table class="lad"><tr><th>차수</th><th>가격</th><th>근거</th><th class="num">비중</th><th class="num">금액</th><th class="num">주수</th></tr>';
-    for(const t of x.ladder){
-      h+='<tr><td>'+t.n+'차</td><td class="num mono">'+priceBoth(t.price,x.us)+'</td><td>'+esc(t.why)+'</td>'
-        +'<td class="num">'+t.w+'%</td>'+moneyCell(t.amt,x.us)
-        +'<td class="num mono">'+(t.qty!=null?t.qty.toLocaleString()+'주':'—')+'</td></tr>';
+    const bCol=!!(UIST.sec&&UIST.sec[k+'|buy']);
+    h+='<div class="lsec sechead" data-sec="buy" data-seck="'+esc(k)+'">'+(bCol?'▸':'▾')+' 분할 매수 계획<span class="secbtn">'+(bCol?'펴기':'접기')+'</span></div>';
+    if(!bCol){
+      h+='<table class="lad"><tr><th>차수</th><th>가격</th><th>근거</th><th class="num">비중</th><th class="num">금액</th><th class="num">주수</th></tr>';
+      for(const t of x.ladder){
+        h+='<tr><td>'+t.n+'차</td><td class="num mono">'+priceBoth(t.price,x.us)+'</td><td>'+esc(t.why)+'</td>'
+          +'<td class="num">'+t.w+'%</td>'+moneyCell(t.amt,x.us)
+          +'<td class="num mono">'+(t.qty!=null?t.qty.toLocaleString()+'주':'—')+'</td></tr>';
+      }
+      h+='</table>';
+      if(SEED>0&&x.sumAlloc>0) h+='<div class="boxnote" style="margin-top:3px">실배정 합계 '+fmtWon(x.sumAlloc)+' (정수 주 절사 후 잔여분은 현금 유지)</div>';
     }
-    h+='</table>';
-    if(SEED>0&&x.sumAlloc>0) h+='<div class="boxnote" style="margin-top:3px">실배정 합계 '+fmtWon(x.sumAlloc)+' (정수 주 절사 후 잔여분은 현금 유지)</div>';
   }
-  // 매도 래더 (신규 계획 기준)
+  // 매도 래더 — 시그널 기술 레벨 기준, 보유 평단 입력 시 평단 대비 %·손익 반영 (접기/펴기)
   const sellBase=x.pv&&x.sellHeld?x.sellHeld:x.sell;
-  const sellTitle=x.pv&&x.sellHeld?'▲ 분할 매도 계획 (보유 평단 기준)':'▲ 분할 매도 계획 (계획 평단 기준)';
+  const sellTitle=x.pv&&x.sellHeld?'분할 매도 계획 (시그널 레벨 · 평단 반영)':'분할 매도 계획 (시그널 레벨 기준)';
   if(sellBase){
-    h+='<div class="lsec">'+sellTitle+' — 익절·손절 구간</div><table class="lad">'
-      +'<tr><th>구간</th><th>가격</th><th class="num">평단 대비</th><th class="num">수량</th><th>액션</th></tr>';
-    for(const s of sellBase.steps){
-      const nm=s.kind==='stop'?'<b class="down">'+s.name+'</b>':(s.kind==='tp'?'<b class="up">'+s.name+'</b>':s.name);
-      h+='<tr'+(s.kind==='stop'?' style="background:rgba(59,130,246,.08)"':'')+'><td>'+nm+'</td>'
-        +'<td class="num mono">'+(s.price!=null?priceBoth(s.price,x.us):'—')+'</td>'
-        +'<td class="num mono '+(s.pct!=null?(s.pct>=0?'up':'down'):'')+'">'+(s.pct!=null?(s.pct>0?'+':'')+s.pct.toFixed(1)+'%':'—')+'</td>'
-        +'<td class="num mono">'+(s.qty!=null?s.qty.toLocaleString()+'주':s.share)+'</td><td class="boxnote">'+esc(s.note)+'</td></tr>';
+    const sCol=!!(UIST.sec&&UIST.sec[k+'|sell']);
+    h+='<div class="lsec sechead" data-sec="sell" data-seck="'+esc(k)+'">'+(sCol?'▸':'▾')+' '+sellTitle+' — 익절·손절 구간<span class="secbtn">'+(sCol?'펴기':'접기')+'</span></div>';
+    if(!sCol){
+      h+='<table class="lad"><tr><th>구간</th><th>가격</th><th class="num">'+esc(sellBase.baseName)+' 대비</th><th class="num">수량</th><th>액션</th></tr>';
+      for(const s of sellBase.steps){
+        const nm=s.kind==='stop'?'<b class="down">'+s.name+'</b>':(s.kind==='tp'?'<b class="up">'+s.name+'</b>':(s.kind==='be'?'<b style="color:var(--gold)">'+s.name+'</b>':s.name));
+        const bg=s.kind==='stop'?' style="background:rgba(59,130,246,.08)"':(s.kind==='be'?' style="background:rgba(244,176,0,.06)"':'');
+        h+='<tr'+bg+'><td>'+nm+'</td>'
+          +'<td class="num mono">'+(s.price!=null?priceBoth(s.price,x.us):'—')+'</td>'
+          +'<td class="num mono '+(s.pct!=null?(s.pct>=0?'up':'down'):'')+'">'+(s.pct!=null?(s.pct>0?'+':'')+s.pct.toFixed(1)+'%':'—')
+          +(s.pl!=null?'<br><small class="'+cls(s.pl)+'">'+(s.pl>0?'+':'')+fmtWon(s.pl)+'</small>':'')+'</td>'
+          +'<td class="num mono">'+(s.qty!=null?s.qty.toLocaleString()+'주':s.share)+'</td><td class="boxnote">'+esc(s.note)+'</td></tr>';
+      }
+      h+='</table>';
     }
-    h+='</table>';
   } else if(x.style==='wait'&&!x.pos){
     h+='<div class="boxnote" style="margin-top:6px">현재 매도 계열 판정 — 신규 진입을 계획하지 않습니다. 보유 중이라면 아래에 평단·수량을 입력하면 보유분 매도 계획을 계산합니다.</div>';
   }
@@ -1030,7 +1055,7 @@ function recompute(){
       if(x.ladder&&x.fx){
         x.sumAlloc=fillQty(x.ladder,a.A,x.fx);
         const la=ladderAvg(x.ladder);
-        if(la) x.sell=sellLadder(la.E,x.frame.rawStop,x.frame.atr,x.ch.his,x.frame.rd,la.Q);
+        if(la) x.sell=sellLadder(x.frame,x.ch.his,x.frame.rd,la.Q,null,x.fx||1);
       }
       if(x.pv) x.pv.remain=Math.max(0,a.A-x.pv.cost);
     }
@@ -1087,6 +1112,8 @@ document.getElementById('cards').addEventListener('click',e=>{
   const up=e.target.closest('[data-up]'), dn=e.target.closest('[data-dn]');
   if(up){ movePrio(up.dataset.up,-1); return; }
   if(dn){ movePrio(dn.dataset.dn,+1); return; }
+  const sh=e.target.closest('[data-sec]');
+  if(sh){ const key=sh.dataset.seck+'|'+sh.dataset.sec; UIST.sec[key]=!UIST.sec[key]; saveUi(); render(); return; }
   const cp=e.target.closest('[data-clearpos]');
   if(cp){ delete POS[cp.dataset.clearpos]; delete DRAFT[cp.dataset.clearpos]; savePos(); recompute(); return; }
   if(e.target.closest('input,button,a')) return;
