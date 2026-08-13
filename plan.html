@@ -727,26 +727,54 @@ const savePos=()=>PLN('pos',JSON.stringify(POS));
 const saveUi=()=>PLN('ui',JSON.stringify(UIST));
 const savePrio=()=>PLN('prio',JSON.stringify(PRIO));
 
-/* ── 관심종목 합집합: 시그널 ⭐ 관심(alphadesk.sig.watchlist) ∪ 대시보드 관심(alphadesk.wl2) ── */
+/*WLSYNC-BEGIN*/
+/* 관심종목 동기화 — 대시보드(alphadesk.wl2) · 매매 시그널(alphadesk.sig.watchlist) · 분할 플래너가
+   항상 같은 집합을 보도록, 어느 페이지에서 바꾸든 두 저장 키를 함께 기록한다.
+   식별키: 국내 6자리 코드는 코드만(코스피·코스닥·ETF 공통), 미국은 대문자 티커(세부 시장 구분 무시).
+   시그널 항목의 메타(rc·lev·cap·세부 mkt)는 보존하고, 새로 넘어온 항목은 kospi/kosdaq/us 로 변환한다. */
+const WLS_US=['sp500','nasdaq','russell2000','usetf','us'];
+const wlsKeyOfSig=w=>/^\d{6}$/.test(String(w.code))?String(w.code):('US|'+String(w.code).toUpperCase());
+const wlsKeyOfSym=sym=>{ const m=String(sym).match(/^(\d{6})\.(KS|KQ)$/); return m?m[1]:('US|'+String(sym).toUpperCase()); };
+const wlsSymOfSig=w=>WLS_US.indexOf(w.mkt)>=0?String(w.code):(String(w.code)+(w.mkt==='kosdaq'?'.KQ':'.KS'));
+const wlsSigOfSym=(sym,name)=>{ const m=String(sym).match(/^(\d{6})\.(KS|KQ)$/);
+  return m?{code:m[1],mkt:m[2]==='KQ'?'kosdaq':'kospi',name:name||m[1]}:{code:String(sym),mkt:'us',name:name||String(sym)}; };
+function wlsRead(k){ try{ const a=JSON.parse(localStorage.getItem(k)||'null'); return Array.isArray(a)?a:null; }catch(e){ return null; } }
+/* 시그널 형식 배열을 정본으로 두 키를 함께 기록(식별키 기준 중복 제거). 값이 바뀐 키만 실제로 쓴다. */
+function wlsWriteBoth(sigArr){
+  const sig=[], seen=new Set();
+  for(const w of (sigArr||[])){ if(!w||!w.code||!w.mkt) continue; const k=wlsKeyOfSig(w); if(seen.has(k)) continue; seen.add(k); sig.push(w); }
+  const wl=sig.map(w=>({sym:wlsSymOfSig(w),name:w.name||String(w.code),mk:WLS_US.indexOf(w.mkt)>=0?'us':'kr'}));
+  const js=JSON.stringify(sig), jw=JSON.stringify(wl);
+  let changed=false;
+  try{ if(localStorage.getItem('alphadesk.sig.watchlist')!==js){ localStorage.setItem('alphadesk.sig.watchlist',js); changed=true; } }catch(e){}
+  try{ if(localStorage.getItem('alphadesk.wl2')!==jw){ localStorage.setItem('alphadesk.wl2',jw); changed=true; } }catch(e){}
+  return {sig,wl,changed};
+}
+/* 두 키 합집합(순서는 대시보드 우선, 메타는 시그널 보존) 후 함께 기록.
+   둘 다 저장본이 없으면 null(각 페이지 기본 목록 시드 유지). */
+function wlsMergeAll(){
+  const sig=wlsRead('alphadesk.sig.watchlist'), wl=wlsRead('alphadesk.wl2');
+  if(!sig&&!wl) return null;
+  const byKey={};
+  for(const w of (sig||[])) if(w&&w.code&&w.mkt) byKey[wlsKeyOfSig(w)]=w;
+  const all=[];
+  for(const x of (wl||[])){ if(x&&x.sym) all.push(byKey[wlsKeyOfSym(x.sym)]||wlsSigOfSym(x.sym,x.name)); }
+  for(const w of (sig||[])){ if(w&&w.code&&w.mkt) all.push(w); }
+  return wlsWriteBoth(all);
+}
+/* 대시보드(wl2) 형식 배열을 정본으로 동기화 — 기존 시그널 메타는 유지, 빠진 종목은 양쪽에서 제거 */
+function wlsWriteFromWL(wlArr){
+  const byKey={};
+  for(const w of (wlsRead('alphadesk.sig.watchlist')||[])) if(w&&w.code&&w.mkt) byKey[wlsKeyOfSig(w)]=w;
+  const sig=[];
+  for(const x of (wlArr||[])){ if(!x||!x.sym) continue; const k=wlsKeyOfSym(x.sym); sig.push(byKey[k]||wlsSigOfSym(x.sym,x.name)); }
+  return wlsWriteBoth(sig);
+}
+/*WLSYNC-END*/
+/* ── 관심종목 — 동기화 모듈이 두 저장 키를 같은 집합으로 유지(시그널 ⭐관심 = 대시보드 관심) ── */
 function loadPlanList(){
-  const out=[], seen=new Set();
-  const push=(code,mkt,name,lev,rc)=>{
-    const k=/^\d{6}$/.test(code)?code:code+'|'+mkt;   // 국내 6자리는 코드만으로 중복 제거
-    if(seen.has(k)) return; seen.add(k);
-    out.push({code,mkt,name:name||code,lev,rc});
-  };
-  try{ const sig=JSON.parse(localStorage.getItem('alphadesk.sig.watchlist')||'[]');
-    if(Array.isArray(sig)) for(const w of sig) if(w&&w.code&&w.mkt) push(w.code,w.mkt,w.name,w.lev,w.rc);
-  }catch(e){}
-  try{ const wl=JSON.parse(localStorage.getItem('alphadesk.wl2')||'[]');
-    if(Array.isArray(wl)) for(const x of wl){
-      if(!x||!x.sym) continue;
-      const m=String(x.sym).match(/^(\d{6})\.(KS|KQ)$/);
-      if(m) push(m[1], m[2]==='KQ'?'kosdaq':'kospi', x.name);
-      else push(String(x.sym),'us',x.name||String(x.sym));
-    }
-  }catch(e){}
-  return out;
+  const m=wlsMergeAll();
+  return (m?m.sig:[]).map(w=>({code:String(w.code),mkt:w.mkt,name:w.name||String(w.code),lev:w.lev,rc:w.rc}));
 }
 const posKey=u=>u.code+'|'+u.mkt;
 /* 저장된 우선순위(alphadesk.plan.prio) 순서로 정렬 — 미등록 종목은 뒤에 원래 순서대로 */
@@ -1154,6 +1182,21 @@ document.getElementById('cards').addEventListener('click',e=>{
     recompute();
   },60*1000);
 })();
+/* 다른 탭(대시보드·매매 시그널)에서 관심종목이 바뀌면 목록·계산 즉시 갱신 */
+let wlsEvtTimer=null;
+window.addEventListener('storage',e=>{
+  if(!e || (e.key!=='alphadesk.wl2'&&e.key!=='alphadesk.sig.watchlist')) return;
+  clearTimeout(wlsEvtTimer);
+  wlsEvtTimer=setTimeout(async()=>{
+    const nl=sortByPrio(loadPlanList());
+    if(nl.map(posKey).join('§')===LIST.map(posKey).join('§')) return;
+    LIST=nl; PRIO=LIST.map(posKey); savePrio();
+    if(!LIST.length){ render(); return; }
+    await Promise.all([loadRegimes(LIST), loadQuotes(LIST)]);
+    await pool(LIST,4,fetchDaily);
+    recompute();
+  },250);
+});
 
 /* ── 테마 · 시계 ── */
 function setThemeClass(mode){
