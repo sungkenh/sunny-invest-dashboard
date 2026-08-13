@@ -1,5 +1,5 @@
 {
- "_updated": "2026-08-13T01:35:56",
+ "_updated": "2026-08-13T07:32:43",
  "source": "snapshot",
  "mkt": "russell2000",
  "n": 500,
@@ -212,7 +212,7 @@
    "mk": "NSQ",
    "price": 213.97,
    "pct": 2.69,
-   "cap": 9280047028.167725,
+   "cap": 9280264098.944092,
    "sector": "금융",
    "ind": "Credit Services"
   },
@@ -481,6 +481,17 @@
    "ind": "Scientific & Technical Instruments"
   },
   {
+   "code": "QBTS",
+   "rc": "QBTS.O",
+   "name": "디 웨이브 퀀텀",
+   "mk": "NSQ",
+   "price": 20.74,
+   "pct": 2.52,
+   "cap": 7724404125.175264,
+   "sector": "기술",
+   "ind": "Computer Hardware"
+  },
+  {
    "code": "SM",
    "rc": "SM",
    "name": "SM 에너지",
@@ -580,6 +591,17 @@
    "ind": "Software - Application"
   },
   {
+   "code": "SLAB",
+   "rc": "SLAB.O",
+   "name": "실리콘 래보라토리스",
+   "mk": "NSQ",
+   "price": 218.83,
+   "pct": 0.05,
+   "cap": 7301648370.726364,
+   "sector": "기술",
+   "ind": "Semiconductors"
+  },
+  {
    "code": "PLXS",
    "rc": "PLXS.O",
    "name": "플렉서스",
@@ -600,17 +622,6 @@
    "cap": 7225799276.086548,
    "sector": "산업재",
    "ind": "Specialty Industrial Machinery"
-  },
-  {
-   "code": "SLAB",
-   "rc": "SLAB.O",
-   "name": "실리콘 래보라토리스",
-   "mk": "NSQ",
-   "price": 218.83,
-   "pct": 0.05,
-   "cap": 7217412387.481522,
-   "sector": "기술",
-   "ind": "Semiconductors"
   },
   {
    "code": "ZETA",
@@ -921,6 +932,17 @@
    "ind": "Gambling"
   },
   {
+   "code": "ERAS",
+   "rc": "ERAS.O",
+   "name": "이래스카",
+   "mk": "NSQ",
+   "price": 18.58,
+   "pct": 1.47,
+   "cap": 6498578583.615274,
+   "sector": "헬스케어",
+   "ind": "Biotechnology"
+  },
+  {
    "code": "ENVA",
    "rc": "ENVA.K",
    "name": "이노바 인터내셔널",
@@ -952,17 +974,6 @@
    "cap": 6457410971.036789,
    "sector": "경기소비재",
    "ind": "Residential Construction"
-  },
-  {
-   "code": "ERAS",
-   "rc": "ERAS.O",
-   "name": "이래스카",
-   "mk": "NSQ",
-   "price": 18.58,
-   "pct": 1.47,
-   "cap": 6449627046.936281,
-   "sector": "헬스케어",
-   "ind": "Biotechnology"
   },
   {
    "code": "MATX",
@@ -1196,17 +1207,6 @@
    "ind": "Diagnostics & Research"
   },
   {
-   "code": "QBTS",
-   "rc": "QBTS.O",
-   "name": "디 웨이브 퀀텀",
-   "mk": "NSQ",
-   "price": 20.74,
-   "pct": 2.52,
-   "cap": 6037250972.951057,
-   "sector": "기술",
-   "ind": "Computer Hardware"
-  },
-  {
    "code": "MIRM",
    "rc": "MIRM.O",
    "name": "미럼 파마슈티컬스",
@@ -1383,6 +1383,17 @@
    "ind": "Waste Management"
   },
   {
+   "code": "DFTX",
+   "rc": "DFTX.O",
+   "name": "데피니움 테라퓨틱스",
+   "mk": "NSQ",
+   "price": 42.79,
+   "pct": 4.6,
+   "cap": 5749561913.516617,
+   "sector": "헬스케어",
+   "ind": "Biotechnology"
+  },
+  {
    "code": "POR",
    "rc": "POR",
    "name": "포틀랜드 제너럴 일렉트릭",
@@ -1414,17 +1425,6 @@
    "cap": 5680780170.54528,
    "sector": "금융",
    "ind": "Banks - Regional"
-  },
-  {
-   "code": "DFTX",
-   "rc": "DFTX.O",
-   "name": "데피니움 테라퓨틱스",
-   "mk": "NSQ",
-   "price": 42.79,
-   "pct": 4.6,
-   "cap": 5680083960.190079,
-   "sector": "헬스케어",
-   "ind": "Biotechnology"
   },
   {
    "code": "ACMR",
@@ -2406,6 +2406,28 @@
    "ind": "Specialty Chemicals"
   },
   {
+   "code": "FLY",
+   "rc": "FLY.O",
+   "name": "파이어플라이 에어로스페이스",
+   "mk": "NSQ",
+   "price": 26.54,
+   "pct": 0.68,
+   "cap": 4442919431.56353,
+   "sector": "산업재",
+   "ind": "Aerospace & Defense"
+  },
+  {
+   "code": "CECO",
+   "rc": "CECO.O",
+   "name": "CECO 인바이런먼털",
+   "mk": "NSQ",
+   "price": 75.83,
+   "pct": 2.51,
+   "cap": 4441350316.144562,
+   "sector": "산업재",
+   "ind": "Pollution & Treatment Controls"
+  },
+  {
    "code": "LIVN",
    "rc": "LIVN.O",
    "name": "리바노바",
@@ -2415,17 +2437,6 @@
    "cap": 4437531132.5824585,
    "sector": "헬스케어",
    "ind": "Medical Devices"
-  },
-  {
-   "code": "CECO",
-   "rc": "CECO.O",
-   "name": "CECO 인바이런먼털",
-   "mk": "NSQ",
-   "price": 75.83,
-   "pct": 2.51,
-   "cap": 4431872703.365707,
-   "sector": "산업재",
-   "ind": "Pollution & Treatment Controls"
   },
   {
    "code": "SKT",
@@ -2525,17 +2536,6 @@
    "cap": 4359403485.545097,
    "sector": "금융",
    "ind": "Banks - Regional"
-  },
-  {
-   "code": "FLY",
-   "rc": "FLY.O",
-   "name": "파이어플라이 에어로스페이스",
-   "mk": "NSQ",
-   "price": 26.54,
-   "pct": 0.68,
-   "cap": 4358802809.541832,
-   "sector": "산업재",
-   "ind": "Aerospace & Defense"
   },
   {
    "code": "NWE",
