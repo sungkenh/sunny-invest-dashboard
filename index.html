@@ -1306,8 +1306,13 @@ async function memoCloudLoad(){
 async function watchCloudLoad(){
   const v=await cloudGet('watchlist');
   if(Array.isArray(v) && v.length){
-    WL=v.filter(x=>x&&x.sym).map(normWL); SEL=WL.length?WL[0].sym:null; WL_HAS_STORAGE=true;
-    try{ localStorage.setItem('alphadesk.wl2', JSON.stringify(WL.map(x=>({sym:x.sym,name:x.name,mk:x.mk})))); }catch(e){}
+    // 클라우드 값 ∪ 로컬(매매 시그널 쪽에서 추가한 종목 포함) — 병합 결과를 양쪽 키에 기록하고, 서버와 다르면 서버에도 반영
+    const cur=wlsRead('alphadesk.wl2')||[];
+    const seen=new Set(), merged=[];
+    for(const x of v.concat(cur)){ if(!x||!x.sym) continue; const k=wlsKeyOfSym(x.sym); if(seen.has(k)) continue; seen.add(k); merged.push({sym:x.sym,name:x.name,mk:x.mk}); }
+    const r=wlsWriteFromWL(merged);
+    WL=r.wl.map(normWL); SEL=WL.length?WL[0].sym:null; WL_HAS_STORAGE=true;
+    if(JSON.stringify(r.wl)!==JSON.stringify(v)) cloudPut('watchlist', r.wl);
     renderWL(); renderDeep(); loadWatch(); if(typeof rsMaybeReload==='function') rsMaybeReload();
     return true;
   }
@@ -1322,10 +1327,55 @@ async function cloudInit(){
   }
 }
 
+/*WLSYNC-BEGIN*/
+/* 관심종목 동기화 — 대시보드(alphadesk.wl2) · 매매 시그널(alphadesk.sig.watchlist) · 분할 플래너가
+   항상 같은 집합을 보도록, 어느 페이지에서 바꾸든 두 저장 키를 함께 기록한다.
+   식별키: 국내 6자리 코드는 코드만(코스피·코스닥·ETF 공통), 미국은 대문자 티커(세부 시장 구분 무시).
+   시그널 항목의 메타(rc·lev·cap·세부 mkt)는 보존하고, 새로 넘어온 항목은 kospi/kosdaq/us 로 변환한다. */
+const WLS_US=['sp500','nasdaq','russell2000','usetf','us'];
+const wlsKeyOfSig=w=>/^\d{6}$/.test(String(w.code))?String(w.code):('US|'+String(w.code).toUpperCase());
+const wlsKeyOfSym=sym=>{ const m=String(sym).match(/^(\d{6})\.(KS|KQ)$/); return m?m[1]:('US|'+String(sym).toUpperCase()); };
+const wlsSymOfSig=w=>WLS_US.indexOf(w.mkt)>=0?String(w.code):(String(w.code)+(w.mkt==='kosdaq'?'.KQ':'.KS'));
+const wlsSigOfSym=(sym,name)=>{ const m=String(sym).match(/^(\d{6})\.(KS|KQ)$/);
+  return m?{code:m[1],mkt:m[2]==='KQ'?'kosdaq':'kospi',name:name||m[1]}:{code:String(sym),mkt:'us',name:name||String(sym)}; };
+function wlsRead(k){ try{ const a=JSON.parse(localStorage.getItem(k)||'null'); return Array.isArray(a)?a:null; }catch(e){ return null; } }
+/* 시그널 형식 배열을 정본으로 두 키를 함께 기록(식별키 기준 중복 제거). 값이 바뀐 키만 실제로 쓴다. */
+function wlsWriteBoth(sigArr){
+  const sig=[], seen=new Set();
+  for(const w of (sigArr||[])){ if(!w||!w.code||!w.mkt) continue; const k=wlsKeyOfSig(w); if(seen.has(k)) continue; seen.add(k); sig.push(w); }
+  const wl=sig.map(w=>({sym:wlsSymOfSig(w),name:w.name||String(w.code),mk:WLS_US.indexOf(w.mkt)>=0?'us':'kr'}));
+  const js=JSON.stringify(sig), jw=JSON.stringify(wl);
+  let changed=false;
+  try{ if(localStorage.getItem('alphadesk.sig.watchlist')!==js){ localStorage.setItem('alphadesk.sig.watchlist',js); changed=true; } }catch(e){}
+  try{ if(localStorage.getItem('alphadesk.wl2')!==jw){ localStorage.setItem('alphadesk.wl2',jw); changed=true; } }catch(e){}
+  return {sig,wl,changed};
+}
+/* 두 키 합집합(순서는 대시보드 우선, 메타는 시그널 보존) 후 함께 기록.
+   둘 다 저장본이 없으면 null(각 페이지 기본 목록 시드 유지). */
+function wlsMergeAll(){
+  const sig=wlsRead('alphadesk.sig.watchlist'), wl=wlsRead('alphadesk.wl2');
+  if(!sig&&!wl) return null;
+  const byKey={};
+  for(const w of (sig||[])) if(w&&w.code&&w.mkt) byKey[wlsKeyOfSig(w)]=w;
+  const all=[];
+  for(const x of (wl||[])){ if(x&&x.sym) all.push(byKey[wlsKeyOfSym(x.sym)]||wlsSigOfSym(x.sym,x.name)); }
+  for(const w of (sig||[])){ if(w&&w.code&&w.mkt) all.push(w); }
+  return wlsWriteBoth(all);
+}
+/* 대시보드(wl2) 형식 배열을 정본으로 동기화 — 기존 시그널 메타는 유지, 빠진 종목은 양쪽에서 제거 */
+function wlsWriteFromWL(wlArr){
+  const byKey={};
+  for(const w of (wlsRead('alphadesk.sig.watchlist')||[])) if(w&&w.code&&w.mkt) byKey[wlsKeyOfSig(w)]=w;
+  const sig=[];
+  for(const x of (wlArr||[])){ if(!x||!x.sym) continue; const k=wlsKeyOfSym(x.sym); sig.push(byKey[k]||wlsSigOfSym(x.sym,x.name)); }
+  return wlsWriteBoth(sig);
+}
+/*WLSYNC-END*/
 let WL = JSON.parse(localStorage.getItem('alphadesk.wl2')||'null') || DEFAULT_WL.slice();
 let WL_HAS_STORAGE = !!localStorage.getItem('alphadesk.wl2');
+{ const _m=wlsMergeAll(); if(_m){ WL=_m.wl.map(normWL); WL_HAS_STORAGE=true; } }   // 시그널 ⭐관심과 합집합 동기화(첫 진입 마이그레이션 포함)
 let SEL = WL.length?WL[0].sym:null;
-const saveWL = ()=>{ const v=WL.map(x=>({sym:x.sym,name:x.name,mk:x.mk})); try{ localStorage.setItem('alphadesk.wl2', JSON.stringify(v)); }catch(e){} cloudPut('watchlist', v); };   // localStorage + 클라우드(KV) 동기화
+const saveWL = ()=>{ const v=wlsWriteFromWL(WL.map(x=>({sym:x.sym,name:x.name,mk:x.mk}))).wl; cloudPut('watchlist', v); };   // 양쪽 저장 키 + 클라우드(KV) 동기화
 function normWL(x){ return {sym:x.sym, name:x.name||x.sym, mk:x.mk||(/\.(KS|KQ)$/.test(x.sym)?'kr':'us'), px:null, pct:null}; }
 function setWL(arr){ WL=arr.filter(x=>x&&x.sym).map(normWL); SEL=WL.length?WL[0].sym:null; saveWL(); renderWL(); renderDeep(); loadWatch(); rsMaybeReload(); }
 /* 저장본이 없을 때만 배포 파일(data/watchlist.json)을 기본값으로 시드 → 모든 기기·재배포에서 동일 */
@@ -1351,6 +1401,18 @@ function importWLFile(file){
     catch(e){ alert('불러오기 실패: 올바른 watchlist.json 파일이 아닙니다.'); } };
   rd.readAsText(file);
 }
+/* 다른 탭(매매 시그널·분할 플래너)에서 관심종목이 바뀌면 즉시 반영 — 읽기만 하고 다시 쓰지 않는다(루프 방지) */
+let wlsEvtTimer=null;
+window.addEventListener('storage',e=>{
+  if(!e || (e.key!=='alphadesk.wl2'&&e.key!=='alphadesk.sig.watchlist')) return;
+  clearTimeout(wlsEvtTimer);
+  wlsEvtTimer=setTimeout(()=>{
+    const wl=wlsRead('alphadesk.wl2'); if(!wl) return;
+    WL=wl.filter(x=>x&&x.sym).map(normWL); WL_HAS_STORAGE=true;
+    if(!WL.some(x=>x.sym===SEL)) SEL=WL.length?WL[0].sym:null;
+    renderWL(); renderDeep(); loadWatch(); if(typeof rsMaybeReload==='function') rsMaybeReload();
+  },250);
+});
 
 function renderWL(){
   document.getElementById('wl-count').textContent = WL.length;
@@ -2751,18 +2813,9 @@ function renderWLDiag(){
   el.style.display='';
   const go=document.getElementById('wl-diag-go'); if(go) go.onclick=openSignalsWatch;
 }
-/* 대시보드 관심종목 → 매매 시그널 ⭐관심 목록으로 합치고 이동 */
+/* 대시보드 관심종목 → 매매 시그널 ⭐관심 — 저장 키는 항상 동기화되어 있으므로 watch 탭만 지정하고 이동 */
 function openSignalsWatch(){
-  try{
-    const cur=JSON.parse(localStorage.getItem('alphadesk.sig.watchlist')||'[]');
-    for(const x of WL){
-      const m=String(x.sym).match(/^(\d{6})\.(KS|KQ)$/);
-      const c=m?{code:m[1],mkt:m[2]==='KQ'?'kosdaq':'kospi',name:x.name}:{code:String(x.sym),mkt:'us',name:x.name||x.sym};
-      if(!cur.some(w=>w.code===c.code&&w.mkt===c.mkt)) cur.push(c);
-    }
-    localStorage.setItem('alphadesk.sig.watchlist', JSON.stringify(cur));
-    localStorage.setItem('alphadesk.sig.mkt','watch');
-  }catch(e){}
+  try{ wlsMergeAll(); localStorage.setItem('alphadesk.sig.mkt','watch'); }catch(e){}
   location.href='signals.html';
 }
 
