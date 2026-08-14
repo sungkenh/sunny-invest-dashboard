@@ -1,5 +1,5 @@
 {
- "_updated": "2026-08-14T01:39:21",
+ "_updated": "2026-08-14T07:30:28",
  "source": "snapshot",
  "mkt": "russell2000",
  "n": 500,
@@ -459,6 +459,17 @@
    "ind": "Scientific & Technical Instruments"
   },
   {
+   "code": "QBTS",
+   "rc": "QBTS.O",
+   "name": "디 웨이브 퀀텀",
+   "mk": "NSQ",
+   "price": 20.9,
+   "pct": 0.77,
+   "cap": 7783994457.625441,
+   "sector": "기술",
+   "ind": "Computer Hardware"
+  },
+  {
    "code": "SM",
    "rc": "SM",
    "name": "SM 에너지",
@@ -591,17 +602,6 @@
    "ind": "Capital Markets"
   },
   {
-   "code": "ENS",
-   "rc": "ENS",
-   "name": "에너시스",
-   "mk": "NYS",
-   "price": 197.38,
-   "pct": 5.71,
-   "cap": 7195710327.888428,
-   "sector": "산업재",
-   "ind": "Electrical Equipment & Parts"
-  },
-  {
    "code": "ORKA",
    "rc": "ORKA.O",
    "name": "오루카 테라퓨틱스",
@@ -611,6 +611,17 @@
    "cap": 7158592837.73037,
    "sector": "헬스케어",
    "ind": "Biotechnology"
+  },
+  {
+   "code": "ENS",
+   "rc": "ENS",
+   "name": "에너시스",
+   "mk": "NYS",
+   "price": 197.38,
+   "pct": 5.71,
+   "cap": 7118554089.219727,
+   "sector": "산업재",
+   "ind": "Electrical Equipment & Parts"
   },
   {
    "code": "ACA",
@@ -1172,17 +1183,6 @@
    "cap": 6072609074.656235,
    "sector": "헬스케어",
    "ind": "Drug Manufacturers - Specialty & Generic"
-  },
-  {
-   "code": "QBTS",
-   "rc": "QBTS.O",
-   "name": "디 웨이브 퀀텀",
-   "mk": "NSQ",
-   "price": 20.9,
-   "pct": 0.77,
-   "cap": 6037250972.951057,
-   "sector": "기술",
-   "ind": "Computer Hardware"
   },
   {
    "code": "MIRM",
@@ -4117,7 +4117,7 @@
    "mk": "NSQ",
    "price": 28.69,
    "pct": 2.06,
-   "cap": 3163937562.395954,
+   "cap": 3163386043.854046,
    "sector": "기술",
    "ind": "Software - Application"
   },
@@ -4249,7 +4249,7 @@
    "mk": "NYS",
    "price": 19.2,
    "pct": 2.56,
-   "cap": 3091999553.2650185,
+   "cap": 3095723124.61298,
    "sector": "에너지",
    "ind": "Oil & Gas Midstream"
   },
@@ -4634,7 +4634,7 @@
    "mk": "NSQ",
    "price": 107.25,
    "pct": 0.8,
-   "cap": 2862951356.4261856,
+   "cap": 2863084760.25,
    "sector": "경기소비재",
    "ind": "Auto Parts"
   },
