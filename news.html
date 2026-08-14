@@ -378,12 +378,7 @@ document.getElementById('brk-toggle').addEventListener('click',()=>{
   renderAll();
 });
 
-document.getElementById('disc').innerHTML =
-  '✅ <b>실시간</b> · 구글뉴스 RSS에서 헤드라인·출처·링크를 수집해 한국/미국·섹터별로 정리합니다(본문 복제 안 함, 클릭 시 원문으로 이동). ' +
-  '<b>분야 칩</b>은 고정 목록이 아니라 <b>당일 수집된 기사 수 기준으로 정렬·표시</b>되며(기사 없는 섹터는 숨김, 옆 숫자=건수), ' +
-  '<b>🔥 오늘의 키워드</b>는 그날 기사 제목에 자주 등장한 종목·테마를 자동 추출해 보여줍니다(클릭 시 해당 키워드로 필터). ' +
-  '<b>🚨 속보</b>는 제목의 [속보]·긴급·BREAKING 표시를 자동 감지해 상단 띠와 토글로 따로 모아 보여주고, <b>🔴 전쟁·지정학</b> 분야를 상시 노출합니다. ' +
-  '약 3분마다 갱신. 정보 제공 목적이며 투자 권유가 아닙니다. HOT은 발행 최신순으로 선별합니다.';
+document.getElementById('disc').textContent = '데이터: 구글뉴스 RSS. 약 3분마다 갱신합니다. 정보 제공 목적이며 투자 권유가 아닙니다.';
 
 /* /api/news(서버리스) + 트럼프 Truth Social(/api/trump, 한국어 번역) 병합 */
 let TRUMP_ITEMS=[];
