@@ -1,4 +1,4 @@
-// 종목 최신 뉴스 — /api/stocknews?q=<종목명>  (구글뉴스 RSS, 한국어)
+// 종목 최신 뉴스: /api/stocknews?q=<종목명>  (구글뉴스 RSS, 한국어)
 // 관심종목 심층패널의 '최신 뉴스' 탭. 종목명으로 구글뉴스를 검색해 최신순 상위 8건.
 // 방문 시점 수집. 쿼리별 모듈 캐시(10분) + 엣지 캐시.
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36';

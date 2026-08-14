@@ -1,8 +1,8 @@
-// 실시간 뉴스 — /api/news  (한국=네이버 검색 API, 미국=Yahoo Finance RSS, 전쟁·지정학=구글뉴스 · 직접 기사 URL)
+// 실시간 뉴스: /api/news  (한국=네이버 검색 API, 미국=Yahoo Finance RSS, 전쟁·지정학=구글뉴스 · 직접 기사 URL)
 // 방문 시점 수집. 모듈 캐시(10분) + 엣지 캐시. 미국 기사 번역 병렬. 네이버 키=context.env.NAVER_ID/NAVER_SECRET.
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36';
 
-// (mk, cat, query) — fetch_news.py와 동일. 섹터별로 수집 → 카테고리 칩은 당일 기사 수 기준 동적 표시.
+// (mk, cat, query): fetch_news.py와 동일. 섹터별로 수집 → 카테고리 칩은 당일 기사 수 기준 동적 표시.
 // 전쟁·지정학·속보를 맨 앞에 둬 분류·중복제거 우선권을 가짐.
 const QUERIES = [
   ['kr', '전쟁·지정학', '이스라엘 이란 OR 우크라이나 전쟁 OR 중동 정세 OR 휴전 OR 호르무즈 OR 북한 미사일'],
@@ -65,7 +65,7 @@ const MIN_GOOD = 20;                       // 이 미만이면 빈약한 스캔�
 function lgKey(event) {
   let origin = 'https://sunny-invest-dashboard.pages.dev';
   try { origin = new URL(event.rawUrl).origin; } catch (e) {}
-  return origin + '/__news_lastgood';      // 실경로 아님 — Cache API 키로만 사용
+  return origin + '/__news_lastgood';      // 실경로 아님: Cache API 키로만 사용
 }
 async function readLastGood(event) {
   try { const r = await caches.default.match(new Request(lgKey(event))); if (r) return await r.json(); } catch (e) {}
@@ -104,12 +104,12 @@ function reltime(mins) { if (mins < 1) return '방금'; if (mins < 60) return mi
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 function hasKo(s) { return /[가-힣]/.test(s || ''); }
-// gtx가 깨는 고유명사 보정(원문에 그 브랜드가 있을 때만 — 오작동 방지)
+// gtx가 깨는 고유명사 보정(원문에 그 브랜드가 있을 때만: 오작동 방지)
 function fixBrands(en, ko) {
   if (/\bAnthropic\b/i.test(en)) ko = ko.replace(/인류\s*주식/g, '앤트로픽');
   return ko;
 }
-// gtx 1회 — 여러 헤드라인을 줄바꿈으로 묶어 한 번에 번역(서브리퀘스트·레이트리밋 최소화).
+// gtx 1회: 여러 헤드라인을 줄바꿈으로 묶어 한 번에 번역(서브리퀘스트·레이트리밋 최소화).
 // 반환=번역된 줄 배열. HTTP오류·줄수 불일치·미번역(한국어 없음)이면 throw → 재시도.
 async function gtxLines(texts) {
   const joined = texts.map((t) => (t || '').replace(/\s*\n\s*/g, ' ')).join('\n');
@@ -122,7 +122,7 @@ async function gtxLines(texts) {
   if (lines.length !== texts.length || !hasKo(out)) throw new Error('mismatch');
   return lines.map((ko, i) => fixBrands(texts[i], ko.trim()));
 }
-// 헤드라인 묶음 번역 — 3회 재시도(백오프). 끝내 실패 시 원문(영어) 유지 + ok:false
+// 헤드라인 묶음 번역: 3회 재시도(백오프). 끝내 실패 시 원문(영어) 유지 + ok:false
 async function translateChunk(texts) {
   for (let i = 0; i < 3; i++) {
     try { return { kos: await gtxLines(texts), ok: true }; }
@@ -131,7 +131,7 @@ async function translateChunk(texts) {
   return { kos: texts.slice(), ok: false };
 }
 
-// 단일 쿼리 1회 — HTTP 오류·빈 RSS(차단·레이트리밋 징후)면 throw
+// 단일 쿼리 1회: HTTP 오류·빈 RSS(차단·레이트리밋 징후)면 throw
 async function fetchQueryOnce(mk, cat, q) {
   const [hl, gl, ceid] = mk === 'kr' ? ['ko', 'KR', 'KR:ko'] : ['en-US', 'US', 'US:en'];
   const url = 'https://news.google.com/rss/search?q=' + encodeURIComponent(q) + '&hl=' + hl + '&gl=' + gl + '&ceid=' + ceid;
@@ -161,7 +161,7 @@ async function fetchQuery(mk, cat, q) {
   }
   return [];
 }
-// 미국 — Yahoo Finance RSS(직접 기사 URL, CF서 동작). 종목군 기반 헤드라인. 출처는 링크 도메인.
+// 미국: Yahoo Finance RSS(직접 기사 URL, CF서 동작). 종목군 기반 헤드라인. 출처는 링크 도메인.
 async function fetchYahooOnce(cat, syms) {
   const url = 'https://feeds.finance.yahoo.com/rss/2.0/headline?s=' + encodeURIComponent(syms) + '&region=US&lang=en-US';
   const r = await fetch(url, { headers: { 'User-Agent': UA } });
@@ -185,7 +185,7 @@ async function fetchYahoo(cat, syms) {
   for (let i = 0; i < 3; i++) { try { return await fetchYahooOnce(cat, syms); } catch (e) { await sleep(250 * (i + 1)); } }
   return [];
 }
-// 한국 — 네이버 뉴스 검색 API(originallink=직접 기사 URL). 키는 CF 환경변수(context.env).
+// 한국: 네이버 뉴스 검색 API(originallink=직접 기사 URL). 키는 CF 환경변수(context.env).
 async function fetchNaverOnce(cat, query, id, secret) {
   const url = 'https://openapi.naver.com/v1/search/news.json?query=' + encodeURIComponent(query) + '&display=8&sort=date';
   const r = await fetch(url, { headers: { 'X-Naver-Client-Id': id, 'X-Naver-Client-Secret': secret, 'User-Agent': UA } });
@@ -208,7 +208,7 @@ async function fetchNaver(cat, query, id, secret) {
   for (let i = 0; i < 3; i++) { try { return await fetchNaverOnce(cat, query, id, secret); } catch (e) { await sleep(300 * (i + 1)); } }
   return [];
 }
-// 동시 실행 수 제한 풀 — 18개를 한꺼번에 안 때리고 limit개씩(구글 레이트리밋·차단 회피)
+// 동시 실행 수 제한 풀: 18개를 한꺼번에 안 때리고 limit개씩(구글 레이트리밋·차단 회피)
 async function runPool(thunks, limit) {
   const out = new Array(thunks.length);
   let idx = 0;
@@ -244,7 +244,7 @@ async function __cfHandler(event) {
     grp.forEach((n, j) => { const en = n.ti; n.ti = kos[j] || en; n.ti_en = en; n.sum = en; });
     if (!ok) trFailed++;
   }), 3);
-  // 속보 플래그(제목 마커) — 미국 기사는 원문(ti_en)도 검사
+  // 속보 플래그(제목 마커): 미국 기사는 원문(ti_en)도 검사
   items.forEach((n) => { n.breaking = BRK_RE.test((n.ti || '') + ' ' + (n.ti_en || '')); });
   items.sort((a, b) => a.min - b.min);
   items.forEach((n, i) => { n.hot = i < 6; });

@@ -1,4 +1,4 @@
-// 트럼프 Truth Social — /api/trump
+// 트럼프 Truth Social: /api/trump
 // truthsocial.com 직접 접근은 Cloudflare 403 → 공개 아카이브 trumpstruth.org RSS 사용.
 // 최신 게시물 한국어 번역(원문 보존). 방문 시점 수집 + 모듈/엣지 캐시.
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36';
@@ -23,7 +23,7 @@ function reltime(mins) { if (mins < 1) return '방금'; if (mins < 60) return mi
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
 function hasKo(s) { return /[가-힣]/.test(s || ''); }
 
-// gtx 1회 호출 — HTTP 오류·빈 응답·미번역(한국어 없음)이면 throw
+// gtx 1회 호출: HTTP 오류·빈 응답·미번역(한국어 없음)이면 throw
 async function gtxOnce(text) {
   const s = text.slice(0, 900);   // gtx 길이 보호
   const u = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ko&dt=t&q=' + encodeURIComponent(s);

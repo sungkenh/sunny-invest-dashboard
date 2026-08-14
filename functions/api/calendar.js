@@ -1,4 +1,4 @@
-// 경제지표·실적 캘린더 — /api/calendar  (nasdaq.com 공개 API, 키 불필요)
+// 경제지표·실적 캘린더: /api/calendar  (nasdaq.com 공개 API, 키 불필요)
 // 미국: 지표 예상/이전/실제 + 실적 EPS 컨센서스 · 한국: nasdaq 한국 지표 행
 // 방문 시점 수집. 모듈 캐시(30분) + 엣지 캐시. 모든 시각 ET→KST 변환.
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36';
@@ -180,7 +180,7 @@ async function fetchEcon(today, events) {
   }
 }
 
-// 미국 실적 — S&P500 ∪ 나스닥100 ∪ 다우 (서버리스는 근시일만 라이브; 먼 일정은 프론트가 스냅샷에서 보강)
+// 미국 실적: S&P500 ∪ 나스닥100 ∪ 다우 (서버리스는 근시일만 라이브; 먼 일정은 프론트가 스냅샷에서 보강)
 async function fetchEarnings(today, events) {
   const SESS = { 'time-pre-market': '장 시작 전', 'time-after-hours': '장 마감 후', 'time-not-supplied': '시간 미정' };
   const [sp, ndx] = await Promise.all([loadSP500(), loadNDX()]);

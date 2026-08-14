@@ -1,4 +1,4 @@
-// 한국 종목 일·주봉 시세 + 외국인 소진율 — /api/krsise?code=005930&tf=day|week&days=420
+// 한국 종목 일·주봉 시세 + 외국인 소진율: /api/krsise?code=005930&tf=day|week&days=420
 // 네이버 siseJson 프록시(수정주가·외국인 보유한도 소진율 포함). 매매 시그널 페이지의
 // 스윙(일봉)·장기(주봉) 캔들과 외국인 수급 판정에 쓴다. subrequest 1 / 무료 50.
 // 행 포맷은 pipeline/fetch_kr_perf.py 와 동일: ["YYYYMMDD", 시, 고, 저, 종, 량, 소진율]

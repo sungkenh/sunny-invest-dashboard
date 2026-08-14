@@ -1,4 +1,4 @@
-// 주가 차트 데이터 — /api/chart?sym=000660.KS&range=6mo&interval=1d
+// 주가 차트 데이터: /api/chart?sym=000660.KS&range=6mo&interval=1d
 // 야후 차트 프록시(브라우저는 CORS로 직접 못 받음) → Lightweight Charts용 OHLC/거래량.
 // 한국·미국 모두 야후 심볼(.KS/.KQ/티커)로 동작. 모듈 캐시 + 엣지 캐시.
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36';
@@ -32,7 +32,7 @@ async function __cfHandler(event) {
       return resp({ error: 'no data', sym });
     }
     const ts = res.timestamp, q = res.indicators.quote[0], meta = res.meta || {};
-    const intraday = /^\d+[mh]$/.test(interval);   // 1m·5m·15m·30m·60m·1h·90m만 (1mo·1wk·1d 제외 — 'm' 오탐 방지)
+    const intraday = /^\d+[mh]$/.test(interval);   // 1m·5m·15m·30m·60m·1h·90m만 (1mo·1wk·1d 제외: 'm' 오탐 방지)
     const go = meta.gmtoffset || 0;
     const ohlc = [], vol = [];
     let last = null;

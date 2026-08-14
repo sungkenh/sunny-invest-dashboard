@@ -1,10 +1,10 @@
-// 종목 밸류에이션(PER·PBR·ROE 등) 프록시 — /api/valuation?mkt=kr|us&codes=005930,000660 (최대 20개)
+// 종목 밸류에이션(PER·PBR·ROE 등) 프록시: /api/valuation?mkt=kr|us&codes=005930,000660 (최대 20개)
 //   kr: m.stock.naver.com/api/stock/{code}/integration → totalInfos [{code,value}]
 //       per '18.67배', pbr '3.21배', eps '12,372원', bps, dividendYieldRatio '0.72%',
 //       highPriceOf52Weeks/lowPriceOf52Weeks (숫자)
 //   us: api.stock.naver.com/stock/{reutersCode}/basic → stockItemTotalInfos (동일 {code,value} 배열)
 // ROE 는 네이버가 직접 주지 않아 PBR/PER×100 으로 근사(둘 다 최근 실적 기준이라 정합).
-// 밸류 지표는 하루 단위로만 변해 코드당 6시간 모듈 캐시 — 반복 조회 시 subrequest 0.
+// 밸류 지표는 하루 단위로만 변해 코드당 6시간 모듈 캐시: 반복 조회 시 subrequest 0.
 // subrequest 예산: 미캐시 코드 수(≤20)/호출, 무료 50 한도 내.
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36';
 const CACHE = {};                       // `${mkt}|${code}` → {ts, v}
@@ -26,7 +26,7 @@ function parseInfos(arr) {
   const v = {
     per, pbr,
     eps: num(m.eps), bps: num(m.bps),
-    cnsPer: num(m.cnsPer),                                  // 컨센서스(추정) PER — 있으면 참고 표시
+    cnsPer: num(m.cnsPer),                                  // 컨센서스(추정) PER: 있으면 참고 표시
     divYield: num(m.dividendYieldRatio),
     hi52: num(m.highPriceOf52Weeks), lo52: num(m.lowPriceOf52Weeks),
     roe: (per && per > 0 && pbr && pbr > 0) ? Math.round(pbr / per * 1000) / 10 : null,
@@ -50,7 +50,7 @@ async function fetchOne(mkt, code, budget) {
     if (budget.n >= 40) break;                       // 무료 subrequest 50 한도 보호
     budget.n++;
     const r = await fetch('https://api.stock.naver.com/stock/' + encodeURIComponent(c) + '/basic', { headers: NHDR }).catch(() => null);
-    if (!r || !r.ok) continue;                       // 미존재 코드는 404 — 다음 후보
+    if (!r || !r.ok) continue;                       // 미존재 코드는 404: 다음 후보
     responded = true;
     const v = parseInfos((await r.json()).stockItemTotalInfos);
     if (v) return v;
@@ -75,7 +75,7 @@ async function __cfHandler(event) {
   await Promise.all(misses.map((c) =>
     fetchOne(mkt, c, budget)
       .then((v) => { CACHE[mkt + '|' + c] = { ts: Date.now(), v }; vals[c] = v; })
-      .catch(() => { vals[c] = null; })            // 실패는 캐시하지 않음 — 다음 호출 때 재시도
+      .catch(() => { vals[c] = null; })            // 실패는 캐시하지 않음: 다음 호출 때 재시도
   ));
   return ok({ _updated: iso(), mkt, vals });
 }

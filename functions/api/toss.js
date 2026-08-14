@@ -1,13 +1,13 @@
-// 토스증권 Open API 프록시 — 투자자별 수급 + 장 운영 캘린더 (공식 openapi.tossinvest.com v1.x)
+// 토스증권 Open API 프록시: 투자자별 수급 + 장 운영 캘린더 (공식 openapi.tossinvest.com v1.x)
 //   GET /api/toss?fn=stockInvestors&code=005930[&n=30]   종목별 투자자 매매동향(일별 거래량, KR 전용)
 //   GET /api/toss?fn=idxInvestors&mkt=KOSPI|KOSDAQ[&n=30][&interval=1d]  지수 투자자별 매매대금
 //   GET /api/toss?fn=calendar&nation=kr|us[&date=YYYY-MM-DD]             장 운영(개장·휴장) 정보
 // 인증: OAuth2 Client Credentials (POST /oauth2/token, Bearer JWT, expires_in≈86400).
-//   ⚠ 클라이언트당 유효 토큰 1개 — 재발급 시 이전 토큰 즉시 무효. 모듈 캐시 + (있으면) KV에
+//   ⚠ 클라이언트당 유효 토큰 1개: 재발급 시 이전 토큰 즉시 무효. 모듈 캐시 + (있으면) KV에
 //   공유 저장해 아이솔레이트 간 재발급 경쟁을 최소화하고, 401 시 1회 재발급·재시도한다.
 // 키: Cloudflare Pages 환경변수 TOSS_CLIENT_ID / TOSS_CLIENT_SECRET (secret).
 //   미설정이면 {enabled:false} 200 → 프런트는 기능 숨김·기존 소스(네이버 근사) 폴백.
-// 요율: STOCK_TRADING_TREND 10/s · MARKET_INDICATOR 10/s · MARKET_INFO 3/s — 30분·6시간 캐시로 흡수.
+// 요율: STOCK_TRADING_TREND 10/s · MARKET_INDICATOR 10/s · MARKET_INFO 3/s: 30분·6시간 캐시로 흡수.
 //
 // ⛔ 2026-08 사용 중지. 구현·테스트는 나중에 다시 쓸 수 있게 그대로 보관하고 진입점만 막는다.
 //    (토큰 발급이 unidentified-client 로 계속 실패해 매 스캔마다 헛호출이 쌓이던 상태였다.)
@@ -15,14 +15,14 @@
 const DISABLED = true;
 const BASE = 'https://openapi.tossinvest.com';
 const CACHE = {};                    // `${fn}|${args}` → {ts, data}
-const TTL_TREND = 30 * 60 * 1000;    // 수급 30분 (일별 데이터 — 장중 잠정치 갱신 주기로 충분)
+const TTL_TREND = 30 * 60 * 1000;    // 수급 30분 (일별 데이터: 장중 잠정치 갱신 주기로 충분)
 const TTL_CAL = 6 * 60 * 60 * 1000;  // 캘린더 6시간
 let TOKEN = { v: '', exp: 0 };       // 모듈(아이솔레이트) 토큰 캐시
 
 const iso = () => new Date().toISOString().slice(0, 19);
 const num = (v) => { const x = parseFloat(String(v == null ? '' : v).replace(/,/g, '')); return isFinite(x) ? x : null; };
 
-// {buy, sell, net} 관용 추출 — 거래량(…Volume)·거래대금(…Amount) 필드 모두 대응
+// {buy, sell, net} 관용 추출: 거래량(…Volume)·거래대금(…Amount) 필드 모두 대응
 function tri(o) {
   if (!o || typeof o !== 'object') return null;
   const pick = (...ks) => { for (const k of ks) if (o[k] != null) return num(o[k]); return null; };
@@ -75,7 +75,7 @@ async function getToken(env, force) {
   return TOKEN.v;
 }
 
-// 토스 GET — 401(다른 아이솔레이트의 재발급으로 무효화) 시 1회 강제 재발급 후 재시도
+// 토스 GET: 401(다른 아이솔레이트의 재발급으로 무효화) 시 1회 강제 재발급 후 재시도
 async function tossGet(env, path) {
   for (let attempt = 0; attempt < 2; attempt++) {
     const tk = await getToken(env, attempt > 0);
@@ -143,7 +143,7 @@ export async function onRequest(context) {
   if (request.method === 'OPTIONS') {
     return new Response('', { status: 204, headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': '*', 'Access-Control-Allow-Methods': 'GET,OPTIONS' } });
   }
-  // 사용 중지 — 키가 남아 있어도 토스로 나가지 않는다. 미설정과 같은 응답이라 프런트는 기존 «키 없음»
+  // 사용 중지: 키가 남아 있어도 토스로 나가지 않는다. 미설정과 같은 응답이라 프런트는 기존 키 없음
   // 경로(수급 카드 숨김·네이버 소진율 폴백)를 그대로 탄다. 되살릴 때는 이 상수만 false 로.
   if (DISABLED) return ok({ _updated: iso(), enabled: false, disabled: true }, 3600);
 
@@ -151,7 +151,7 @@ export async function onRequest(context) {
   const p = Object.fromEntries(url.searchParams);
 
   if (!env || !env.TOSS_CLIENT_ID || !env.TOSS_CLIENT_SECRET) {
-    return ok({ _updated: iso(), enabled: false }, 600);   // 키 미설정 — 프런트 기능 숨김
+    return ok({ _updated: iso(), enabled: false }, 600);   // 키 미설정: 프런트 기능 숨김
   }
   const entry = FNS[p.fn];
   if (!entry) return ok({ _updated: iso(), enabled: true, error: 'fn은 stockInvestors|idxInvestors|calendar' }, 60);

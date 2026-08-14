@@ -1,4 +1,4 @@
-// 한국 주식 실시간 히트맵 — /api/krheatmap?mkt=kospi|kosdaq&n=50|100|200|500
+// 한국 주식 실시간 히트맵: /api/krheatmap?mkt=kospi|kosdaq&n=50|100|200|500
 // 네이버 시총 랭킹(실시간·delayTime 0) + 정적 업종맵(data/kr_sectors.json) 조인.
 //   랭킹 응답에 ETF가 섞여 있고(코스피 top100에 14개) 우선주·스팩·거래정지도 포함되므로 반드시 필터링한다.
 //   필터로 종목이 줄어들기 때문에 n개를 채우려면 페이지를 더 받아야 한다(코스피 page1 100건 → 84건만 생존).
@@ -22,7 +22,7 @@ async function naverMV(market, page) {
 }
 
 // 히트맵 왜곡 요소 제거: ETF/ETN · 우선주 · 스팩 · 값 결손.
-// ⚠ 거래정지는 제외하지 않는다 — 서킷브레이커(2026-07-11 코스피 -8%)처럼 시장 전체가 일시 정지되면
+// ⚠ 거래정지는 제외하지 않는다: 서킷브레이커(2026-07-11 코스피 -8%)처럼 시장 전체가 일시 정지되면
 //   전 종목이 걸러져 히트맵이 비는 사고가 났다. 정지 종목은 h:1 플래그로 표시만 한다(마지막 체결가는 유효).
 function dropReason(s) {
   if ((s.stockEndType || '') !== 'stock') return 'etf';            // KODEX 200, TIGER 미국S&P500 …
@@ -44,7 +44,7 @@ function norm(s) {
     cap: +s.marketValueRaw,
   };
   const st = s.tradeStopType || {};
-  if (st.code && st.code !== '1') it.h = 1;            // 거래정지(서킷브레이커·VI 포함) — 표시용
+  if (st.code && st.code !== '1') it.h = 1;            // 거래정지(서킷브레이커·VI 포함): 표시용
   return it;
 }
 

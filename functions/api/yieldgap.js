@@ -1,4 +1,4 @@
-// 일드갭 — /api/yieldgap
+// 일드갭: /api/yieldgap
 // 자산군 기대수익률(연%): 안전자산(국채 10Y) · 위험자산(주식 어닝일드=1/PER) · 실물자산(리츠 배당)
 // + 일드갭(주식 어닝일드 − 국채금리). 한·미. 슬로무빙 매크로 지표(캐시 길게).
 // 데이터: 국채=Naver, 美주식 어닝일드=multpl.com, 美리츠=Yahoo(VNQ). 韓주식/리츠는 추정치(무료 라이브 소스 부재).
@@ -6,10 +6,10 @@ const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/
 let CACHE = { ts: 0, data: null };
 const TTL = 30 * 60 * 1000;   // 30분
 
-// 한국 추정치 — 무료 라이브 소스 부재로 주기 업데이트(라벨 '추정' 표시). KOSPI 어닝일드=100/PER.
+// 한국 추정치: 무료 라이브 소스 부재로 주기 업데이트(라벨 '추정' 표시). KOSPI 어닝일드=100/PER.
 // 2026-08-03 갱신: AI 이익 급증(12M 선행 EPS +170%)으로 KOSPI 12M 선행 PER 4.8~6.4 보도(서울경제 7/13·Investing 7월말)
-const KR_KOSPI_EY_EST = 18.0;    // 선행 PER 중앙 ~5.6 → 어닝일드 ≈ 18% (선행 기준 — 미국 multpl은 후행이라 기준 상이)
-const KR_REIT_YIELD_EST = 7.5;   // 상장 리츠 평균 배당수익률 — 2025년 7.3%, 2026년 다수 종목 8%+ (한국리츠협회)
+const KR_KOSPI_EY_EST = 18.0;    // 선행 PER 중앙 ~5.6 → 어닝일드 ≈ 18% (선행 기준: 미국 multpl은 후행이라 기준 상이)
+const KR_REIT_YIELD_EST = 7.5;   // 상장 리츠 평균 배당수익률: 2025년 7.3%, 2026년 다수 종목 8%+ (한국리츠협회)
 const US_REIT_YIELD_EST = 3.6;   // VNQ 라이브 실패 시 폴백
 const US_NASDAQ_EY_EST = 2.9;    // QQQ(NASDAQ-100) 라이브 실패 시 폴백 (PER ~34 → ~2.9%)
 
@@ -24,7 +24,7 @@ const LONGTERM = [
 const r2 = (x) => (x == null || isNaN(x) ? null : Math.round(x * 100) / 100);
 const gap = (a, b) => (a != null && b != null ? Math.round((a - b) * 100) / 100 : null);
 
-// 국채 수익률 — Naver 마켓인덱스(productDetail, closePrice = 연%)
+// 국채 수익률: Naver 마켓인덱스(productDetail, closePrice = 연%)
 async function naverBond(rc) {
   const u = 'https://m.stock.naver.com/front-api/marketIndex/productDetail?category=bond&reutersCode=' + encodeURIComponent(rc);
   const r = await fetch(u, { headers: { 'User-Agent': UA } });
@@ -33,7 +33,7 @@ async function naverBond(rc) {
   return v != null && !isNaN(+v) ? +v : null;
 }
 
-// 미국 S&P500 어닝일드 — multpl.com (meta: "Current S&P 500 Earnings Yield is X%")
+// 미국 S&P500 어닝일드: multpl.com (meta: "Current S&P 500 Earnings Yield is X%")
 async function spxEarningsYield() {
   const r = await fetch('https://www.multpl.com/s-p-500-earnings-yield', { headers: { 'User-Agent': UA } });
   const html = await r.text();
@@ -45,7 +45,7 @@ async function spxEarningsYield() {
   return m && +m[1] > 0 ? r2(100 / +m[1]) : null;
 }
 
-// 미국 리츠(VNQ) 배당 + NASDAQ-100(QQQ) 어닝일드 — Yahoo quoteSummary(크럼 1회 공유)
+// 미국 리츠(VNQ) 배당 + NASDAQ-100(QQQ) 어닝일드: Yahoo quoteSummary(크럼 1회 공유)
 async function usYahoo() {
   try {
     const r1 = await fetch('https://fc.yahoo.com', { headers: { 'User-Agent': UA } });
