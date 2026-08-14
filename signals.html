@@ -238,7 +238,7 @@
   <div class="seg" id="seg-speed">
     <button data-v="std">표준</button><button data-v="fast">⚡ 빠름</button>
   </div>
-  <span class="fl">필터</span>
+  <span class="fl" title="매수·임박·매도·저평가는 여러 개를 함께 켤 수 있습니다 (켠 갈래 중 하나라도 맞으면 표시)">필터</span>
   <div class="seg" id="seg-filter">
     <button data-v="all">전체</button><button data-v="buy">매수</button><button data-v="near">임박</button><button data-v="sell">매도</button><button data-v="val">💎 저평가</button>
   </div>
@@ -797,11 +797,46 @@ function techniqueFor(u,j,rg,fd){
 
 /* ── 상태 ── */
 const store=(k,v)=>{ try{ if(v===undefined) return localStorage.getItem('alphadesk.sig.'+k); localStorage.setItem('alphadesk.sig.'+k,v); }catch(e){ return null; } };
+/*FLT-BEGIN*/
+/* 판정 필터는 여러 갈래를 동시에 켤 수 있다 — 켠 갈래 중 하나라도 맞으면 표시(합집합).
+   아무것도 켜지 않으면 «전체». 저평가만 후보 풀이 다르다: 미국은 포지션 강도 상위 50만 표에
+   올리는데, 저평가 종목은 그 절단 밖에 있는 경우가 많아 절단 전 전체에서 찾는다. */
+const FILTER_KEYS=['buy','near','sell','val'];
+const FILTER_SETS={buy:['buy2','buy1','ebuy'],near:['nbuy','nsell','ebuy','esell'],sell:['sell2','sell1','esell']};
+function parseFilter(s){
+  const a=String(s==null?'':s).split(',').map(v=>v.trim()).filter(v=>FILTER_KEYS.indexOf(v)>=0);
+  return a.filter((v,i)=>a.indexOf(v)===i);
+}
+// «전체»는 모두 끄기. 켜진 것을 다시 누르면 꺼진다.
+function toggleFilter(cur,v){
+  if(v==='all') return [];
+  if(FILTER_KEYS.indexOf(v)<0) return parseFilter((cur||[]).join(','));
+  const a=parseFilter((cur||[]).join(',')), i=a.indexOf(v);
+  if(i>=0) a.splice(i,1); else a.push(v);
+  return a;
+}
+// rows=표에 올릴 후보(절단 후) · all=절단 전 전체. keyOf/cheap 은 호출부가 넘긴다.
+function applyFilter(sel,rows,all,keyOf,cheap){
+  if(!sel||!sel.length) return rows;
+  const shown={}; for(const x of rows) shown[keyOf(x)]=1;
+  const wantVal=sel.indexOf('val')>=0;
+  const sets=sel.filter(v=>v!=='val').map(v=>FILTER_SETS[v]).filter(Boolean);
+  const out=[], seen={};
+  for(const x of (wantVal?all:rows)){
+    if(!x||!x.j) continue;
+    const k=keyOf(x); if(seen[k]) continue;
+    // 신호 갈래는 표에 올라온 종목 안에서만 — 저평가처럼 절단 밖까지 넓히지 않는다
+    if((wantVal&&cheap(x)) || (sets.length&&shown[k]&&sets.some(g=>g.indexOf(x.j.v)>=0))){ seen[k]=1; out.push(x); }
+  }
+  return out;
+}
+const filterKeyOf=x=>x.u.code+'|'+x.u.mkt;
+/*FLT-END*/
 let MODE  =['swing','long'].includes(store('mode'))?store('mode'):'swing';   // 옛 'day' 저장값은 스윙으로 떨어진다
 let MKT   =['kospi','kosdaq','sp500','nasdaq','russell2000','kretf','usetf','watch'].includes(store('mkt'))?store('mkt'):'kospi';
 let SITV  =['60m','120m'].includes(store('sitv'))?store('sitv'):'60m';
 let LOOK  =[3,5,10].includes(+store('look'))?+store('look'):5;
-let FILTER=['all','buy','near','sell','val'].includes(store('filter'))?store('filter'):'all';
+let FILTER=parseFilter(store('filter'));   // 여러 갈래 동시 선택 · 비어 있으면 «전체» (옛 'all'·단일값 저장분도 그대로 해석)
 let NOTIF =store('notif')==='1';
 let SPEED =['std','fast'].includes(store('speed'))?store('speed'):'std';   // 신호 속도 프리셋
 let OPENED=null;                          // 펼쳐진 종목 코드
@@ -1391,7 +1426,7 @@ function compute(){
   render();
   maybeNotify();
   // 밸류에이션 지연 수집(캐시 30분): 표시 종목 우선, 저평가 필터일 땐 스캔한 전체 유니버스
-  ensureVals((FILTER==='val'?ROWS_ALL:ROWS).map(x=>x.u));
+  ensureVals((FILTER.indexOf('val')>=0?ROWS_ALL:ROWS).map(x=>x.u));
   ensureToss(ROWS.map(x=>x.u));            // 토스 투자자별 수급(국내 개별주, 30분 캐시)
   ensurePerfAll();                          // 적중률 백그라운드 일괄 계산 → 판정 셀 즉시 표시
 }
@@ -1667,11 +1702,7 @@ function render(){
   document.getElementById('th-frgn').textContent=MODES[MODE].frgnLbl;
   document.getElementById('th-rsi').textContent='RSI('+SPEEDS[SPEED].rsiN+')';
   const tb=document.getElementById('tbody');
-  let rows=ROWS.filter(x=>x.j);
-  if(FILTER==='buy')  rows=rows.filter(x=>['buy2','buy1','ebuy'].includes(x.j.v));
-  if(FILTER==='near') rows=rows.filter(x=>['nbuy','nsell','ebuy','esell'].includes(x.j.v));
-  if(FILTER==='sell') rows=rows.filter(x=>['sell2','sell1','esell'].includes(x.j.v));
-  if(FILTER==='val')  rows=ROWS_ALL.filter(x=>x.j&&isCheap(x));   // 저평가는 절단 전 전체에서
+  const rows=applyFilter(FILTER,ROWS.filter(x=>x.j),ROWS_ALL,filterKeyOf,isCheap);
   const nOf=ks=>ROWS.filter(x=>x.j&&ks.includes(x.j.v)).length;
   const buyN=nOf(['buy2','buy1','ebuy']), sellN=nOf(['sell2','sell1','esell']), nearN=nOf(['nbuy','nsell','ebuy','esell']);
   const valN=ROWS_ALL.reduce((a,x)=>a+((x.j&&isCheap(x))?1:0),0);
@@ -1681,7 +1712,7 @@ function render(){
   if(!rows.length){
     const valPend=Object.keys(VAL).some(k=>VAL[k].inflight);
     tb.innerHTML='<tr><td colspan="11"><div class="note-empty">'+
-      (FILTER==='val'&&ROWS.length
+      (FILTER.indexOf('val')>=0&&ROWS.length
         ? (isETFm(MKT)?'ETF는 PER·PBR 개념이 없어 저평가 발굴을 지원하지 않습니다. 개별주 시장을 선택해 주세요.'
           : valPend?'밸류에이션(PER·PBR) 수집 중입니다… 잠시 후 자동으로 표시됩니다.'
           : '저평가 조건(흑자 PER '+(isUSm(MKT)?'15':'10')+'배 이하 · ROE 8% 이상 · 52주 고점 대비 −20% 이하)을 동시에 충족하는 종목이 없습니다.<br>'
@@ -2084,6 +2115,15 @@ function segInit(id,cur,fn){
     });
   });
 }
+/* 다중 선택 세그먼트 — fn 이 새 선택 배열을 돌려주면 그대로 칠한다.
+   data-v="all" 은 «모두 끄기» 버튼으로, 선택이 비었을 때만 켜진 것으로 보인다. */
+function segInitMulti(id,cur,fn){
+  const el=document.getElementById(id);
+  const paint=sel=>el.querySelectorAll('button').forEach(b=>
+    b.classList.toggle('on', b.dataset.v==='all' ? !sel.length : sel.indexOf(b.dataset.v)>=0));
+  paint(cur||[]);
+  el.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>paint(fn(b.dataset.v)||[])));
+}
 function syncItvVis(){
   const sw=MODE==='swing';
   document.getElementById('seg-sitv').hidden=!sw;
@@ -2094,7 +2134,12 @@ segInit('seg-mkt',MKT,v=>{ MKT=v; store('mkt',v); OPENED=null; syncWatchVis(); d
 segInit('seg-sitv',SITV,v=>{ SITV=v; store('sitv',v); scan(false); });
 segInit('seg-look',LOOK,v=>{ LOOK=+v; store('look',v); compute(); });
 segInit('seg-speed',SPEED,v=>{ SPEED=v; store('speed',v); compute(); });   // 같은 캔들 — 재수집 불필요
-segInit('seg-filter',FILTER,v=>{ FILTER=v; store('filter',v); render(); if(v==='val') ensureVals(ROWS_ALL.map(x=>x.u)); });
+segInitMulti('seg-filter',FILTER,v=>{
+  FILTER=toggleFilter(FILTER,v); store('filter',FILTER.join(','));
+  render();
+  if(FILTER.indexOf('val')>=0) ensureVals(ROWS_ALL.map(x=>x.u));
+  return FILTER;
+});
 document.getElementById('btn-rescan').addEventListener('click',()=>scan(true));
 /* 관심 종목 직접 추가: 국내 6자리 코드(코스닥은 .KQ 접미) 또는 미국 티커 */
 function syncWatchVis(){
