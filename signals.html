@@ -105,6 +105,8 @@
     color:#22c55e;border:1px solid rgba(34,197,94,.55);white-space:nowrap}
   .valchip.mid{color:var(--muted);border-color:var(--border)}
   .valchip.hi{color:var(--down);border-color:var(--down)}
+  .xh{display:inline-block;margin-left:4px;font-size:9px;font-weight:800;color:var(--gold);
+    border:1px solid var(--gold);border-radius:3px;padding:0 3px;vertical-align:1px;white-space:nowrap}  /* 시간외 체결 표시 */
   .star{cursor:pointer;color:var(--muted2);margin-right:6px;font-size:13px;user-select:none}
   .star.on{color:var(--gold)}
   .star:hover{color:var(--gold)}
@@ -906,6 +908,33 @@ async function loadUniverse(mkt){
 }
 async function refreshUniv(){
   await Promise.all(activeMkts().map(async m=>{ const d=await loadUniverse(m); if(d) UNIV[m]=d; }));
+  if(MKT==='watch') await loadWatchQuotes(univItems()).catch(()=>{});
+}
+/* 관심 종목 실시간 시세 — 시총 랭킹 유니버스가 없는 목록이라 /api/quote 로 직접 받는다.
+   국내는 네이버 폴링(지연 0)이라 야후 일봉(개장 직후엔 전일 종가·전일 등락이 온다)보다 정확하고,
+   정규장 전후에는 NXT 시간외가가 온다.
+   시간외 체결가는 표시용(price)으로만 쓰고 봉·판정에는 정규장가(jprice)를 넣는다 — 얇은 시간외 호가로
+   매매 신호가 흔들리지 않게 하기 위함. */
+const WQ={};                                   // sym → {price,pct,ext,rp,ts}
+const WQ_TTL=5*60*1000;
+async function loadWatchQuotes(items){
+  const syms=[...new Set((items||[]).map(symOf))];
+  for(let i=0;i<syms.length;i+=25){
+    const part=syms.slice(i,i+25);
+    try{
+      const d=await getJSON('/api/quote?syms='+encodeURIComponent(part.join(',')));
+      for(const s of part){ const q=d[s];
+        if(q&&q.price>0) WQ[s]={price:q.price,pct:isFinite(q.pct)?q.pct:0,ext:q.ext||null,rp:(q.rp>0?q.rp:null),ts:Date.now()}; }
+    }catch(e){}
+  }
+}
+// 관심 종목 1건에 실시간 시세 적용. 성공하면 true — 실패 시 호출부가 차트 기준 시세로 넘어간다.
+function applyWatchQuote(u){
+  const q=WQ[symOf(u)];
+  if(!q||!(q.price>0)||Date.now()-q.ts>WQ_TTL) return false;
+  u.price=q.price; u.pct=q.pct; u.ext=q.ext;
+  u.jprice=(q.ext&&q.rp>0)?q.rp:q.price;
+  return true;
 }
 function univItems(){
   const a=[];
@@ -1141,14 +1170,17 @@ async function loadRegime(mkt,force){
 /* 형성 중인 마지막 봉에 네이버 실시간가 반영 (고가·저가도 확장) */
 function liveBars(u,ch){
   const c=ch.closes.slice(), h=(ch.his||ch.closes).slice(), l=(ch.los||ch.closes).slice();
-  if(isETFm(u.mkt)||u.w) return {c,h,l};      // ETF·관심 종목 시세는 차트 자체가 원천 — 덮어쓰기 없음
+  const live=!!(u.w&&u.jprice>0);             // 관심 종목은 /api/quote 가 실시간 원천
+  if(!live&&(isETFm(u.mkt)||u.w)) return {c,h,l};   // ETF·시세 미수신 관심 종목은 차트 자체가 원천 — 덮어쓰기 없음
+  const px=live?u.jprice:u.price;             // 시간외 체결가는 판정에 넣지 않는다(jprice=정규장가)
+  if(!(px>0)) return {c,h,l};
   const uv=UNIV[u.mkt];
-  const mktOpen=uv&&uv.status==='OPEN'&&uv.source==='naver';
-  if(!(u.price>0)) return {c,h,l};
-  const upd=i=>{ c[i]=u.price; h[i]=Math.max(isFinite(h[i])?h[i]:u.price,u.price); l[i]=Math.min(isFinite(l[i])?l[i]:u.price,u.price); };
+  const mktOpen=live ? ((isUSm(u.mkt)?usSessionNow():krSession())==='open')
+                     : !!(uv&&uv.status==='OPEN'&&uv.source==='naver');
+  const upd=i=>{ c[i]=px; h[i]=Math.max(isFinite(h[i])?h[i]:px,px); l[i]=Math.min(isFinite(l[i])?l[i]:px,px); };
   if(MODE==='long'&&!isUSm(u.mkt)){
     if(ch.lastDate===kstYMD()) upd(c.length-1);
-    else if(mktOpen){ c.push(u.price); h.push(u.price); l.push(u.price); }   // 오늘 봉 미생성 → 잠정 추가
+    else if(mktOpen){ c.push(px); h.push(px); l.push(px); }   // 오늘 봉 미생성 → 잠정 추가
   } else if(mktOpen){
     upd(c.length-1);                          // 분봉 계열·미국 일봉: 형성 중인 봉 갱신
   }
@@ -1227,7 +1259,7 @@ function compute(){
   for(const u of univItems()){
     const ch=CHARTS[u.code+'|'+key];
     if(!ch) continue;
-    if(isETFm(u.mkt)||u.w) etfQuote(u,ch);      // 관심 종목도 차트 기준 시세
+    if(isETFm(u.mkt)||u.w){ if(!(u.w&&applyWatchQuote(u))) etfQuote(u,ch); }   // 관심 종목은 실시간 시세 우선, 없으면 차트 기준
     const bars=liveBars(u,ch);
     const j=judge(bars.c,bars.h,bars.l,LOOK,SPEEDS[SPEED]);
     const fd=frgnOf(u,ch);
@@ -1562,7 +1594,8 @@ function render(){
       +'<td class="mono" style="color:var(--muted2)">'+(i+1)+'</td>'
       +'<td class="name">'+star+'<b>'+esc(u.name)+'</b>'+lev+valc+regc+'<span class="mkchip">'+MKCHIP[u.mkt]+'</span>'
         +'<small class="mono">'+u.code+'</small>'+(u.cap?' <span class="cap">'+fmtCap(u.cap,us)+'</span>':'')+'</td>'
-      +'<td class="num mono">'+fmtPx(u.price,us)+'<br><small class="'+cls(u.pct)+'">'+(u.pct>0?'+':'')+u.pct.toFixed(2)+'%</small></td>'
+      +'<td class="num mono">'+fmtPx(u.price,us)+'<br><small class="'+cls(u.pct)+'">'+(u.pct>0?'+':'')+u.pct.toFixed(2)+'%</small>'
+        +(u.ext?'<span class="xh" title="정규장 밖 체결가 — 국내는 NXT 시간외, 미국은 프리·애프터마켓">'+(u.ext==='pre'?'프리':'애프터')+'</span>':'')+'</td>'
       +'<td><span class="vd '+vd[1]+'">'+confDot(x)+vd[0]+'</span>'+perfChip(x)+'</td>'
       +'<td>'+chips(j,x.ms,x)+'</td>'
       +'<td><div class="tech">'+(x.tech?'<b>'+esc(x.tech.t)+'</b><span>'+esc(x.tech.why)+'</span>':'—')+'</div></td>'
