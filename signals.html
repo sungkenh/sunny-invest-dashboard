@@ -79,6 +79,14 @@
   .crit .card b{color:var(--text)}
   .crit .card h4{margin:0 0 4px;font-size:12.5px;letter-spacing:.2px}
   .crit .buy h4{color:var(--up)} .crit .sell h4{color:var(--down)}
+  .crit .lead{margin:9px 0 3px;font-size:10.5px;font-weight:800;color:var(--muted2);letter-spacing:.3px}
+  .crit .lead:first-of-type{margin-top:4px}
+  .crit ul.cl{margin:0;padding:0;list-style:none}
+  .crit ul.cl li{display:flex;gap:8px;align-items:baseline;padding:3px 0;border-bottom:1px solid var(--border);font-size:12px;line-height:1.55}
+  .crit ul.cl li:last-child{border-bottom:none}
+  .crit ul.cl li > b:first-child{flex:none;width:88px;font-weight:800}
+  .crit .tail{margin:8px 0 0;font-size:11px;color:var(--muted2);line-height:1.6}
+  .crit-tip{margin:-4px 0 12px;font-size:11.5px;color:var(--muted2)}
 
   .statusline{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:11.5px;color:var(--muted2);margin-bottom:8px;min-height:22px}
   .prog{flex:0 0 160px;height:5px;border-radius:99px;background:var(--panel2);overflow:hidden;display:none}
@@ -240,7 +248,7 @@
   </div>
   <span class="fl" title="매수·임박·매도·저평가는 여러 개를 함께 켤 수 있습니다 (켠 갈래 중 하나라도 맞으면 표시)">필터</span>
   <div class="seg" id="seg-filter">
-    <button data-v="all">전체</button><button data-v="buy">매수</button><button data-v="near">임박</button><button data-v="sell">매도</button><button data-v="val">💎 저평가</button>
+    <button data-v="all">전체</button><button data-v="buy">매수</button><button data-v="near">임박</button><button data-v="sell">매도</button><button data-v="val">💎 저평가</button><button data-v="win" title="과거 같은 방향 신호의 적중률이 50% 이상인 종목만 (표본 5회 이상). 다른 갈래와 함께 켜면 그 안에서 다시 걸러냅니다">🎯 적중 50%+</button>
   </div>
   <button class="btn" id="btn-notif" hidden>🔔 알림</button>
   <button class="btn" id="btn-rescan">↻ 다시 스캔</button>
@@ -253,27 +261,41 @@
   <div class="crit">
     <div class="card buy">
       <h4>▲ 매수 타이밍 기준</h4>
-      ① <b>MACD 골든크로스</b>: MACD선(12EMA−26EMA)이 시그널선(9EMA) 상향 돌파 ·
-      ② <b>MACD 0선 상향 돌파</b>: 12EMA가 26EMA 위로 ·
-      ③ <b>RSI(14) ≥ 50</b>.
-      최근 N봉 내 ①·② 발생 + ③ 충족 = <b>매수 신호</b>, 모두 겹치면 <b>강력 매수</b>.<br>
-      MACD+RSI의 후행성 보완: <b>히스토그램 반전 · 스토캐스틱(14,3,3) 과매도 골든 · RSI 30 탈출 ·
-      상승 다이버전스 · BB 하단 복귀</b> 중 <b>2개 이상</b> 겹치면 크로스 확정 전에 <b>조기 매수</b>로,
-      갭 축소 외삽으로는 <b>매수 임박</b>으로 먼저 표시하고, 발생 시점에 🔔 브라우저 알림을 보냅니다.<br>
-      신호 속도: <b>⚡빠름</b>은 MACD 8·17·9 + RSI 9로 같은 기준을 더 짧은 주기로 계산해 신호를 1~3봉
-      먼저 잡는 대신 거짓 신호(휩쏘)가 늘어납니다. 종목 상세의 <b>신호 성과 검증</b>에서 표준과의
-      과거 적중률 차이를 확인하고 선택하세요. 신호봉의 <b>거래량</b>(20봉 평균 대비)과 <b>토스 수급</b>이
-      신호 방향과 일치하면 확인 칩·초록 점으로, 어긋나면 경고 칩으로 신뢰도를 표시합니다.
+      <p class="lead">이 세 가지를 봅니다</p>
+      <ul class="cl">
+        <li><b>① 골든크로스</b><span>MACD선이 시그널선을 위로 뚫는다</span></li>
+        <li><b>② 0선 돌파</b><span>MACD선이 0 위로 올라선다</span></li>
+        <li><b>③ RSI 50 이상</b><span>상승에 힘이 실렸다는 확인</span></li>
+      </ul>
+      <p class="lead">그래서 이렇게 나옵니다</p>
+      <ul class="cl">
+        <li><b>강력 매수</b><span>①·②·③ 모두 충족</span></li>
+        <li><b>매수 신호</b><span>최근 N봉 안에 ① 또는 ② + ③ 충족</span></li>
+        <li><b>조기 매수</b><span>크로스 전이지만 선행 지표 2개 이상이 먼저 돌아섬</span></li>
+        <li><b>매수 임박</b><span>곧 크로스가 날 흐름. 발생하면 🔔 알림</span></li>
+      </ul>
+      <p class="tail">선행 지표: 히스토그램 반전, 스토캐스틱 과매도 골든, RSI 30 탈출, 상승 다이버전스, 볼린저 하단 복귀</p>
     </div>
     <div class="card sell">
-      <h4>▼ 매도 타이밍 기준 (정반대)</h4>
-      ① <b>MACD 데드크로스</b> · ② <b>0선 하향 이탈</b> · ③ <b>RSI(14) &lt; 50</b>.
-      최근 N봉 내 ①·② 발생 + ③ 충족 = <b>매도 신호</b>, 모두 겹치면 <b>강력 매도</b>.
-      히스토그램 반전↓·스토캐스틱 과열 데드·RSI 70 이탈·하락 다이버전스·BB 상단 복귀가 2개↑ 겹치면 <b>조기 매도</b>.<br>
-      <b>외국인</b> 열은 외국인 보유한도 소진율의 최근 변화로, (+)면 외국인 순매수 유입, (−)면 이탈 흐름입니다(국내 전용이라 미국 종목은 빈칸입니다).
-      종목 행을 클릭하면 차트와 상세 근거를 볼 수 있습니다. 스윙은 60·120분봉, 장기는 일봉 기준입니다.
+      <h4>▼ 매도 타이밍 기준</h4>
+      <p class="lead">매수의 정반대입니다</p>
+      <ul class="cl">
+        <li><b>① 데드크로스</b><span>MACD선이 시그널선을 아래로 뚫는다</span></li>
+        <li><b>② 0선 이탈</b><span>MACD선이 0 아래로 내려간다</span></li>
+        <li><b>③ RSI 50 미만</b><span>상승 힘이 빠졌다는 확인</span></li>
+      </ul>
+      <p class="lead">그래서 이렇게 나옵니다</p>
+      <ul class="cl">
+        <li><b>강력 매도</b><span>①·②·③ 모두 충족</span></li>
+        <li><b>매도 신호</b><span>최근 N봉 안에 ① 또는 ② + ③ 충족</span></li>
+        <li><b>조기 매도</b><span>크로스 전이지만 선행 지표 2개 이상이 먼저 돌아섬</span></li>
+        <li><b>매도 임박</b><span>곧 크로스가 날 흐름. 발생하면 🔔 알림</span></li>
+      </ul>
+      <p class="tail">선행 지표: 히스토그램 반전, 스토캐스틱 과열 데드, RSI 70 이탈, 하락 다이버전스, 볼린저 상단 복귀</p>
     </div>
   </div>
+  <p class="crit-tip">N은 위 <b>신호 인정</b> 범위입니다. 종목 행을 클릭하면 차트와 판정 근거를 볼 수 있습니다.
+  스윙은 60·120분봉, 장기는 일봉 기준이고, 지표 계산식과 각 열의 뜻은 맨 아래 설명에 있습니다.</p>
 
   <div class="statusline">
     <span id="st-scan">-</span>
@@ -322,6 +344,11 @@
   미국 시장은 표시 상위 50이 아니라 <b>스캔한 전체 유니버스</b>에서 찾습니다(ETF·적자 기업 제외).
   다만 일회성 이익이나 경기순환 고점에서는 PER이 낮아 보이는 <b>밸류 트랩</b>이 섞입니다.
   매수·조기 매수 신호와 겹치는 종목을 먼저 보고, 낙폭의 원인이 실적 악화인지 확인하세요.<br>
+  <b>🎯 적중 50%+</b> 필터는 이 종목의 과거 봉에 같은 판정 로직을 다시 돌려 나온 <b>같은 방향 신호의 적중률</b>이 50% 이상인 종목만 남깁니다.
+  표본 5회 미만은 우연일 수 있어 인정하지 않고, 적중률을 아직 계산하지 못한 종목도 통과시키지 않습니다.
+  다른 갈래(매수·임박·매도·저평가)는 서로 합집합이지만 이 필터는 그 결과를 <b>한 번 더 거르는 조건</b>이라,
+  매수와 함께 켜면 매수 신호 중 적중률 50% 이상만 보입니다. 적중률은 표에 올라온 종목에 대해 계산하므로
+  저평가와 함께 켜면 결과가 크게 좁아질 수 있습니다. 과거 성적일 뿐 앞으로를 보장하지 않습니다.<br>
   <b>⭐ 관심 시장</b>은 각 시장에서 종목 이름 옆 ☆로 담은 종목을 한 화면에서 감시하는 워치리스트입니다(브라우저에 저장).
   직접 추가는 국내 6자리 코드(코스닥은 뒤에 .KQ)나 미국 티커를 넣으면 됩니다.
   직접 추가한 종목은 이름이 코드로 표시되고, 시세는 차트 기준이라 개별주 실시간보다 수십 초 늦을 수 있습니다.
@@ -802,8 +829,11 @@ const store=(k,v)=>{ try{ if(v===undefined) return localStorage.getItem('alphade
 /* 판정 필터는 여러 갈래를 동시에 켤 수 있다: 켠 갈래 중 하나라도 맞으면 표시(합집합).
    아무것도 켜지 않으면 전체. 저평가만 후보 풀이 다르다: 미국은 포지션 강도 상위 50만 표에
    올리는데, 저평가 종목은 그 절단 밖에 있는 경우가 많아 절단 전 전체에서 찾는다. */
-const FILTER_KEYS=['buy','near','sell','val'];
+const FILTER_KEYS=['buy','near','sell','val','win'];
 const FILTER_SETS={buy:['buy2','buy1','ebuy'],near:['nbuy','nsell','ebuy','esell'],sell:['sell2','sell1','esell']};
+const WIN_MIN=50;                          // 적중률 문턱(%)
+const FILTER_OR=['buy','near','sell','val'];   // 서로 합집합인 갈래
+
 function parseFilter(s){
   const a=String(s==null?'':s).split(',').map(v=>v.trim()).filter(v=>FILTER_KEYS.indexOf(v)>=0);
   return a.filter((v,i)=>a.indexOf(v)===i);
@@ -816,20 +846,30 @@ function toggleFilter(cur,v){
   if(i>=0) a.splice(i,1); else a.push(v);
   return a;
 }
-// rows=표에 올릴 후보(절단 후) · all=절단 전 전체. keyOf/cheap 은 호출부가 넘긴다.
-function applyFilter(sel,rows,all,keyOf,cheap){
+/* rows=표에 올릴 후보(절단 후) · all=절단 전 전체. keyOf/cheap/winOf 는 호출부가 넘긴다.
+   매수·임박·매도·저평가는 서로 합집합이고, 적중 50%+ 는 그 결과를 한 번 더 거르는 조건이다.
+   적중률만 켜면 표시 후보 전체에서 문턱을 넘는 종목을 고른다.
+   winOf 가 null 이면(표본 부족·계산 전) 통과시키지 않는다: 모르는 것을 50% 이상이라고 할 수 없다. */
+function applyFilter(sel,rows,all,keyOf,cheap,winOf){
   if(!sel||!sel.length) return rows;
-  const shown={}; for(const x of rows) shown[keyOf(x)]=1;
-  const wantVal=sel.indexOf('val')>=0;
-  const sets=sel.filter(v=>v!=='val').map(v=>FILTER_SETS[v]).filter(Boolean);
-  const out=[], seen={};
-  for(const x of (wantVal?all:rows)){
-    if(!x||!x.j) continue;
-    const k=keyOf(x); if(seen[k]) continue;
-    // 신호 갈래는 표에 올라온 종목 안에서만: 저평가처럼 절단 밖까지 넓히지 않는다
-    if((wantVal&&cheap(x)) || (sets.length&&shown[k]&&sets.some(g=>g.indexOf(x.j.v)>=0))){ seen[k]=1; out.push(x); }
+  const or=sel.filter(v=>FILTER_OR.indexOf(v)>=0);
+  const wantWin=sel.indexOf('win')>=0;
+  let base=rows;
+  if(or.length){
+    const shown={}; for(const x of rows) shown[keyOf(x)]=1;
+    const wantVal=or.indexOf('val')>=0;
+    const sets=or.filter(v=>v!=='val').map(v=>FILTER_SETS[v]).filter(Boolean);
+    const out=[], seen={};
+    for(const x of (wantVal?all:rows)){
+      if(!x||!x.j) continue;
+      const k=keyOf(x); if(seen[k]) continue;
+      // 신호 갈래는 표에 올라온 종목 안에서만: 저평가처럼 절단 밖까지 넓히지 않는다
+      if((wantVal&&cheap(x)) || (sets.length&&shown[k]&&sets.some(g=>g.indexOf(x.j.v)>=0))){ seen[k]=1; out.push(x); }
+    }
+    base=out;
   }
-  return out;
+  if(!wantWin) return base;
+  return base.filter(x=>{ const w=winOf?winOf(x):null; return w!=null&&w>=WIN_MIN; });
 }
 const filterKeyOf=x=>x.u.code+'|'+x.u.mkt;
 /*FLT-END*/
@@ -1703,7 +1743,7 @@ function render(){
   document.getElementById('th-frgn').textContent=MODES[MODE].frgnLbl;
   document.getElementById('th-rsi').textContent='RSI('+SPEEDS[SPEED].rsiN+')';
   const tb=document.getElementById('tbody');
-  const rows=applyFilter(FILTER,ROWS.filter(x=>x.j),ROWS_ALL,filterKeyOf,isCheap);
+  const rows=applyFilter(FILTER,ROWS.filter(x=>x.j),ROWS_ALL,filterKeyOf,isCheap,perfWinOf);
   const nOf=ks=>ROWS.filter(x=>x.j&&ks.includes(x.j.v)).length;
   const buyN=nOf(['buy2','buy1','ebuy']), sellN=nOf(['sell2','sell1','esell']), nearN=nOf(['nbuy','nsell','ebuy','esell']);
   const valN=ROWS_ALL.reduce((a,x)=>a+((x.j&&isCheap(x))?1:0),0);
@@ -1712,8 +1752,14 @@ function render(){
       +(FULLN>ROWS.length?' / 전체 '+FULLN+'종목 중 포지션 상위 '+ROWS.length+' 제안':' / '+ROWS.length+'종목')):'';
   if(!rows.length){
     const valPend=Object.keys(VAL).some(k=>VAL[k].inflight);
+    const winPend=FILTER.indexOf('win')>=0&&ROWS.length&&ROWS.filter(x=>perfWinOf(x)!=null).length<ROWS.length/2;
     tb.innerHTML='<tr><td colspan="11"><div class="note-empty">'+
-      (FILTER.indexOf('val')>=0&&ROWS.length
+      (FILTER.indexOf('win')>=0&&ROWS.length
+        ? (winPend?'적중률을 계산하는 중입니다. 잠시 후 자동으로 표시됩니다.'
+          :'과거 같은 방향 신호의 적중률이 '+WIN_MIN+'% 이상인 종목이 없습니다.<br>'
+            +'적중률은 표본 5회 이상일 때만 인정하므로, 신호가 드문 종목은 여기에 들어오지 않습니다. '
+            +'다른 갈래를 함께 껐다 켜 보거나 신호 인정 범위를 넓혀 보세요.')
+      : (FILTER.indexOf('val')>=0&&ROWS.length
         ? (isETFm(MKT)?'ETF는 PER·PBR 개념이 없어 저평가 발굴을 지원하지 않습니다. 개별주 시장을 선택해 주세요.'
           : valPend?'밸류에이션(PER·PBR) 수집 중입니다… 잠시 후 자동으로 표시됩니다.'
           : '저평가 조건(흑자 PER '+(isUSm(MKT)?'15':'10')+'배 이하 · ROE 8% 이상 · 52주 고점 대비 −20% 이하)을 동시에 충족하는 종목이 없습니다.<br>'
@@ -1721,7 +1767,7 @@ function render(){
         : ROWS.length? '현재 조건(최근 '+LOOK+unit()+' 이내 크로스 + RSI 기준)을 충족하는 종목이 없습니다.<br>'
         +'신호 인정 범위를 늘리거나 필터를 전체로 바꿔 임박·추세 유지 종목까지 확인해 보세요.'
         : (MKT==='watch'&&!WATCH.length? '관심 종목이 아직 없습니다.<br>각 시장에서 종목 이름 옆 <b>☆</b>를 눌러 담거나, 위 종목 추가 입력창에 코드·티커를 넣어 주세요.'
-        : SCANNING?'차트 수집 중…':'데이터가 아직 없습니다. 다시 스캔을 눌러 주세요.'))+'</div></td></tr>';
+        : SCANNING?'차트 수집 중…':'데이터가 아직 없습니다. 다시 스캔을 눌러 주세요.')))+'</div></td></tr>';
     return;
   }
   const MKCHIP={kospi:'KOSPI',kosdaq:'KOSDAQ',sp500:'S&amp;P500',nasdaq:'NASDAQ',russell2000:'RUSSELL',kretf:'ETF·KR',usetf:'ETF·US',us:'US'};
