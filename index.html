@@ -328,17 +328,6 @@
   .srow .art{font-size:0.625rem;color:var(--accent2);font-weight:700;text-decoration:none;white-space:nowrap}
   .srow .art:hover{text-decoration:underline}
   .sched-empty{color:var(--muted2);font-size:0.7188rem;padding:8px 2px}
-  /* 연기금 매매동향 */
-  .nps-cols{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px}
-  @media(max-width:1180px){ .nps-cols{grid-template-columns:1fr 1fr} }
-  .nps-col h6{margin:0 0 4px;font-size:0.6875rem;font-weight:800;letter-spacing:.2px}
-  .nps-col h6.up{color:var(--up)} .nps-col h6.down{color:var(--down)}
-  .nps-row{display:flex;justify-content:space-between;align-items:baseline;gap:6px;padding:4px 1px;border-bottom:1px solid #141d31;cursor:pointer}
-  .nps-row:last-child{border-bottom:none}
-  .nps-row:hover{background:#101a2e}
-  .nps-row .nm{font-size:0.75rem;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .nps-row .amt{font-size:0.7188rem;font-weight:700;flex:none;font-variant-numeric:tabular-nums}
-  .nps-empty{color:var(--muted2);font-size:0.7188rem;padding:6px 2px;line-height:1.6}
 
   /* 심층 분석 패널 */
   .deep .head{align-items:flex-start}
@@ -479,33 +468,6 @@
   .src{font-size:0.6562rem;color:var(--muted2);margin-top:10px;border-top:1px dashed var(--border);padding-top:8px}
   .src b{color:var(--accent2)}
 
-  /* 테마 리포트 카드 */
-  .themes{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-  .theme{border:1px solid var(--border);border-radius:12px;background:var(--panel2);padding:12px}
-  .theme .t-top{display:flex;align-items:center;gap:8px;margin-bottom:7px}
-  .theme h4{margin:0;font-size:0.875rem;font-weight:800}
-  .theme .desk{font-size:0.6562rem;color:var(--muted)}
-  .theme ul{margin:6px 0;padding-left:16px;font-size:0.8125rem;color:#c6d2e4}.theme li{margin:3px 0}
-  .theme .picks{font-size:0.75rem;color:var(--muted);margin-top:6px}
-  .theme .picks b{color:var(--text)}
-  .theme .cat{font-size:0.75rem;color:var(--accent);margin-top:5px}
-  /* 섹터 데스크 — 스코어·신뢰도·경고·구조적 논지 */
-  .theme .t-score{margin-left:6px;font-weight:800;font-variant-numeric:tabular-nums}
-  .theme .t-score.sc-p{color:var(--up)} .theme .t-score.sc-n{color:var(--down)}
-  .theme .t-conf{margin-left:6px;font-size:0.5938rem;padding:0 5px;border-radius:4px;border:1px solid var(--border)}
-  .theme .t-conf.cf-hi{color:#22c55e;border-color:#14532d} .theme .t-conf.cf-md{color:var(--gold);border-color:#4a3a12} .theme .t-conf.cf-lo{color:var(--muted2)}
-  .theme .t-thesis{font-size:0.6875rem;color:var(--muted2);border-left:2px solid var(--border);padding-left:7px;margin:6px 0 2px}
-  .theme .t-warns{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
-  .theme .t-warn{font-size:0.625rem;color:#f0b90b;background:rgba(240,185,11,.10);border:1px solid #4a3a12;border-radius:5px;padding:1px 6px}
-  .thm-refresh{margin-left:auto;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--muted);
-    border-radius:999px;padding:4px 11px;font-size:0.6875rem;font-weight:700;font-family:inherit;white-space:nowrap}
-  .thm-refresh:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
-  .thm-refresh:disabled{opacity:.5;cursor:progress}
-  .thm-riskoff{margin:0 0 10px;padding:7px 11px;border-radius:9px;font-size:0.75rem;font-weight:700;
-    color:#f0b90b;background:rgba(240,185,11,.08);border:1px solid #4a3a12}
-  .thm-caveat{margin-top:11px;font-size:0.6562rem;color:var(--muted2);line-height:1.5}
-  .theme .t-perf{margin-left:auto;text-align:right;font-size:0.8125rem;font-weight:800;white-space:nowrap;line-height:1.1}
-  .theme .t-perf small{display:block;font-size:0.5312rem;color:var(--muted2);font-weight:600}
   /* 공포·탐욕 지수 게이지 */
   .fng{padding:10px 14px 13px}
   .fng-top{display:flex;align-items:baseline;gap:9px}
@@ -583,7 +545,7 @@
 
 <header class="topbar">
   <div class="brand"><div class="logo">S</div>써니의&nbsp;투자&nbsp;인사이트</div>
-  <nav class="mainnav"><a href="index.html" class="active">대시보드</a><a href="schedule.html">일정</a><a href="videos.html">추천 영상</a><a href="heatmap.html">히트맵</a><a href="signals.html">매매 시그널</a><a href="plan.html">분할 플래너</a><a href="yieldgap.html">일드갭</a></nav>
+  <nav class="mainnav"><a href="index.html" class="active">대시보드</a><a href="sectors.html">섹터 가이드</a><a href="schedule.html">일정</a><a href="videos.html">추천 영상</a><a href="heatmap.html">히트맵</a><a href="signals.html">매매 시그널</a><a href="plan.html">분할 플래너</a><a href="yieldgap.html">일드갭</a></nav>
   <div class="status-pills">
     <span class="pill" title="KOSPI·KOSDAQ (서울 KST) — 프리마켓 08:00–09:00 · 정규장 09:00–15:30 · 애프터마켓 15:30–20:00"><span class="dot" id="krx-dot"></span>KOSPI <b id="krx-st">—</b></span>
     <span class="pill" title="NASDAQ (서울 KST) — 데이마켓 09:00–17:00 · 프리마켓 17:00–22:30 · 정규장 22:30–05:00 · 애프터마켓 05:00–09:00"><span class="dot" id="us-dot"></span>NASDAQ <b id="us-st">—</b></span>
@@ -666,10 +628,6 @@
       <div class="body" style="padding:8px 12px" id="sched"></div>
     </div>
 
-    <div class="card nps-card">
-      <div class="head" style="flex-wrap:wrap;gap:6px"><h3>🏛️ 연기금 매매동향</h3><span class="tag" id="nps-when">일별</span></div>
-      <div class="body" id="nps-body" style="padding:8px 12px"></div>
-    </div>
 
     <div class="card" id="tf-card" style="display:none">
       <div class="head" style="flex-wrap:wrap;gap:6px"><h3>💰 투자자별 매매동향</h3>
@@ -702,21 +660,6 @@
       <div class="tabpane" id="pane-report"></div>
     </div>
 
-    <div class="card">
-      <div class="head" style="flex-wrap:wrap;gap:6px 8px">
-        <h3>섹터 전문가 데스크</h3>
-        <div class="seg" id="thm-tabs">
-          <button data-m="kr" class="on">🇰🇷 한국</button>
-          <button data-m="us">🇺🇸 미국</button>
-        </div>
-        <span class="tag" id="thm-when">계산 중…</span>
-        <button class="thm-refresh" id="thm-refresh" title="캐시를 무시하고 지금 다시 계산합니다">↻ 갱신</button>
-      </div>
-      <div class="body">
-        <div id="thm-banner"></div>
-        <div class="themes" id="themes"></div>
-        <div class="thm-caveat" id="thm-caveat"></div>
-      </div>
     </div>
   </div>
 
@@ -1102,16 +1045,6 @@ let SAMPLE_VIDEOS = [   // 폴백(로드 전 잠깐 표시) — 실제는 /api/v
   {ti:'HBM 전쟁 2라운드: 삼성 vs SK하이닉스',ch:'한국경제TV',viewsKo:'14만',tm:'1일 전'},
 ];
 
-/* ---- 테마 데스크 리포트 ---- */
-/* 초기 플레이스홀더 — 비중 의견은 /api/themes 가 실시세로 산출한다(하드코딩된 의견을 두지 않는다). */
-const SAMPLE_THEMES = ['AI · 반도체','방산 · 우주','원전 · 전력기기','조선 · 기계','2차전지 · 소재','바이오 · 헬스케어','금융 · 밸류업']
-  .map(nm=>({ nm, desk:'섹터 데스크', op:'op-void', opTxt:'계산 중', score:null, conf:null, warns:[],
-    pts:['추세·지수 대비 상대강도·폭·리스크를 실시세로 계산하는 중입니다.'], picks:[], cat:null }));
-let THEMES = SAMPLE_THEMES.slice();     // /api/themes(라이브 산출) → data/themes_{mkt}.json(폴백)으로 교체
-let THEME_META = null;                  // {_updated, benchmark, riskOff, caveat}
-let THEME_MKT = (()=>{ try{ return localStorage.getItem('alphadesk.thmkt')==='us'?'us':'kr'; }catch(e){ return 'kr'; } })();
-let thmLoading = false;
-
 /* ---- 분석 엔진 매핑 ---- */
 const ENGINE = [
   {k:'시황 · 지표',v:'야후 파이낸스(지표·시세) · 美 재무부(국채 2년물) · Binance(비트코인)'},
@@ -1456,43 +1389,6 @@ async function loadCalendar(){
   }
   CAL_EVENTS=events; CAL_TODAY=calToday(); renderSched();   // '오늘'은 항상 KST 현재 날짜 — 스냅샷 생성 시점(UTC) 날짜에 끌려가면 새벽·자정 넘김에 일정이 안 움직인다 (5분 주기 재로드로 자정 자동 롤오버)
   lsWrite(CAL_LS, {events:events, today:CAL_TODAY});   // 직전 일정 보관(다음 진입 즉시 시드)
-}
-/* ---- 테마별 전문가 데스크 — /api/themes (없으면 data/themes.json, 둘 다 없으면 큐레이션 폴백) ---- */
-/* 섹터 데스크 — /api/themes?mkt=kr|us (실시세로 비중의견 산출). fresh=true면 캐시 무시하고 즉시 재계산. */
-async function loadThemes(fresh){
-  if(thmLoading) return; thmLoading=true;
-  const btn=document.getElementById('thm-refresh'), when=document.getElementById('thm-when');
-  if(btn) btn.disabled=true;
-  if(when) when.textContent = fresh?'재계산 중…':'계산 중…';
-  const mkt=THEME_MKT;
-  let live=null, snap=null;
-  const qs='?mkt='+mkt+(fresh?('&fresh=1&_='+Date.now()):'');
-  try{ const r=await fetch('/api/themes'+qs,{cache:fresh?'no-store':'default'}); if(r.ok) live=await r.json(); }catch(e){}
-  if(!live || !live.themes || !live.themes.length){
-    try{ const r=await fetch('data/themes_'+mkt+'.json?t='+Date.now(),{cache:'no-store'}); if(r.ok) snap=await r.json(); }catch(e){}
-  }
-  const base=(live&&live.themes&&live.themes.length)?live:snap;
-  if(mkt!==THEME_MKT){ if(btn) btn.disabled=false; thmLoading=false; return; }   // 로딩 중 시장이 바뀌었으면 이 응답은 버린다
-  if(base && base.themes && base.themes.length){ THEMES=base.themes; THEME_META=base; renderThemes(); }
-  else {   // 라이브·폴백 모두 실패 → 이전 시장의 카드·배너·고지가 남지 않도록 초기화
-    THEMES=SAMPLE_THEMES.slice(); THEME_META=null; renderThemes();
-    if(when) when.textContent='산출 실패 — 잠시 후 다시 시도';
-  }
-  if(btn) btn.disabled=false; thmLoading=false;
-}
-function bindThemeTabs(){
-  const tabs=document.getElementById('thm-tabs');
-  if(tabs){
-    tabs.querySelectorAll('button').forEach(b=>{
-      b.classList.toggle('on', b.dataset.m===THEME_MKT);
-      b.onclick=()=>{ if(b.dataset.m===THEME_MKT||thmLoading) return;
-        THEME_MKT=b.dataset.m; try{ localStorage.setItem('alphadesk.thmkt',THEME_MKT); }catch(e){}
-        tabs.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset.m===THEME_MKT));
-        loadThemes(); };
-    });
-  }
-  const rb=document.getElementById('thm-refresh');
-  if(rb) rb.onclick=()=>loadThemes(true);
 }
 /* ---- 공포·탐욕 지수 — /api/feargreed (CNN) → data/feargreed.json 폴백 ---- */
 const FNG_COLOR={ef:'#cf202f',f:'#e8833a',n:'#f4b000',g:'#6cc04a',eg:'#05b169'};
@@ -2301,42 +2197,6 @@ async function loadStockReports(sym, row){
 }
 
 /* 테마 */
-function renderThemes(){
-  const box=document.getElementById('themes'); if(!box) return;
-  box.innerHTML = THEMES.map(t=>{
-    const perfHtml = (typeof t.perf==='number')
-      ? `<span class="t-perf ${cls(t.perf)}">${arr(t.perf)} ${sign(t.perf)}%<small>바스켓 오늘</small></span>` : '';
-    const picksHtml = (Array.isArray(t.picks) && t.picks.length)
-      ? t.picks.map(p=>`<b>${p.name}</b>${typeof p.pct==='number'?` <span class="${cls(p.pct)} mono">${sign(p.pct)}%</span>`:''}`).join('  ')
-      : (typeof t.picks==='string' ? `<b>${t.picks}</b>` : '');
-    const catHtml = (t.cat && typeof t.cat==='object')   // 촉매 뉴스는 외부 RSS 문자열 → 이스케이프 필수
-      ? `<a href="${calEsc(articleHref(t.cat.link))}" ${t.cat.link?'target="_blank" rel="noopener"':'onclick="return false"'} style="color:inherit">📰 ${calEsc(t.cat.ti)}</a> <small style="color:var(--muted2)">${calEsc([t.cat.src,t.cat.tm].filter(Boolean).join(' · '))}</small>`
-      : (typeof t.cat==='string' ? calEsc(t.cat) : '');
-    const scoreHtml = (typeof t.score==='number')
-      ? `<span class="t-score ${t.score>=0?'sc-p':'sc-n'}" title="종합 스코어(리스크 감점 반영) −100~+100">${t.score>=0?'+':''}${t.score}</span>` : '';
-    const confHtml = (t.confBand)
-      ? `<span class="t-conf cf-${t.confBand==='높음'?'hi':(t.confBand==='보통'?'md':'lo')}" title="시그널 일치도·데이터 품질 기반 신뢰도 ${t.conf}">신뢰도 ${t.confBand}</span>` : '';
-    const warnHtml = (Array.isArray(t.warns) && t.warns.length)
-      ? `<div class="t-warns">${t.warns.map(w=>`<span class="t-warn">⚠ ${w}</span>`).join('')}</div>` : '';
-    const thesisHtml = t.thesis ? `<div class="t-thesis">구조적 논지 · ${t.thesis}</div>` : '';
-    return `<div class="theme">
-      <div class="t-top"><span class="opinion ${t.op}">${t.opTxt}</span>
-        <div><h4>${t.nm}</h4><div class="desk">${t.desk}${scoreHtml}${confHtml}</div></div>${perfHtml}</div>
-      ${thesisHtml}
-      <ul>${t.pts.map(p=>`<li>${p}</li>`).join('')}</ul>
-      ${warnHtml}
-      ${picksHtml?`<div class="picks">관심: ${picksHtml}</div>`:''}
-      ${catHtml?`<div class="cat">${catHtml}</div>`:''}
-    </div>`;
-  }).join('');
-  const ban=document.getElementById('thm-banner');
-  if(ban) ban.innerHTML = (THEME_META && THEME_META.riskOff)
-    ? `<div class="thm-riskoff">⚠ 시장 리스크오프 — ${THEME_META.benchmark} 20일 −8% 이하. 전 섹터 비중확대를 한 단계 보수적으로 조정했습니다.</div>` : '';
-  const cav=document.getElementById('thm-caveat');
-  if(cav) cav.textContent = (THEME_META && THEME_META.caveat) || '';
-  const when=document.getElementById('thm-when');
-  if(when && THEME_META) when.textContent = `${THEME_META.benchmark||''} 기준 · ${fmtCollected(THEME_META._updated)} 산출`;
-}
 
 /* 뉴스/영상 */
 let newsFilter='all';   // all | kr | us
@@ -2392,26 +2252,6 @@ function renderVideos(){
 async function loadVideos(){
   const d=await fetchLive('/api/videos','data/videos.json');
   if(d && d.items && d.items.length){ SAMPLE_VIDEOS=d.items; renderVideos(); }
-}
-/* ---- 연기금(국민연금 등) 일일 순매수/순매도 — data/nps.json (pykrx·GitHub Actions 수집) ---- */
-let NPS=null;
-function renderNps(){
-  const host=document.getElementById('nps-body'); if(!host) return;
-  const d=NPS, has=d&&((d.buy&&d.buy.length)||(d.sell&&d.sell.length));
-  if(!has){
-    host.innerHTML='<div class="nps-empty">연기금 매매 데이터를 준비 중입니다.<br><a href="http://data.krx.co.kr/contents/MDC/MDI/mdiLoader/index.cmd?menuId=MDC0201020404" target="_blank" rel="noopener" style="color:var(--accent2);font-weight:700">KRX에서 직접 보기 ↗</a> <span style="color:var(--muted2);font-size:0.625rem">(평일 장 마감 후 갱신)</span></div>';
-    return;
-  }
-  const when=document.getElementById('nps-when');
-  if(when&&d.date) when.textContent=d.date.slice(0,4)+'.'+d.date.slice(4,6)+'.'+d.date.slice(6,8);
-  const row=(x,c)=>`<div class="nps-row" onclick="searchAndAdd('${(x.name||'').replace(/['\\]/g,'')}')" title="관심종목 담기"><span class="nm">${x.name||x.ticker}</span><span class="amt mono" style="color:${c}">${fmt(Math.round(Math.abs(x.amt)))}억</span></div>`;
-  host.innerHTML=`<div class="nps-cols">
-    <div class="nps-col"><h6 class="up">▲ 순매수 TOP</h6>${(d.buy||[]).slice(0,8).map(x=>row(x,'var(--up)')).join('')||'<div class="nps-empty">없음</div>'}</div>
-    <div class="nps-col"><h6 class="down">▼ 순매도 TOP</h6>${(d.sell||[]).slice(0,8).map(x=>row(x,'var(--down)')).join('')||'<div class="nps-empty">없음</div>'}</div>
-  </div>`;
-}
-async function loadNps(){
-  try{ const r=await fetch('data/nps.json?t='+Date.now(),{cache:'no-store'}); if(r.ok){ NPS=await r.json(); renderNps(); } }catch(e){}
 }
 function bindNewsTabs(){
   document.querySelectorAll('#news-tabs button').forEach(b=>b.addEventListener('click',()=>{
@@ -3517,14 +3357,13 @@ seedDeepFromCache();                                                            
 if(!seedNewsFromCache()) SAMPLE_NEWS=[];                                        // 보관본 즉시 시드, 없으면 가짜 예시 대신 '불러오는 중'
 seedMarketFromCache();                                                          // 데모값 대신 직전 시세 즉시 시드(과거값 깜빡임 방지)
 seedCalFromCache();                                                             // 빈 일정 대신 직전 일정 즉시 시드
-renderStrip(); renderWL(); renderSched(); renderDeep(); renderThemes(); renderNews(); bindNewsTabs(); bindThemeTabs(); renderFooter(); tick(); renderNps();
+renderStrip(); renderWL(); renderSched(); renderDeep(); renderNews(); bindNewsTabs(); renderFooter(); tick();
 renderHmDataset();
 loadWatchlistBaseline();                                                       // 저장본 없으면 data/watchlist.json 시드
 cloudInit();                                                                   // 서버(KV) 동기화 — 있으면 서버값 우선, 없으면 무중단 폴백
 loadMarket(); loadWatch(); loadBTC(); loadDeep();                              // 임계(상단 시세·관심종목·심층)
 idleLoad(()=>{ loadCalendar(); loadFearGreed(); }, 1);
-idleLoad(()=>{ loadNewsLive(); loadThemes(); }, 2);
-idleLoad(()=>{ loadNps(); loadTossFlow(); loadTossCal(); }, 3);                // 연기금·토스 수급·휴장 캘린더
+idleLoad(()=>{ loadTossFlow(); loadTossCal(); }, 3);                            // 토스 수급·휴장 캘린더
 idleLoad(()=>{ loadStripCandles(); }, 4);                                      // 지표 미니캔들(합성 프리뷰 이미 표시)
 renderHmControls2();
 setupHeatmapLazy();
@@ -3542,9 +3381,7 @@ TF_TIMER=setInterval(loadTossFlow,600000);       // 토스 투자자별 수급 1
 setInterval(loadBTC,5000);                       // 비트코인 5초(바이낸스 실시간)
 setInterval(loadNewsLive,60000);                 // 뉴스 60초
 setInterval(loadCalendar,300000);                // 일정 5분
-setInterval(()=>loadThemes(),600000);            // 섹터 데스크 10분(서버 캐시 30분 — 즉시 재계산은 ↻ 갱신)
 setInterval(loadFearGreed,600000);               // 공포탐욕 10분
-setInterval(loadNps,600000);                     // 연기금 매매동향 10분(일별 데이터 · 재배포 반영용)
 
 /* 창 리사이즈 중 가변 폰트(vw clamp)의 연속 리플로우 완화(특히 맥에서 버벅임) —
    드래그 중엔 루트 글씨를 고정해 매 프레임 텍스트 재배치를 막고, 크기가 확정(180ms 안정)되면 한 번에 적용.

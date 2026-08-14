@@ -7,9 +7,13 @@ Cloudflare Pages 로 배포되는 투자 대시보드입니다. 페이지는 정
 | 페이지 | 파일 |
 |---|---|
 | 대시보드 | `index.html` |
+| 섹터별 투자 가이드 | `sectors.html` |
 | 매매 시그널 | `signals.html` |
 | 분할 플래너 | `plan.html` |
 | 히트맵 · 금리차 · 일정 · 영상 | `heatmap.html` · `yieldgap.html` · `schedule.html` · `videos.html` |
+
+섹터 전문가 데스크는 대시보드에서 `sectors.html` 로 옮겼습니다 — 섹터마다 현황·촉매·전망·시나리오·집중 종목·실행 가이드를 한 화면에 정리합니다.
+연기금 매매동향 카드는 제거했습니다(`pipeline/fetch_nps.py` 는 남아 있으나 화면에서 쓰지 않습니다).
 
 `capex.html`(AI투자처 찾기)·`news.html`(실시간 뉴스)은 현재 숨김 상태입니다. 파일은 보존돼 있고,
 `/api/news` 는 `_routes.json` 의 `exclude` 로 정지시켜 두었습니다.
