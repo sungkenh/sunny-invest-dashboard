@@ -47,7 +47,7 @@ jobs:
 
       - name: 데이터 재수집 (개별 실패 허용)
         working-directory: pipeline
-        env:                                  # 한국 뉴스(네이버 API) 키 — repo Secrets에 등록 필요
+        env:                                  # 한국 뉴스(네이버 API) 키. repo Secrets에 등록 필요
           NAVER_ID: ${{ secrets.NAVER_ID }}
           NAVER_SECRET: ${{ secrets.NAVER_SECRET }}
         run: |
@@ -76,7 +76,7 @@ jobs:
       - name: 심층분석(기업 생태계·투자지표) 사전 생성
         # 관심종목 ∪ 인기종목을 data/deep.json 에 병합(큐레이션 8종목은 보존).
         # → 모든 사용자·기기에서 /api/deep 호출 없이 즉시 표시. 실패해도 워크플로는 계속.
-        run: node pipeline/gen_deep.js || echo "::warning::deep 사전생성 실패(스킵 — 기존 deep.json 유지)"
+        run: node pipeline/gen_deep.js || echo "::warning::deep 사전생성 실패(스킵, 기존 deep.json 유지)"
 
       - name: 변경분 커밋·푸시
         id: commit
@@ -85,7 +85,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data
           if git diff --staged --quiet; then
-            echo "변경 없음 — 커밋 생략"
+            echo "변경 없음, 커밋 생략"
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             git commit -m "chore(data): 대시보드 스냅샷 자동 갱신"

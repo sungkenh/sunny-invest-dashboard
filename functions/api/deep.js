@@ -1,9 +1,9 @@
-// 종목 심층분석 온디맨드 생성 — /api/deep?sym=AAPL
+// 종목 심층분석 온디맨드 생성: /api/deep?sym=AAPL
 // 야후 quoteSummary(크럼)로 개요·투자지표, 실패 시 chart 메타로 폴백.
 // 큐레이션 7종목은 정적 data/deep.json이 담당 → 이 함수는 '신규 종목' 자동 생성.
 // Node 18+ 전역 fetch, 의존성 없음.
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36';
-// 워밍 인스턴스 캐시 — crumb(쿠키)·종목별 결과 재사용으로 반복 생성 지연 제거
+// 워밍 인스턴스 캐시: crumb(쿠키)·종목별 결과 재사용으로 반복 생성 지연 제거
 let CRUMB = { ts: 0, cookie: '', crumb: '' };
 const DCACHE = {};
 const TTL = 30 * 60 * 1000;
@@ -23,7 +23,7 @@ const SECTOR_CHAIN = {
 };
 const DEFAULT_CHAIN = ['업스트림 (공급)', '핵심 사업', '제품·서비스', '다운스트림 (수요)'];
 
-// 산업(industry)별 '기업 생태계' — 상위(공급·파트너)·하위(고객·전방) 실제 기업. [기업명, 역할].
+// 산업(industry)별 '기업 생태계': 상위(공급·파트너)·하위(고객·전방) 실제 기업. [기업명, 역할].
 // 기업명이 검색 가능하면 클릭 시 관심종목 담기. 위→아래 = 특정→일반(매칭 우선순위). (산업 리서치+검증)
 const ECO_NODES = [
   [/Semiconductor Equipment|Semiconductor.*Materials/i, { up: [["램리서치","식각·증착 장비"], ["도쿄일렉트론","전공정 장비"], ["신에쓰화학","실리콘 웨이퍼·소재"], ["엔테그리스","공정 소재·필터"], ["어플라이드머티어리얼즈","전공정 장비"]], down: [["TSMC","파운드리(장비 고객)"], ["삼성전자","메모리·파운드리 고객"], ["SK하이닉스","메모리 고객"], ["인텔","IDM 고객"], ["마이크론","메모리 고객"]] }],
@@ -143,14 +143,14 @@ async function getCrumb() {
   } catch (e) { /* fall through */ }
   return null;
 }
-// crumb 캐시(30분) — getCrumb의 2회 순차 요청(≈700ms)을 매 호출마다 반복하지 않음
+// crumb 캐시(30분): getCrumb의 2회 순차 요청(≈700ms)을 매 호출마다 반복하지 않음
 async function getCrumbCached() {
   if (CRUMB.crumb && Date.now() - CRUMB.ts < TTL) return { cookie: CRUMB.cookie, crumb: CRUMB.crumb };
   const c = await getCrumb();
   if (c && c.crumb) { CRUMB = { ts: Date.now(), cookie: c.cookie, crumb: c.crumb }; return c; }
   return CRUMB.crumb ? { cookie: CRUMB.cookie, crumb: CRUMB.crumb } : null;   // 만료 시 직전값 폴백
 }
-// 연관(추천 유사) 종목 — 독립 호출이라 병렬 실행
+// 연관(추천 유사) 종목: 독립 호출이라 병렬 실행
 async function fetchRecs(sym) {
   try {
     const u = 'https://query2.finance.yahoo.com/v6/finance/recommendationsbysymbol/' + encodeURIComponent(sym);
@@ -197,7 +197,7 @@ async function __cfHandler(event) {
   }
   const fresh = qp.fresh != null;   // 사용자 새로고침 → 캐시 우회
   const ck = sym.toUpperCase();
-  // 워밍 캐시 즉시 반환 — 단, 부실(degraded) 결과는 60초만 유지해 재생성 기회를 빨리 준다
+  // 워밍 캐시 즉시 반환: 단, 부실(degraded) 결과는 60초만 유지해 재생성 기회를 빨리 준다
   if (!fresh && DCACHE[ck] && Date.now() - DCACHE[ck].ts < (DCACHE[ck].deg ? 60 * 1000 : TTL)) return resp(DCACHE[ck].data, DCACHE[ck].deg);
 
   const kr = isKR(sym);
@@ -207,8 +207,8 @@ async function __cfHandler(event) {
   const cr = await getCrumbCached();             // crumb 캐시(첫 호출만 ≈700ms)
   const qs = await quoteSummary(sym, cr);
   const meta = qs ? null : await chartMeta(sym);
-  const degraded = !qs;                          // quoteSummary 실패 → 지표 대부분 누락(스텁) — 캐시 짧게, 클라이언트 자동 재생성
-  if (!qs && !meta) return resp({ error: 'unavailable', sym }, true);   // 완전 실패 — 짧은 캐시로 곧 재시도
+  const degraded = !qs;                          // quoteSummary 실패 → 지표 대부분 누락(스텁). 캐시 짧게, 클라이언트 자동 재생성
+  if (!qs && !meta) return resp({ error: 'unavailable', sym }, true);   // 완전 실패. 짧은 캐시로 곧 재시도
 
   const sd = (qs && qs.summaryDetail) || {};
   const fd = (qs && qs.financialData) || {};
@@ -272,10 +272,10 @@ async function __cfHandler(event) {
     overview = sector ? ('업종: ' + sector + (industry ? ' · ' + industry : '')) : '회사 개요 데이터가 아직 수집되지 않았습니다.';
   }
 
-  // 연관종목(추천 유사종목) — 위에서 병렬로 시작한 결과 수거(밸류체인·연관종목 공용)
+  // 연관종목(추천 유사종목): 위에서 병렬로 시작한 결과 수거(밸류체인·연관종목 공용)
   const recs = await recsP;
 
-  // 동종 비교(PER·PBR·PSR) — 연관종목 상위 4개의 지표를 병렬 quoteSummary로 수집
+  // 동종 비교(PER·PBR·PSR): 연관종목 상위 4개의 지표를 병렬 quoteSummary로 수집
   const peerSyms = (recs || []).map((r) => r[0]).filter((s) => s && s.toUpperCase() !== sym.toUpperCase()).slice(0, 4);
   const peerRows = (await Promise.all(peerSyms.map(async (ps) => {
     try {
@@ -291,7 +291,7 @@ async function __cfHandler(event) {
   }))).filter(Boolean);
   const peers = [{ sym, name, per, pbr, psr, self: true }].concat(peerRows);
 
-  // 밸류체인 — 산업별 구체 노드 + 실제 동종/경쟁 종목 주입
+  // 밸류체인: 산업별 구체 노드 + 실제 동종/경쟁 종목 주입
   const chain = buildChain(sector, industry, name, recs);
 
   let rel = {};
@@ -302,9 +302,9 @@ async function __cfHandler(event) {
   // 전문가 리포트(데이터 기반 자동)
   const bull = [], bear = [];
   if (per != null && per < 15) bull.push('밸류에이션 매력(PER ' + per.toFixed(1) + ')');
-  if (pos != null && pos < 35) bull.push('52주 저점권(현 위치 ' + pos + '%) — 낙폭 과대 가능');
-  if (pos != null && pos > 75) bear.push('52주 고점권(현 위치 ' + pos + '%) — 단기 과열 주의');
-  if (per != null && per > 45) bear.push('높은 밸류에이션(PER ' + per.toFixed(1) + ') — 실적 민감');
+  if (pos != null && pos < 35) bull.push('52주 저점권(현 위치 ' + pos + '%), 낙폭 과대 가능');
+  if (pos != null && pos > 75) bear.push('52주 고점권(현 위치 ' + pos + '%), 단기 과열 주의');
+  if (per != null && per > 45) bear.push('높은 밸류에이션(PER ' + per.toFixed(1) + '), 실적 민감');
   if (pbr != null && pbr > 6) bear.push('PBR ' + pbr.toFixed(1) + ' 고평가 구간');
   if (!bull.length) bull.push('실적·모멘텀 데이터 보강 중');
   if (!bear.length) bear.push('거시·수급 변동성 모니터링');
@@ -314,7 +314,7 @@ async function __cfHandler(event) {
       ' 수준입니다. 핵심 정성 분석(밸류체인·투자논거)은 리서치 데스크가 순차 보강하며, 투자지표·개요는 실시간 데이터로 자동 생성됩니다.',
     bull, bear,
     cat: ['분기 실적 발표', '섹터 업황·정책 이벤트'],
-    risk: '자동 생성 리포트 — 정성 분석 보강 전까지는 참고용. 분할·소액 접근 권장.',
+    risk: '자동 생성 리포트라 정성 분석을 보강하기 전까지는 참고용입니다. 분할·소액 접근을 권합니다.',
   };
 
   const data = {
@@ -328,7 +328,7 @@ async function __cfHandler(event) {
 };
 
 function resp(obj, short) {
-  // short(부실·실패) 응답은 짧게만 캐시 — 스텁이 엣지·브라우저에 30분 고착되는 것을 방지
+  // short(부실·실패) 응답은 짧게만 캐시: 스텁이 엣지·브라우저에 30분 고착되는 것을 방지
   return {
     statusCode: 200,
     headers: {

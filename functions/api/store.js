@@ -1,4 +1,4 @@
-// 개인 데이터 저장 — /api/store?key=memo|watchlist  (Cloudflare KV)
+// 개인 데이터 저장: /api/store?key=memo|watchlist  (Cloudflare KV)
 // 메모·관심종목을 서버(KV)에 보관 → 새로고침·재배포·브라우저 청소·다른 기기에서도 유지.
 //   GET  /api/store?key=memo        → { key, value }   (value=저장 JSON 또는 null)
 //   PUT  /api/store?key=memo  body=JSON → { ok:true }

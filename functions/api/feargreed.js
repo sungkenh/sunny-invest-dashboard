@@ -1,4 +1,4 @@
-// 공포·탐욕 지수 — /api/feargreed  (CNN Fear & Greed, 공개 dataviz API)
+// 공포·탐욕 지수: /api/feargreed  (CNN Fear & Greed, 공개 dataviz API)
 // 브라우저 CORS 차단 → 서버리스 프록시. 모듈 캐시(30분) + 엣지 캐시.
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36';
 let CACHE = { ts: 0, data: null };

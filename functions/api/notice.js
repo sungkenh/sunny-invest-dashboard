@@ -1,4 +1,4 @@
-// 종목 공시 — /api/notice?code=005930
+// 종목 공시: /api/notice?code=005930
 // 네이버 금융 종목 공시 페이지(finance.naver.com/item/news_notice.naver, EUC-KR HTML)를 파싱해
 // {items:[{title, info, date, link}]} 로 정규화. 국내 개별주 전용. 10분 캐시.
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36';

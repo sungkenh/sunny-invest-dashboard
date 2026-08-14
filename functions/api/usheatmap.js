@@ -1,6 +1,6 @@
-// 미국 주식 실시간 히트맵 — /api/usheatmap?us=sp500|nasdaq|russell2000&n=50|100|200|500
+// 미국 주식 실시간 히트맵: /api/usheatmap?us=sp500|nasdaq|russell2000&n=50|100|200|500
 //   sp500       : 지수 편입종목 API(index/.INX/enrollStocks, 시총순 정렬·NYSE+나스닥 혼합)
-//   nasdaq      : 나스닥 거래소 시총 랭킹 전체(상위 N — 나스닥100을 포함하는 상위집합)
+//   nasdaq      : 나스닥 거래소 시총 랭킹 전체(상위 N: 나스닥100을 포함하는 상위집합)
 //   russell2000 : 네이버에 러셀 편입 API 가 없어 파이프라인 스냅샷(data/usheatmap_russell2000.json,
 //                 VTWO 보유내역 기반 시총 상위 500)을 유니버스로 쓰고, 시세만
 //                 네이버 폴링 다중 조회(40코드/호출)로 실시간 덮어쓴다.
@@ -26,7 +26,7 @@ async function naverUS(us, page) {
   return (j && j.stocks) || [];
 }
 
-/* 섹터: 핀비즈(finviz.com/map)와 동일한 분류 — 파이프라인이 핀비즈 맵 데이터에서 추출한
+/* 섹터: 핀비즈(finviz.com/map)와 동일한 분류: 파이프라인이 핀비즈 맵 데이터에서 추출한
    us_sectors.json(GICS 11개 섹터 한글 + 세부 산업 핀비즈 원문, 약 5,500종목)을 조인한다.
    파일이 없거나 미등재 종목은 TRBC 업종코드 앞 2자리로 GICS 근사 폴백. */
 const GICS_FALLBACK = { '50':'에너지','51':'소재','52':'산업재','53':'경기소비재','54':'필수소비재',
@@ -39,7 +39,7 @@ function trbcSector(s) {
 }
 let SEC_CACHE = null, SEC_TS = 0;
 async function loadUsSectors(rawUrl) {
-  if (SEC_CACHE && Date.now() - SEC_TS < 60 * 60 * 1000) return SEC_CACHE;   // 정적 파일 — 1시간 캐시
+  if (SEC_CACHE && Date.now() - SEC_TS < 60 * 60 * 1000) return SEC_CACHE;   // 정적 파일: 1시간 캐시
   try {
     const r = await fetch(new URL('/data/us_sectors.json', rawUrl).toString());
     if (r.ok) { const j = await r.json(); SEC_CACHE = (j && j.sectors) || {}; SEC_TS = Date.now(); return SEC_CACHE; }
@@ -47,10 +47,10 @@ async function loadUsSectors(rawUrl) {
   return SEC_CACHE || {};
 }
 
-// SKHYV: SK하이닉스 ADR 중복 상장분 — 정규 티커 SKHY와 동일 종목·동일 시총으로 이중 집계됨
+// SKHYV: SK하이닉스 ADR 중복 상장분: 정규 티커 SKHY와 동일 종목·동일 시총으로 이중 집계됨
 const EXCLUDE = new Set(['SKHYV']);
 
-// ⚠ 거래정지는 제외하지 않는다(국내판 서킷브레이커 사고와 동일 원칙) — h:1 로 표시만.
+// ⚠ 거래정지는 제외하지 않는다(국내판 서킷브레이커 사고와 동일 원칙): h:1 로 표시만.
 function dropReason(s) {
   if (EXCLUDE.has(s.symbolCode)) return 'dup';
   if ((s.stockEndType || '') !== 'stock') return 'etf';            // ETF/ETN (랭킹엔 거의 없지만 방어)
@@ -66,7 +66,7 @@ function norm(s) {
     sector: trbcSector(s),                                             // 핀비즈 맵 조인으로 아래에서 덮어씀
     ind: ((s.industryCodeType || {}).industryGroupKor || '').trim(),
     price: num(s.closePrice),
-    // ⚠️ fluctuationsRatio 는 이미 부호 포함 — 다시 곱하지 말 것 (krheatmap 과 동일)
+    // ⚠️ fluctuationsRatio 는 이미 부호 포함: 다시 곱하지 말 것 (krheatmap 과 동일)
     pct: num(s.fluctuationsRatio),
     cap: num(s.marketValue) * 1000,               // marketValue 단위는 천달러 → 달러로 통일
   };
@@ -76,7 +76,7 @@ function norm(s) {
              t: o.tradingSessionType || '', s: o.overMarketStatus || '' };
   }
   const st = s.tradeStopType || {};
-  if (st.code && st.code !== '1') it.h = 1;            // 거래정지 — 표시용
+  if (st.code && st.code !== '1') it.h = 1;            // 거래정지: 표시용
   return it;
 }
 
@@ -114,7 +114,7 @@ async function russellData(event, n) {
     if (!r) continue;
     const px = num(r.closePrice);
     if (!isFinite(px) || px <= 0) continue;
-    // ⚠ 폴링 등락 필드는 부호 없음 — 방향 코드(1·2=상승, 4·5=하락, 3=보합)를 곱한다
+    // ⚠ 폴링 등락 필드는 부호 없음: 방향 코드(1·2=상승, 4·5=하락, 3=보합)를 곱한다
     const dir = String((r.compareToPreviousPrice || {}).code || '');
     const s = (dir === '4' || dir === '5') ? -1 : (dir === '3' ? 0 : 1);
     const pct = num(r.fluctuationsRatio);

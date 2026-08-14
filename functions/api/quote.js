@@ -1,10 +1,10 @@
-// 실시간 시세 — /api/quote?syms=AAPL,005930.KS
-// 국내: 네이버 폴링 API(지연 0 — 야후 .KS 는 하루 지연이라 개장 직후에도 전일 등락률이 나왔다) 실시간 체결가 +
+// 실시간 시세: /api/quote?syms=AAPL,005930.KS
+// 국내: 네이버 폴링 API(지연 0: 야후 .KS 는 하루 지연이라 개장 직후에도 전일 등락률이 나왔다) 실시간 체결가 +
 //       시간외 overMarketPriceInfo(NXT 프리마켓 08:00~08:50 · 애프터마켓 15:40~20:00, KRX 시간외 단일가 포함).
 // 미국: 야후 5분봉 includePrePost 마지막 체결(프리·애프터 포함).
-// 응답 {price, pct, ext?:'pre'|'post', rp?, src} — rp 는 직전 정규장 종가(시간외일 때 판정 기준가).
+// 응답 {price, pct, ext?:'pre'|'post', rp?, src}: rp 는 직전 정규장 종가(시간외일 때 판정 기준가).
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36';
-// 접미사 없는 6자리 코드도 받는다 — 관심종목이 예전 형식(코드만)으로 저장돼 있어도 시세가 나와야 한다.
+// 접미사 없는 6자리 코드도 받는다: 관심종목이 예전 형식(코드만)으로 저장돼 있어도 시세가 나와야 한다.
 // 이때 응답의 ex(KS|KQ)로 클라이언트가 저장된 심볼을 스스로 고칠 수 있다.
 const KR_RE = /^(\d{6})(?:\.(KS|KQ))?$/;
 const r2 = (x) => Math.round(x * 100) / 100;
@@ -24,7 +24,7 @@ function krExtWindow(nowMs) {
 
 const krNum = (x) => parseFloat(String(x == null ? '' : x).replace(/,/g, ''));
 
-// 네이버 방향 코드 — 1 상한·2 상승 / 3 보합 / 4 하한·5 하락.
+// 네이버 방향 코드: 1 상한·2 상승 / 3 보합 / 4 하한·5 하락.
 // ⚠ fluctuationsRatio 에 부호가 들어있는지는 엔드포인트마다 다르다(과거 market.js 등락 역전 사고).
 //   그래서 비율은 항상 절대값을 쓰고 방향 코드로 부호를 붙인다.
 function krDir(o) {
@@ -38,7 +38,7 @@ function krPick(row, win) {
   if (!row) return null;
   const close = krNum(row.closePriceRaw || row.closePrice);
   if (!(close > 0)) return null;
-  // 코스피/코스닥 구분 — 코드만 저장된 관심종목의 심볼 복구용
+  // 코스피/코스닥 구분: 코드만 저장된 관심종목의 심볼 복구용
   const exc = String(((row.stockExchangeType || {}).code) || '').toUpperCase();
   const ex = (exc === 'KS' || exc === 'KQ') ? exc : null;
   const o = row.overMarketPriceInfo;
@@ -53,7 +53,7 @@ function krPick(row, win) {
       return q;
     }
   }
-  // 정규장 체결이 있을 때만 네이버 값을 쓴다 — 장 시작 전(PREOPEN)에는 등락률이 0 으로 초기화돼
+  // 정규장 체결이 있을 때만 네이버 값을 쓴다: 장 시작 전(PREOPEN)에는 등락률이 0 으로 초기화돼
   // 전일 등락이 사라진다. 그 구간은 야후(전일 종가·전일 등락)로 넘긴다.
   const op = String(row.openPriceRaw != null && row.openPriceRaw !== '' ? row.openPriceRaw : row.openPrice || '').trim();
   if (op && op !== '-' && krNum(op) > 0) {
@@ -65,7 +65,7 @@ function krPick(row, win) {
 }
 /*KR-END*/
 
-// 폴링 API 는 콤마로 다종목을 한 번에 준다(운영 프로브 확인) — 관심종목 20개도 subrequest 1회.
+// 폴링 API 는 콤마로 다종목을 한 번에 준다(운영 프로브 확인): 관심종목 20개도 subrequest 1회.
 const KR_BATCH = 20;
 async function krRows(codes) {
   const u = 'https://polling.finance.naver.com/api/realtime/domestic/stock/' + codes.join(',');
@@ -110,7 +110,7 @@ async function __cfHandler(event) {
   const win = krExtWindow(Date.now());
   const res = {};
 
-  // 1) 국내는 네이버 폴링 배치로 한 번에 — 20종목당 subrequest 1회.
+  // 1) 국내는 네이버 폴링 배치로 한 번에: 20종목당 subrequest 1회.
   const krCodes = [];
   for (const s of syms) { const m = s.match(KR_RE); if (m) krCodes.push(m[1]); }
   let rows = {};

@@ -1,4 +1,4 @@
-// 상단 지표 15종 실시간 — /api/market
+// 상단 지표 15종 실시간: /api/market
 // 국내 지수·미국채 10/2년물은 네이버 시장지표 우선(신선도), 야후 chart API 폴백.
 // 2년물 스파크라인·최종 폴백은 美재무부 일일 CSV. 모듈 캐시(60s) + 엣지 캐시.
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36';
@@ -10,7 +10,7 @@ const SYMS = {
 let CACHE = { ts: 0, data: null };
 const TTL = 10 * 1000;                    // 10초 갱신 (클라이언트 5초 폴링과 조합)
 
-// 장중 1일 5분봉 — 현재가·등락 + 스파크라인 시계열(sp)을 한 번에
+// 장중 1일 5분봉: 현재가·등락 + 스파크라인 시계열(sp)을 한 번에
 async function chartQuote(sym) {
   const u = 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent(sym) + '?interval=5m&range=1d';
   const r = await fetch(u, { headers: { 'User-Agent': UA } });
@@ -29,7 +29,7 @@ async function chartQuote(sym) {
   return { price: round(price, 4), chg: round(price - pc, 4), pct: pc ? round((price - pc) / pc * 100, 2) : 0, sp };
 }
 
-// EWY(코스피 야간 프록시) — 프리·애프터마켓 포함 마지막 체결가. 정규장(22:30~05:00 KST)만 커버하던
+// EWY(코스피 야간 프록시): 프리·애프터마켓 포함 마지막 체결가. 정규장(22:30~05:00 KST)만 커버하던
 // 것을 프리(17:00 KST~)·애프터(~09:00 KST)까지 확장해 한국 야간 전체에서 시세가 움직인다.
 // 등락은 전일 정규장 종가 대비(야간 누적 변동). 09:00~17:00 KST 무거래 공백은 코스피 본장이 대신한다.
 async function chartQuoteXH(sym) {
@@ -50,7 +50,7 @@ async function chartQuoteXH(sym) {
     sp: downsample(seq, 40) };
 }
 
-// 국내 지수는 네이버 실시간(지연 0분) 우선 — 야후는 약 15분 지연. (해외 IP 차단 시 야후 폴백)
+// 국내 지수는 네이버 실시간(지연 0분) 우선: 야후는 약 15분 지연. (해외 IP 차단 시 야후 폴백)
 const NAVER_CODE = { kospi: 'KOSPI', kosdaq: 'KOSDAQ' };
 async function naverIndex(code) {
   const r = await fetch('https://polling.finance.naver.com/api/realtime/domestic/index/' + code,
@@ -74,7 +74,7 @@ function downsample(arr, n) {
   return out;
 }
 
-// 네이버 시장지표 productDetail — 채권·환율·원자재 공용 (프로브로 확정한 카테고리·코드 조합)
+// 네이버 시장지표 productDetail: 채권·환율·원자재 공용 (프로브로 확정한 카테고리·코드 조합)
 async function naverMI(tries) {
   let lastErr = null;
   for (const [cat, rc] of tries) {
@@ -84,7 +84,7 @@ async function naverMI(tries) {
       const r = await fetch(u, { headers: { 'User-Agent': UA, 'Referer': 'https://m.stock.naver.com/' } });
       const d = await r.json();
       const v = d && d.result;
-      // ⚠️ 값이 천단위 콤마 문자열("1,385.50")로 온다 — parseFloat 는 콤마에서 잘려 1이 되므로 반드시 제거
+      // ⚠️ 값이 천단위 콤마 문자열("1,385.50")로 온다: parseFloat 는 콤마에서 잘려 1이 되므로 반드시 제거
       const num = (x) => parseFloat(String(x == null ? '' : x).replace(/,/g, ''));
       const px = v && num(v.closePrice);
       if (!isFinite(px)) throw new Error('no data ' + cat + '/' + rc);
@@ -97,7 +97,7 @@ async function naverMI(tries) {
   throw lastErr || new Error('naver mi fail');
 }
 const naverBond = (rc) => naverMI([['bond', rc]]);
-// 네이버 실시간 폴링 API (앱이 7초 주기로 쓰는 전용 엔드포인트) — 선물·원자재 공용.
+// 네이버 실시간 폴링 API (앱이 7초 주기로 쓰는 전용 엔드포인트): 선물·원자재 공용.
 // 등락 부호는 방향 코드(1·2=상승, 4·5=하락, 3=보합). 금·WTI·CME 선물은 거래소 규정상 10분 지연.
 async function naverPoll(path) {
   const u = 'https://polling.finance.naver.com/api/realtime/' + path;
@@ -114,10 +114,10 @@ async function naverPoll(path) {
 }
 const naverPollFut = (rc) => naverPoll('worldstock/futures/' + encodeURIComponent(rc));
 
-// 네이버 우선 지표 — 카테고리·코드는 실서비스 프로브로 확정 (금·WTI 는 COMEX·NYMEX 선물 연속물, 지연 10분)
+// 네이버 우선 지표: 카테고리·코드는 실서비스 프로브로 확정 (금·WTI 는 COMEX·NYMEX 선물 연속물, 지연 10분)
 const NAVER_MI = {
   ust10y: { tries: [['bond', 'US10YT=RR']] },                        // 레피니티브 실시간(틱 빈도 낮음)
-  usdkrw: { tries: [['exchange', 'FX_USDKRW']] },                    // 하나은행 고시 — 수 분 간격 갱신
+  usdkrw: { tries: [['exchange', 'FX_USDKRW']] },                    // 하나은행 고시: 수 분 간격 갱신
   usdjpy: { tries: [['exchangeWorld', 'JPY=X'], ['exchangeWorld', 'JPY='], ['exchange', 'FX_USDJPY']] },
   gold:   { poll: 'marketindex/metals/GCcv1', tries: [['metals', 'GCcv1']] },
   wti:    { poll: 'marketindex/energy/CLcv1', tries: [['energy', 'CLcv1']] },
@@ -156,7 +156,7 @@ async function __cfHandler(event) {
         return;
       } catch (e) { /* 야후 폴백 */ }
     }
-    // 코스피 야간(EWY): 프리·애프터 포함 시세 우선 — 실패 시 일반 야후(정규장만)로 폴백
+    // 코스피 야간(EWY): 프리·애프터 포함 시세 우선: 실패 시 일반 야후(정규장만)로 폴백
     if (k === 'ewy') {
       try { res[k] = { sym: s, ...(await chartQuoteXH(s)), src: 'yahoo-xh' }; return; }
       catch (e) { /* 일반 야후 폴백 */ }

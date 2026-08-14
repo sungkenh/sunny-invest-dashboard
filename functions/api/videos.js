@@ -1,10 +1,10 @@
-// 추천 투자 영상 — /api/videos  (국내 경제 유튜브 채널 RSS, 최신순)
+// 추천 투자 영상: /api/videos  (국내 경제 유튜브 채널 RSS, 최신순)
 // 방문 시점 수집. 모듈 캐시(30분) + 엣지 캐시. 쇼츠 제외.
 // 최근 약 1주일(8일) 내 업로드된 영상을 채널 구분 없이 전부 수집해 최신순 정렬.
 // (조회수도 함께 보존 → 영상 페이지에서 인기순 토글 가능). 진짜 watch 링크 + 썸네일.
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36';
 
-// (channel_id, 표시명) — 국내 인기 경제·투자 유튜브 (영어 채널 제외)
+// (channel_id, 표시명): 국내 인기 경제·투자 유튜브 (영어 채널 제외)
 const CHANNELS = [
   ['UChlv4GSd7OQl3js-jkLOnFA', '삼프로TV'],
   ['UCsJ6RuBiTVWRX156FVbeaGg', '슈카월드'],

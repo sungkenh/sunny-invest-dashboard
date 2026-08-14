@@ -15,17 +15,17 @@ const ROOT = path.join(__dirname, '..');
 const DEEP_PATH = process.env.DEEP_PATH || path.join(ROOT, 'data', 'deep.json');
 const WL_PATH = process.env.WL_PATH || path.join(ROOT, 'data', 'watchlist.json');
 
-// 인기종목 — 한·미 성장·대형주(사용자 추가 가능성이 높은 종목). curated는 런타임에 자동 스킵.
+// 인기종목: 한·미 성장·대형주(사용자 추가 가능성이 높은 종목). curated는 런타임에 자동 스킵.
 const POPULAR_DEFAULT = [
-  // 미국 — 빅테크·성장·핵심
+  // 미국: 빅테크·성장·핵심
   'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'META', 'AVGO', 'AMD', 'NFLX', 'CRM', 'ORCL',
   'ADBE', 'QCOM', 'MU', 'ASML', 'ARM', 'SMCI', 'COST', 'JPM', 'V', 'MA',
   'LLY', 'UNH', 'XOM', 'COIN', 'UBER', 'SHOP', 'NOW', 'MRVL', 'INTC', 'DIS',
-  // 한국 — KOSPI 대형
+  // 한국: KOSPI 대형
   '373220.KS', '207940.KS', '005380.KS', '000270.KS', '035420.KS', '035720.KS',
   '051910.KS', '006400.KS', '005490.KS', '105560.KS', '028260.KS', '068270.KS',
   '012330.KS', '042700.KS', '009540.KS',
-  // 한국 — KOSDAQ
+  // 한국: KOSDAQ
   '086520.KQ', '196170.KQ',
 ];
 const POPULAR = process.env.GEN_DEEP_SYMS ? process.env.GEN_DEEP_SYMS.split(',').map((s) => s.trim()).filter(Boolean) : POPULAR_DEFAULT;
@@ -34,11 +34,11 @@ const baseSym = (s) => (s || '').replace(/\.(KS|KQ)$/, '');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 (async () => {
-  // Cloudflare Pages Function(ESM)을 동적 import — Cloudflare는 onRequest만 쓰지만 여기선 내부 핸들러 __cfHandler 재사용
+  // Cloudflare Pages Function(ESM)을 동적 import: Cloudflare는 onRequest만 쓰지만 여기선 내부 핸들러 __cfHandler 재사용
   const deep = await import(pathToFileURL(path.join(__dirname, '..', 'functions', 'api', 'deep.js')).href);
   let existing = {};
   try { existing = JSON.parse(fs.readFileSync(DEEP_PATH, 'utf8')); }
-  catch (e) { console.log('· 기존 deep.json 없음 — 새로 생성'); }
+  catch (e) { console.log('· 기존 deep.json 없음, 새로 생성'); }
 
   let wl = [];
   try { wl = (JSON.parse(fs.readFileSync(WL_PATH, 'utf8')).items || []).map((x) => x.sym).filter(Boolean); }
@@ -65,10 +65,10 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
       } catch (e) { /* 재시도 */ }
       if (!ok) await sleep(1500);
     }
-    if (!ok) { failed++; console.log('  ✗', sym, '(스킵 — 기존값 유지)'); }
+    if (!ok) { failed++; console.log('  ✗', sym, '(스킵, 기존값 유지)'); }
     await sleep(500);   // 야후 레이트리밋 완화
   }
 
   fs.writeFileSync(DEEP_PATH, JSON.stringify(out, null, 1));
-  console.log(`· 완료 — 신규/갱신 ${made} · 큐레이션 보존 ${kept} · 실패 ${failed} · 총 ${Object.keys(out).length}종목`);
+  console.log(`· 완료. 신규/갱신 ${made} · 큐레이션 보존 ${kept} · 실패 ${failed} · 총 ${Object.keys(out).length}종목`);
 })();

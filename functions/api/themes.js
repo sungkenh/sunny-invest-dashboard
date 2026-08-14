@@ -1,9 +1,9 @@
-// 섹터 전문가 데스크 — /api/themes?mkt=kr|us[&fresh=1]
+// 섹터 전문가 데스크: /api/themes?mkt=kr|us[&fresh=1]
 // 큐레이션 구조적 논지 + 실시세 기반 비중의견 엔진(매 갱신 시 재계산) + 최신 촉매 뉴스.
 //   비중의견 = 절대모멘텀(6M) 30% + 지수대비 상대강도 30% + 추세구조(50/200일선) 25% + 폭(breadth) 15%
 //              − 리스크 감점(20일 이격·변동성·RSI 과열, 최대 30점)
 //   가드레일: 과열·낙폭·시장 리스크오프·저신뢰·데이터부족 → 비중확대 억제/판단보류
-// ⚠️ 가격(추세) 기반 상대 판단. 밸류에이션·실적·수급 미반영 — 매수/매도 신호가 아님.
+// ⚠️ 가격(추세) 기반 상대 판단. 밸류에이션·실적·수급 미반영: 매수/매도 신호가 아님.
 // subrequest: 종목 28 + 벤치 1 + 뉴스 7 = 36 (Cloudflare 무료 50 제한 내)
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36';
 const CACHE = {};                    // mkt → {ts, data}
@@ -40,7 +40,7 @@ const DESKS = {
     { nm: 'AI · 반도체', desk: 'Semis 데스크', thesis: '가속컴퓨팅 전환으로 AI 인프라 CapEx가 반도체 이익에 집중',
       basket: [['NVDA', '엔비디아'], ['AVGO', '브로드컴'], ['AMD', 'AMD'], ['TSM', 'TSMC']],
       q: 'Nvidia OR AI chip OR semiconductor demand' },
-    { nm: '빅테크 · 소프트웨어', desk: '테크 데스크', thesis: 'AI 수익화 초기 국면 — 클라우드·광고 현금흐름이 투자를 뒷받침',
+    { nm: '빅테크 · 소프트웨어', desk: '테크 데스크', thesis: 'AI 수익화 초기 국면. 클라우드·광고 현금흐름이 투자를 뒷받침',
       basket: [['MSFT', '마이크로소프트'], ['GOOGL', '알파벳'], ['META', '메타'], ['PLTR', '팔란티어']],
       q: 'Microsoft OR Alphabet OR AI software' },
     { nm: '전력 · 원자력', desk: '유틸리티 데스크', thesis: '데이터센터 전력수요 급증으로 발전·원자력 계약단가가 재평가',
@@ -90,7 +90,7 @@ function staleSeries(c) {
 const MAX_FILL = 3;   // 결측 봉 forward-fill 최대 3거래일
 const MAX_LAG = 3;    // 마지막 실제 봉이 벤치마크 최신봉보다 3봉 넘게 뒤처지면 표본 제외(거래정지·상폐·데이터 갭)
 
-// 1년 일봉 — 실제 봉만 {거래일키, 종가}로 반환(결측 봉은 제거하고 날짜 기준 정렬에서 다시 맞춘다)
+// 1년 일봉: 실제 봉만 {거래일키, 종가}로 반환(결측 봉은 제거하고 날짜 기준 정렬에서 다시 맞춘다)
 async function fetchSeries(sym) {
   try {
     const u = 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent(sym) + '?interval=1d&range=1y';
@@ -213,7 +213,7 @@ function sectorMetrics(aligned, bench, benchName) {
 
   const driverScore = Math.round(100 * (0.30 * sub1 + 0.30 * sub2 + 0.25 * sub3 + 0.15 * sub4));
 
-  // 리스크 감점(급등 후 추격 억제) — 최대 30
+  // 리스크 감점(급등 후 추격 억제): 최대 30
   const ma20 = mean(S.slice(n - Math.min(20, n)));
   const ext20 = S[i] / ma20 - 1;
   const pExt = clamp((ext20 - 0.10) / 0.10, 0, 1) * 15;
@@ -251,7 +251,7 @@ function sectorMetrics(aligned, bench, benchName) {
 // 스코어·가드레일 → 3단계 의견 + 경고 (시장 리스크오프는 카드마다 반복하지 않고 상단 배너로 표시)
 function opine(m, riskOff) {
   if (!m || m.n < 60 || m.validCount < 3) {   // 판단보류는 '중립'과 다른 상태 → 별도 클래스(op-void)로 시각 구분
-    return { op: 'op-void', opTxt: '판단보류', warns: ['데이터 부족 — 판단보류'], conf: m ? Math.min(m.conf, 30) : 0 };
+    return { op: 'op-void', opTxt: '판단보류', warns: ['데이터 부족, 판단보류'], conf: m ? Math.min(m.conf, 30) : 0 };
   }
   let op = 'op-hold', opTxt = '중립';
   if (m.finalScore >= 25 && m.rs > 0) { op = 'op-buy'; opTxt = '비중확대'; }
@@ -265,37 +265,37 @@ function opine(m, riskOff) {
   if (m.conf < 40) cap();
 
   const warns = [];
-  if (m.ext20 > 0.20 || m.rsi14 > 75) warns.push('과열 — 분할·눌림목 대기');
-  if (m.curDD < -0.20) warns.push('하락추세 가능 — 저가매수 아님');
-  if (m.dispersion > 0.30) warns.push('특정 종목 주도 — 개별 확인 필요');
-  if (m.r126 > 0 && m.rs <= 0) warns.push('지수 동반 상승 — 초과성과 없음');
+  if (m.ext20 > 0.20 || m.rsi14 > 75) warns.push('과열, 분할·눌림목 대기');
+  if (m.curDD < -0.20) warns.push('하락추세 가능, 저가매수 아님');
+  if (m.dispersion > 0.30) warns.push('특정 종목 주도, 개별 확인 필요');
+  if (m.r126 > 0 && m.rs <= 0) warns.push('지수 동반 상승, 초과성과 없음');
   if (m.conf < 40) warns.push('참고용 · 저신뢰');
   return { op, opTxt, warns, conf: m.conf };
 }
 
 function bullets(m) {
   const rel = m.rs > 0.02 ? '지수 상회' : (m.rs < -0.02 ? '지수 하회' : '시장 수준');
-  const b1 = '최근 6개월 ' + pct(m.r126) + ' · ' + m.benchName + ' 대비 ' + pct(m.rs) + 'p — ' + rel
+  const b1 = '최근 6개월 ' + pct(m.r126) + ' · ' + m.benchName + ' 대비 ' + pct(m.rs) + 'p, ' + rel
     + (m.r252 != null ? ' (12개월 ' + pct(m.r252) + ')' : '');
-  // 폭(breadth)은 '50일선 위' + '3개월 상승' 두 비율의 평균 — 둘 다 명시해 오해 방지
-  const b2 = '구성 ' + m.validCount + '종목 중 ' + m.above + '개 50일선 위 · ' + m.pos + '개 3개월 상승 — 폭 ' + Math.round(m.breadth * 100) + '%'
+  // 폭(breadth)은 '50일선 위' + '3개월 상승' 두 비율의 평균: 둘 다 명시해 오해 방지
+  const b2 = '구성 ' + m.validCount + '종목 중 ' + m.above + '개 50일선 위 · ' + m.pos + '개 3개월 상승. 폭 ' + Math.round(m.breadth * 100) + '%'
     + (m.shortHist ? ' (단기 이력)' : '')
     + ', 참여 ' + (m.breadth >= 0.6 ? '광범위' : (m.breadth <= 0.4 ? '제한적' : '보통'));
   const b3 = '52주 고점 대비 ' + pct(m.curDD) + ' · 20일 이격 ' + pct(m.ext20) + ' · 변동성 지수 대비 ' + m.volRatio.toFixed(1) + '배'
-    + ' — 종합 ' + (m.finalScore >= 0 ? '+' : '') + m.finalScore + '/100 (리스크 −' + m.penalty + ')';
+    + '. 종합 ' + (m.finalScore >= 0 ? '+' : '') + m.finalScore + '/100 (리스크 −' + m.penalty + ')';
   return [b1, b2, b3];
 }
 
-const CAVEAT = '가격(추세) 기반 상대 판단 — 밸류에이션·실적·수급 미반영. 매수/매도 신호가 아닌 비중 참고지표입니다.';
+const CAVEAT = '가격(추세) 기반 상대 판단이라 밸류에이션·실적·수급은 반영하지 않았습니다. 매수/매도 신호가 아닌 비중 참고지표입니다.';
 
 /*STOCK-BEGIN*/
-// 종목 단위 지표 — 섹터 안에서 «어디에 집중할지»를 근거 있게 고르기 위한 값들.
+// 종목 단위 지표: 섹터 안에서 어디에 집중할지를 근거 있게 고르기 위한 값들.
 // 섹터 컴포지트와 같은 벤치 거래일 축을 쓰므로 섹터 수치와 직접 비교할 수 있다.
 // a = alignToDays 결과({arr,lastRealIdx}), bench = {c:[...]}(벤치 종가), L = 벤치 거래일 수.
 function stockMetrics(a, bench, L) {
   if (!a || !bench || !bench.c || bench.c.length < 60) return null;
   const arr = a.arr;
-  // 결측 없는 최근 구간만 사용 — 중간 갭이 있으면 그 뒤부터
+  // 결측 없는 최근 구간만 사용: 중간 갭이 있으면 그 뒤부터
   let start = 0;
   for (let i = L - 1; i >= 0; i--) { if (arr[i] == null) { start = i + 1; break; } }
   const n = L - start;
@@ -322,9 +322,9 @@ function stockMetrics(a, bench, L) {
   };
 }
 
-// 섹터 안에서 종목을 «집중 후보» 순으로 세운다.
+// 섹터 안에서 종목을 집중 후보 순으로 세운다.
 // 상대강도(지수 대비 6개월) 40% + 중기 모멘텀(3개월) 25% + 추세구조(50·200일선) 25% + 낙폭 여유 10%.
-// 과열(RSI>75, 50일선 이격 15%↑)은 감점 — 급등 직후 추격을 상위로 올리지 않기 위함.
+// 과열(RSI>75, 50일선 이격 15%↑)은 감점: 급등 직후 추격을 상위로 올리지 않기 위함.
 function stockScore(s) {
   if (!s) return null;
   const sub = clamp(s.rs126 / 0.25, -1, 1) * 40
@@ -354,7 +354,7 @@ async function build(mkt) {
   ]);
   const news = await runPool(desks, 7, (d) => latestNews(d.q, mkt));
 
-  // 벤치 거래일 기준으로 모든 종목을 날짜 정렬(위치 정렬 금지 — 옛 종가가 '오늘'로 밀려드는 것 방지)
+  // 벤치 거래일 기준으로 모든 종목을 날짜 정렬(위치 정렬 금지: 옛 종가가 '오늘'로 밀려드는 것 방지)
   const alignedBySym = {};
   syms.forEach((s, i) => { const ser = seriesList[i]; alignedBySym[s] = (benchSeries && ser) ? alignToDays(benchSeries.d, ser) : null; });
 
@@ -373,7 +373,7 @@ async function build(mkt) {
       const fresh = a && a.lastRealIdx >= 1 && (L - 1 - a.lastRealIdx) <= MAX_LAG;
       const p = (fresh && a.arr[L - 1] != null && a.arr[L - 2] != null)
         ? round((a.arr[L - 1] / a.arr[L - 2] - 1) * 100, 2) : null;
-      // 종목 단위 지표·점수 — 섹터 가이드 페이지의 «집중 종목» 근거 (대시보드는 name·pct 만 쓴다)
+      // 종목 단위 지표·점수: 섹터 가이드 페이지의 집중 종목 근거 (대시보드는 name·pct 만 쓴다)
       const sm = fresh ? stockMetrics(a, benchSeries, L) : null;
       return { name, sym: s, pct: p, m: sm, score: stockScore(sm) };
     });

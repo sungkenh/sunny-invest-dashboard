@@ -1,9 +1,9 @@
-// 종목 재무제표 프록시 — /api/finance?mkt=kr|us&code=005930|AAPL&period=annual|quarter
+// 종목 재무제표 프록시: /api/finance?mkt=kr|us&code=005930|AAPL&period=annual|quarter
 //   kr: m.stock.naver.com/api/stock/{code}/finance/{period} → financeInfo.{trTitleList,rowList}
 //       (단위: 매출·이익 = 억원 · 이익률/ROE/부채비율 = % · EPS/BPS/주당배당금 = 원 · PER/PBR = 배)
 //   us: api.stock.naver.com/stock/{rc}/finance/{period} → 최상위 {unit:'USD(백만)…',trTitleList,rowList}
 //       접미사 없는 야후식 티커는 무접미사 → .O → .K 순서로 자동 탐색 (valuation.js 와 동일)
-// rowList 는 [{title:'매출액', columns:{'202312':{value:'2,589,355'},…}}] — 열 순서는 trTitleList,
+// rowList 는 [{title:'매출액', columns:{'202312':{value:'2,589,355'},…}}]: 열 순서는 trTitleList,
 // isConsensus='Y' 열은 증권가 추정치(E). 재무 데이터는 분기 단위로만 변해 6시간 캐시.
 // subrequest 예산: 1(kr) / 최대 3(us 접미사 탐색) per 호출.
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36';
@@ -73,7 +73,7 @@ async function __cfHandler(event) {
   try {
     const d = await fetchFin(mkt, code, period);
     data = Object.assign({ _updated: iso(), mkt, code, period }, d || { unit: '', cols: [], rows: [] });
-    CACHE[key] = { ts: Date.now(), data };            // 빈 결과(미제공 종목)도 캐시 — 반복 탐색 방지
+    CACHE[key] = { ts: Date.now(), data };            // 빈 결과(미제공 종목)도 캐시: 반복 탐색 방지
   } catch (e) {
     data = { _updated: iso(), mkt, code, period, unit: '', cols: [], rows: [], error: 'fetch' };
   }
