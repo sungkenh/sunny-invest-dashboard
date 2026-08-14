@@ -77,6 +77,8 @@
   .pcard .phead{display:flex;align-items:center;gap:8px;flex-wrap:wrap;cursor:pointer}
   .pcard .phead b.nm{font-size:14px;font-weight:800}
   .pcard .px{margin-left:auto;text-align:right;font-size:13px;font-weight:700}
+  .pcard .px .xh{display:inline-block;font-size:9px;font-weight:800;color:var(--gold);
+    border:1px solid var(--gold);border-radius:3px;padding:0 3px;margin-left:4px;white-space:nowrap}  /* 시간외 체결 표시 */
   .pcard .px small{display:block;font-size:11px}
   .mkchip{display:inline-block;font-size:9px;font-weight:800;color:var(--muted);border:1px solid var(--border);border-radius:4px;padding:0 4px;vertical-align:1px}
   .levchip{display:inline-block;font-size:9px;font-weight:800;border-radius:4px;padding:0 5px;vertical-align:1px;
@@ -846,7 +848,8 @@ async function loadQuotes(list){
   for(let i=0;i<syms.length;i+=25){
     try{
       const d=await getJSON('/api/quote?syms='+encodeURIComponent(syms.slice(i,i+25).join(',')));
-      list.slice(i,i+25).forEach((u,j)=>{ const q=d[syms[i+j]]; if(q&&q.price>0){ u.price=q.price; u.pct=q.pct; } });
+      list.slice(i,i+25).forEach((u,j)=>{ const q=d[syms[i+j]];
+        if(q&&q.price>0){ u.price=q.price; u.pct=q.pct; u.ext=q.ext||null; } });   // ext: 정규장 밖 체결(국내 NXT 시간외·미국 프리/애프터)
     }catch(e){}
   }
 }
@@ -926,7 +929,8 @@ function cardHTML(x,i){
     +'<span class="stchip '+st.cls+'">'+st.label+'</span>'
     +'<span class="px mono">'+fmtPx(x.price,x.us)
     +(x.us&&USDKRW?'<small class="flat">'+fmtWon(x.price*USDKRW)+'</small>':'')
-    +(u.pct!=null?'<small class="'+cls(u.pct)+'">'+(u.pct>0?'+':'')+Number(u.pct).toFixed(2)+'%</small>':'')+'</span>'
+    +(u.pct!=null?'<small class="'+cls(u.pct)+'">'+(u.pct>0?'+':'')+Number(u.pct).toFixed(2)+'%</small>':'')
+    +(u.ext?'<small class="xh" title="정규장 밖 체결가 — 국내는 NXT 시간외, 미국은 프리·애프터마켓">'+(u.ext==='pre'?'프리':'애프터')+'</small>':'')+'</span>'
     +'</div>';
   if(collapsed) return h+'</div>';
   h+='<div class="boxnote" style="margin-top:4px">'+st.desc
