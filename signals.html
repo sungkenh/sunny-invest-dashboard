@@ -105,6 +105,9 @@
     color:#22c55e;border:1px solid rgba(34,197,94,.55);white-space:nowrap}
   .valchip.mid{color:var(--muted);border-color:var(--border)}
   .valchip.hi{color:var(--down);border-color:var(--down)}
+  .rtag{display:inline-block;font-size:8.5px;font-weight:800;color:var(--muted2);border:1px solid var(--border);
+    border-radius:3px;padding:0 3px;vertical-align:1px}                      /* 전고점(저항) 표시 */
+  small.warn{color:var(--gold)}                                             /* 저항까지 1R 미만 — 손익비 불리 */
   .xh{display:inline-block;margin-left:4px;font-size:9px;font-weight:800;color:var(--gold);
     border:1px solid var(--gold);border-radius:3px;padding:0 3px;vertical-align:1px;white-space:nowrap}  /* 시간외 체결 표시 */
   .star{cursor:pointer;color:var(--muted2);margin-right:6px;font-size:13px;user-select:none}
@@ -1055,6 +1058,37 @@ function ddStats(u,ch){
 /* 매도 계획(제안): 매수 판정 종목의 목표가·손절가 — ATR 변동성 기반, 손익비 1:2
    손절 = 최근 10봉 저점과 (진입가 − 1×ATR) 중 낮은(보수적) 쪽, 단 리스크 상한 2×ATR
    목표 = 진입가 + 리스크×2. 봉 주기의 ATR을 쓰므로 단타/스윙/장기 관점에 맞게 자동으로 스케일된다 */
+/*RES-BEGIN*/
+/* 머리 위 저항(전고점) — 목표가는 손익비만으로 정해지지만, 그 사이에 전고점이 있으면
+   가격은 대개 거기서 한 번 막힌다. 이미 전고점을 넘어선 신고가 구간이면 위가 비어 있어
+   목표가를 그대로 봐도 된다. 그 구분을 값으로 만들어 목표가 옆에 붙인다. */
+// 피벗 고점: 좌우 k봉보다 높은 봉. 마지막 k봉은 아직 확정되지 않았으므로 후보에서 빠진다.
+function pivotHighs(h,k){
+  const out=[];
+  for(let i=k;i<h.length-k;i++){
+    const v=h[i]; if(!isFinite(v)||!(v>0)) continue;
+    let ok=true;
+    for(let j=i-k;j<=i+k&&ok;j++) if(j!==i&&isFinite(h[j])&&h[j]>v) ok=false;
+    if(ok) out.push({i,v});
+  }
+  return out;
+}
+// 진입가 위에서 가장 가까운 저항. null 이면 머리 위에 확정된 전고점이 없다(= 신고가 구간).
+// minGap: 이만큼은 떨어져 있어야 «벽»으로 친다. 진입가 코앞의 고점은 저항이라기보다 노이즈라
+//         목표가 판단에 넣으면 오히려 시야를 흐린다(호출부에서 ATR 의 일부를 넘긴다).
+function overhead(h,entry,lookback,k,minGap){
+  if(!Array.isArray(h)||!(entry>0)) return null;
+  const seg=h.slice(-Math.min(lookback||252,h.length));
+  const lo=entry+(minGap>0?minGap:0);
+  const ph=pivotHighs(seg,k||5).filter(p=>p.v>lo);
+  if(!ph.length) return null;
+  let best=ph[0];
+  for(const p of ph) if(p.v<best.v) best=p;          // 여러 개면 가장 낮은(먼저 만나는) 벽
+  const vals=seg.filter(v=>isFinite(v)&&v>0);
+  const hi=vals.length?Math.max.apply(null,vals):best.v;
+  return { price:best.v, ago:seg.length-1-best.i, isHi:best.v>=hi-1e-9 };
+}
+/*RES-END*/
 function planFor(u,bars,j){
   if(!j||!['buy2','buy1','ebuy'].includes(j.v)) return null;
   const c=bars.c,h=bars.h,l=bars.l,L=c.length;
@@ -1070,8 +1104,14 @@ function planFor(u,bars,j){
   // 표시 반올림: 원화는 원 단위, 달러는 센트 단위 (호가 단위 근사)
   const rd=isUSm(u.mkt)?(v=>Math.round(v*100)/100):(v=>Math.round(v));
   const target=rd(entry+2*risk), stopR=rd(stop);  // 손익비 1:2
+  // 전고점 반영: 목표가 아래에 벽이 있으면 그 벽이 1차 목표가 된다(2R 은 돌파 시 유효).
+  const res=overhead(h,entry,252,5,0.5*atr);    // 0.5×ATR 안쪽 고점은 하루 노이즈 범위 — 벽으로 치지 않는다
+  const wall=(res&&res.price<target)?rd(res.price):null;
   return { entry, stop:stopR, target,
-    tgtPct:(target/entry-1)*100, stopPct:(stopR/entry-1)*100 };
+    tgtPct:(target/entry-1)*100, stopPct:(stopR/entry-1)*100,
+    res, wall, wallPct:wall!=null?(wall/entry-1)*100:null,
+    wallR:wall!=null?(wall-entry)/risk:null,        // 저항까지 몇 R — 1R 미만이면 손익비가 불리하다
+    newHigh:!res };                                 // 머리 위 저항 없음(신고가 구간)
 }
 /* 저평가 발굴: 네이버 밸류에이션(/api/valuation)으로 흑자 저PER + ROE 양호 + 52주 고점 대비
    큰 낙폭(시장 소외)을 동시에 충족하는 종목을 찾는다. ROE는 PBR÷PER 근사(네이버가 직접 안 줌) */
@@ -1430,8 +1470,19 @@ function maCell(ms){
 /* 목표·손절 셀: 매수 판정 종목만 — 목표가(+기대수익)·손절가(리스크). ATR 기반 손익비 1:2 */
 function planCell(p,us){
   if(!p) return '<span class="flat">—</span>';
-  const tip='진입 '+fmtPx(p.entry,us)+' 기준 · 손절 = 최근 10봉 저점/1×ATR 중 보수적 값(최대 2×ATR) · 목표 = 리스크×2 (손익비 1:2)';
+  let tip='진입 '+fmtPx(p.entry,us)+' 기준 · 손절 = 최근 10봉 저점/1×ATR 중 보수적 값(최대 2×ATR) · 목표 = 리스크×2 (손익비 1:2)';
+  let mid='';
+  if(p.wall!=null){
+    tip+=' · 전고점 '+fmtPx(p.wall,us)+'('+p.res.ago+'봉 전'+(p.res.isHi?' · 기간 최고점':'')+')이 목표가 아래 — 여기서 한 번 막힐 수 있어 1차 목표로 본다. 2R 목표는 돌파 후 유효';
+    const tight=p.wallR<1;   // 저항까지 1R 미만이면 손익비가 불리하다
+    mid='<br><small class="mono'+(tight?' warn':'')+'" title="'+esc('저항까지 '+p.wallR.toFixed(1)+'R'
+        +(tight?' — 1R 미만이라 손익비 불리':''))+'">1차 '+fmtPx(p.wall,us)+' +'+p.wallPct.toFixed(1)+'% <span class="rtag">전고점</span></small>';
+  } else if(p.newHigh){
+    tip+=' · 최근 1년 안에 머리 위 전고점이 없다(신고가 구간) — 목표가를 막는 매물대 없음';
+    mid='<br><small class="mono" style="color:#22c55e">신고가 · 위 저항 없음</small>';
+  }
   return '<span class="mono up" title="'+esc(tip)+'">목표 '+fmtPx(p.target,us)+' <b>+'+p.tgtPct.toFixed(1)+'%</b></span>'
+    +mid
     +'<br><small class="mono down">손절 '+fmtPx(p.stop,us)+' '+p.stopPct.toFixed(1)+'%</small>';
 }
 /* MDD 셀: 기간 최대 낙폭(위)·현재 전고점 대비 낙폭(아래). −30% 이하 파랑, −15% 이하 주황 */
