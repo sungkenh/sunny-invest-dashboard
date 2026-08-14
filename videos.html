@@ -83,7 +83,7 @@
   footer{padding:22px;color:var(--muted2);font-size:11px;line-height:1.6;border-top:1px solid var(--border);margin-top:24px;max-width:1500px;margin-left:auto;margin-right:auto}
   footer b{color:var(--accent2)}
   @media(max-width:560px){ .vgrid{grid-template-columns:1fr} }
-  /* ===== 페이지 전환 부드럽게 — Cross-Document View Transitions(지원 브라우저). 미지원 시 일반 이동으로 무해 폴백 ===== */
+  /* ===== 페이지 전환 부드럽게: Cross-Document View Transitions(지원 브라우저). 미지원 시 일반 이동으로 무해 폴백 ===== */
   @view-transition{ navigation:auto; }
   ::view-transition-old(root){ animation:vt-out .14s ease both; }
   ::view-transition-new(root){ animation:vt-in .18s ease both; }
@@ -151,7 +151,7 @@ function kstUpd(iso, withDate){
   const g=t=>(p.find(x=>x.type===t)||{}).value||'';
   return (withDate?g('month')+'-'+g('day')+' ':'')+g('hour')+':'+g('minute');
 }
-/* ⭐고정 — 체크한 영상을 맨 앞으로(대시보드와 동일 localStorage 공유). 영상정보째 저장 */
+/* ⭐고정: 체크한 영상을 맨 앞으로(대시보드와 동일 localStorage 공유). 영상정보째 저장 */
 const VID_PINS_KEY='alphadesk.vidpins';
 function vidPinsRead(){ try{ return JSON.parse(localStorage.getItem(VID_PINS_KEY)||'[]'); }catch(e){ return []; } }
 function vidPinsWrite(a){ try{ localStorage.setItem(VID_PINS_KEY, JSON.stringify(a)); }catch(e){} }
@@ -194,7 +194,7 @@ document.querySelectorAll('#sortseg button').forEach(b=>b.onclick=()=>{
   state.sort=b.dataset.s; document.querySelectorAll('#sortseg button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); render();
 });
 async function loadVideos(){
-  // 라이브(/api/videos) ∪ 스냅샷(data/videos.json) 합집합 — 라이브 수집은 유튜브 RSS를 엣지에서
+  // 라이브(/api/videos) ∪ 스냅샷(data/videos.json) 합집합: 라이브 수집은 유튜브 RSS를 엣지에서
   // 가져오다 일부 채널이 실패할 수 있는데(채널별 실패는 조용히 빠짐), 그때 채널 탭이 사라지지 않도록
   // 스냅샷으로 보강한다. 같은 영상(link)은 라이브 우선.
   let live=null, snap=null;

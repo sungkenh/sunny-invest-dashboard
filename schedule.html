@@ -137,7 +137,7 @@
 
   @media(max-width:1100px){ .hirow{grid-template-columns:repeat(2,1fr)} }
   @media(max-width:840px){ .cols{grid-template-columns:1fr} }
-  /* ===== 페이지 전환 부드럽게 — Cross-Document View Transitions(지원 브라우저). 미지원 시 일반 이동으로 무해 폴백 ===== */
+  /* ===== 페이지 전환 부드럽게: Cross-Document View Transitions(지원 브라우저). 미지원 시 일반 이동으로 무해 폴백 ===== */
   @view-transition{ navigation:auto; }
   ::view-transition-old(root){ animation:vt-out .14s ease both; }
   ::view-transition-new(root){ animation:vt-in .18s ease both; }
@@ -212,8 +212,8 @@
 
 <script>
 /* ============================================================
-   핵심 일정(경제지표·실적) — data/calendar.json (fetch_calendar.py / 서버리스 calendar.js)
-   · 미국: nasdaq.com 공개 캘린더 — 지표 예상/이전/실제 + 실적 EPS 컨센서스(실시간)
+   핵심 일정(경제지표·실적): data/calendar.json (fetch_calendar.py / 서버리스 calendar.js)
+   · 미국: nasdaq.com 공개 캘린더. 지표 예상/이전/실제 + 실적 EPS 컨센서스(실시간)
    · 한국: nasdaq 한국 지표 + 한국은행/국가데이터처 공개 발표일정
    각 이벤트 필드: date(YYYY-MM-DD KST) time mk(kr|us) type(econ|earnings)
      econ:  title title_en importance(1~3) category forecast previous actual
@@ -309,8 +309,8 @@ function econHTML(e){
     <div class="bd">
       <div class="ti">${starHTML(e.importance)}<span>${e.title}</span>${cat}${done}</div>
       ${e.category==='연설'?'':`<div class="vals">
-        <div class="vcell"><div class="k">이전</div><div class="v">${e.previous||'—'}</div></div>
-        <div class="vcell"><div class="k">예상</div><div class="v">${e.forecast||'—'}</div></div>
+        <div class="vcell"><div class="k">이전</div><div class="v">${e.previous||'-'}</div></div>
+        <div class="vcell"><div class="k">예상</div><div class="v">${e.forecast||'-'}</div></div>
         <div class="vcell ${hasA?'act':'pending'}"><div class="k">실제</div><div class="v">${actSpan(e.actual, mk)}</div></div>
       </div>`}
       ${surprise}
@@ -347,7 +347,7 @@ function earnHTML(e){
       <div class="ti">${starHTML(e.importance)}<span>${e.title}</span>${e.ticker?`<span class="tkr">${e.ticker}</span>`:''}${idxTag}${capTag}${done}</div>
       <div class="eps">
         ${prevCell}
-        <div class="epscell est"><div class="k">EPS 예상</div><div class="v">${e.eps_est||'—'}</div></div>
+        <div class="epscell est"><div class="k">EPS 예상</div><div class="v">${e.eps_est||'-'}</div></div>
         ${actCell}
         ${e.n_ests?`<div class="epscell"><div class="k">추정기관</div><div class="v">${e.n_ests}곳</div></div>`:''}
       </div>
@@ -382,7 +382,7 @@ function collapseEcon(list){   // 같은 일시의 한 발표(예: 고용지표 
   return Object.keys(g).map(k=>g[k].slice().sort((a,b)=>rank(a)-rank(b)||(b.importance-a.importance)||a.title.length-b.title.length)[0]);
 }
 function addD(ds,n){const[a,b,c]=ds.split('-').map(Number);const d=new Date(a,b-1,c+n);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
-function highlights(){   // 지난주~이번주(±7일) 최상위 지표·대형 실적 — 발표된 것은 실제값으로
+function highlights(){   // 지난주~이번주(±7일) 최상위 지표·대형 실적. 발표된 것은 실제값으로
   const t=TODAY||todayKST();
   const lo=addD(t,-7), hi=addD(t,7), inWin=e=>e.date>=lo&&e.date<=hi;
   const econ=collapseEcon(EVENTS.filter(e=>inWin(e)&&e.type==='econ'&&e.importance>=3&&e.category!=='연설'));
@@ -396,11 +396,11 @@ function highlights(){   // 지난주~이번주(±7일) 최상위 지표·대형
     const flag=e.mk==='kr'?'🇰🇷 한국':'🇺🇸 미국';
     let det, done='';
     if(e.type==='earnings'){
-      if(e.eps_actual){ const mk=epsMark(e.surprise,e.eps_actual,e.eps_est); det=`${e.ticker?e.ticker+' · ':''}예상 ${e.eps_est||'—'} · 실제 <b style="color:${mk?mk.c:'var(--gold)'}">${mk?mk.ar+' ':''}${e.eps_actual}</b>${e.surprise?` (${e.surprise})`:''}`; done='발표완료'; }
-      else det=`${e.ticker?e.ticker+' · ':''}${e.session||''} · EPS 예상 ${e.eps_est||'—'}`;
+      if(e.eps_actual){ const mk=epsMark(e.surprise,e.eps_actual,e.eps_est); det=`${e.ticker?e.ticker+' · ':''}예상 ${e.eps_est||'-'} · 실제 <b style="color:${mk?mk.c:'var(--gold)'}">${mk?mk.ar+' ':''}${e.eps_actual}</b>${e.surprise?` (${e.surprise})`:''}`; done='발표완료'; }
+      else det=`${e.ticker?e.ticker+' · ':''}${e.session||''} · EPS 예상 ${e.eps_est||'-'}`;
     } else {
-      if(e.actual){ const mk=cmpMark(e.actual,e.forecast); det=`이전 ${e.previous||'—'} · 예상 ${e.forecast||'—'} · 실제 <b style="color:${mk?mk.c:'var(--gold)'}">${mk?mk.ar+' ':''}${e.actual}</b>`; done='발표완료'; }
-      else det=`이전 ${e.previous||'—'} · 예상 ${e.forecast||'—'}`;
+      if(e.actual){ const mk=cmpMark(e.actual,e.forecast); det=`이전 ${e.previous||'-'} · 예상 ${e.forecast||'-'} · 실제 <b style="color:${mk?mk.c:'var(--gold)'}">${mk?mk.ar+' ':''}${e.actual}</b>`; done='발표완료'; }
+      else det=`이전 ${e.previous||'-'} · 예상 ${e.forecast||'-'}`;
     }
     return `<div class="hicard ${e.mk}">
       <div class="when">${dl.lab} ${dl.md}(${dl.dow}) ${e.time?'· '+e.time:''}${done?` · <span style="color:var(--gold);font-weight:800">${done}</span>`:''}</div>
@@ -453,7 +453,7 @@ bindSeg('imp-seg','imp',v=>+v);
 bindSeg('when-seg','when',v=>v);
 
 document.getElementById('disc').innerHTML =
-  '✅ <b>미국</b> · 경제지표(예상·이전·실제)와 실적은 nasdaq.com 공개 캘린더 — 실적은 <b>S&P500·나스닥100·다우 구성종목</b>(합집합)을 표시합니다(나스닥 상장 대형주는 S&P500에 이미 포함). ' +
+  '✅ <b>미국</b> · 경제지표(예상·이전·실제)와 실적은 nasdaq.com 공개 캘린더를 씁니다. 실적은 <b>S&P500·나스닥100·다우 구성종목</b>(합집합)을 표시합니다(나스닥 상장 대형주는 S&P500에 이미 포함). ' +
   '🇰🇷 <b>한국</b> · 지표는 nasdaq 한국 항목 + 한국은행·국가데이터처(구 통계청)·관세청 발표일정, 실적은 <b>KOSPI·KOSDAQ 주요 종목</b>의 다음 발표일·컨센서스 EPS(yfinance)입니다. ' +
   '실적은 분기 시즌(미국·한국 모두 대개 1·4·7·10월)에 집중되어, 한·미 공통으로 지난 분기 <b>발표 결과(실제 EPS·서프라이즈)</b>와 다가오는 분기 실적을 함께 표시합니다. ' +
   '📰 <b>분석 기사</b>는 발표된(또는 임박한) 주요 지표·실적에 대해 Google 뉴스에서 한국어 해설 기사를 자동 연결합니다(클릭 시 원문 이동). ' +
@@ -490,7 +490,7 @@ async function loadCalendar(){
       } else { events.push(le); idx[evKey(le)]=events.length-1; }   // 스냅샷에 아직 없는 신규 이벤트
     });
   }
-  EVENTS=events; TODAY=todayKST();   // '오늘'은 항상 KST 현재 날짜 — 스냅샷 생성 시점(UTC) 날짜 사용 금지
+  EVENTS=events; TODAY=todayKST();   // '오늘'은 항상 KST 현재 날짜. 스냅샷 생성 시점(UTC) 날짜는 쓰지 않는다
   lsWrite(CAL_LS, {events:events, today:TODAY});   // 직전 일정 보관(다음 진입 즉시 시드)
   document.getElementById('offline').style.display='none';
   renderAll();

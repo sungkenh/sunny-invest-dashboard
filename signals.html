@@ -85,11 +85,11 @@
   .prog i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
 
   .tbl-wrap{border:1px solid var(--border);border-radius:12px;overflow:auto;background:var(--panel)}
-  table.sig{width:100%;border-collapse:collapse}   /* min-width 강제 없음 — 1200px대 화면도 스크롤 없이 */
+  table.sig{width:100%;border-collapse:collapse}   /* min-width 강제 없음. 1200px대 화면도 스크롤 없이 */
   table.sig th{position:sticky;top:0;background:var(--panel2);color:var(--muted2);font-size:10.5px;font-weight:800;
     text-align:left;padding:7px 8px;border-bottom:1px solid var(--border);letter-spacing:.2px;white-space:nowrap;z-index:2}
   table.sig td{padding:6px 8px;border-bottom:1px solid var(--border);font-size:12.5px;vertical-align:middle;white-space:normal}
-  table.sig td.num{white-space:nowrap}   /* 숫자 셀만 줄바꿈 금지 — 나머지는 접혀서 표가 화면 폭에 맞음 */
+  table.sig td.num{white-space:nowrap}   /* 숫자 셀만 줄바꿈 금지. 나머지는 접혀서 표가 화면 폭에 맞음 */
   table.sig tbody tr.srow{cursor:pointer}
   table.sig tbody tr.srow:hover{background:var(--panel2)}
   table.sig tbody tr:last-child td{border-bottom:none}
@@ -113,7 +113,7 @@
   .secline a:hover{text-decoration:underline}
   .rtag{display:inline-block;font-size:8.5px;font-weight:800;color:var(--muted2);border:1px solid var(--border);
     border-radius:3px;padding:0 3px;vertical-align:1px}                      /* 전고점(저항) 표시 */
-  small.warn{color:var(--gold)}                                             /* 저항까지 1R 미만 — 손익비 불리 */
+  small.warn{color:var(--gold)}                                             /* 저항까지 1R 미만이라 손익비 불리 */
   .xh{display:inline-block;margin-left:4px;font-size:9px;font-weight:800;color:var(--gold);
     border:1px solid var(--gold);border-radius:3px;padding:0 3px;vertical-align:1px;white-space:nowrap}  /* 시간외 체결 표시 */
   .star{cursor:pointer;color:var(--muted2);margin-right:6px;font-size:13px;user-select:none}
@@ -253,30 +253,30 @@
   <div class="crit">
     <div class="card buy">
       <h4>▲ 매수 타이밍 기준</h4>
-      ① <b>MACD 골든크로스</b> — MACD선(12EMA−26EMA)이 시그널선(9EMA) 상향 돌파 ·
-      ② <b>MACD 0선 상향 돌파</b> — 12EMA가 26EMA 위로 ·
+      ① <b>MACD 골든크로스</b>: MACD선(12EMA−26EMA)이 시그널선(9EMA) 상향 돌파 ·
+      ② <b>MACD 0선 상향 돌파</b>: 12EMA가 26EMA 위로 ·
       ③ <b>RSI(14) ≥ 50</b>.
       최근 N봉 내 ①·② 발생 + ③ 충족 = <b>매수 신호</b>, 모두 겹치면 <b>강력 매수</b>.<br>
       MACD+RSI의 후행성 보완: <b>히스토그램 반전 · 스토캐스틱(14,3,3) 과매도 골든 · RSI 30 탈출 ·
       상승 다이버전스 · BB 하단 복귀</b> 중 <b>2개 이상</b> 겹치면 크로스 확정 전에 <b>조기 매수</b>로,
       갭 축소 외삽으로는 <b>매수 임박</b>으로 먼저 표시하고, 발생 시점에 🔔 브라우저 알림을 보냅니다.<br>
-      «신호 속도: <b>⚡빠름</b>»은 MACD 8·17·9 + RSI 9로 같은 기준을 더 짧은 주기로 계산해 신호를 1~3봉
-      먼저 잡는 대신 거짓 신호(휩쏘)가 늘어납니다 — 종목 상세의 <b>«신호 성과 검증»</b>에서 표준과의
+      신호 속도: <b>⚡빠름</b>은 MACD 8·17·9 + RSI 9로 같은 기준을 더 짧은 주기로 계산해 신호를 1~3봉
+      먼저 잡는 대신 거짓 신호(휩쏘)가 늘어납니다. 종목 상세의 <b>신호 성과 검증</b>에서 표준과의
       과거 적중률 차이를 확인하고 선택하세요. 신호봉의 <b>거래량</b>(20봉 평균 대비)과 <b>토스 수급</b>이
       신호 방향과 일치하면 확인 칩·초록 점으로, 어긋나면 경고 칩으로 신뢰도를 표시합니다.
     </div>
     <div class="card sell">
       <h4>▼ 매도 타이밍 기준 (정반대)</h4>
-      ① <b>MACD 데드크로스</b> · ② <b>0선 하향 이탈</b> · ③ <b>RSI(14) &lt; 50</b> —
+      ① <b>MACD 데드크로스</b> · ② <b>0선 하향 이탈</b> · ③ <b>RSI(14) &lt; 50</b>.
       최근 N봉 내 ①·② 발생 + ③ 충족 = <b>매도 신호</b>, 모두 겹치면 <b>강력 매도</b>.
       히스토그램 반전↓·스토캐스틱 과열 데드·RSI 70 이탈·하락 다이버전스·BB 상단 복귀가 2개↑ 겹치면 <b>조기 매도</b>.<br>
-      <b>외국인</b> 열은 외국인 보유한도 소진율의 최근 변화로, (+)면 외국인 순매수 유입, (−)면 이탈 흐름입니다(국내 전용 — 미국 종목은 «—»).
+      <b>외국인</b> 열은 외국인 보유한도 소진율의 최근 변화로, (+)면 외국인 순매수 유입, (−)면 이탈 흐름입니다(국내 전용이라 미국 종목은 빈칸입니다).
       종목 행을 클릭하면 차트와 상세 근거를 볼 수 있습니다. 스윙은 60·120분봉, 장기는 일봉 기준입니다.
     </div>
   </div>
 
   <div class="statusline">
-    <span id="st-scan">—</span>
+    <span id="st-scan">-</span>
     <div class="prog" id="prog"><i></i></div>
     <span id="st-note"></span>
     <span class="spacer" style="flex:1"></span>
@@ -304,46 +304,47 @@
   미국은 정규장(22:30~05:00 KST) 외 프리·애프터마켓 체결가를 현재가에 반영하며, 장 성격은 S&amp;P500(^GSPC)·나스닥100(^NDX) 지수로 판별합니다.
   <b>ETF 시장</b>은 지수·섹터·레버리지·인버스 대표 상품 엄선 목록(한국 16 · 미국 24)으로, 시세는 차트 데이터 기준이라 개별주 대비 수십 초 지연될 수 있습니다.
   <b>인버스는 기초지수와 반대로 움직이는 별도 상품</b>으로서 자체 가격에 대한 신호이며, 레버리지·인버스는 음의 복리(변동성 잠식) 특성상 장기 보유에 부적합합니다.<br>
-  종목명 옆 <b>업종 칩</b>은 국내는 네이버 금융 업종 분류(약 4,000종목), 미국은 <b>GICS 11개 섹터</b>(종목 상세에서 핀비즈 세부 산업 병기)이며 매일 갱신합니다 —
-  업종이 «기타»로 미분류된 종목과 ETF에는 칩을 표시하지 않습니다. 같은 업종이 한꺼번에 매수 신호를 내면 개별 종목이 아니라 <b>섹터 전체가 움직이는 국면</b>일 수 있으니
-  «섹터 가이드» 페이지의 데스크 논지와 함께 보세요.<br>
+  종목명 옆 <b>업종 칩</b>은 국내는 네이버 금융 업종 분류(약 4,000종목), 미국은 <b>GICS 11개 섹터</b>(종목 상세에서 핀비즈 세부 산업 병기)이며 매일 갱신합니다.
+  업종이 기타로 미분류된 종목과 ETF에는 칩을 표시하지 않습니다. 같은 업종이 한꺼번에 매수 신호를 내면 개별 종목이 아니라 <b>섹터 전체가 움직이는 국면</b>일 수 있으니
+  섹터 가이드 페이지의 데스크 논지와 함께 보세요.<br>
   장 성격은 지수 일봉의 <b>20·60일 이동평균 배열·기울기와 ADX(14) 추세 강도</b>로 판별합니다(ADX 20 미만 = 횡보).
   <b>외국인(5일)</b> 열은 토스증권 Open API 키가 등록된 경우 <b>공식 투자자별 매매동향(등록외국인·기관 순매수 주식 수, 5거래일 합)</b>을 표시하고,
   키가 없거나 조회 실패 시 <b>외국인 보유한도 소진율</b>의 최근 변화량(%p, 근사 지표)으로 폴백합니다. 당일 수급은 잠정치로 장중 계속 갱신됩니다.<br>
   <b>120·200일선</b> 열은 일봉 기준 장기 이동평균 대비 위치(↑ 지지 / ↓ 깨짐)와 이격률로, 어느 모드에서든 일봉으로 계산합니다
-  (120일선 = 경기선, 200일선 = 장기 추세선 — 200일선 이탈은 장기 추세 훼손 신호로 봅니다).
-  스윙 모드에서는 표시 종목의 일봉을 별도 수집하므로 스캔 직후 잠시 «—»였다가 채워질 수 있습니다.<br>
-  <b>목표·손절 (제안)</b> 열은 매수 판정(강력 매수·매수 신호·조기 매수) 종목에만 표시되며, 현재 봉 주기의 <b>ATR(14) 변동성</b>으로 산정합니다 —
+  (120일선 = 경기선, 200일선 = 장기 추세선. 200일선 이탈은 장기 추세 훼손 신호로 봅니다).
+  스윙 모드에서는 표시 종목의 일봉을 별도 수집하므로 스캔 직후 잠시 빈칸이었다가 채워질 수 있습니다.<br>
+  <b>목표·손절 (제안)</b> 열은 매수 판정(강력 매수·매수 신호·조기 매수) 종목에만 표시되며, 현재 봉 주기의 <b>ATR(14) 변동성</b>으로 산정합니다.
   손절가 = 최근 10봉 저점과 (진입가 − 1×ATR) 중 보수적(낮은) 값(리스크 상한 2×ATR), 목표가 = 진입가 + 리스크×2(<b>손익비 1:2</b>).
   괄호의 %가 목표 도달 시 기대 수익률·손절 시 손실률입니다. 스윙은 분봉 ATR이라 좁게, 장기는 일봉 ATR이라 넓게 자동 산정됩니다.
-  이는 기계적 산식에 따른 참고값이지 수익을 보장하는 권유가 아니며, 실제 주문 시 호가 단위·수수료·슬리피지를 감안하세요.<br>
+  산식대로 뽑은 참고값이지 수익을 보장하지 않습니다. 실제 주문에서는 호가 단위·수수료·슬리피지를 함께 보세요.<br>
   <b>💎 저평가 발굴 필터</b>는 네이버 밸류에이션 기준 <b>흑자 PER ≤ 10배(미국 15배) · ROE ≥ 8%(PBR÷PER 근사) ·
-  52주 고점 대비 −20% 이하</b>를 동시에 충족하는 종목입니다 — 실적은 나오는데 섹터 소외 등으로 저가에 밀려난 후보를 찾는 용도로,
-  미국 시장은 표시 상위 50이 아닌 <b>스캔한 전체 유니버스</b>에서 찾습니다(ETF·적자 기업 제외).
-  다만 일회성 이익·경기순환 고점에서는 PER이 낮아 보이는 <b>밸류 트랩</b>이 섞일 수 있으니,
-  매수·조기 매수 신호와 겹치는 종목을 우선 검토하고 낙폭의 원인(실적 악화 여부)을 반드시 확인하세요.<br>
+  52주 고점 대비 −20% 이하</b>를 동시에 충족하는 종목입니다. 실적은 나오는데 섹터 소외 등으로 저가에 밀려난 후보를 찾는 용도로,
+  미국 시장은 표시 상위 50이 아니라 <b>스캔한 전체 유니버스</b>에서 찾습니다(ETF·적자 기업 제외).
+  다만 일회성 이익이나 경기순환 고점에서는 PER이 낮아 보이는 <b>밸류 트랩</b>이 섞입니다.
+  매수·조기 매수 신호와 겹치는 종목을 먼저 보고, 낙폭의 원인이 실적 악화인지 확인하세요.<br>
   <b>⭐ 관심 시장</b>은 각 시장에서 종목 이름 옆 ☆로 담은 종목을 한 화면에서 감시하는 워치리스트입니다(브라우저에 저장).
-  직접 추가는 국내 6자리 코드(코스닥은 뒤에 .KQ)·미국 티커 입력이며, 직접 추가한 종목은 이름이 코드로 표시되고
-  시세는 차트 기준이라 개별주 실시간 대비 수십 초 지연될 수 있습니다.
-  <b>적정 PBR(ROE 회귀)</b>는 잔여이익모형의 justified PBR = (ROE−g)/(r−g)를 시장이 실제로 매겨 온 평균 가격선으로 근사한 지표로,
-  코스피 12개월 선행(12MF) ROE-PBR 시계열 회귀식 <b>y = 0.0696×ROE + 0.2953</b>(Bloomberg 컨센서스 기준)에 현재 ROE를 대입해 구합니다.
-  현 PBR이 적정 PBR보다 <b>−10% 이하면 저평가, −30% 이하면 크게 저평가</b>(수익성 대비 주가가 싼 상태 = 매수 검토 구간),
-  +10% 이상이면 고평가로 표시합니다. 단 이 계수는 코스피 <b>지수 수준</b>에서 추정된 것이라 개별 종목·미국 종목·코스닥에는 참고용이며
-  (은행 등 저PBR 업종은 구조적으로 회귀선 아래에 머뭅니다), 여기의 ROE는 PBR÷PER 근사(후행)라 선행 추정치 기반 원식과 차이가 날 수 있고,
-  실적 악화로 ROE가 떨어지면 적정 PBR도 함께 낮아지는 후행성이 있습니다. 기술적 매수 신호(판정 열)와 저평가 판정이 겹칠 때가 유효한 매수 검토 시점입니다.<br>
+  직접 추가는 국내 6자리 코드(코스닥은 뒤에 .KQ)나 미국 티커를 넣으면 됩니다.
+  직접 추가한 종목은 이름이 코드로 표시되고, 시세는 차트 기준이라 개별주 실시간보다 수십 초 늦을 수 있습니다.
+  <b>적정 PBR(ROE 회귀)</b>는 잔여이익모형의 justified PBR = (ROE−g)/(r−g)를 시장이 실제로 매겨 온 평균 가격선으로 근사한 값입니다.
+  코스피 12개월 선행(12MF) ROE-PBR 시계열 회귀식 <b>y = 0.0696×ROE + 0.2953</b>(Bloomberg 컨센서스 기준)에 현재 ROE를 넣어 구합니다.
+  현 PBR이 적정 PBR보다 <b>−10% 이하면 저평가, −30% 이하면 크게 저평가</b>로 봅니다. 수익성 대비 주가가 싼 매수 검토 구간이라는 뜻입니다.
+  +10% 이상이면 고평가로 표시합니다.<br>
+  세 가지는 감안해서 보세요. 첫째, 이 계수는 코스피 <b>지수 수준</b>에서 뽑은 것이라 개별 종목·미국 종목·코스닥에는 참고용입니다
+  (은행 등 저PBR 업종은 구조적으로 회귀선 아래에 머뭅니다). 둘째, 여기의 ROE는 PBR÷PER 근사라 후행 지표이고, 선행 추정치를 쓰는 원식과는 값이 다를 수 있습니다.
+  셋째, 실적이 나빠져 ROE가 떨어지면 적정 PBR도 따라 내려갑니다. 기술적 매수 신호와 저평가 판정이 겹치는 때가 실제로 볼 만한 시점입니다.<br>
   <b>MDD(1년)</b> 열은 최근 약 1년(국내 330거래일·미국 1년) 일봉 종가 기준 <b>최대 낙폭</b>(기간 내 고점→저점 최대 하락률)이며,
-  아래 «현재»는 현재가의 기간 내 전고점 대비 낙폭입니다. MDD가 깊을수록(−30% 이하 파랑, −15% 이하 주황) 변동성·하방 위험이 큰 종목이니 손절 폭과 비중 설정에 참고하세요.<br>
-  지표는 종가 기준 MACD·RSI(Wilder)·볼린저밴드(20,2)·스토캐스틱 슬로우(14,3,3)로 계산합니다 —
-  «신호 속도» <b>표준</b>은 MACD(12,26,9)+RSI(14), <b>⚡빠름</b>은 MACD(8,17,9)+RSI(9)로 같은 로직을 더 짧은 주기에 적용해
-  신호를 1~3봉 먼저 잡는 대신 휩쏘가 늘어나며, 종목 상세의 <b>«신호 성과 검증»</b>이 이 종목 과거 봉 기준 두 프리셋의
+  아래 현재는 현재가의 기간 내 전고점 대비 낙폭입니다. MDD가 깊을수록(−30% 이하 파랑, −15% 이하 주황) 변동성·하방 위험이 큰 종목이니 손절 폭과 비중 설정에 참고하세요.<br>
+  지표는 종가 기준 MACD·RSI(Wilder)·볼린저밴드(20,2)·스토캐스틱 슬로우(14,3,3)로 계산합니다.
+  신호 속도 <b>표준</b>은 MACD(12,26,9)+RSI(14), <b>⚡빠름</b>은 MACD(8,17,9)+RSI(9)로 같은 로직을 더 짧은 주기에 적용해
+  신호를 1~3봉 먼저 잡는 대신 휩쏘가 늘어나며, 종목 상세의 <b>신호 성과 검증</b>이 이 종목 과거 봉 기준 두 프리셋의
   적중률·평균수익(진입 후 스윙 30봉, 장기 20봉 평가, 수수료 미반영)을 비교해 줍니다.
-  <b>거래량 확인</b> 칩은 신호봉 거래량이 직전 20봉 평균의 1.5배 이상(0.7배 미만이면 «빈약» 경고), <b>수급 확인</b> 칩은
-  토스 최근일 외국인·기관 순매수가 신호 방향과 일치할 때 붙는 참고 라벨로, 판정 자체를 바꾸지는 않습니다(판정 배지 앞 초록·금색 점 동일).
+  <b>거래량 확인</b> 칩은 신호봉 거래량이 직전 20봉 평균의 1.5배 이상(0.7배 미만이면 빈약 경고), <b>수급 확인</b> 칩은
+  토스 최근일 외국인·기관 순매수가 신호 방향과 맞을 때 붙습니다. 참고 라벨이라 판정 자체를 바꾸지는 않습니다(판정 배지 앞 초록·금색 점도 같습니다).
   장중에는 형성 중인 마지막 봉에 네이버 실시간 체결가를 반영해 자동 갱신됩니다. 🔔 알림은 이 페이지가 열려 있는 동안만 동작합니다.<br>
-  MACD·RSI는 추세 후행 지표로 <b>거짓 신호(휩쏘)</b>가 빈번합니다. «조기 매수/매도»는 후행성을 보완하는 선행 지표
-  (히스토그램 반전·스토캐스틱·RSI 30/70 탈출·다이버전스·볼린저 복귀) 2개 이상의 합의이지만 <b>본신호보다 실패 확률이 높은
-  공격적 진입</b>이며, «임박» 표시는 최근 기울기 외삽 추정치일 뿐 발생을 보장하지 않습니다.
-  이 페이지는 참고 자료이며 매수·매도 추천이 아닙니다. 투자 판단의 책임은 본인에게 있습니다.
+  MACD·RSI는 추세를 뒤따라가는 지표라 <b>거짓 신호(휩쏘)</b>가 자주 납니다. 조기 매수·매도는 이 후행성을 메우려고
+  선행 지표(히스토그램 반전·스토캐스틱·RSI 30/70 탈출·다이버전스·볼린저 복귀) 2개 이상이 겹칠 때 붙이는데,
+  <b>본신호보다 실패 확률이 높은 공격적 진입</b>입니다. 임박 표시는 최근 기울기를 늘려 본 추정치일 뿐 실제 발생을 보장하지 않습니다.
+  이 페이지는 참고 자료이지 매수·매도 추천이 아닙니다. 투자 판단의 책임은 본인에게 있습니다.
 </footer>
 
 <script>
@@ -507,7 +508,7 @@ function rsiSeries(c,n){
   }
   return out;
 }
-/* ADX(14, Wilder) 마지막 값 — 지수 추세 강도(<20 횡보) */
+/* ADX(14, Wilder) 마지막 값: 지수 추세 강도(<20 횡보) */
 function adxLast(hi,lo,cl,n){
   n=n||14;
   if(cl.length<n*2+2) return null;
@@ -550,7 +551,7 @@ function crossUpAgo(a,b,end){
   return null;
 }
 const constArr=(L,v)=>new Array(L).fill(v);
-/* 스토캐스틱 슬로우(14,3,3) — MACD보다 선행하는 보완 지표 */
+/* 스토캐스틱 슬로우(14,3,3): MACD보다 선행하는 보완 지표 */
 function stochSeries(hi,lo,cl,n,ks,ds){
   n=n||14; ks=ks||3; ds=ds||3;
   const L=cl.length, raw=new Array(L).fill(null);
@@ -570,7 +571,7 @@ function stochSeries(hi,lo,cl,n,ks,ds){
   const k=smooth(raw,ks);
   return {k, d:smooth(k,ds)};
 }
-/* 히스토그램 반전: 크로스 전 갭이 2봉 연속 축소 — 골든/데드크로스 선행 신호 */
+/* 히스토그램 반전: 크로스 전 갭이 2봉 연속 축소: 골든/데드크로스 선행 신호 */
 function histTurn(m,s,end){
   if(end==null) end=m.length-1;
   if(end<2||m[end]==null||s[end]==null||m[end-1]==null||s[end-1]==null||m[end-2]==null||s[end-2]==null) return {up:false,dn:false};
@@ -628,11 +629,11 @@ function approach(m,s,end){
   if(m[end]>0&&dm<0){ const e=Math.ceil(m[end]/-dm); if(e>=1&&e<=3) out.zdEta=e; }
   return out;
 }
-/* 신호 속도 프리셋 — 빠름은 표준의 ~1/2 주기(1:2 비율 유지)로 같은 로직을 시간 압축.
-   신호가 1~3봉 먼저 나오는 대신 거짓 신호(휩쏘)가 늘어난다 → «신호 성과 검증»으로 비교. */
+/* 신호 속도 프리셋: 빠름은 표준의 ~1/2 주기(1:2 비율 유지)로 같은 로직을 시간 압축.
+   신호가 1~3봉 먼저 나오는 대신 거짓 신호(휩쏘)가 늘어난다 → 신호 성과 검증으로 비교. */
 const SPEEDS={ std:{fast:12,slow:26,sig:9,rsiN:14,label:'표준'},
                fast:{fast:8,slow:17,sig:9,rsiN:9,label:'빠름'} };
-/* 시리즈 1회 계산(종목·프리셋당) — judgeAt이 봉 인덱스별로 재사용 (백테스트 핵심) */
+/* 시리즈 1회 계산(종목·프리셋당): judgeAt이 봉 인덱스별로 재사용 (백테스트 핵심) */
 function judgePrep(closes,hi,lo,cfg){
   cfg=cfg||SPEEDS.std;
   return { cfg, md:macdSeries(closes,cfg.fast,cfg.slow,cfg.sig), r:rsiSeries(closes,cfg.rsiN),
@@ -642,7 +643,7 @@ function judgePrep(closes,hi,lo,cfg){
 /* 종가/고가/저가 배열 → 종합 판정. look = 크로스를 '신호'로 인정하는 최근 봉 수.
    MACD+RSI 본신호에 더해, 후행성을 보완하는 선행 지표 4종(히스토그램 반전·스토캐스틱·
    RSI 30/70 탈출·다이버전스·BB 복귀)이 2개 이상 겹치면 크로스 확정 전에 '조기' 판정.
-   end = 평가 기준 봉 인덱스(기본 마지막 봉) — 시리즈는 i 이전 데이터만 의존하므로 룩어헤드 없음. */
+   end = 평가 기준 봉 인덱스(기본 마지막 봉). 시리즈는 i 이전 데이터만 의존하므로 룩어헤드 없음. */
 function judgeAt(P,closes,hi,lo,look,end){
   const L=closes.length; if(end==null) end=L-1;
   const m=P.md.m, s=P.md.s, r=P.r;
@@ -688,7 +689,7 @@ function judgeAt(P,closes,hi,lo,look,end){
   else if(dcOK&&!macdUp&&!rsiOk) v=(!above0||zdOK)?'sell2':'sell1';
   else if(zuOK&&macdUp&&rsiOk)   v='buy1'; // 0선 돌파 단독도 매수 신호
   else if(zdOK&&!macdUp&&!rsiOk) v='sell1';
-  else if(ebN>=2&&rr<70)                       v='ebuy'; // 선행 지표 2개↑ 동시 — 크로스 확정 전 조기 진입
+  else if(ebN>=2&&rr<70)                       v='ebuy'; // 선행 지표 2개↑ 동시. 크로스 확정 전 조기 진입
   else if(esN>=2&&rr>30)                       v='esell';
   else if((ap.gcEta!=null||ap.zuEta!=null)&&rr>=45)      v='nbuy';   // 임박(외삽 예측)
   else if((ap.dcEta!=null||ap.zdEta!=null)&&rr<=55)      v='nsell';
@@ -717,7 +718,7 @@ function agg120(ohlc){
   }
   return out;
 }
-/* ATR(14, Wilder) 마지막 값 — 봉 주기의 평균 변동폭(목표가·손절가 산정용) */
+/* ATR(14, Wilder) 마지막 값: 봉 주기의 평균 변동폭(목표가·손절가 산정용) */
 function atrLast(hi,lo,closes,n){
   n=n||14;
   const L=closes.length, trs=[];
@@ -730,7 +731,7 @@ function atrLast(hi,lo,closes,n){
   for(let i=n;i<trs.length;i++) a=(a*(n-1)+trs[i])/n;
   return a;
 }
-/* 신호봉 거래량 vs 직전 20봉 평균 — ago=신호 발생 몇 봉 전, sessionOpen이면 형성 중 마지막 봉은
+/* 신호봉 거래량 vs 직전 20봉 평균: ago=신호 발생 몇 봉 전, sessionOpen이면 형성 중 마지막 봉은
    부분 거래량이라 직전 완성봉으로 대체. ≥×1.5 급증 확인 · <×0.7 빈약 경고, 그 사이는 표시 없음 */
 function volConfirm(vols,ago,sessionOpen){
   if(!vols||vols.length<25) return null;
@@ -754,11 +755,11 @@ function frgnStats(f){
 
 /* ── 장 성격별 전략 안내 + 종목별 추천 기법 ── */
 const REGIME_INFO={
-  bull:{name:'강세장',cls:'bull',desc:'<b>추세추종 우위</b> — MACD 골든크로스·20일선 눌림목 매수의 신뢰도가 높습니다. '
+  bull:{name:'강세장',cls:'bull',desc:'<b>추세추종 우위</b>. MACD 골든크로스·20일선 눌림목 매수의 신뢰도가 높습니다. '
     +'RSI 70 과열만으로의 매도는 이른 경우가 많아, 매도는 데드크로스나 20일선 이탈 확인 후가 유리합니다.'},
-  bear:{name:'약세장',cls:'bear',desc:'<b>매도 신호 우위</b> — 데드크로스·0선 이탈의 신뢰도가 높습니다. '
+  bear:{name:'약세장',cls:'bear',desc:'<b>매도 신호 우위</b>. 데드크로스·0선 이탈의 신뢰도가 높습니다. '
     +'골든크로스는 휩쏘(거짓 반등)가 잦아 확인 매수가 필요하고, RSI 30 과매도 반등은 짧게 대응하세요.'},
-  range:{name:'횡보장',cls:'range',desc:'<b>박스권 역추세 우위</b> — RSI 30/70과 볼린저밴드 상·하단 반전 매매가 유효합니다. '
+  range:{name:'횡보장',cls:'range',desc:'<b>박스권 역추세 우위</b>. RSI 30/70과 볼린저밴드 상·하단 반전 매매가 유효합니다. '
     +'MACD 크로스는 거짓 신호가 잦아 밴드 끝단·과매도(과열) 신호와 겹칠 때만 신뢰하세요.'},
 };
 function techniqueFor(u,j,rg,fd){
@@ -768,29 +769,29 @@ function techniqueFor(u,j,rg,fd){
   let t,why;
   if(regime==='bull'){
     if(j.ma20!=null&&u.price>j.ma20){
-      if(dist20!=null&&Math.abs(dist20)<=0.015){ t='MA20 눌림목 매수'; why='강세장 + 20일선('+fmtPx(Math.round(j.ma20),isUSm(u.mkt))+') 부근 — 지지 확인 시 분할 매수 유효'; }
+      if(dist20!=null&&Math.abs(dist20)<=0.015){ t='MA20 눌림목 매수'; why='강세장 + 20일선('+fmtPx(Math.round(j.ma20),isUSm(u.mkt))+') 부근. 지지 확인 시 분할 매수 유효'; }
       else if(j.gcOK||j.zuOK){ t='추세추종 (MACD)'; why='강세장에서 골든크로스·0선 돌파 신뢰도 높음'; }
-      else { t='추세 보유'; why='20일선 위 추세 유지 — 종가 이탈 전까지 보유, 이탈 시 축소'; }
-    } else { t='회복 확인 대기'; why='강세장이지만 이 종목은 20일선 아래 — 20일선 회복 확인 후 접근'; }
+      else { t='추세 보유'; why='20일선 위 추세 유지. 종가 이탈 전까지 보유하고 이탈하면 축소'; }
+    } else { t='회복 확인 대기'; why='강세장이지만 이 종목은 20일선 아래. 20일선 회복을 확인한 뒤 접근'; }
   } else if(regime==='bear'){
-    if(j.rsi<=30){ t='과매도 단기 반등'; why='약세장 반등은 짧게 — RSI '+j.rsi.toFixed(0)+' 과매도, 60일선 저항 확인'; }
-    else if(j.dcOK||j.zdOK){ t='추세추종 매도'; why='약세장 데드크로스·0선 이탈 신뢰도 높음 — 보유 시 비중 축소'; }
-    else if(j.ma20!=null&&u.price>j.ma20){ t='반등 매도 대기'; why='약세장 반등이 20일선 위 — 상승 지속 실패 시 매도 관점'; }
-    else { t='관망 (현금 우위)'; why='약세장 + 추세 아래 — 골든크로스도 확인 매수 필요'; }
+    if(j.rsi<=30){ t='과매도 단기 반등'; why='약세장 반등은 짧게 간다. RSI '+j.rsi.toFixed(0)+' 과매도, 60일선 저항 확인'; }
+    else if(j.dcOK||j.zdOK){ t='추세추종 매도'; why='약세장 데드크로스·0선 이탈은 신뢰도가 높다. 보유 중이면 비중 축소'; }
+    else if(j.ma20!=null&&u.price>j.ma20){ t='반등 매도 대기'; why='약세장 반등이 20일선 위. 상승이 이어지지 못하면 매도 관점'; }
+    else { t='관망 (현금 우위)'; why='약세장 + 추세 아래. 골든크로스가 나와도 확인 후 매수'; }
   } else {
-    if(j.pb!=null&&(j.pb<=0.1||j.rsi<=35)){ t='밴드 하단 반등 매수'; why='횡보장 역추세 유효 — BB 하단 접근(%b '+(j.pb==null?'—':j.pb.toFixed(2))+') · RSI '+j.rsi.toFixed(0); }
-    else if(j.pb!=null&&(j.pb>=0.9||j.rsi>=65)){ t='밴드 상단 매도'; why='횡보장 상단 과열 — BB 상단(%b '+j.pb.toFixed(2)+') · RSI '+j.rsi.toFixed(0)+' — 분할 차익 관점'; }
-    else { t='박스권 중앙 관망'; why='횡보장 MACD 크로스는 휩쏘 잦음 — 밴드 상·하단 도달 대기'; }
+    if(j.pb!=null&&(j.pb<=0.1||j.rsi<=35)){ t='밴드 하단 반등 매수'; why='횡보장 역추세 유효. BB 하단 접근(%b '+(j.pb==null?'-':j.pb.toFixed(2))+') · RSI '+j.rsi.toFixed(0); }
+    else if(j.pb!=null&&(j.pb>=0.9||j.rsi>=65)){ t='밴드 상단 매도'; why='횡보장 상단 과열. BB 상단(%b '+j.pb.toFixed(2)+') · RSI '+j.rsi.toFixed(0)+', 분할 차익 관점'; }
+    else { t='박스권 중앙 관망'; why='횡보장 MACD 크로스는 휩쏘가 잦다. 밴드 상·하단 도달을 기다린다'; }
   }
   if(fd!=null&&isFinite(fd.d5)){
     if(fd.d5>=0.1) why+=' · 외국인 유입 동반(+'+fd.d5.toFixed(2)+'%p, 수급 우호)';
-    else if(fd.d5<=-0.1) why+=' · 외국인 이탈 중('+fd.d5.toFixed(2)+'%p) — 신뢰도 감점 요인';
+    else if(fd.d5<=-0.1) why+=' · 외국인 이탈 중('+fd.d5.toFixed(2)+'%p), 신뢰도 감점 요인';
   }
   if(u.lev){
     if(u.lev.indexOf('-')===0)
-      why+= regime==='bull' ? ' · ⚠ 인버스 상품 — 시장 강세 국면 역행, 단기 헤지 용도로만'
-          : (regime==='bear' ? ' · 인버스 상품 — 약세 국면 순방향(시장 하락 베팅)' : ' · 인버스 상품(시장 하락 베팅)');
-    if(/[23]X/.test(u.lev)) why+=' · 레버리지 음의 복리(변동성 잠식) — 장기 보유 부적합';
+      why+= regime==='bull' ? ' · ⚠ 인버스 상품이라 시장 강세 국면에 역행, 단기 헤지 용도로만'
+          : (regime==='bear' ? ' · 인버스 상품이라 약세 국면 순방향(시장 하락 베팅)' : ' · 인버스 상품(시장 하락 베팅)');
+    if(/[23]X/.test(u.lev)) why+=' · 레버리지 음의 복리(변동성 잠식)라 장기 보유에 부적합';
   }
   return {t,why};
 }
@@ -798,8 +799,8 @@ function techniqueFor(u,j,rg,fd){
 /* ── 상태 ── */
 const store=(k,v)=>{ try{ if(v===undefined) return localStorage.getItem('alphadesk.sig.'+k); localStorage.setItem('alphadesk.sig.'+k,v); }catch(e){ return null; } };
 /*FLT-BEGIN*/
-/* 판정 필터는 여러 갈래를 동시에 켤 수 있다 — 켠 갈래 중 하나라도 맞으면 표시(합집합).
-   아무것도 켜지 않으면 «전체». 저평가만 후보 풀이 다르다: 미국은 포지션 강도 상위 50만 표에
+/* 판정 필터는 여러 갈래를 동시에 켤 수 있다: 켠 갈래 중 하나라도 맞으면 표시(합집합).
+   아무것도 켜지 않으면 전체. 저평가만 후보 풀이 다르다: 미국은 포지션 강도 상위 50만 표에
    올리는데, 저평가 종목은 그 절단 밖에 있는 경우가 많아 절단 전 전체에서 찾는다. */
 const FILTER_KEYS=['buy','near','sell','val'];
 const FILTER_SETS={buy:['buy2','buy1','ebuy'],near:['nbuy','nsell','ebuy','esell'],sell:['sell2','sell1','esell']};
@@ -807,7 +808,7 @@ function parseFilter(s){
   const a=String(s==null?'':s).split(',').map(v=>v.trim()).filter(v=>FILTER_KEYS.indexOf(v)>=0);
   return a.filter((v,i)=>a.indexOf(v)===i);
 }
-// «전체»는 모두 끄기. 켜진 것을 다시 누르면 꺼진다.
+// 전체는 모두 끄기. 켜진 것을 다시 누르면 꺼진다.
 function toggleFilter(cur,v){
   if(v==='all') return [];
   if(FILTER_KEYS.indexOf(v)<0) return parseFilter((cur||[]).join(','));
@@ -825,7 +826,7 @@ function applyFilter(sel,rows,all,keyOf,cheap){
   for(const x of (wantVal?all:rows)){
     if(!x||!x.j) continue;
     const k=keyOf(x); if(seen[k]) continue;
-    // 신호 갈래는 표에 올라온 종목 안에서만 — 저평가처럼 절단 밖까지 넓히지 않는다
+    // 신호 갈래는 표에 올라온 종목 안에서만: 저평가처럼 절단 밖까지 넓히지 않는다
     if((wantVal&&cheap(x)) || (sets.length&&shown[k]&&sets.some(g=>g.indexOf(x.j.v)>=0))){ seen[k]=1; out.push(x); }
   }
   return out;
@@ -836,7 +837,7 @@ let MODE  =['swing','long'].includes(store('mode'))?store('mode'):'swing';   // 
 let MKT   =['kospi','kosdaq','sp500','nasdaq','russell2000','kretf','usetf','watch'].includes(store('mkt'))?store('mkt'):'kospi';
 let SITV  =['60m','120m'].includes(store('sitv'))?store('sitv'):'60m';
 let LOOK  =[3,5,10].includes(+store('look'))?+store('look'):5;
-let FILTER=parseFilter(store('filter'));   // 여러 갈래 동시 선택 · 비어 있으면 «전체» (옛 'all'·단일값 저장분도 그대로 해석)
+let FILTER=parseFilter(store('filter'));   // 여러 갈래 동시 선택 · 비어 있으면 전체 (옛 'all'·단일값 저장분도 그대로 해석)
 let NOTIF =store('notif')==='1';
 let SPEED =['std','fast'].includes(store('speed'))?store('speed'):'std';   // 신호 속도 프리셋
 let OPENED=null;                          // 펼쳐진 종목 코드
@@ -858,20 +859,20 @@ let ROWS=[], ROWS_ALL=[], SCANNING=false, SCAN_AT=null, FAILN=0, FULLN=0;
 const VAL={};                             // 밸류에이션 캐시: `${mkt}|${code}` → {ts, v, inflight}
 const VAL_TTL=30*60*1000;
 /*WLSYNC-BEGIN*/
-/* 관심종목 동기화 — 대시보드(alphadesk.wl2) · 매매 시그널(alphadesk.sig.watchlist) · 분할 플래너가
+/* 관심종목 동기화: 대시보드(alphadesk.wl2) · 매매 시그널(alphadesk.sig.watchlist) · 분할 플래너가
    항상 같은 집합을 보도록, 어느 페이지에서 바꾸든 두 저장 키를 함께 기록한다.
    식별키: 국내 6자리 코드는 코드만(코스피·코스닥·ETF 공통), 미국은 대문자 티커(세부 시장 구분 무시).
    시그널 항목의 메타(rc·lev·cap·세부 mkt)는 보존하고, 새로 넘어온 항목은 kospi/kosdaq/us 로 변환한다. */
 const WLS_US=['sp500','nasdaq','russell2000','usetf','us'];
 const wlsKeyOfSig=w=>/^\d{6}$/.test(String(w.code))?String(w.code):('US|'+String(w.code).toUpperCase());
-// ⚠ 접미사 없는 6자리 코드(옛 저장 형식)도 국내로 본다 — 미국 티커로 오인하면 저장할 때마다
+// ⚠ 접미사 없는 6자리 코드(옛 저장 형식)도 국내로 본다: 미국 티커로 오인하면 저장할 때마다
 //   심볼이 맨코드로 되돌아가 시세·차트·지표가 모두 빗나간다(코스피/코스닥은 /api/quote 의 ex 로 교정).
 const wlsKeyOfSym=sym=>{ const m=String(sym).match(/^(\d{6})(?:\.(KS|KQ))?$/); return m?m[1]:('US|'+String(sym).toUpperCase()); };
 const wlsSymOfSig=w=>WLS_US.indexOf(w.mkt)>=0?String(w.code):(String(w.code)+(w.mkt==='kosdaq'?'.KQ':'.KS'));
 const wlsSigOfSym=(sym,name)=>{ const m=String(sym).match(/^(\d{6})(?:\.(KS|KQ))?$/);
   return m?{code:m[1],mkt:m[2]==='KQ'?'kosdaq':'kospi',name:name||m[1]}:{code:String(sym),mkt:'us',name:name||String(sym)}; };
 const wlsIsUs=m=>WLS_US.indexOf(m)>=0;
-const WLS_KR_PLAIN=['kospi','kosdaq'];        // 국내 개별주 — 이 둘 사이의 어긋남만 심볼 기준으로 교정(kretf 등은 보존)
+const WLS_KR_PLAIN=['kospi','kosdaq'];        // 국내 개별주. 이 둘 사이의 어긋남만 심볼 기준으로 교정한다(kretf 등은 보존)
 function wlsRead(k){ try{ const a=JSON.parse(localStorage.getItem(k)||'null'); return Array.isArray(a)?a:null; }catch(e){ return null; } }
 /* 시그널 형식 배열을 정본으로 두 키를 함께 기록(식별키 기준 중복 제거). 값이 바뀐 키만 실제로 쓴다. */
 function wlsWriteBoth(sigArr){
@@ -896,7 +897,7 @@ function wlsMergeAll(){
   for(const w of (sig||[])){ if(w&&w.code&&w.mkt) all.push(w); }
   return wlsWriteBoth(all);
 }
-/* 대시보드(wl2) 형식 배열을 정본으로 동기화 — 기존 시그널 메타는 유지, 빠진 종목은 양쪽에서 제거 */
+/* 대시보드(wl2) 형식 배열을 정본으로 동기화: 기존 시그널 메타는 유지, 빠진 종목은 양쪽에서 제거 */
 function wlsWriteFromWL(wlArr){
   const byKey={};
   for(const w of (wlsRead('alphadesk.sig.watchlist')||[])) if(w&&w.code&&w.mkt) byKey[wlsKeyOfSig(w)]=w;
@@ -904,7 +905,7 @@ function wlsWriteFromWL(wlArr){
   for(const x of (wlArr||[])){ if(!x||!x.sym) continue;
     const k=wlsKeyOfSym(x.sym), kept=byKey[k], derived=wlsSigOfSym(x.sym,x.name);
     // 시그널 쪽 메타(rc·lev·cap·kretf 같은 세부 시장)는 보존하되, 시장 구분이 심볼과 어긋나면
-    // 심볼 기준이 맞다 — 심볼은 /api/quote 가 알려준 실제 거래소로 교정된 값이기 때문.
+    // 심볼 기준이 맞다: 심볼은 /api/quote 가 알려준 실제 거래소로 교정된 값이기 때문.
     // 맨코드가 us 로 잘못 기록됐던 이력과 코스피↔코스닥 이전을 여기서 바로잡는다(ETF 표식 kretf 는 유지).
     const stale=kept && (wlsIsUs(kept.mkt)!==wlsIsUs(derived.mkt)
       || (WLS_KR_PLAIN.indexOf(kept.mkt)>=0 && kept.mkt!==derived.mkt));
@@ -912,7 +913,7 @@ function wlsWriteFromWL(wlArr){
   return wlsWriteBoth(sig);
 }
 /*WLSYNC-END*/
-/* 관심 종목(워치리스트): {code,mkt,name,rc?,lev?} — 별(☆) 토글 또는 직접 입력으로 담는다.
+/* 관심 종목(워치리스트): {code,mkt,name,rc?,lev?}: 별(☆) 토글 또는 직접 입력으로 담는다.
    대시보드 관심종목과 동일 집합으로 동기화(위 WLSYNC 모듈). */
 function loadWatch(){ try{ const a=JSON.parse(store('watchlist')||'[]'); return Array.isArray(a)?a.filter(w=>w&&w.code&&w.mkt):[]; }catch(e){ return []; } }
 let WATCH=loadWatch();
@@ -923,7 +924,7 @@ const modeKey=()=> MODE==='swing'?SITV:'1d';
 const activeMkts=()=> [MKT];
 /* 국면 카드용 지수 시장: 관심 모드에서는 담긴 종목들의 원 시장별 지수를 보여준다.
    서로 다른 시장이 같은 기준지수를 쓰는 경우(한국 ETF↔코스피, 미국 ETF↔S&P500 등)가 있어
-   지수 심볼 기준으로 중복을 걷어낸다 — 같은 카드가 두 번 나오지 않게. */
+   지수 심볼 기준으로 중복을 걷어낸다. 같은 카드가 두 번 나오지 않게. */
 /*RGM-BEGIN*/
 function regimeMktsOf(mkts,idxSym){
   const out=[], seen={};
@@ -940,7 +941,7 @@ const US_TOP=50;                          // 미국: 전체 스캔 후 포지션
 const symOf=u=> isUSm(u.mkt)?u.code:(u.code+(u.mkt==='kosdaq'?'.KQ':'.KS'));
 
 /*SEC-BEGIN*/
-/* 종목 업종(섹터) — 히트맵 유니버스는 API 응답에 sector 가 함께 오지만, 관심 종목은
+/* 종목 업종(섹터): 히트맵 유니버스는 API 응답에 sector 가 함께 오지만, 관심 종목은
    시총 랭킹 밖 종목이 섞여 있어 정적 업종맵으로 따로 채운다.
    국내 data/kr_sectors.json = {코드: '반도체와반도체장비'} (약 4,000종목)
    미국 data/us_sectors.json = {티커: ['기술','Semiconductors']} (GICS 11섹터 한글 + 핀비즈 세부산업) */
@@ -977,14 +978,14 @@ async function loadSectorMaps(items){
 /* ── 데이터 수집 ── */
 async function loadUniverse(mkt){
   if(mkt==='watch'){
-    // 관심 종목: 저장된 목록이 곧 유니버스 — 시세는 ETF 와 같이 차트에서 산출(w:1 표식)
+    // 관심 종목: 저장된 목록이 곧 유니버스: 시세는 ETF 와 같이 차트에서 산출(w:1 표식)
     const open=(WATCH.some(w=>!isUSm(w.mkt))&&krSession()==='open')
              ||(WATCH.some(w=>isUSm(w.mkt))&&usSessionNow()==='open');
     return { status:open?'OPEN':'CLOSE', updated:'', source:'chart',
       items:WATCH.map(w=>({code:w.code,rc:w.rc,name:w.name||w.code,lev:w.lev||null,mkt:w.mkt,w:1,price:0,pct:0,cap:w.cap||0,sec:w.sec||null})) };
   }
   if(isETFm(mkt)){
-    // ETF: 엄선 목록 — 시세는 차트에서 산출(compute 의 etfQuote), 세션은 시계 기반
+    // ETF: 엄선 목록: 시세는 차트에서 산출(compute 의 etfQuote), 세션은 시계 기반
     const open=(mkt==='kretf'?krSession():usSessionNow())==='open';
     return { status:open?'OPEN':'CLOSE', updated:'', source:'chart',
       items:(mkt==='kretf'?ETF_KR:ETF_US).map(e=>({code:e.code,name:e.name,lev:e.lev||null,mkt,price:0,pct:0,cap:0})) };
@@ -1011,10 +1012,10 @@ async function refreshUniv(){
   await loadSectorMaps(univItems()).catch(()=>{});   // 히트맵이 안 준 항목(주로 관심 종목)만 정적 맵으로 보완
   if(MKT==='watch') await loadWatchQuotes(univItems()).catch(()=>{});
 }
-/* 관심 종목 실시간 시세 — 시총 랭킹 유니버스가 없는 목록이라 /api/quote 로 직접 받는다.
+/* 관심 종목 실시간 시세: 시총 랭킹 유니버스가 없는 목록이라 /api/quote 로 직접 받는다.
    국내는 네이버 폴링(지연 0)이라 야후 일봉(개장 직후엔 전일 종가·전일 등락이 온다)보다 정확하고,
    정규장 전후에는 NXT 시간외가가 온다.
-   시간외 체결가는 표시용(price)으로만 쓰고 봉·판정에는 정규장가(jprice)를 넣는다 — 얇은 시간외 호가로
+   시간외 체결가는 표시용(price)으로만 쓰고 봉·판정에는 정규장가(jprice)를 넣는다. 얇은 시간외 호가로
    매매 신호가 흔들리지 않게 하기 위함. */
 const WQ={};                                   // sym → {price,pct,ext,rp,ts}
 const WQ_TTL=5*60*1000;
@@ -1029,7 +1030,7 @@ async function loadWatchQuotes(items){
     }catch(e){}
   }
 }
-// 관심 종목 1건에 실시간 시세 적용. 성공하면 true — 실패 시 호출부가 차트 기준 시세로 넘어간다.
+// 관심 종목 1건에 실시간 시세 적용. 성공하면 true: 실패 시 호출부가 차트 기준 시세로 넘어간다.
 function applyWatchQuote(u){
   const q=WQ[symOf(u)];
   if(!q||!(q.price>0)||Date.now()-q.ts>WQ_TTL) return false;
@@ -1059,7 +1060,7 @@ async function getJSON(url){
   return d;
 }
 /* 장기(일봉): 네이버 siseJson(수정주가+외국인 소진율), 실패 시 야후 폴백.
-   스윙(60/120분): 야후 60분봉 — 120분은 같은 날 안에서 2봉 합성 */
+   스윙(60/120분): 야후 60분봉. 120분은 같은 날 안에서 2봉 합성 */
 async function fetchStock(u){
   const cfg=MODES[MODE];
   if(cfg.sise&&isUSm(u.mkt)){                       // 미국 장기 = 야후 일봉 (소진율 없음)
@@ -1139,11 +1140,11 @@ function ddStats(u,ch){
   const hi=Math.max(peak,px);
   return { mdd:mdd*100, cur:(px/hi-1)*100 };
 }
-/* 매도 계획(제안): 매수 판정 종목의 목표가·손절가 — ATR 변동성 기반, 손익비 1:2
+/* 매도 계획(제안): 매수 판정 종목의 목표가·손절가: ATR 변동성 기반, 손익비 1:2
    손절 = 최근 10봉 저점과 (진입가 − 1×ATR) 중 낮은(보수적) 쪽, 단 리스크 상한 2×ATR
    목표 = 진입가 + 리스크×2. 봉 주기의 ATR을 쓰므로 스윙/장기 관점에 맞게 자동으로 스케일된다 */
 /*RES-BEGIN*/
-/* 머리 위 저항(전고점) — 목표가는 손익비만으로 정해지지만, 그 사이에 전고점이 있으면
+/* 머리 위 저항(전고점): 목표가는 손익비만으로 정해지지만, 그 사이에 전고점이 있으면
    가격은 대개 거기서 한 번 막힌다. 이미 전고점을 넘어선 신고가 구간이면 위가 비어 있어
    목표가를 그대로 봐도 된다. 그 구분을 값으로 만들어 목표가 옆에 붙인다. */
 // 피벗 고점: 좌우 k봉보다 높은 봉. 마지막 k봉은 아직 확정되지 않았으므로 후보에서 빠진다.
@@ -1158,7 +1159,7 @@ function pivotHighs(h,k){
   return out;
 }
 // 진입가 위에서 가장 가까운 저항. null 이면 머리 위에 확정된 전고점이 없다(= 신고가 구간).
-// minGap: 이만큼은 떨어져 있어야 «벽»으로 친다. 진입가 코앞의 고점은 저항이라기보다 노이즈라
+// minGap: 이만큼은 떨어져 있어야 벽으로 친다. 진입가 코앞의 고점은 저항이라기보다 노이즈라
 //         목표가 판단에 넣으면 오히려 시야를 흐린다(호출부에서 ATR 의 일부를 넘긴다).
 function overhead(h,entry,lookback,k,minGap){
   if(!Array.isArray(h)||!(entry>0)) return null;
@@ -1181,7 +1182,7 @@ function planFor(u,bars,j){
   if(!atr||!(atr>0)||!(entry>0)) return null;
   const lows=l.slice(-10).filter(v=>isFinite(v)&&v>0);
   const swingLow=lows.length?Math.min.apply(null,lows):entry-atr;
-  let stop=Math.min(swingLow, entry-1.0*atr);   // 지지선(최근 저점) 아래 or 1×ATR — 보수적(낮은) 쪽
+  let stop=Math.min(swingLow, entry-1.0*atr);   // 지지선(최근 저점) 아래 or 1×ATR 중 보수적(낮은) 쪽
   stop=Math.max(stop, entry-2.0*atr);           // 리스크 상한 2×ATR (지지선이 너무 멀면 변동성 기준으로 컷)
   if(!(stop>0&&stop<entry)) return null;
   const risk=entry-stop;
@@ -1189,12 +1190,12 @@ function planFor(u,bars,j){
   const rd=isUSm(u.mkt)?(v=>Math.round(v*100)/100):(v=>Math.round(v));
   const target=rd(entry+2*risk), stopR=rd(stop);  // 손익비 1:2
   // 전고점 반영: 목표가 아래에 벽이 있으면 그 벽이 1차 목표가 된다(2R 은 돌파 시 유효).
-  const res=overhead(h,entry,252,5,0.5*atr);    // 0.5×ATR 안쪽 고점은 하루 노이즈 범위 — 벽으로 치지 않는다
+  const res=overhead(h,entry,252,5,0.5*atr);    // 0.5×ATR 안쪽 고점은 하루 노이즈 범위라 벽으로 치지 않는다
   const wall=(res&&res.price<target)?rd(res.price):null;
   return { entry, stop:stopR, target,
     tgtPct:(target/entry-1)*100, stopPct:(stopR/entry-1)*100,
     res, wall, wallPct:wall!=null?(wall/entry-1)*100:null,
-    wallR:wall!=null?(wall-entry)/risk:null,        // 저항까지 몇 R — 1R 미만이면 손익비가 불리하다
+    wallR:wall!=null?(wall-entry)/risk:null,        // 저항까지 몇 R. 1R 미만이면 손익비가 불리하다
     newHigh:!res };                                 // 머리 위 저항 없음(신고가 구간)
 }
 /* 저평가 발굴: 네이버 밸류에이션(/api/valuation)으로 흑자 저PER + ROE 양호 + 52주 고점 대비
@@ -1216,7 +1217,7 @@ function isCheap(x){
 }
 /* PBR-ROE 회귀 적정 PBR: 잔여이익모형의 justified PBR=(ROE−g)/(r−g)을 시장이 실제로 매겨 온
    평균 가격선(회귀선)으로 근사한 지표. 계수는 코스피 12개월 선행 ROE-PBR 시계열 회귀
-   y=0.0696x+0.2953 (Bloomberg 컨센서스 기준) — 지수 수준 추정치라 개별 종목엔 참고용. */
+   y=0.0696x+0.2953 (Bloomberg 컨센서스 기준). 지수 수준 추정치라 개별 종목엔 참고용. */
 const REG_A=0.0696, REG_B=0.2953;
 function pbrGap(v){
   if(!v||!(v.pbr>0)||!(v.roe>0)) return null;
@@ -1225,7 +1226,7 @@ function pbrGap(v){
   return { fair, gap:(v.pbr/fair-1)*100 };
 }
 const pbrGapLabel=g=> g.gap<=-30?['크게 저평가','up','']:(g.gap<=-10?['저평가','up','']:(g.gap<10?['적정 범위','flat','mid']:['고평가','down','hi']));
-/* 토스증권 공식 투자자별 매매동향(/api/toss) — 국내 개별주 외국인·기관·개인 순매수(주).
+/* 토스증권 공식 투자자별 매매동향(/api/toss): 국내 개별주 외국인·기관·개인 순매수(주).
    Cloudflare 환경변수에 토스 키가 등록된 경우에만 활성(enabled:false 면 소진율 근사로 폴백). */
 const TSS={};                             // code → {ts, recs, inflight}
 const TSS_TTL=30*60*1000;
@@ -1307,7 +1308,7 @@ async function loadRegime(mkt,force){
 function liveBars(u,ch){
   const c=ch.closes.slice(), h=(ch.his||ch.closes).slice(), l=(ch.los||ch.closes).slice();
   const live=!!(u.w&&u.jprice>0);             // 관심 종목은 /api/quote 가 실시간 원천
-  if(!live&&(isETFm(u.mkt)||u.w)) return {c,h,l};   // ETF·시세 미수신 관심 종목은 차트 자체가 원천 — 덮어쓰기 없음
+  if(!live&&(isETFm(u.mkt)||u.w)) return {c,h,l};   // ETF·시세 미수신 관심 종목은 차트 자체가 원천이라 덮어쓰지 않는다
   const px=live?u.jprice:u.price;             // 시간외 체결가는 판정에 넣지 않는다(jprice=정규장가)
   if(!(px>0)) return {c,h,l};
   const uv=UNIV[u.mkt];
@@ -1401,14 +1402,14 @@ function compute(){
     const fd=frgnOf(u,ch);
     const rg=REGIME[u.mkt]&&REGIME[u.mkt].rg;
     const uv=UNIV[u.mkt];
-    // 신호봉(최근 크로스 봉, 없으면 마지막 봉)의 거래량 확인 — ch.vols 자체 인덱스만 사용(잠정 봉 불일치 방지)
+    // 신호봉(최근 크로스 봉, 없으면 마지막 봉)의 거래량 확인: ch.vols 자체 인덱스만 사용(잠정 봉 불일치 방지)
     const sigAgo=j?(a=>a<=LOOK?a:0)(Math.min(j.gc??99,j.zu??99,j.dc??99,j.zd??99)):0;
     const vc=j?volConfirm(ch.vols,sigAgo,!!(uv&&uv.status==='OPEN')):null;
     ROWS.push({u,ch,j,fd,vc,ms:maStats(u,ch),dd:ddStats(u,ch),plan:planFor(u,bars,j),tech:j?techniqueFor(u,j,rg,fd):null});
   }
   FULLN=ROWS.length;
   const recency=x=>x.j?Math.min(x.j.gc??99,x.j.zu??99,x.j.dc??99,x.j.zd??99):99;
-  ROWS_ALL=ROWS.slice();                    // 미국 상위 50 절단 전 전체 — 저평가 발굴은 전체에서 찾는다
+  ROWS_ALL=ROWS.slice();                    // 미국 상위 50 절단 전 전체. 저평가 발굴은 전체에서 찾는다
   // 미국: 전체 유니버스를 판정한 뒤 매수·매도 포지션 강도 상위 50만 제안
   if(isUSm(MKT)&&ROWS.length>US_TOP){
     const strength={buy2:6,sell2:6,buy1:5,sell1:5,ebuy:4,esell:4,nbuy:3,nsell:3,up1:1,dn1:1,neu:0};
@@ -1460,7 +1461,7 @@ function drawRegimes(){
       +(live?'<span class="idx mono">'+Number(live.price).toLocaleString('en-US',{maximumFractionDigits:2})+'</span>'
         +'<span class="mono '+cls(lastPct)+'">'+(lastPct>0?'+':'')+(lastPct==null?'':lastPct.toFixed(2))+'%</span>':'')
       +(info?'<span class="rg-badge '+info.cls+'">'+info.name+'</span>':'<span class="rg-badge na">국면 판별 중…</span>')
-      +'<span class="rg-meta">'+(rg?('ADX '+ (rg.adx==null?'—':rg.adx.toFixed(1))
+      +'<span class="rg-meta">'+(rg?('ADX '+ (rg.adx==null?'-':rg.adx.toFixed(1))
         +' · MA20 '+(rg.close>rg.ma20?'위':'아래')+' · MA20'+(rg.ma20>rg.ma60?'&gt;':'&lt;')+'MA60'):'')+'</span></div>'
       +'<div class="rg-body">'
       +'<div class="rg-desc">'+(info?info.desc:'지수 차트를 불러오는 중입니다. 잠시 후 자동 갱신됩니다.')+'</div>'
@@ -1503,7 +1504,7 @@ function chips(j,ms,x){
   if(e.bbReUp!=null)c.push('<span class="chip b soon">BB 하단 복귀 · '+agoTxt(e.bbReUp)+'</span>');
   if(e.bbReDn!=null)c.push('<span class="chip s soon">BB 상단 복귀 · '+agoTxt(e.bbReDn)+'</span>');
   c.push('<span class="chip '+(j.rsi>=50?'b':'s')+'">RSI '+j.rsi.toFixed(1)+(j.rsi>=50?' ≥ 50':' < 50')+'</span>');
-  // ── 확인(신뢰도) 칩: 거래량·토스 수급 — 판정에는 불개입, 라벨만 ──
+  // ── 확인(신뢰도) 칩: 거래량·토스 수급: 판정에는 불개입, 라벨만 ──
   if(x&&x.vc){
     if(x.vc.st==='ok') c.push('<span class="chip b">거래량 확인 ×'+x.vc.ratio.toFixed(1)+'</span>');
     else if(x.vc.st==='weak') c.push('<span class="chip warn">거래량 빈약 ×'+x.vc.ratio.toFixed(1)+'</span>');
@@ -1545,24 +1546,24 @@ function rsiCell(r){
 }
 /* 120·200일선 상태 셀: ↑=지지(위) ↓=깨짐(아래), 괄호는 이격률 */
 function maCell(ms){
-  if(!ms||ms.m120==null) return '<span class="flat">—</span>';
-  const one=(n,up,d)=> up==null ? '<span class="machip">'+n+' —</span>'
+  if(!ms||ms.m120==null) return '<span class="flat">-</span>';
+  const one=(n,up,d)=> up==null ? '<span class="machip">'+n+' -</span>'
     : '<span class="machip '+(up?'ok':'bad')+'" title="'+n+'일선 '+(up?'위(지지)':'아래(깨짐)')+'">'
       +n+(up?'↑':'↓')+' '+(d>0?'+':'')+d.toFixed(1)+'%</span>';
   return one('120',ms.up120,ms.d120)+one('200',ms.up200,ms.d200);
 }
-/* 목표·손절 셀: 매수 판정 종목만 — 목표가(+기대수익)·손절가(리스크). ATR 기반 손익비 1:2 */
+/* 목표·손절 셀: 매수 판정 종목만: 목표가(+기대수익)·손절가(리스크). ATR 기반 손익비 1:2 */
 function planCell(p,us){
-  if(!p) return '<span class="flat">—</span>';
+  if(!p) return '<span class="flat">-</span>';
   let tip='진입 '+fmtPx(p.entry,us)+' 기준 · 손절 = 최근 10봉 저점/1×ATR 중 보수적 값(최대 2×ATR) · 목표 = 리스크×2 (손익비 1:2)';
   let mid='';
   if(p.wall!=null){
-    tip+=' · 전고점 '+fmtPx(p.wall,us)+'('+p.res.ago+'봉 전'+(p.res.isHi?' · 기간 최고점':'')+')이 목표가 아래 — 여기서 한 번 막힐 수 있어 1차 목표로 본다. 2R 목표는 돌파 후 유효';
+    tip+=' · 전고점 '+fmtPx(p.wall,us)+'('+p.res.ago+'봉 전'+(p.res.isHi?' · 기간 최고점':'')+')이 목표가 아래에 있다. 여기서 한 번 막힐 수 있어 1차 목표로 본다. 2R 목표는 돌파 후 유효';
     const tight=p.wallR<1;   // 저항까지 1R 미만이면 손익비가 불리하다
     mid='<br><small class="mono'+(tight?' warn':'')+'" title="'+esc('저항까지 '+p.wallR.toFixed(1)+'R'
-        +(tight?' — 1R 미만이라 손익비 불리':''))+'">1차 '+fmtPx(p.wall,us)+' +'+p.wallPct.toFixed(1)+'% <span class="rtag">전고점</span></small>';
+        +(tight?'. 1R 미만이라 손익비 불리':''))+'">1차 '+fmtPx(p.wall,us)+' +'+p.wallPct.toFixed(1)+'% <span class="rtag">전고점</span></small>';
   } else if(p.newHigh){
-    tip+=' · 최근 1년 안에 머리 위 전고점이 없다(신고가 구간) — 목표가를 막는 매물대 없음';
+    tip+=' · 최근 1년 안에 머리 위 전고점이 없다(신고가 구간). 목표가를 막는 매물대 없음';
     mid='<br><small class="mono" style="color:#22c55e">신고가 · 위 저항 없음</small>';
   }
   return '<span class="mono up" title="'+esc(tip)+'">목표 '+fmtPx(p.target,us)+' <b>+'+p.tgtPct.toFixed(1)+'%</b></span>'
@@ -1571,7 +1572,7 @@ function planCell(p,us){
 }
 /* MDD 셀: 기간 최대 낙폭(위)·현재 전고점 대비 낙폭(아래). −30% 이하 파랑, −15% 이하 주황 */
 function ddCell(dd){
-  if(!dd||!isFinite(dd.mdd)) return '<span class="flat">—</span>';
+  if(!dd||!isFinite(dd.mdd)) return '<span class="flat">-</span>';
   const col=dd.mdd<=-30?'var(--down)':(dd.mdd<=-15?'var(--gold)':'var(--muted)');
   const tip='기간(약 1년) 최대 낙폭 '+dd.mdd.toFixed(1)+'% · 현재 전고점 대비 '+dd.cur.toFixed(1)+'%';
   return '<span class="mono" style="color:'+col+'" title="'+esc(tip)+'">'+dd.mdd.toFixed(1)+'%</span>'
@@ -1580,22 +1581,22 @@ function ddCell(dd){
 const fmtShares=v=>{ const a=Math.abs(v), s=v>0?'+':(v<0?'−':'');
   return s+(a>=1e8?(a/1e8).toFixed(1)+'억주':(a>=1e4?(a/1e4).toFixed(1)+'만주':Math.round(a).toLocaleString()+'주')); };
 function frgnCell(x){
-  // 1순위: 토스 공식 투자자별 매매동향(순매수 주식 수) — 키 등록 시
+  // 1순위: 토스 공식 투자자별 매매동향(순매수 주식 수): 키 등록 시
   const recs=tossOf(x.u.code);
   if(recs){
     const f5=tossSum(recs,'frgn',5), i5=tossSum(recs,'inst',5);
     if(f5!=null)
-      return '<span class="mono '+cls(f5)+'" title="토스증권 투자자별 매매동향 — 등록외국인 순매수 최근 5거래일 합(주)">외 '+fmtShares(f5)+'</span>'
+      return '<span class="mono '+cls(f5)+'" title="토스증권 투자자별 매매동향: 등록외국인 순매수 최근 5거래일 합(주)">외 '+fmtShares(f5)+'</span>'
         +(i5!=null?'<br><small class="mono '+cls(i5)+'">기관 '+fmtShares(i5)+'</small>':'');
   }
   // 폴백: 외국인 보유한도 소진율 변화(근사)
   const fd=x.fd;
-  if(!fd||fd.d5==null||!isFinite(fd.d5)) return '<span class="flat">—</span>';
+  if(!fd||fd.d5==null||!isFinite(fd.d5)) return '<span class="flat">-</span>';
   const c=fd.d5>0.02?'up':(fd.d5<-0.02?'down':'flat');
   const tip='소진율 '+fd.now.toFixed(2)+'%'+(fd.d20!=null?' · 20일 '+(fd.d20>0?'+':'')+fd.d20.toFixed(2)+'%p':'');
   return '<span class="mono '+c+'" title="'+esc(tip)+'">'+(fd.d5>0?'+':'')+fd.d5.toFixed(2)+'%p</span>';
 }
-/* ── 신호 성과 검증 (미니 백테스트) — 과거 봉에 같은 판정을 재적용해 표준·빠름 적중률 비교 ──
+/* ── 신호 성과 검증 (미니 백테스트): 과거 봉에 같은 판정을 재적용해 표준·빠름 적중률 비교 ──
    진입 = 비매수(비매도) 상태에서 매수(매도) 판정 최초 진입 봉 · 평가 = H봉 후 종가 수익률.
    raw 차트 배열만 사용(liveBars의 형성 중 봉 오염 방지), 만기 창(i+H<L)만 집계. */
 /*BT-BEGIN*/
@@ -1628,7 +1629,7 @@ function ensurePerf(x){
     std:backtestOne(ch.closes,ch.his,ch.los,LOOK,SPEEDS.std,H),
     fast:backtestOne(ch.closes,ch.his,ch.los,LOOK,SPEEDS.fast,H) };
 }
-/* 표시 종목 전체의 적중률을 백그라운드에서 순차 계산 — 상세를 열지 않아도 판정 셀에 바로 표시.
+/* 표시 종목 전체의 적중률을 백그라운드에서 순차 계산: 상세를 열지 않아도 판정 셀에 바로 표시.
    프레임당 ~12ms 예산으로 나눠 UI를 막지 않고, 계산 완료 시 1회 재렌더. 캐시 히트는 스킵. */
 let PERF_RUN=0;
 function ensurePerfAll(){
@@ -1659,7 +1660,7 @@ function perfWinOf(x){
   return (s&&s.n>=5&&s.win!=null)?s.win:null;
 }
 /* 표 정렬: ① 판정 강도(강력 매수 → … → 강력 매도) ② 같은 등급이면 적중률 높은 순
-   ③ 신호 최신 순 ④ 시총 순 — 적중률은 백그라운드 계산 완료 시 자동 재정렬로 반영 */
+   ③ 신호 최신 순 ④ 시총 순. 적중률은 백그라운드 계산이 끝나면 자동 재정렬로 반영 */
 const ROW_RANK={buy2:0,buy1:1,ebuy:2,nbuy:3,up1:4,neu:5,dn1:6,nsell:7,esell:8,sell1:9,sell2:10};
 function rowRankCmp(a,b){
   const ra=a.j?ROW_RANK[a.j.v]:9, rb=b.j?ROW_RANK[b.j.v]:9;
@@ -1684,9 +1685,9 @@ function flowAgree(x){
 /* 판정 배지 앞 신뢰도 점: 거래량 급증(+수급 일치) 초록 · 거래량 빈약 금색 */
 function confDot(x){
   const j=x.j; if(!j||(!isBuyV(j.v)&&!isSellV(j.v))) return '';
-  if(x.vc&&x.vc.st==='weak') return '<i class="cdot warn" title="신호봉 거래량이 20봉 평균의 70% 미만 — 신뢰도 주의"></i>';
+  if(x.vc&&x.vc.st==='weak') return '<i class="cdot warn" title="신호봉 거래량이 20봉 평균의 70% 미만이라 신뢰도 주의"></i>';
   if(x.vc&&x.vc.st==='ok'&&flowAgree(x)!==false)
-    return '<i class="cdot ok" title="신호봉 거래량 급증 ×'+x.vc.ratio.toFixed(1)+(flowAgree(x)?' + 토스 수급 일치':'')+' — 신뢰도 보강"></i>';
+    return '<i class="cdot ok" title="신호봉 거래량 급증 ×'+x.vc.ratio.toFixed(1)+(flowAgree(x)?' + 토스 수급 일치':'')+', 신뢰도 보강"></i>';
   return '';
 }
 /* 백테스트 캐시가 이미 있을 때만 판정 셀에 미니 적중률 표시(렌더 중 계산 금지) */
@@ -1696,7 +1697,7 @@ function perfChip(x){
   if(!p||p.ts!==x.ch.ts) return '';
   const s=isBuyV(j.v)?p[SPEED].buy:p[SPEED].sell;
   if(!s||!s.n) return '';
-  return '<br><small class="cap mono" title="이 종목 과거 봉 기준 같은 방향 신호의 적중률(상세 «신호 성과 검증» 참조)">적중 '+s.win.toFixed(0)+'% · '+s.n+'회</small>';
+  return '<br><small class="cap mono" title="이 종목 과거 봉 기준 같은 방향 신호의 적중률(상세 신호 성과 검증 참조)">적중 '+s.win.toFixed(0)+'% · '+s.n+'회</small>';
 }
 function render(){
   document.getElementById('th-frgn').textContent=MODES[MODE].frgnLbl;
@@ -1708,7 +1709,7 @@ function render(){
   const valN=ROWS_ALL.reduce((a,x)=>a+((x.j&&isCheap(x))?1:0),0);
   document.getElementById('st-count').textContent=
     ROWS.length?('매수 '+buyN+' · 임박 '+nearN+' · 매도 '+sellN+(valN?' · 💎 저평가 '+valN:'')
-      +(FULLN>ROWS.length?' — 전체 '+FULLN+'종목 중 포지션 상위 '+ROWS.length+' 제안':' / '+ROWS.length+'종목')):'';
+      +(FULLN>ROWS.length?' / 전체 '+FULLN+'종목 중 포지션 상위 '+ROWS.length+' 제안':' / '+ROWS.length+'종목')):'';
   if(!rows.length){
     const valPend=Object.keys(VAL).some(k=>VAL[k].inflight);
     tb.innerHTML='<tr><td colspan="11"><div class="note-empty">'+
@@ -1716,11 +1717,11 @@ function render(){
         ? (isETFm(MKT)?'ETF는 PER·PBR 개념이 없어 저평가 발굴을 지원하지 않습니다. 개별주 시장을 선택해 주세요.'
           : valPend?'밸류에이션(PER·PBR) 수집 중입니다… 잠시 후 자동으로 표시됩니다.'
           : '저평가 조건(흑자 PER '+(isUSm(MKT)?'15':'10')+'배 이하 · ROE 8% 이상 · 52주 고점 대비 −20% 이하)을 동시에 충족하는 종목이 없습니다.<br>'
-            +'시장 전반이 고점권일수록 비는 것이 정상입니다 — 다른 시장도 확인해 보세요.')
+            +'시장 전반이 고점권일수록 비는 것이 정상입니다. 다른 시장도 확인해 보세요.')
         : ROWS.length? '현재 조건(최근 '+LOOK+unit()+' 이내 크로스 + RSI 기준)을 충족하는 종목이 없습니다.<br>'
-        +'«신호 인정» 범위를 늘리거나 필터를 «전체»로 바꿔 임박·추세 유지 종목까지 확인해 보세요.'
-        : (MKT==='watch'&&!WATCH.length? '관심 종목이 아직 없습니다.<br>각 시장에서 종목 이름 옆 <b>☆</b>를 눌러 담거나, 위 «종목 추가» 입력창에 코드·티커를 넣어 주세요.'
-        : SCANNING?'차트 수집 중…':'데이터가 아직 없습니다. «다시 스캔»을 눌러 주세요.'))+'</div></td></tr>';
+        +'신호 인정 범위를 늘리거나 필터를 전체로 바꿔 임박·추세 유지 종목까지 확인해 보세요.'
+        : (MKT==='watch'&&!WATCH.length? '관심 종목이 아직 없습니다.<br>각 시장에서 종목 이름 옆 <b>☆</b>를 눌러 담거나, 위 종목 추가 입력창에 코드·티커를 넣어 주세요.'
+        : SCANNING?'차트 수집 중…':'데이터가 아직 없습니다. 다시 스캔을 눌러 주세요.'))+'</div></td></tr>';
     return;
   }
   const MKCHIP={kospi:'KOSPI',kosdaq:'KOSDAQ',sp500:'S&amp;P500',nasdaq:'NASDAQ',russell2000:'RUSSELL',kretf:'ETF·KR',usetf:'ETF·US',us:'US'};
@@ -1740,10 +1741,10 @@ function render(){
       +'<td class="name">'+star+'<b>'+esc(u.name)+'</b>'+lev+secc+valc+regc+'<span class="mkchip">'+MKCHIP[u.mkt]+'</span>'
         +'<small class="mono">'+u.code+'</small>'+(u.cap?' <span class="cap">'+fmtCap(u.cap,us)+'</span>':'')+'</td>'
       +'<td class="num mono">'+fmtPx(u.price,us)+'<br><small class="'+cls(u.pct)+'">'+(u.pct>0?'+':'')+u.pct.toFixed(2)+'%</small>'
-        +(u.ext?'<span class="xh" title="정규장 밖 체결가 — 국내는 NXT 시간외, 미국은 프리·애프터마켓">'+(u.ext==='pre'?'프리':'애프터')+'</span>':'')+'</td>'
+        +(u.ext?'<span class="xh" title="정규장 밖 체결가: 국내는 NXT 시간외, 미국은 프리·애프터마켓">'+(u.ext==='pre'?'프리':'애프터')+'</span>':'')+'</td>'
       +'<td><span class="vd '+vd[1]+'">'+confDot(x)+vd[0]+'</span>'+perfChip(x)+'</td>'
       +'<td>'+chips(j,x.ms,x)+'</td>'
-      +'<td><div class="tech">'+(x.tech?'<b>'+esc(x.tech.t)+'</b><span>'+esc(x.tech.why)+'</span>':'—')+'</div></td>'
+      +'<td><div class="tech">'+(x.tech?'<b>'+esc(x.tech.t)+'</b><span>'+esc(x.tech.why)+'</span>':'-')+'</div></td>'
       +'<td class="num">'+planCell(x.plan,us)+'</td>'
       +'<td>'+maCell(x.ms)+'<br><small class="cap">MDD</small> '+ddCell(x.dd)+'</td>'
       +'<td class="num">'+frgnCell(x)+'</td>'
@@ -1844,7 +1845,7 @@ function detailChartSVG(x,W){
         +'" stroke="var(--muted2)" stroke-width="0.6" stroke-dasharray="'+(g===50?'0':'3 3')+'" opacity="'+(g===50?'0.7':'0.4')+'"/>'
         +'<text x="'+(PX-6)+'" y="'+(Y(g)+3)+'" font-size="8.5" fill="var(--muted2)" text-anchor="end">'+g+'</text>';
     svg+='<path d="'+path(j.r,Y)+'" fill="none" stroke="var(--text)" stroke-width="1.2"/>';
-    svg+=lab('RSI('+((j.cfg&&j.cfg.rsiN)||14)+') — 50 위 상승 우위 · 30 과매도 · 70 과열',top);
+    svg+=lab('RSI('+((j.cfg&&j.cfg.rsiN)||14)+'): 50 위 상승 우위 · 30 과매도 · 70 과열',top);
   }
   if(hasF){ // 패널 4: 외국인 소진율
     const {h,pad}=panels[3], top=tops[3];
@@ -1856,7 +1857,7 @@ function detailChartSVG(x,W){
         +'<text x="'+(PX-6)+'" y="'+(Y(mx)+8)+'" font-size="8.5" fill="var(--muted2)" text-anchor="end">'+mx.toFixed(1)+'</text>'
         +'<text x="'+(PX-6)+'" y="'+Y(mn)+'" font-size="8.5" fill="var(--muted2)" text-anchor="end">'+mn.toFixed(1)+'</text>';
     }
-    svg+=lab('외국인 보유한도 소진율(%) — 우상향 = 외국인 순매수 유입',top);
+    svg+=lab('외국인 보유한도 소진율(%): 우상향이면 외국인 순매수 유입',top);
   }
   // 시간축 라벨 4개
   const dates=ch.dates||[];
@@ -1898,7 +1899,7 @@ function judgeReason(x){
     parts.push('데드크로스 확정 전이지만 선행 지표 '+j.esN+'개('+w.join(', ')+')가 동시에 반락을 가리키고');
   }
   parts.push('RSI('+(j.cfg?j.cfg.rsiN:14)+')는 '+j.rsi.toFixed(1)+'로 50 '+(j.rsi>=50?'이상':'미만')+'입니다');
-  return '<b>'+vd+'</b> — '+parts.join(' ')+'.';
+  return '<b>'+vd+'</b>: '+parts.join(' ')+'.';
 }
 function detailRow(x){
   const u=x.u, j=x.j, vl=valOf(u), cheap=isCheap(x), dp=valDrop(x), uss=isUSm(u.mkt);
@@ -1923,7 +1924,7 @@ function detailRow(x){
         +'<table><tr><td></td><td>매수 적중 · 평균수익</td><td>매도 후 하락</td></tr>'
         +row('표준 12·26·9 / RSI14',p.std,SPEED==='std')
         +row('⚡ 빠름 8·17·9 / RSI9',p.fast,SPEED==='fast')
-        +'</table><span style="color:var(--muted2);font-size:11px">이 종목의 과거 봉에 같은 판정 로직을 재적용한 시뮬레이션입니다 — '
+        +'</table><span style="color:var(--muted2);font-size:11px">이 종목의 과거 봉에 같은 판정 로직을 재적용한 시뮬레이션입니다. '
         +'수수료·슬리피지 미반영, 표본 5회 미만은 우연일 수 있습니다. ⚡빠름이 신호를 먼저 잡는 대신 적중률이 얼마나 낮아지는지 여기서 비교하세요.</span></div>';
     })()
     +(x.tech?'<div class="box"><h5>추천 기법 · '+esc((REGIME[u.mkt]&&REGIME[u.mkt].rg&&REGIME_INFO[REGIME[u.mkt].rg.regime].name)||'국면 미확정')
@@ -1935,17 +1936,17 @@ function detailRow(x){
       +'손절 = 최근 10봉 저점과 1×ATR 중 보수적 값(리스크 상한 2×ATR), 목표 = 리스크의 2배. '
       +'목표 도달 시 분할 매도, 손절선 이탈 시 전량 매도가 원칙입니다.</span></div>':'')
     +(vl?'<div class="box"><h5>밸류에이션'+(cheap?' · <span style="color:#22c55e">💎 저평가</span>':'')+'</h5>'
-      +'PER <b class="mono">'+(vl.per!=null?vl.per.toFixed(2)+'배':(vl.eps!=null&&vl.eps<0?'적자':'—'))+'</b>'
+      +'PER <b class="mono">'+(vl.per!=null?vl.per.toFixed(2)+'배':(vl.eps!=null&&vl.eps<0?'적자':'-'))+'</b>'
       +(vl.cnsPer!=null?' <small style="color:var(--muted2)">(컨센서스 '+vl.cnsPer.toFixed(2)+'배)</small>':'')
-      +' · PBR <b class="mono">'+(vl.pbr!=null?vl.pbr.toFixed(2)+'배':'—')+'</b>'
-      +' · ROE(근사) <b class="mono">'+(vl.roe!=null?vl.roe.toFixed(1)+'%':'—')+'</b>'
-      +' · 배당 <b class="mono">'+(vl.divYield!=null?vl.divYield.toFixed(2)+'%':'—')+'</b>'
+      +' · PBR <b class="mono">'+(vl.pbr!=null?vl.pbr.toFixed(2)+'배':'-')+'</b>'
+      +' · ROE(근사) <b class="mono">'+(vl.roe!=null?vl.roe.toFixed(1)+'%':'-')+'</b>'
+      +' · 배당 <b class="mono">'+(vl.divYield!=null?vl.divYield.toFixed(2)+'%':'-')+'</b>'
       +(gp?'<br>적정 PBR(ROE 회귀) <b class="mono">'+gp.fair.toFixed(2)+'배</b> → 현 PBR 괴리 <b class="mono '+gpl[1]+'">'+(gp.gap>0?'+':'')+gp.gap.toFixed(1)+'%</b> <b class="'+gpl[1]+'">['+gpl[0]+']</b>'
         +' <small style="color:var(--muted2)">y=0.0696×ROE+0.2953</small>':'')
       +(dp!=null?'<br>52주 고점 대비 <b class="mono '+cls(dp)+'">'+dp.toFixed(1)+'%</b>'
-        +(vl.hi52?' <small class="mono" style="color:var(--muted2)">(고점 '+fmtPx(vl.hi52,uss)+' · 저점 '+(vl.lo52?fmtPx(vl.lo52,uss):'—')+')</small>':''):'')
+        +(vl.hi52?' <small class="mono" style="color:var(--muted2)">(고점 '+fmtPx(vl.hi52,uss)+' · 저점 '+(vl.lo52?fmtPx(vl.lo52,uss):'-')+')</small>':''):'')
       +'<br><span style="color:var(--muted2);font-size:11px">'
-      +(cheap?'흑자 저PER + ROE 양호 + 52주 고점 대비 큰 낙폭 — 실적 대비 소외 구간일 수 있습니다. 낙폭 원인이 실적 악화가 아닌지 뉴스·실적 발표를 함께 확인하세요.'
+      +(cheap?'흑자 저PER + ROE 양호 + 52주 고점 대비 큰 낙폭입니다. 실적 대비 소외 구간일 수 있습니다. 낙폭 원인이 실적 악화가 아닌지 뉴스·실적 발표를 함께 확인하세요.'
              :'ROE는 PBR÷PER 근사값입니다. 저평가 판정 기준: 흑자 PER '+(uss?'15':'10')+'배 이하 · ROE 8% 이상 · 52주 고점 대비 −20% 이하.')
       +'</span></div>':'')
     +'<div class="box"><h5>'+(tossOf(u.code)?'투자자별 수급 (토스증권 공식)':'외국인 수급')+'</h5>'
@@ -1961,23 +1962,23 @@ function detailRow(x){
             +'5일 합 '+[v('외',f5),v('기관',i5),v('개인',p5)].filter(Boolean).join(' · ')
             +(hold?'<br>외국인 보유율 <b class="mono">'+hold.rate.toFixed(2)+'%</b>':'')
             +'<br><span style="color:var(--muted2);font-size:11px">'
-            +(f5!=null&&f5>0?'외국인 순매수 유입':f5!=null&&f5<0?'외국인 순매도 — 매수 신호 신뢰도 감점':'외국인 수급 중립')
+            +(f5!=null&&f5>0?'외국인 순매수 유입':f5!=null&&f5<0?'외국인 순매도, 매수 신호 신뢰도 감점':'외국인 수급 중립')
             +' · 순매수 주식 수 기준(등록외국인) · 당일은 잠정치 · 출처 토스증권 Open API</span>';
         }
         return fd?('소진율 <b class="mono">'+fd.now.toFixed(2)+'%</b> · 5일 <b class="mono '+cls(fd.d5)+'">'+(fd.d5>0?'+':'')+fd.d5.toFixed(2)+'%p</b>'
           +(fd.d20!=null?' · 20일 <b class="mono '+cls(fd.d20)+'">'+(fd.d20>0?'+':'')+fd.d20.toFixed(2)+'%p</b>':'')
-          +'<br><span style="color:var(--muted2);font-size:11px">'+(fd.d5>=0.1?'외국인 순매수 유입 흐름':fd.d5<=-0.1?'외국인 이탈 흐름 — 매수 신호 신뢰도 감점':'외국인 수급 중립')+'</span>')
-        :'<span style="color:var(--muted2)">'+(isUSm(u.mkt)?'미국 종목 — 외국인 수급 지표는 국내 전용입니다':'데이터 없음')+'</span>';
+          +'<br><span style="color:var(--muted2);font-size:11px">'+(fd.d5>=0.1?'외국인 순매수 유입 흐름':fd.d5<=-0.1?'외국인 이탈 흐름, 매수 신호 신뢰도 감점':'외국인 수급 중립')+'</span>')
+        :'<span style="color:var(--muted2)">'+(isUSm(u.mkt)?'미국 종목입니다. 외국인 수급 지표는 국내 전용입니다':'데이터 없음')+'</span>';
       })()+'</div>'
     +'<div class="box"><h5>주요 수치</h5><table>'
       +'<tr><td>MACD / 시그널</td><td class="mono">'+fmtM(j.macd)+' / '+fmtM(j.sig)+'</td></tr>'
-      +'<tr><td>MA20 / MA60</td><td class="mono">'+(j.ma20?Math.round(j.ma20).toLocaleString():'—')+' / '+(j.ma60?Math.round(j.ma60).toLocaleString():'—')+'</td></tr>'
-      +'<tr><td>120일선 / 200일선</td><td class="mono">'+(x.ms&&x.ms.m120?Math.round(x.ms.m120).toLocaleString():'—')+' / '+(x.ms&&x.ms.m200?Math.round(x.ms.m200).toLocaleString():'—')+'</td></tr>'
-      +'<tr><td>120·200일선 이격</td><td class="mono">'+(x.ms&&x.ms.d120!=null?(x.ms.d120>0?'+':'')+x.ms.d120.toFixed(1)+'%':'—')+' / '+(x.ms&&x.ms.d200!=null?(x.ms.d200>0?'+':'')+x.ms.d200.toFixed(1)+'%':'—')+'</td></tr>'
-      +'<tr><td>MDD(1년) / 현재 낙폭</td><td class="mono">'+(x.dd?x.dd.mdd.toFixed(1)+'% / '+x.dd.cur.toFixed(1)+'%':'—')+'</td></tr>'
-      +'<tr><td>볼린저 상단 / 하단</td><td class="mono">'+(j.bbU?Math.round(j.bbU).toLocaleString():'—')+' / '+(j.bbL?Math.round(j.bbL).toLocaleString():'—')+'</td></tr>'
-      +'<tr><td>%b (밴드 내 위치)</td><td class="mono">'+(j.pb==null?'—':j.pb.toFixed(2))+'</td></tr>'
-      +'<tr><td>스토캐스틱 %K / %D</td><td class="mono">'+(j.early.stK==null?'—':j.early.stK.toFixed(1))+' / '+(j.early.stD==null?'—':j.early.stD.toFixed(1))+'</td></tr></table></div>'
+      +'<tr><td>MA20 / MA60</td><td class="mono">'+(j.ma20?Math.round(j.ma20).toLocaleString():'-')+' / '+(j.ma60?Math.round(j.ma60).toLocaleString():'-')+'</td></tr>'
+      +'<tr><td>120일선 / 200일선</td><td class="mono">'+(x.ms&&x.ms.m120?Math.round(x.ms.m120).toLocaleString():'-')+' / '+(x.ms&&x.ms.m200?Math.round(x.ms.m200).toLocaleString():'-')+'</td></tr>'
+      +'<tr><td>120·200일선 이격</td><td class="mono">'+(x.ms&&x.ms.d120!=null?(x.ms.d120>0?'+':'')+x.ms.d120.toFixed(1)+'%':'-')+' / '+(x.ms&&x.ms.d200!=null?(x.ms.d200>0?'+':'')+x.ms.d200.toFixed(1)+'%':'-')+'</td></tr>'
+      +'<tr><td>MDD(1년) / 현재 낙폭</td><td class="mono">'+(x.dd?x.dd.mdd.toFixed(1)+'% / '+x.dd.cur.toFixed(1)+'%':'-')+'</td></tr>'
+      +'<tr><td>볼린저 상단 / 하단</td><td class="mono">'+(j.bbU?Math.round(j.bbU).toLocaleString():'-')+' / '+(j.bbL?Math.round(j.bbL).toLocaleString():'-')+'</td></tr>'
+      +'<tr><td>%b (밴드 내 위치)</td><td class="mono">'+(j.pb==null?'-':j.pb.toFixed(2))+'</td></tr>'
+      +'<tr><td>스토캐스틱 %K / %D</td><td class="mono">'+(j.early.stK==null?'-':j.early.stK.toFixed(1))+' / '+(j.early.stD==null?'-':j.early.stD.toFixed(1))+'</td></tr></table></div>'
     +'<div style="display:flex;gap:8px">'+(u.mkt==='usetf'
       ?'<button class="btn" data-yh="'+esc(u.code)+'">야후 파이낸스에서 보기 ↗</button>'
       :'<button class="btn" data-naver="'+u.code+'"'+(isUSm(u.mkt)&&u.rc?' data-rc="'+esc(u.rc)+'"':'')+'>네이버 증권에서 보기 ↗</button>')+'</div>'
@@ -2037,7 +2038,7 @@ function maybeNotify(){
     const key='alphadesk.sig.ntf.'+day+'.'+MODE+'.'+x.u.code+'.'+kind;
     try{ if(localStorage.getItem(key)) continue; localStorage.setItem(key,'1'); }catch(e){ continue; }
     try{
-      new Notification(title+' — '+x.u.name,{
+      new Notification(title+': '+x.u.name,{
         tag:key, body:VD[x.j.v][0]+(SPEED==='fast'?' · ⚡빠름':'')+' · RSI '+x.j.rsi.toFixed(1)+' · '+fmtPx(x.u.price,isUSm(x.u.mkt))+' ('+(x.u.pct>0?'+':'')+x.u.pct.toFixed(2)+'%)'});
     }catch(e){}
   }
@@ -2087,7 +2088,7 @@ function paintStatus(){
   }
 }
 
-/* 토스 개장일 캘린더 — index 와 같은 localStorage 키(alphadesk.tosscal, 24시간) 공유 */
+/* 토스 개장일 캘린더: index 와 같은 localStorage 키(alphadesk.tosscal, 24시간) 공유 */
 let TCAL_SIG=null;
 (async function loadTossCalSig(){
   try{
@@ -2115,8 +2116,8 @@ function segInit(id,cur,fn){
     });
   });
 }
-/* 다중 선택 세그먼트 — fn 이 새 선택 배열을 돌려주면 그대로 칠한다.
-   data-v="all" 은 «모두 끄기» 버튼으로, 선택이 비었을 때만 켜진 것으로 보인다. */
+/* 다중 선택 세그먼트: fn 이 새 선택 배열을 돌려주면 그대로 칠한다.
+   data-v="all" 은 모두 끄기 버튼으로, 선택이 비었을 때만 켜진 것으로 보인다. */
 function segInitMulti(id,cur,fn){
   const el=document.getElementById(id);
   const paint=sel=>el.querySelectorAll('button').forEach(b=>
@@ -2133,7 +2134,7 @@ segInit('seg-mode',MODE,v=>{ MODE=v; store('mode',v); OPENED=null; syncItvVis();
 segInit('seg-mkt',MKT,v=>{ MKT=v; store('mkt',v); OPENED=null; syncWatchVis(); drawRegimes(); scan(false); });
 segInit('seg-sitv',SITV,v=>{ SITV=v; store('sitv',v); scan(false); });
 segInit('seg-look',LOOK,v=>{ LOOK=+v; store('look',v); compute(); });
-segInit('seg-speed',SPEED,v=>{ SPEED=v; store('speed',v); compute(); });   // 같은 캔들 — 재수집 불필요
+segInit('seg-speed',SPEED,v=>{ SPEED=v; store('speed',v); compute(); });   // 같은 캔들이라 재수집 불필요
 segInitMulti('seg-filter',FILTER,v=>{
   FILTER=toggleFilter(FILTER,v); store('filter',FILTER.join(','));
   render();
@@ -2154,7 +2155,7 @@ function addWatchInput(){
   let code,mkt;
   if(/^\d{6}(\.K[SQ])?$/.test(s)){ mkt=s.endsWith('.KQ')?'kosdaq':'kospi'; code=s.slice(0,6); }
   else if(/^[A-Z][A-Z0-9.\-]{0,7}$/.test(s)){ mkt='us'; code=s.replace(/\.O$/,''); }
-  else{ note('형식: 국내 6자리 코드(코스닥은 뒤에 .KQ) 또는 미국 티커 — 예: 005930 · 247540.KQ · AAPL'); return; }
+  else{ note('형식: 국내 6자리 코드(코스닥은 뒤에 .KQ) 또는 미국 티커. 예: 005930 · 247540.KQ · AAPL'); return; }
   if(inWatch(code,mkt)){ note('이미 관심 목록에 있는 종목입니다.'); return; }
   WATCH.push({code,mkt,name:code});
   saveWatch(); el.value=''; note('');
@@ -2162,7 +2163,7 @@ function addWatchInput(){
 }
 document.getElementById('btn-watch-add').addEventListener('click',addWatchInput);
 document.getElementById('watch-in').addEventListener('keydown',e=>{ if(e.key==='Enter') addWatchInput(); });
-/* 다른 탭(대시보드·분할 플래너)에서 관심종목이 바뀌면 ⭐관심 목록 즉시 반영 — 읽기만(루프 방지) */
+/* 다른 탭(대시보드·분할 플래너)에서 관심종목이 바뀌면 ⭐관심 목록 즉시 반영: 읽기만(루프 방지) */
 let wlsEvtTimer=null;
 window.addEventListener('storage',e=>{
   if(!e || (e.key!=='alphadesk.wl2'&&e.key!=='alphadesk.sig.watchlist')) return;

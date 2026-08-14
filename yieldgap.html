@@ -167,7 +167,7 @@
 
   footer{padding:22px;color:var(--muted2);font-size:11px;line-height:1.65;border-top:1px solid var(--border);margin-top:24px;max-width:1060px;margin-left:auto;margin-right:auto}
   footer b{color:var(--accent2)}
-  /* ===== 페이지 전환 부드럽게 — Cross-Document View Transitions(지원 브라우저). 미지원 시 일반 이동으로 무해 폴백 ===== */
+  /* ===== 페이지 전환 부드럽게: Cross-Document View Transitions(지원 브라우저). 미지원 시 일반 이동으로 무해 폴백 ===== */
   @view-transition{ navigation:auto; }
   ::view-transition-old(root){ animation:vt-out .14s ease both; }
   ::view-transition-new(root){ animation:vt-in .18s ease both; }
@@ -200,14 +200,14 @@
 
 <main>
   <div class="sectit">📊 자산군 기대수익률 · 일드갭 <span class="cnt" id="asof"></span>
-    <span class="note">국채 · 주식 어닝일드 · 리츠 배당 + 장기 연평균 수익률 병기 — 한·미 비교</span></div>
+    <span class="note">국채 · 주식 어닝일드 · 리츠 배당 + 장기 연평균 수익률 병기. 한·미 비교</span></div>
 
   <div class="intro" id="yg-intro">불러오는 중…</div>
 
   <div class="legend">
-    <span><i style="background:linear-gradient(90deg,var(--accent),var(--accent2))"></i>위험자산 — 주식 어닝일드(S&amp;P500·나스닥, 1/PER)</span>
-    <span><i style="background:var(--muted2)"></i>안전자산 — 국채 10년</span>
-    <span><i style="background:var(--gold)"></i>실물자산 — 리츠 배당</span>
+    <span><i style="background:linear-gradient(90deg,var(--accent),var(--accent2))"></i>위험자산: 주식 어닝일드(S&amp;P500·나스닥, 1/PER)</span>
+    <span><i style="background:var(--muted2)"></i>안전자산: 국채 10년</span>
+    <span><i style="background:var(--gold)"></i>실물자산: 리츠 배당</span>
   </div>
 
   <div class="yg-grid" id="yg-grid"></div>
@@ -224,11 +224,11 @@
   </div>
 
   <div class="lt-card" id="alloc-card" style="display:none">
-    <h3>자산 배분 — 수익률 관점 <span style="font-weight:400;color:var(--muted2);font-size:12px">(장기 수익률 기준)</span></h3>
+    <h3>자산 배분: 수익률 관점 <span style="font-weight:400;color:var(--muted2);font-size:12px">(장기 수익률 기준)</span></h3>
     <p class="alloc-intro" id="alloc-intro"></p>
     <div id="bucket-chart"></div>
     <div class="alloc-cmp" id="alloc-cmp"></div>
-    <div class="lt-note">수익률만 본 단순 비교입니다 — <b style="color:var(--up)">변동성(손실 위험)은 반영하지 않았습니다</b>. 위험자산일수록 기대수익도 변동성도 큽니다. 분산투자를 기본으로, 본인의 투자기간·위험성향에 맞춰 조정하세요. 투자 권유가 아닙니다.</div>
+    <div class="lt-note">수익률만 본 단순 비교라 <b style="color:var(--up)">변동성(손실 위험)은 반영하지 않았습니다</b>. 위험자산일수록 기대수익도 변동성도 큽니다. 분산투자를 기본으로, 본인의 투자기간·위험성향에 맞춰 조정하세요. 투자 권유가 아닙니다.</div>
   </div>
 
   <div class="lt-card" id="pension-card" style="display:none">
@@ -239,14 +239,14 @@
       <span>총 투자금액 <input type="text" id="pen-amount" inputmode="numeric" placeholder="예: 30,000,000" style="width:120px;text-align:right">원 <small style="color:var(--muted2)">(입력 시 비중별 금액 자동 배분)</small></span>
     </div>
 
-    <div class="pen-sub">📌 추천 포트폴리오 <small>— 현금 30% + 위험·안전 배분, 장기 검증 ETF 1순위</small></div>
+    <div class="pen-sub">📌 추천 포트폴리오 <small>: 현금 30% + 위험·안전 배분, 장기 검증 ETF 1순위</small></div>
     <div class="pen-grid">
       <div id="pen-donut"></div>
       <table class="pen-tbl" id="pen-tbl"></table>
     </div>
     <div class="lt-note" id="pen-note"></div>
 
-    <div class="pen-sub" style="margin-top:18px">🧮 내 운영 포트폴리오 <small>— 살 ETF를 추가하고 <b>투자금액</b>을 입력하면 비중·연 기대수익·총액을 계산 (이 브라우저에 저장)</small></div>
+    <div class="pen-sub" style="margin-top:18px">🧮 내 운영 포트폴리오 <small>: 살 ETF를 추가하고 <b>투자금액</b>을 입력하면 비중·연 기대수익·총액을 계산합니다 (이 브라우저에 저장)</small></div>
     <div class="myport-ctl">
       <select id="myport-select"></select>
       <button class="myport-btn" id="myport-load" type="button">↩ 추천 불러오기</button>
@@ -293,7 +293,7 @@ function kstUpd(iso, withDate){
 
 const ASSET_META={ stock:['📈','위험자산','stock'], nasdaq:['📈','위험자산','nasdaq'], safe:['🏦','안전자산','safe'], reit:['🏢','실물자산','reit'] };
 const ASSET_ORDER=['stock','nasdaq','safe','reit'];
-function ygNum(o){ return (!o||o.val==null)?'—':o.val.toFixed(2)+'%'; }
+function ygNum(o){ return (!o||o.val==null)?'-':o.val.toFixed(2)+'%'; }
 function gapMeta(g){
   if(g==null) return {cls:'flat', lab:'데이터 없음', hint:''};
   if(g>=1)  return {cls:'pos', lab:'주식 매력', hint:'주식 어닝일드가 국채금리보다 높습니다 → 주식이 채권 대비 저평가(밸류 매력).'};
@@ -305,7 +305,7 @@ const LT_KEY={stock:'stock',nasdaq:'nasdaq',safe:'bond',reit:'real'};
 function ltCagr(k,mk){ const lt=(YG&&YG.longterm)||[]; const row=lt.find(r=>r.k===LT_KEY[k]); const v=row&&row[mk]; return (v!=null)?'~'+(Math.round(v*10)/10)+'%':null; }
 function marketCard(flag,name,m,scale,mk){
   const gm=gapMeta(m.gap);
-  const gtxt=m.gap==null?'—':(m.gap>0?'+':'')+m.gap.toFixed(2)+'%p';
+  const gtxt=m.gap==null?'-':(m.gap>0?'+':'')+m.gap.toFixed(2)+'%p';
   const rows=ASSET_ORDER.filter(k=>m[k]).map(k=>{
     const [ic,cls,bar]=ASSET_META[k]; const o=m[k]; const w=(o.val!=null)?Math.max(2,Math.min(100,o.val/scale*100)):0;
     const cg=ltCagr(k,mk);   // 장기 연평균 수익률 병기 (어닝일드=밸류, 연평균=실제 장기수익)
@@ -323,14 +323,14 @@ function marketCard(flag,name,m,scale,mk){
     ${rows}
   </div>`;
 }
-function fmtGap(m){ const gm=gapMeta(m.gap); return m.gap==null?'—':(m.gap>0?'+':'')+m.gap.toFixed(2)+'%p('+gm.lab+')'; }
-/* 장기 수익률 차트 + 자산배분 추천 — longterm 데이터에서 계산 */
+function fmtGap(m){ const gm=gapMeta(m.gap); return m.gap==null?'-':(m.gap>0?'+':'')+m.gap.toFixed(2)+'%p('+gm.lab+')'; }
+/* 장기 수익률 차트 + 자산배분 추천: longterm 데이터에서 계산 */
 const LT_BENCH={ stock:{us:'S&P 500',kr:'KOSPI',cls:'risk'}, nasdaq:{us:'NASDAQ100',kr:null,cls:'risk'}, bond:{us:'미국 국채',kr:'한국 국채',cls:'safe'}, real:{us:'미국 리츠',kr:'한국 리츠',cls:'real'} };
 function chRow(name,val,cls,scale){ const w=Math.max(3,Math.min(100,val/scale*100)); return `<div class="chrow"><div class="chlab">${name}</div><div class="chbar"><span class="${cls}" style="width:${w}%"></span></div><div class="chval">${val}%</div></div>`; }
 function pcts(parts){ const r=parts.map(p=>Math.round(p)); const diff=100-r.reduce((a,b)=>a+b,0); if(diff) r[r.length-1]+=diff; return r; }
 const SAFE_BOND_RATIO=2/3;   /* 안전자산 내 채권:현금 ≈ 2:1 */
 const PIE_CASH='#aab0b8';
-/* 자산배분 도넛(파이) — 위험/실물/안전(채권+현금) 합 100% */
+/* 자산배분 도넛(파이): 위험/실물/안전(채권+현금) 합 100% */
 function donut(title, rec, wR, wF, wS, blended, picks){
   const wB=wS*SAFE_BOND_RATIO, wC=wS*(1-SAFE_BOND_RATIO);
   const a1=wR, a2=wR+wF, a3=wR+wF+wB;
@@ -352,7 +352,7 @@ let ALLOC_TARGET=null, ALLOC_RET=null, PICKS=null;
    규정: 한국 상장 ETF만 매수 · 위험자산 최대 70% · 레버리지/인버스 불가.
    리츠 ETF도 '위험자산'이라 70% 안에 담는다(주식 + 리츠). 안전 30% = 채권 + 현금.
    ETF·CAGR는 yfinance로 검증한 실제 상장이력·실현치(2026 기준). */
-const PEN_EXP = { stock:11.5, reit:7.5, bond:3.5, cash:3.0 };   // 장기 보수적 기대수익(연%) — 최근 20%+ 강세는 미반영
+const PEN_EXP = { stock:11.5, reit:7.5, bond:3.5, cash:3.0 };   // 장기 보수적 기대수익(연%). 최근 20%+ 강세는 반영하지 않는다
 const PEN_RISK_SPLIT = 0.78;   // 위험자산 내 주식:리츠 ≈ 78:22
 const PEN_CASH_COL = '#aab0b8';
 const PEN_PICKS = {
@@ -376,7 +376,7 @@ function renderPension(){
   card.style.display='';
   const r1=x=>Math.round(x*10)/10;
   let risk=parseFloat(document.getElementById('pen-risk').value); if(isNaN(risk))risk=70; risk=Math.min(70,Math.max(0,risk))/100;
-  const CASH=0.30;                              // 현금 30% 고정(안전 베이스) — 70% 비중에서 제외
+  const CASH=0.30;                              // 현금 30% 고정(안전 베이스). 70% 비중에서 제외
   const bondW=Math.max(0, 0.70-risk);           // 70% 액티브 중 위험(주식+리츠) 제외 나머지 = 채권
   const safe=bondW+CASH;
   const w={ stock:risk*PEN_RISK_SPLIT, reit:risk*(1-PEN_RISK_SPLIT), bond:bondW, cash:CASH };
@@ -409,13 +409,13 @@ function renderPension(){
   document.getElementById('pen-tbl').innerHTML=`<thead><tr><th class="l">자산(비중)</th><th>${amtHead}</th><th class="l">한국 상장 ETF · 코드</th><th>실현 CAGR</th><th class="l">검증 · 설명</th></tr></thead><tbody>`+rows+'</tbody>';
   document.getElementById('pen-intro').innerHTML=`퇴직연금(DC·IRP)은 <b>한국 상장 ETF만</b> 살 수 있고 <b>위험자산(주식+리츠) 최대 70%</b> 규정이 있습니다. <b>현금 30%</b>를 안전 베이스로 고정하고, 나머지 <b>70%</b>를 <b>위험 ${r1(risk*100)}%(주식+리츠) · 채권 ${r1(bondW*100)}%</b>로 배분했습니다. 각 칸은 <b>장기 수익률이 검증된</b> 대표 ETF를 1순위로 제시합니다.`;
   renderMyPort();   // 내 운영 포트폴리오도 함께 갱신(금액 등)
-  document.getElementById('pen-note').innerHTML=`<b style="color:var(--gold)">연 기대수익 ${exp.toFixed(1)}%</b>는 장기 보수적 가정(주식 ${PEN_EXP.stock}·리츠 ${PEN_EXP.reit}·채권 ${PEN_EXP.bond}·현금 ${PEN_EXP.cash}%)으로 계산했습니다 — 표의 '실현 CAGR'(최근 강세장 20%+)는 <b>과거 실적</b>이며 미래 보장이 아닙니다. <b style="color:var(--accent2)">수익 ↑ 팁</b>: ① 위험 70%를 나스닥100 등 성장주에 더 싣기 ② 채권 자리를 'S&P500 채권혼합형'(주식30:채권70 — 규정상 안전자산) ETF로 채우면 안전 규정을 지키면서 주식 노출을 더 높일 수 있습니다. 레버리지·인버스는 연금 매수 불가. 투자 권유가 아닙니다.`;
+  document.getElementById('pen-note').innerHTML=`<b style="color:var(--gold)">연 기대수익 ${exp.toFixed(1)}%</b>는 장기 보수적 가정(주식 ${PEN_EXP.stock}·리츠 ${PEN_EXP.reit}·채권 ${PEN_EXP.bond}·현금 ${PEN_EXP.cash}%)으로 계산했습니다. 표의 '실현 CAGR'(최근 강세장 20%+)는 <b>과거 실적</b>이며 미래를 보장하지 않습니다. <b style="color:var(--accent2)">수익 ↑ 팁</b>: ① 위험 70%를 나스닥100 등 성장주에 더 싣기 ② 채권 자리를 'S&P500 채권혼합형'(주식30:채권70, 규정상 안전자산) ETF로 채우면 안전 규정을 지키면서 주식 노출을 더 높일 수 있습니다. 레버리지·인버스는 연금 매수 불가. 투자 권유가 아닙니다.`;
 }
 
-/* ── 내 운영 퇴직연금 포트폴리오(직접 구성 + 예상수익률 계산) — 이 브라우저에 저장 ── */
+/* ── 내 운영 퇴직연금 포트폴리오(직접 구성 + 예상수익률 계산): 이 브라우저에 저장 ── */
 let lastRecW=null, lastRecExp=0;                 // 추천 가중치·연기대수익(renderPension이 채움)
 const CLS_LAB={stock:'위험·주식', reit:'위험·리츠', bond:'안전·채권', cash:'안전·현금'};
-// 퇴직연금(DC·IRP) 매수가능 ETF 유니버스 — 네이버 증권으로 코드·현재 명칭 검증, 레버리지·인버스 제외.
+// 퇴직연금(DC·IRP) 매수가능 ETF 유니버스: 네이버 증권으로 코드·현재 명칭 검증, 레버리지·인버스 제외.
 // cagr = 실현 연평균 수익률(야후 수정종가=배당 포함 총수익, yrs=상장 후 산정기간, 2026-06 기준). 운영 포트폴리오 예상수익률 기본값.
 const PEN_ETF_UNIVERSE=[
   // 위험 · 주식 (해외)
@@ -442,7 +442,7 @@ const PEN_ETF_LIST=PEN_ETF_UNIVERSE.map(e=>({nm:e.nm, code:e.code, cls:e.cls, re
 function etfMeta(code){ return PEN_ETF_UNIVERSE.find(x=>x.code===code)||null; }   // 코드→{cagr,yrs} 조회
 const MYPORT_LS='alphadesk.penport';
 let MYPORT=[];
-const MYPORT_NOTE='<div class="lt-note" style="margin-top:8px"><b>‘현재 수익률’</b>은 내 계좌의 평가손익률(매입 대비 ±%)을 적으면 평가금액·평가손익을 계산합니다(선택). <b>‘예상수익률’</b> 기본값은 각 ETF의 <b>실현 연평균 수익률(CAGR)</b>(야후 수정종가=배당 포함 총수익, 입력칸에 마우스 올리면 산정기간 표시)입니다 — <b>과거 실적</b>이며 미래 보장이 아니니(상장기간이 짧거나 최근 강세장이면 과대) 보수적으로 직접 낮춰 입력하세요. <b>위험자산(주식+리츠) 합계 70% 초과 시 퇴직연금 규정 위반</b>입니다. ETF 코드·명칭은 <b>네이버 증권 검증</b>(레버리지/인버스 제외). 정보 제공용이며 투자 권유가 아닙니다.</div>';
+const MYPORT_NOTE='<div class="lt-note" style="margin-top:8px"><b>‘현재 수익률’</b>은 내 계좌의 평가손익률(매입 대비 ±%)을 적으면 평가금액·평가손익을 계산합니다(선택). <b>‘예상수익률’</b> 기본값은 각 ETF의 <b>실현 연평균 수익률(CAGR)</b>(야후 수정종가=배당 포함 총수익, 입력칸에 마우스 올리면 산정기간 표시)입니다. <b>과거 실적</b>이라 미래를 보장하지 않으니(상장기간이 짧거나 최근 강세장이면 과대) 보수적으로 낮춰 입력하세요. <b>위험자산(주식+리츠) 합계 70% 초과 시 퇴직연금 규정 위반</b>입니다. ETF 코드·명칭은 <b>네이버 증권 검증</b>(레버리지/인버스 제외). 정보 제공용이며 투자 권유가 아닙니다.</div>';
 function penEsc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function penAmt(){ const a=document.getElementById('pen-amount'); const v=parseInt((a&&a.value||'').replace(/[^0-9]/g,''),10); return (isNaN(v)||v<0)?0:v; }
 const penWonF=v=>Math.round(v).toLocaleString('ko-KR');
@@ -508,7 +508,7 @@ function renderMyPort(){
       +`<td class="l"><b style="color:${col}">${penEsc(h.nm)}</b>${h.code?` <span style="color:var(--muted2)">${h.code}</span>`:''}</td>`
       +`<td class="l"><select class="mp-cls" data-i="${i}">${['stock','reit','bond','cash'].map(c=>`<option value="${c}" ${c===h.cls?'selected':''}>${CLS_LAB[c]}</option>`).join('')}</select></td>`
       +`<td><input class="mp-amt" data-i="${i}" inputmode="numeric" value="${(+h.amount||0).toLocaleString('ko-KR')}">원</td>`
-      +`<td><input class="mp-cur" data-i="${i}" type="number" step="0.1" value="${h.cur||0}" title="현재 평가손익률(매입 대비 ±%) — 내 계좌 수익률 입력">%</td>`
+      +`<td><input class="mp-cur" data-i="${i}" type="number" step="0.1" value="${h.cur||0}" title="현재 평가손익률(매입 대비 ±%): 내 계좌 수익률 입력">%</td>`
       +`<td><input class="mp-r" data-i="${i}" type="number" step="0.1" value="${h.ret}" title="${(()=>{const m=etfMeta(h.code);return m&&typeof m.cagr==='number'?`실현 연평균(배당 포함) ${m.cagr>=0?'+':''}${m.cagr}% · 최근 ${m.yrs}년 기준`:'직접 입력 값';})()}">%</td>`
       +`<td class="hi mp-wcell">${Math.round(w*10)/10}%</td>`
       +`<td><button class="mp-del" data-i="${i}" type="button" title="삭제" aria-label="삭제">✕</button></td></tr>`;
@@ -567,25 +567,25 @@ function renderCharts(lt){
     + donut('균형 1:1:1', false, 100/3, 100/3, 100/3, balanced.toFixed(1), picks)
     + donut('수익률 가중', true, wR*100, wF*100, wS*100, tilted.toFixed(1), picks)
     + `</div>`
-    + `<div class="alloc-best">📌 수익률 극대화 관점 추천: <b>위험자산(주식) 비중 ↑</b> — 균형 1:1:1 대비 연 <b>+${r1(tilted-balanced)}%p</b> 더 기대(과거 평균 기준, 변동성 미반영). 안전자산은 <b>채권·현금(저축)</b>으로 나눠 보유합니다(채권:현금 ≈ 2:1 가정, 현금은 유동성·대기자금). 괄호 안은 각 자산군 내 <b>장기 수익률 1순위</b> 선택지입니다.</div>`;
+    + `<div class="alloc-best">📌 수익률 극대화 관점 추천: <b>위험자산(주식) 비중 ↑</b>. 균형 1:1:1 대비 연 <b>+${r1(tilted-balanced)}%p</b> 더 기대(과거 평균 기준, 변동성 미반영). 안전자산은 <b>채권·현금(저축)</b>으로 나눠 보유합니다(채권:현금 ≈ 2:1 가정, 현금은 유동성·대기자금). 괄호 안은 각 자산군 내 <b>장기 수익률 1순위</b> 선택지입니다.</div>`;
   document.getElementById('alloc-card').style.display='';
   renderPension();
 }
-/* 이번 달 시점(전술) 코멘트 — 현재 일드갭 기반, 월 1회 자동 갱신. 추정 게이팅·기존 ±1%p·색상규약 계승 */
+/* 이번 달 시점(전술) 코멘트: 현재 일드갭 기반, 월 1회 자동 갱신. 추정 게이팅·기존 ±1%p·색상규약 계승 */
 function tacStance(g){
   if(g==null) return {lab:'데이터 없음',cls:'flat',tone:''};
   if(g>=1) return {lab:'밸류 우호',cls:'pos',tone:'채권 대비 싼 편이라 위험자산에 우호적인 환경입니다(변동성은 별개).'};
   if(g<=-1) return {lab:'밸류 부담',cls:'neg',tone:'채권 대비 비싼 편이라 신규 진입은 분할 적립이 무난합니다.'};
   return {lab:'균형',cls:'flat',tone:'주식·채권 기대수익이 비슷해 기존 비중 유지가 무난합니다.'};
 }
-function gapTxt(g){ return g==null?'—':(g>0?'+':'')+g.toFixed(2)+'%p'; }
+function gapTxt(g){ return g==null?'-':(g>0?'+':'')+g.toFixed(2)+'%p'; }
 function renderTactical(d){
   if(!document.getElementById('tactical-card')||!d.us||!d.kr) return;
   const ym=String(d._updated||'').match(/^(\d{4})-(\d{2})/);
   document.getElementById('tac-head').textContent='📅 이번 달'+(ym?' ('+ym[1]+'년 '+(+ym[2])+'월)':'')+' 시점 코멘트';
   const us=d.us, kr=d.kr, uS=tacStance(us.gap), kS=tacStance(kr.gap);
   let html=`<div class="tac-mk"><div class="tmh"><span>🇺🇸 미국</span><span class="tgap">${gapTxt(us.gap)}</span><span class="tlab ${uS.cls}">${uS.lab}</span></div><div class="ttone">${uS.tone}</div>`;
-  if(us.gapNdx!=null&&us.gapNdx<=-1) html+=`<div class="tnote">나스닥(${gapTxt(us.gapNdx)})은 밸류 부담이 더 큰 편 — 대형 기술주는 분할 접근을 함께 고려하세요.</div>`;
+  if(us.gapNdx!=null&&us.gapNdx<=-1) html+=`<div class="tnote">나스닥(${gapTxt(us.gapNdx)})은 밸류 부담이 더 큰 편입니다. 대형 기술주는 분할 접근을 함께 고려하세요.</div>`;
   html+=`</div>`;
   const krEst=kr.stock&&kr.stock.est;
   html+=`<div class="tac-mk"><div class="tmh"><span>🇰🇷 한국</span><span class="tgap">${gapTxt(kr.gap)}</span><span class="tlab ${kS.cls}">${kS.lab}</span>${krEst?'<span class="est-badge">추정</span>':''}</div><div class="ttone">${kS.tone}</div>`;
@@ -594,8 +594,8 @@ function renderTactical(d){
   if(us.gap!=null&&kr.gap!=null){
     const sp=kr.gap-us.gap, a=Math.abs(sp), win=sp>0?'한국':'미국', winEst=sp>0?(kr.stock&&kr.stock.est):(us.stock&&us.stock.est);
     let body;
-    if(a<1) body=`한·미 밸류가 비슷합니다(차이 ${a.toFixed(1)}%p) — 지역보다 종목 단에서 성장성으로 선별하는 편이 낫습니다.`;
-    else { const st=a>=3?'뚜렷이':'소폭'; body=`한·미 일드갭 차이 ${(sp>0?'+':'')+sp.toFixed(1)}%p — 밸류 관점에선 <b>${win} 주식</b>이 ${st} 저평가 쪽입니다. 성장주 신규 자금은 ${win} 비중을 상대적으로 약간 높게 두는 것을 고려해볼 수 있습니다.`; if(winEst) body+=` 단, ${win} 수치는 추정 기반이라 해석에 여유를 두세요.`; }
+    if(a<1) body=`한·미 밸류가 비슷합니다(차이 ${a.toFixed(1)}%p). 지역보다 종목 단에서 성장성으로 선별하는 편이 낫습니다.`;
+    else { const st=a>=3?'뚜렷이':'소폭'; body=`한·미 일드갭 차이 ${(sp>0?'+':'')+sp.toFixed(1)}%p. 밸류 관점에선 <b>${win} 주식</b>이 ${st} 저평가 쪽입니다. 성장주 신규 자금은 ${win} 비중을 상대적으로 약간 높게 두는 것을 고려해볼 수 있습니다.`; if(winEst) body+=` 단, ${win} 수치는 추정 기반이라 해석에 여유를 두세요.`; }
     html+=`<div class="tac-rel">↔ ${body}</div>`;
   }
   document.getElementById('tac-body').innerHTML=html;
@@ -610,7 +610,7 @@ function renderYieldGap(){
   document.getElementById('yg-intro').innerHTML =
     `<b>일드갭 = 주식 어닝일드(1/PER) − 국채 10년 금리.</b> 양(+)이면 주식이 채권보다 싸고(밸류 매력), 음(−)이면 비쌉니다(밸류 부담). `
     + `현재 <b>🇺🇸 미국 ${fmtGap(d.us)}</b> · <b>🇰🇷 한국 ${fmtGap(d.kr)}</b>. `
-    + `각 자산엔 <b>장기 연평균 수익률</b>도 함께 표시했습니다 — <b>어닝일드</b>는 ‘지금 밸류(채권 대비 싼지)’, <b>연평균</b>은 ‘실제 장기 수익’으로 서로 다른 개념입니다.`;
+    + `각 자산엔 <b>장기 연평균 수익률</b>도 함께 표시했습니다. <b>어닝일드</b>는 ‘지금 밸류(채권 대비 싼지)’, <b>연평균</b>은 ‘실제 장기 수익’으로 서로 다른 개념입니다.`;
   renderCharts(d.longterm||[]);
   renderTactical(d);
   const ym=String(d._updated||'').match(/^(\d{4})-(\d{2})/);

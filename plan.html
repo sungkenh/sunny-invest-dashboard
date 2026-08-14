@@ -176,7 +176,7 @@
 </main>
 
 <footer>
-  <b>분할 매매 플래너</b>는 관심 종목(대시보드 «관심 종목»과 시그널 «⭐ 관심»의 합집합)에 대해
+  <b>분할 매매 플래너</b>는 관심 종목(대시보드 관심 종목과 시그널 ⭐ 관심의 합집합)에 대해
   일봉 기준 판정·변동성(ATR)·백테스트를 바탕으로 분할 매수·매도 가격과 시드 대비 배정 비중을 <b>기계적 산식</b>으로 제안합니다.
   시드 금액·리스크 성향·평단/수량 입력값은 <b>이 브라우저(localStorage)에만 저장</b>되며 서버로 전송되지 않습니다.
   판정·백테스트 로직은 매매 시그널 페이지의 장기(일봉) 모드와 동일합니다(표준 프리셋 · 신호 인정 5봉 · 평가 지평 20거래일).
@@ -185,7 +185,7 @@
 </footer>
 
 <script>
-/* ══ 분할 매매 플래너 — 관심종목 분할 매수·매도 시점 + 시드 비중 산정 ══
+/* ══ 분할 매매 플래너: 관심종목 분할 매수·매도 시점 + 시드 비중 산정 ══
    전략 근거(방법론 카드 참조): 고정 비율 리스크법(1회 리스크 = 시드의 0.5~2%) · ATR 손절(매매 시그널과 동일 공식) ·
    Kelly ¼~½ 캡(종목 백테스트 승률) · 종목당 상한 · 엘더 6% 총 오픈리스크 룰 ·
    눌림목 3분할(지지선 스냅) / 터틀식 피라미딩 / 1R 절반 매도 + 2×ATR 트레일링 */
@@ -280,7 +280,7 @@ function rsiSeries(c,n){
   }
   return out;
 }
-/* ADX(14, Wilder) 마지막 값 — 지수 추세 강도(<20 횡보) */
+/* ADX(14, Wilder) 마지막 값: 지수 추세 강도(<20 횡보) */
 function adxLast(hi,lo,cl,n){
   n=n||14;
   if(cl.length<n*2+2) return null;
@@ -323,7 +323,7 @@ function crossUpAgo(a,b,end){
   return null;
 }
 const constArr=(L,v)=>new Array(L).fill(v);
-/* 스토캐스틱 슬로우(14,3,3) — MACD보다 선행하는 보완 지표 */
+/* 스토캐스틱 슬로우(14,3,3): MACD보다 선행하는 보완 지표 */
 function stochSeries(hi,lo,cl,n,ks,ds){
   n=n||14; ks=ks||3; ds=ds||3;
   const L=cl.length, raw=new Array(L).fill(null);
@@ -343,7 +343,7 @@ function stochSeries(hi,lo,cl,n,ks,ds){
   const k=smooth(raw,ks);
   return {k, d:smooth(k,ds)};
 }
-/* 히스토그램 반전: 크로스 전 갭이 2봉 연속 축소 — 골든/데드크로스 선행 신호 */
+/* 히스토그램 반전: 크로스 전 갭이 2봉 연속 축소: 골든/데드크로스 선행 신호 */
 function histTurn(m,s,end){
   if(end==null) end=m.length-1;
   if(end<2||m[end]==null||s[end]==null||m[end-1]==null||s[end-1]==null||m[end-2]==null||s[end-2]==null) return {up:false,dn:false};
@@ -401,11 +401,11 @@ function approach(m,s,end){
   if(m[end]>0&&dm<0){ const e=Math.ceil(m[end]/-dm); if(e>=1&&e<=3) out.zdEta=e; }
   return out;
 }
-/* 신호 속도 프리셋 — 빠름은 표준의 ~1/2 주기(1:2 비율 유지)로 같은 로직을 시간 압축.
-   신호가 1~3봉 먼저 나오는 대신 거짓 신호(휩쏘)가 늘어난다 → «신호 성과 검증»으로 비교. */
+/* 신호 속도 프리셋: 빠름은 표준의 ~1/2 주기(1:2 비율 유지)로 같은 로직을 시간 압축.
+   신호가 1~3봉 먼저 나오는 대신 거짓 신호(휩쏘)가 늘어난다 → 신호 성과 검증으로 비교. */
 const SPEEDS={ std:{fast:12,slow:26,sig:9,rsiN:14,label:'표준'},
                fast:{fast:8,slow:17,sig:9,rsiN:9,label:'빠름'} };
-/* 시리즈 1회 계산(종목·프리셋당) — judgeAt이 봉 인덱스별로 재사용 (백테스트 핵심) */
+/* 시리즈 1회 계산(종목·프리셋당): judgeAt이 봉 인덱스별로 재사용 (백테스트 핵심) */
 function judgePrep(closes,hi,lo,cfg){
   cfg=cfg||SPEEDS.std;
   return { cfg, md:macdSeries(closes,cfg.fast,cfg.slow,cfg.sig), r:rsiSeries(closes,cfg.rsiN),
@@ -415,7 +415,7 @@ function judgePrep(closes,hi,lo,cfg){
 /* 종가/고가/저가 배열 → 종합 판정. look = 크로스를 '신호'로 인정하는 최근 봉 수.
    MACD+RSI 본신호에 더해, 후행성을 보완하는 선행 지표 4종(히스토그램 반전·스토캐스틱·
    RSI 30/70 탈출·다이버전스·BB 복귀)이 2개 이상 겹치면 크로스 확정 전에 '조기' 판정.
-   end = 평가 기준 봉 인덱스(기본 마지막 봉) — 시리즈는 i 이전 데이터만 의존하므로 룩어헤드 없음. */
+   end = 평가 기준 봉 인덱스(기본 마지막 봉). 시리즈는 i 이전 데이터만 의존하므로 룩어헤드 없음. */
 function judgeAt(P,closes,hi,lo,look,end){
   const L=closes.length; if(end==null) end=L-1;
   const m=P.md.m, s=P.md.s, r=P.r;
@@ -461,7 +461,7 @@ function judgeAt(P,closes,hi,lo,look,end){
   else if(dcOK&&!macdUp&&!rsiOk) v=(!above0||zdOK)?'sell2':'sell1';
   else if(zuOK&&macdUp&&rsiOk)   v='buy1'; // 0선 돌파 단독도 매수 신호
   else if(zdOK&&!macdUp&&!rsiOk) v='sell1';
-  else if(ebN>=2&&rr<70)                       v='ebuy'; // 선행 지표 2개↑ 동시 — 크로스 확정 전 조기 진입
+  else if(ebN>=2&&rr<70)                       v='ebuy'; // 선행 지표 2개↑ 동시. 크로스 확정 전 조기 진입
   else if(esN>=2&&rr>30)                       v='esell';
   else if((ap.gcEta!=null||ap.zuEta!=null)&&rr>=45)      v='nbuy';   // 임박(외삽 예측)
   else if((ap.dcEta!=null||ap.zdEta!=null)&&rr<=55)      v='nsell';
@@ -490,7 +490,7 @@ function agg120(ohlc){
   }
   return out;
 }
-/* ATR(14, Wilder) 마지막 값 — 봉 주기의 평균 변동폭(목표가·손절가 산정용) */
+/* ATR(14, Wilder) 마지막 값: 봉 주기의 평균 변동폭(목표가·손절가 산정용) */
 function atrLast(hi,lo,closes,n){
   n=n||14;
   const L=closes.length, trs=[];
@@ -503,7 +503,7 @@ function atrLast(hi,lo,closes,n){
   for(let i=n;i<trs.length;i++) a=(a*(n-1)+trs[i])/n;
   return a;
 }
-/* 신호봉 거래량 vs 직전 20봉 평균 — ago=신호 발생 몇 봉 전, sessionOpen이면 형성 중 마지막 봉은
+/* 신호봉 거래량 vs 직전 20봉 평균: ago=신호 발생 몇 봉 전, sessionOpen이면 형성 중 마지막 봉은
    부분 거래량이라 직전 완성봉으로 대체. ≥×1.5 급증 확인 · <×0.7 빈약 경고, 그 사이는 표시 없음 */
 function volConfirm(vols,ago,sessionOpen){
   if(!vols||vols.length<25) return null;
@@ -547,19 +547,19 @@ function backtestOne(closes,his,los,look,cfg,H){
 }
 /*BT-END*/
 
-/*PLAN-BEGIN*/ /* ── 산정 로직 (순수 함수 — 유닛테스트가 이 블록을 추출한다) ── */
+/*PLAN-BEGIN*/ /* ── 산정 로직 (순수 함수: 유닛테스트가 이 블록을 추출한다) ── */
 const PRESETS={ con:{risk:0.5,maxW:5, kelly:0.25,label:'보수'},
                 std:{risk:1.0,maxW:10,kelly:0.5, label:'표준'},
                 agg:{risk:2.0,maxW:18,kelly:0.5, label:'공격'} };
-const PORT_RISK_MAX=6;   // 엘더의 6% 룰 — 동시 오픈 리스크 총합 상한
+const PORT_RISK_MAX=6;   // 엘더의 6% 룰. 동시 오픈 리스크 총합 상한
 
-/* 진입·손절·목표 프레임 — planFor(시그널)와 동일 공식을 모든 판정에 대해 계산 */
+/* 진입·손절·목표 프레임: planFor(시그널)와 동일 공식을 모든 판정에 대해 계산 */
 function riskFrame(entry,h,l,c,us){
   const atr=atrLast(h,l,c,14);
   if(!atr||!(atr>0)||!(entry>0)) return null;
   const lows=l.slice(-10).filter(v=>isFinite(v)&&v>0);
   const swingLow=lows.length?Math.min.apply(null,lows):entry-atr;
-  let stop=Math.min(swingLow, entry-1.0*atr);   // 지지선(최근 저점) vs 1×ATR — 보수적(낮은) 쪽
+  let stop=Math.min(swingLow, entry-1.0*atr);   // 지지선(최근 저점) vs 1×ATR 중 보수적(낮은) 쪽
   stop=Math.max(stop, entry-2.0*atr);           // 리스크 상한 2×ATR
   if(!(stop>0&&stop<entry)) return null;
   const rd=us?(v=>Math.round(v*100)/100):(v=>Math.round(v));
@@ -574,7 +574,7 @@ function kellyCap(seed,bt,mult){
   return { f, cap: seed*Math.max(0,f)*mult, n:bt.n, win:bt.win };
 }
 
-/* 배정 총액 A = min(리스크 기반, 종목당 상한, Kelly 캡) — 어느 캡에 걸렸는지 bound 로 표시 */
+/* 배정 총액 A = min(리스크 기반, 종목당 상한, Kelly 캡): 어느 캡에 걸렸는지 bound 로 표시 */
 function allocFor(seed,presetKey,frame,fx,bt,lev){
   const p=PRESETS[presetKey]||PRESETS.std;
   const kc=seed>0?kellyCap(seed,bt,p.kelly):null;
@@ -589,7 +589,7 @@ function allocFor(seed,presetKey,frame,fx,bt,lev){
   else { A=capW; bound='종목당 상한 '+p.maxW+'%'; }
   if(kc&&kc.cap<A){ A=kc.cap; bound='Kelly '+(p.kelly===0.25?'¼':'½')+' 캡 (승률 '+kc.win.toFixed(0)+'%)'; }
   if(lev){
-    if(String(lev).indexOf('-')===0){ A=0; bound='인버스 — 신규 진입 계획 없음'; }
+    if(String(lev).indexOf('-')===0){ A=0; bound='인버스: 신규 진입 계획 없음'; }
     else { A=A*0.5; bound=bound+' · 레버리지 ×0.5'; }
   }
   return { A, riskAmt, qtyRisk, allocRisk, capW, kelly:kc, bound, p };
@@ -606,7 +606,7 @@ function snapSupport(raw,atr,cands,entry){
   return best;
 }
 
-/* 매수 래더 3차수 40/30/30 — style: 'pull' 눌림목(아래로) | 'pyr' 피라미딩(위로) */
+/* 매수 래더 3차수 40/30/30: style: 'pull' 눌림목(아래로) | 'pyr' 피라미딩(위로) */
 function buyLadder(style,frame,cands){
   const w=[40,30,30], out=[], rd=frame.rd;
   if(style==='pyr'){
@@ -629,7 +629,7 @@ function buyLadder(style,frame,cands){
   return out;
 }
 
-/* 차수별 금액·정수 주수 — fx: US면 원/달러 환율, KR이면 1. 반환 = 실배정 합계(₩) */
+/* 차수별 금액·정수 주수: fx: US면 원/달러 환율, KR이면 1. 반환 = 실배정 합계(₩) */
 function fillQty(ladder,A,fx){
   let sum=0;
   for(const t of ladder){
@@ -639,7 +639,7 @@ function fillQty(ladder,A,fx){
   }
   return sum;
 }
-/* 래더 혼합 평단(가중) — 주수 있으면 주수 가중, 없으면(%) 비중 가중 */
+/* 래더 혼합 평단(가중): 주수 있으면 주수 가중, 없으면(%) 비중 가중 */
 function ladderAvg(ladder){
   let q=0,s=0,ws=0,wv=0;
   for(const t of ladder){
@@ -651,7 +651,7 @@ function ladderAvg(ladder){
 }
 
 /*RES-BEGIN*/
-/* 머리 위 저항(전고점) — 목표가는 손익비만으로 정해지지만, 그 사이에 전고점이 있으면
+/* 머리 위 저항(전고점): 목표가는 손익비만으로 정해지지만, 그 사이에 전고점이 있으면
    가격은 대개 거기서 한 번 막힌다. 이미 전고점을 넘어선 신고가 구간이면 위가 비어 있어
    목표가를 그대로 봐도 된다. 그 구분을 값으로 만들어 목표가 옆에 붙인다. */
 // 피벗 고점: 좌우 k봉보다 높은 봉. 마지막 k봉은 아직 확정되지 않았으므로 후보에서 빠진다.
@@ -666,7 +666,7 @@ function pivotHighs(h,k){
   return out;
 }
 // 진입가 위에서 가장 가까운 저항. null 이면 머리 위에 확정된 전고점이 없다(= 신고가 구간).
-// minGap: 이만큼은 떨어져 있어야 «벽»으로 친다. 진입가 코앞의 고점은 저항이라기보다 노이즈라
+// minGap: 이만큼은 떨어져 있어야 벽으로 친다. 진입가 코앞의 고점은 저항이라기보다 노이즈라
 //         목표가 판단에 넣으면 오히려 시야를 흐린다(호출부에서 ATR 의 일부를 넘긴다).
 function overhead(h,entry,lookback,k,minGap){
   if(!Array.isArray(h)||!(entry>0)) return null;
@@ -681,7 +681,7 @@ function overhead(h,entry,lookback,k,minGap){
   return { price:best.v, ago:seg.length-1-best.i, isHi:best.v>=hi-1e-9 };
 }
 /*RES-END*/
-/* 매도(출구) 래더 — 구간은 매매 시그널과 동일한 기술 레벨로 고정:
+/* 매도(출구) 래더: 구간은 매매 시그널과 동일한 기술 레벨로 고정:
    손절 = 시그널 손절선(최근 10일 저점 vs 현재가−1×ATR 중 낮은 쪽, 상한 2×ATR),
    익절 1R = 현재가+리스크(시그널 1R 목표), 익절 2R = 시그널 목표가(손익비 1:2), 트레일 = 2×ATR 샹들리에.
    avg(보유 평단)가 있으면 % 기준을 평단으로 바꾸고 단계별 손익액·본전 라인을 함께 표시. */
@@ -702,31 +702,31 @@ function sellLadder(frame,his,rd,Q,avg,fx){
   const steps=[
     { kind:'stop', name:'손절', price:stop, pct:pct(stop), qty:Q, share:'전량', pl:pl(stop,Q),
       note:'시그널 손절선(최근 10일 저점 vs 현재가−1×ATR, 상한 2×ATR) 종가 이탈 시 전량'
-        +(hasAvg?(stop>=avg?' · 평단 위 — 이익 보호선':' · 평단 아래 — 손실 확정 구간'):'') },
+        +(hasAvg?(stop>=avg?' · 평단 위, 이익 보호선':' · 평단 아래, 손실 확정 구간'):'') },
   ];
   if(hasAvg&&avg>frame.rawStop&&avg<entry+R0)
-    steps.push({ kind:'be', name:'본전', price:rd(avg), pct:0, qty:null, share:'—', pl:0,
-      note:'익절 1R 도달 후 손절선을 이 가격(평단)으로 상향 — 이후 하방 리스크 제거' });
-  // 머리 위 전고점 — 목표가 아래에 있으면 대개 여기서 한 번 막힌다. 수량은 배분하지 않고
-  // «먼저 만나는 벽»으로만 표시해, 익절을 앞당길지 스스로 판단하게 한다.
+    steps.push({ kind:'be', name:'본전', price:rd(avg), pct:0, qty:null, share:'-', pl:0,
+      note:'익절 1R 도달 후 손절선을 이 가격(평단)으로 올린다. 이후 하방 리스크는 사라진다' });
+  // 머리 위 전고점: 목표가 아래에 있으면 대개 여기서 한 번 막힌다. 수량은 배분하지 않고
+  // 먼저 만나는 벽으로만 표시해, 익절을 앞당길지 스스로 판단하게 한다.
   const res=overhead(his,entry,252,5,0.5*frame.atr), wall=(res&&res.price<t2)?rd(res.price):null;
   if(wall!=null)
-    steps.push({ kind:'res', name:'전고점', price:wall, pct:pct(wall), qty:null, share:'—', pl:pl(wall,Q),
-      note:res.ago+'봉 전 고점'+(res.isHi?'(기간 최고점)':'')+' — 목표가보다 먼저 만나는 저항. '
-        +(wall<t1?'익절 1R 아래에 있어 1차 익절을 여기로 당기는 것을 검토':'익절 1R·2R 사이의 벽 — 돌파 실패 시 2R 미달 가능') });
+    steps.push({ kind:'res', name:'전고점', price:wall, pct:pct(wall), qty:null, share:'-', pl:pl(wall,Q),
+      note:res.ago+'봉 전 고점'+(res.isHi?'(기간 최고점)':'')+'. 목표가보다 먼저 만나는 저항. '
+        +(wall<t1?'익절 1R 아래에 있어 1차 익절을 여기로 당기는 것을 검토':'익절 1R·2R 사이의 벽. 돌파에 실패하면 2R에 못 미칠 수 있음') });
   steps.push(
     { kind:'tp', name:'익절 1R', price:t1, pct:pct(t1), qty:q1, share:'1/2', pl:pl(t1,q1),
-      note:'시그널 1R 목표(현재가+리스크) — 절반 매도 · 손절가를 본전으로 이동'
-        +(wall!=null&&wall<t1?' · ⚠ 전고점이 이 아래 — 먼저 막힐 수 있음':'') },
+      note:'시그널 1R 목표(현재가+리스크). 절반 매도 · 손절가를 본전으로 이동'
+        +(wall!=null&&wall<t1?' · ⚠ 전고점이 이 아래라 먼저 막힐 수 있음':'') },
     { kind:'tp', name:'익절 2R', price:t2, pct:pct(t2), qty:q2, share:'1/4', pl:pl(t2,q2),
-      note:'시그널 목표가(손익비 1:2) — 잔여의 절반 매도'
-        +(wall!=null?' · 전고점 돌파를 전제로 유효':(res?'':' · 신고가 구간 — 머리 위 저항 없음')) },
+      note:'시그널 목표가(손익비 1:2). 잔여의 절반 매도'
+        +(wall!=null?' · 전고점 돌파를 전제로 유효':(res?'':' · 신고가 구간이라 머리 위 저항 없음')) },
     { kind:'trail', name:'트레일', price:trail, pct:pct(trail), qty:q3, share:'나머지', pl:pl(trail,q3),
       note:'2×ATR 샹들리에(최근 22봉 고점−2×ATR) 이탈 시 전량 · 매일 재계산' });
   return { R0, stop, t1, t2, baseName, steps, res, wall };
 }
 
-/* 우선순위 예산 배분 — items는 우선순위 정렬 상태. 시드와 오픈리스크(6%) 예산을 위에서부터 소진:
+/* 우선순위 예산 배분: items는 우선순위 정렬 상태. 시드와 오픈리스크(6%) 예산을 위에서부터 소진:
    상위 종목이 예산을 먼저 가져가고, 하위 종목은 잔여 예산 안에서만 배정(부족하면 축소·0).
    held = {cost, risk}: 이미 투입된 보유분은 해당 순위에서 예산을 선점한다. */
 function applyBudget(items,seed){
@@ -737,8 +737,8 @@ function applyBudget(items,seed){
     const r=(it.frame&&it.frame.entry>0)?(it.frame.entry-it.frame.rawStop)/it.frame.entry:0;
     let A=base, cut=null;
     if(base>0){
-      if(A>Math.max(0,budget)){ A=Math.max(0,budget); cut='시드 잔여 소진 — 우선순위 하위'; }
-      if(r>0&&A*r>Math.max(0,riskBudget)){ A=Math.max(0,riskBudget)/r; cut='오픈리스크 6% 예산 소진 — 우선순위 하위'; }
+      if(A>Math.max(0,budget)){ A=Math.max(0,budget); cut='시드 잔여 소진, 우선순위 하위'; }
+      if(r>0&&A*r>Math.max(0,riskBudget)){ A=Math.max(0,riskBudget)/r; cut='오픈리스크 6% 예산 소진, 우선순위 하위'; }
     }
     const heldCost=it.held?it.held.cost:0, heldRisk=it.held?it.held.risk:0;
     budget-=Math.max(heldCost,A);
@@ -747,7 +747,7 @@ function applyBudget(items,seed){
   });
 }
 
-/* 보유 포지션 뷰 — 현 손익·진행 R·배정 상한 대비 잔여 추가매수 가능액 */
+/* 보유 포지션 뷰: 현 손익·진행 R·배정 상한 대비 잔여 추가매수 가능액 */
 function positionView(pos,frame,price,fx,A){
   if(!pos||!(pos.avg>0)||!(pos.qty>0)||!(price>0)) return null;
   const cost=pos.avg*pos.qty*fx, val=price*pos.qty*fx;
@@ -758,7 +758,7 @@ function positionView(pos,frame,price,fx,A){
 }
 /*PLAN-END*/
 
-/* ── 상태 (localStorage — 이 브라우저에만 저장) ── */
+/* ── 상태 (localStorage: 이 브라우저에만 저장) ── */
 const PLN=(k,v)=>{ try{ if(v===undefined) return localStorage.getItem('alphadesk.plan.'+k); localStorage.setItem('alphadesk.plan.'+k,v); }catch(e){ return null; } };
 let SEED=parseInt(String(PLN('seed')||'').replace(/\D/g,''),10)||0;
 let PRESET=['con','std','agg'].includes(PLN('preset'))?PLN('preset'):'std';
@@ -771,20 +771,20 @@ const saveUi=()=>PLN('ui',JSON.stringify(UIST));
 const savePrio=()=>PLN('prio',JSON.stringify(PRIO));
 
 /*WLSYNC-BEGIN*/
-/* 관심종목 동기화 — 대시보드(alphadesk.wl2) · 매매 시그널(alphadesk.sig.watchlist) · 분할 플래너가
+/* 관심종목 동기화: 대시보드(alphadesk.wl2) · 매매 시그널(alphadesk.sig.watchlist) · 분할 플래너가
    항상 같은 집합을 보도록, 어느 페이지에서 바꾸든 두 저장 키를 함께 기록한다.
    식별키: 국내 6자리 코드는 코드만(코스피·코스닥·ETF 공통), 미국은 대문자 티커(세부 시장 구분 무시).
    시그널 항목의 메타(rc·lev·cap·세부 mkt)는 보존하고, 새로 넘어온 항목은 kospi/kosdaq/us 로 변환한다. */
 const WLS_US=['sp500','nasdaq','russell2000','usetf','us'];
 const wlsKeyOfSig=w=>/^\d{6}$/.test(String(w.code))?String(w.code):('US|'+String(w.code).toUpperCase());
-// ⚠ 접미사 없는 6자리 코드(옛 저장 형식)도 국내로 본다 — 미국 티커로 오인하면 저장할 때마다
+// ⚠ 접미사 없는 6자리 코드(옛 저장 형식)도 국내로 본다: 미국 티커로 오인하면 저장할 때마다
 //   심볼이 맨코드로 되돌아가 시세·차트·지표가 모두 빗나간다(코스피/코스닥은 /api/quote 의 ex 로 교정).
 const wlsKeyOfSym=sym=>{ const m=String(sym).match(/^(\d{6})(?:\.(KS|KQ))?$/); return m?m[1]:('US|'+String(sym).toUpperCase()); };
 const wlsSymOfSig=w=>WLS_US.indexOf(w.mkt)>=0?String(w.code):(String(w.code)+(w.mkt==='kosdaq'?'.KQ':'.KS'));
 const wlsSigOfSym=(sym,name)=>{ const m=String(sym).match(/^(\d{6})(?:\.(KS|KQ))?$/);
   return m?{code:m[1],mkt:m[2]==='KQ'?'kosdaq':'kospi',name:name||m[1]}:{code:String(sym),mkt:'us',name:name||String(sym)}; };
 const wlsIsUs=m=>WLS_US.indexOf(m)>=0;
-const WLS_KR_PLAIN=['kospi','kosdaq'];        // 국내 개별주 — 이 둘 사이의 어긋남만 심볼 기준으로 교정(kretf 등은 보존)
+const WLS_KR_PLAIN=['kospi','kosdaq'];        // 국내 개별주. 이 둘 사이의 어긋남만 심볼 기준으로 교정한다(kretf 등은 보존)
 function wlsRead(k){ try{ const a=JSON.parse(localStorage.getItem(k)||'null'); return Array.isArray(a)?a:null; }catch(e){ return null; } }
 /* 시그널 형식 배열을 정본으로 두 키를 함께 기록(식별키 기준 중복 제거). 값이 바뀐 키만 실제로 쓴다. */
 function wlsWriteBoth(sigArr){
@@ -809,7 +809,7 @@ function wlsMergeAll(){
   for(const w of (sig||[])){ if(w&&w.code&&w.mkt) all.push(w); }
   return wlsWriteBoth(all);
 }
-/* 대시보드(wl2) 형식 배열을 정본으로 동기화 — 기존 시그널 메타는 유지, 빠진 종목은 양쪽에서 제거 */
+/* 대시보드(wl2) 형식 배열을 정본으로 동기화: 기존 시그널 메타는 유지, 빠진 종목은 양쪽에서 제거 */
 function wlsWriteFromWL(wlArr){
   const byKey={};
   for(const w of (wlsRead('alphadesk.sig.watchlist')||[])) if(w&&w.code&&w.mkt) byKey[wlsKeyOfSig(w)]=w;
@@ -817,7 +817,7 @@ function wlsWriteFromWL(wlArr){
   for(const x of (wlArr||[])){ if(!x||!x.sym) continue;
     const k=wlsKeyOfSym(x.sym), kept=byKey[k], derived=wlsSigOfSym(x.sym,x.name);
     // 시그널 쪽 메타(rc·lev·cap·kretf 같은 세부 시장)는 보존하되, 시장 구분이 심볼과 어긋나면
-    // 심볼 기준이 맞다 — 심볼은 /api/quote 가 알려준 실제 거래소로 교정된 값이기 때문.
+    // 심볼 기준이 맞다: 심볼은 /api/quote 가 알려준 실제 거래소로 교정된 값이기 때문.
     // 맨코드가 us 로 잘못 기록됐던 이력과 코스피↔코스닥 이전을 여기서 바로잡는다(ETF 표식 kretf 는 유지).
     const stale=kept && (wlsIsUs(kept.mkt)!==wlsIsUs(derived.mkt)
       || (WLS_KR_PLAIN.indexOf(kept.mkt)>=0 && kept.mkt!==derived.mkt));
@@ -825,13 +825,13 @@ function wlsWriteFromWL(wlArr){
   return wlsWriteBoth(sig);
 }
 /*WLSYNC-END*/
-/* ── 관심종목 — 동기화 모듈이 두 저장 키를 같은 집합으로 유지(시그널 ⭐관심 = 대시보드 관심) ── */
+/* ── 관심종목: 동기화 모듈이 두 저장 키를 같은 집합으로 유지(시그널 ⭐관심 = 대시보드 관심) ── */
 function loadPlanList(){
   const m=wlsMergeAll();
   return (m?m.sig:[]).map(w=>({code:String(w.code),mkt:w.mkt,name:w.name||String(w.code),lev:w.lev,rc:w.rc}));
 }
 const posKey=u=>u.code+'|'+u.mkt;
-/* 저장된 우선순위(alphadesk.plan.prio) 순서로 정렬 — 미등록 종목은 뒤에 원래 순서대로 */
+/* 저장된 우선순위(alphadesk.plan.prio) 순서로 정렬: 미등록 종목은 뒤에 원래 순서대로 */
 function sortByPrio(list){
   const idx=k=>{ const i=PRIO.indexOf(k); return i<0?1e9:i; };
   return list.map((u,i)=>[u,idx(posKey(u)),i]).sort((a,b)=>(a[1]-b[1])||(a[2]-b[2])).map(x=>x[0]);
@@ -844,7 +844,7 @@ function movePrio(k,dir){
   LIST=sortByPrio(LIST);
   recompute();
 }
-/* 우선순위 숫자 직접 입력: pos(1부터)로 이동 — 범위 밖은 클램프, 무효 입력은 원상 복구 */
+/* 우선순위 숫자 직접 입력: pos(1부터)로 이동: 범위 밖은 클램프, 무효 입력은 원상 복구 */
 function movePrioTo(k,pos){
   const i=PRIO.indexOf(k); if(i<0){ render(); return; }
   const n=parseInt(pos,10);
@@ -911,12 +911,12 @@ const BUYV=['buy2','buy1'], WAITV=['sell2','sell1','esell','nsell','dn1'];
 function computeOne(u){
   const ch=CH[posKey(u)];
   if(!ch) return {u, err:'차트 없음'};
-  if(ch.closes.length<120) return {u, err:'데이터 부족(<120봉) — 이동평균·백테스트 신뢰 불가'};
+  if(ch.closes.length<120) return {u, err:'데이터 부족(<120봉). 이동평균·백테스트를 믿기 어렵습니다'};
   const us=isUSm(u.mkt), fx=us?(USDKRW||null):1;
   const price=(u.price>0)?u.price:ch.closes[ch.closes.length-1];
   const j=judge(ch.closes,ch.his,ch.los,5,SPEEDS.std);
   const frame=riskFrame(price,ch.his,ch.los,ch.closes,us);
-  if(!j||!frame) return {u, err:'변동성(ATR) 산출 불가 — 플랜 생략'};
+  if(!j||!frame) return {u, err:'변동성(ATR)을 낼 수 없어 플랜을 생략합니다'};
   // 백테스트(차트 갱신 시에만 재계산)
   const bkey=posKey(u), bc=BTC[bkey];
   const bt=(bc&&bc.ts===ch.ts)?bc.bt:(BTC[bkey]={ts:ch.ts,bt:backtestOne(ch.closes,ch.his,ch.los,5,SPEEDS.std,20)}).bt;
@@ -938,7 +938,7 @@ function computeOne(u){
     const la=ladderAvg(ladder);
     if(la) sell=sellLadder(frame,ch.his,frame.rd,la.Q,null,fx||1);
   }
-  // 보유 포지션 — 매도 구간은 시그널 기술 레벨 + 평단 반영(% 기준·손익액·본전 라인)
+  // 보유 포지션: 매도 구간은 시그널 기술 레벨 + 평단 반영(% 기준·손익액·본전 라인)
   const pos=POS[posKey(u)];
   const pv=(pos&&fx)?positionView(pos,frame,price,fx,alloc.A):null;
   const sellHeld=(pos&&pos.avg>0&&pos.qty>0)?sellLadder(frame,ch.his,frame.rd,pos.qty,pos.avg,fx||1):null;
@@ -950,11 +950,11 @@ const VD={buy2:'강력 매수',buy1:'매수 신호',ebuy:'조기 매수',nbuy:'�
           dn1:'하락 추세',nsell:'매도 임박',esell:'조기 매도',sell1:'매도 신호',sell2:'강력 매도'};
 const STYLE_INFO={
   pull:{label:'눌림목 3분할',cls:'pull',desc:'현재가·지지선 조정 구간에 나눠 매수 (40/30/30)'},
-  pyr:{label:'추세 피라미딩',cls:'pyr',desc:'강세장 확정 신호 — 상승 확인마다 추가 (40/30/30, 터틀식)'},
-  wait:{label:'관망 — 신규 진입 금지',cls:'wait',desc:'매도 계열 판정(또는 인버스) — 신규 매수 계획을 세우지 않습니다'},
+  pyr:{label:'추세 피라미딩',cls:'pyr',desc:'강세장 확정 신호. 상승을 확인할 때마다 추가 (40/30/30, 터틀식)'},
+  wait:{label:'관망: 신규 진입 금지',cls:'wait',desc:'매도 계열 판정(또는 인버스)이라 신규 매수 계획을 세우지 않습니다'},
 };
 function moneyCell(amt,us){
-  if(amt==null) return '<td class="num flat">—</td>';
+  if(amt==null) return '<td class="num flat">-</td>';
   return '<td class="num mono">'+fmtWon(amt)+(us?'<br><small class="flat">'+fmtPx(amt/(USDKRW||1),true)+'</small>':'')+'</td>';
 }
 /* 가격 표시: 미국 주식은 $ 아래 ₩ 환산 병기 (환율 미수신 시 $만) */
@@ -962,7 +962,7 @@ const priceBoth=(v,us)=>(us&&USDKRW&&v!=null)?fmtPx(v,true)+'<br><small class="f
 const wonSuffix=(v,us)=>(us&&USDKRW&&v!=null)?' (≈'+fmtWon(v*USDKRW)+')':'';
 function prioCtl(k,i){
   return '<input class="prio-in" data-prio="'+esc(k)+'" value="'+(i+1)+'" inputmode="numeric"'
-    +' title="우선순위 — 숫자를 직접 입력하거나 ▲▼로 조정. 시드·오픈리스크 예산을 위에서부터 배정">'
+    +' title="우선순위: 숫자를 직접 입력하거나 ▲▼로 조정. 시드·오픈리스크 예산을 위에서부터 배정">'
     +'<span class="pctl"><button class="pbtn" data-up="'+esc(k)+'" title="우선순위 올리기">▲</button>'
     +'<button class="pbtn" data-dn="'+esc(k)+'" title="우선순위 내리기">▼</button></span>';
 }
@@ -982,7 +982,7 @@ function cardHTML(x,i){
     +'<span class="px mono">'+fmtPx(x.price,x.us)
     +(x.us&&USDKRW?'<small class="flat">'+fmtWon(x.price*USDKRW)+'</small>':'')
     +(u.pct!=null?'<small class="'+cls(u.pct)+'">'+(u.pct>0?'+':'')+Number(u.pct).toFixed(2)+'%</small>':'')
-    +(u.ext?'<small class="xh" title="정규장 밖 체결가 — 국내는 NXT 시간외, 미국은 프리·애프터마켓">'+(u.ext==='pre'?'프리':'애프터')+'</small>':'')+'</span>'
+    +(u.ext?'<small class="xh" title="정규장 밖 체결가: 국내는 NXT 시간외, 미국은 프리·애프터마켓">'+(u.ext==='pre'?'프리':'애프터')+'</small>':'')+'</span>'
     +'</div>';
   if(collapsed) return h+'</div>';
   h+='<div class="boxnote" style="margin-top:4px">'+st.desc
@@ -993,13 +993,13 @@ function cardHTML(x,i){
   const a=x.alloc;
   if(SEED>0&&x.style!=='wait'){
     h+='<div style="margin-top:7px;font-size:12.5px">배정 <b class="mono">'+fmtWon(a.A)+'</b>'
-      +' <span class="flat">('+(SEED>0?(a.A/SEED*100).toFixed(1):'—')+'% / 근거: '+esc(a.bound||'—')+')</span>'
-      +(x.fx?'':' <span class="chip warn">환율 미수신 — ₩ 환산 생략</span>')+'</div>';
+      +' <span class="flat">('+(SEED>0?(a.A/SEED*100).toFixed(1):'-')+'% / 근거: '+esc(a.bound||'-')+')</span>'
+      +(x.fx?'':' <span class="chip warn">환율 미수신이라 ₩ 환산 생략</span>')+'</div>';
   } else if(x.style!=='wait'){
-    h+='<div style="margin-top:7px;font-size:12px" class="flat">시드 미입력 — 비중(%)만 표시합니다. 상단에 시드 금액을 입력하면 금액·주수까지 계산됩니다.</div>';
+    h+='<div style="margin-top:7px;font-size:12px" class="flat">시드를 넣지 않아 비중(%)만 표시합니다. 상단에 시드 금액을 입력하면 금액·주수까지 계산됩니다.</div>';
   }
   if(a.kelly===null&&x.bt.buy&&x.bt.buy.n<5&&x.style!=='wait')
-    h+='<div style="margin-top:3px"><span class="chip">백테스트 표본 부족('+x.bt.buy.n+'회) — Kelly 캡 미적용</span></div>';
+    h+='<div style="margin-top:3px"><span class="chip">백테스트 표본 부족('+x.bt.buy.n+'회)이라 Kelly 캡 미적용</span></div>';
   else if(a.kelly&&x.style!=='wait')
     h+='<div style="margin-top:3px"><span class="chip b">백테스트 적중 '+a.kelly.win.toFixed(0)+'% · '+a.kelly.n+'회 → Kelly 캡 '+(a.kelly.cap>0?fmtWon(a.kelly.cap):'0원 (승률 열위)')+'</span></div>';
   // 매수 래더 (접기/펴기)
@@ -1011,18 +1011,18 @@ function cardHTML(x,i){
       for(const t of x.ladder){
         h+='<tr><td>'+t.n+'차</td><td class="num mono">'+priceBoth(t.price,x.us)+'</td><td>'+esc(t.why)+'</td>'
           +'<td class="num">'+t.w+'%</td>'+moneyCell(t.amt,x.us)
-          +'<td class="num mono">'+(t.qty!=null?t.qty.toLocaleString()+'주':'—')+'</td></tr>';
+          +'<td class="num mono">'+(t.qty!=null?t.qty.toLocaleString()+'주':'-')+'</td></tr>';
       }
       h+='</table>';
       if(SEED>0&&x.sumAlloc>0) h+='<div class="boxnote" style="margin-top:3px">실배정 합계 '+fmtWon(x.sumAlloc)+' (정수 주 절사 후 잔여분은 현금 유지)</div>';
     }
   }
-  // 매도 래더 — 시그널 기술 레벨 기준, 보유 평단 입력 시 평단 대비 %·손익 반영 (접기/펴기)
+  // 매도 래더: 시그널 기술 레벨 기준, 보유 평단 입력 시 평단 대비 %·손익 반영 (접기/펴기)
   const sellBase=x.pv&&x.sellHeld?x.sellHeld:x.sell;
   const sellTitle=x.pv&&x.sellHeld?'분할 매도 계획 (시그널 레벨 · 평단 반영)':'분할 매도 계획 (시그널 레벨 기준)';
   if(sellBase){
     const sCol=!!(UIST.sec&&UIST.sec[k+'|sell']);
-    h+='<div class="lsec sechead" data-sec="sell" data-seck="'+esc(k)+'">'+(sCol?'▸':'▾')+' '+sellTitle+' — 익절·손절 구간<span class="secbtn">'+(sCol?'펴기':'접기')+'</span></div>';
+    h+='<div class="lsec sechead" data-sec="sell" data-seck="'+esc(k)+'">'+(sCol?'▸':'▾')+' '+sellTitle+': 익절·손절 구간<span class="secbtn">'+(sCol?'펴기':'접기')+'</span></div>';
     if(!sCol){
       h+='<table class="lad"><tr><th>구간</th><th>가격</th><th class="num">'+esc(sellBase.baseName)+' 대비</th><th class="num">수량</th><th>액션</th></tr>';
       for(const s of sellBase.steps){
@@ -1032,21 +1032,21 @@ function cardHTML(x,i){
         const bg=s.kind==='stop'?' style="background:rgba(59,130,246,.08)"':(s.kind==='be'?' style="background:rgba(244,176,0,.06)"'
           :(s.kind==='res'?' style="background:rgba(124,130,138,.10)"':''));
         h+='<tr'+bg+'><td>'+nm+'</td>'
-          +'<td class="num mono">'+(s.price!=null?priceBoth(s.price,x.us):'—')+'</td>'
-          +'<td class="num mono '+(s.pct!=null?(s.pct>=0?'up':'down'):'')+'">'+(s.pct!=null?(s.pct>0?'+':'')+s.pct.toFixed(1)+'%':'—')
+          +'<td class="num mono">'+(s.price!=null?priceBoth(s.price,x.us):'-')+'</td>'
+          +'<td class="num mono '+(s.pct!=null?(s.pct>=0?'up':'down'):'')+'">'+(s.pct!=null?(s.pct>0?'+':'')+s.pct.toFixed(1)+'%':'-')
           +(s.pl!=null?'<br><small class="'+cls(s.pl)+'">'+(s.pl>0?'+':'')+fmtWon(s.pl)+'</small>':'')+'</td>'
           +'<td class="num mono">'+(s.qty!=null?s.qty.toLocaleString()+'주':s.share)+'</td><td class="boxnote">'+esc(s.note)+'</td></tr>';
       }
       h+='</table>';
     }
   } else if(x.style==='wait'&&!x.pos){
-    h+='<div class="boxnote" style="margin-top:6px">현재 매도 계열 판정 — 신규 진입을 계획하지 않습니다. 보유 중이라면 아래에 평단·수량을 입력하면 보유분 매도 계획을 계산합니다.</div>';
+    h+='<div class="boxnote" style="margin-top:6px">현재 매도 계열 판정이라 신규 진입을 계획하지 않습니다. 보유 중이라면 아래에 평단·수량을 입력하면 보유분 매도 계획을 계산합니다.</div>';
   }
-  // 보유 포지션 입력 — 입력 중(DRAFT)에는 재렌더돼도 값이 보존된다
+  // 보유 포지션 입력: 입력 중(DRAFT)에는 재렌더돼도 값이 보존된다
   const dr=DRAFT[k];
   const avgVal=dr!=null?dr.avg:(x.pos&&x.pos.avg?x.pos.avg:'');
   const qtyVal=dr!=null?dr.qty:(x.pos&&x.pos.qty?x.pos.qty:'');
-  h+='<div class="lsec">보유 포지션 (선택 입력 — 브라우저에만 저장)</div>'
+  h+='<div class="lsec">보유 포지션 (선택 입력, 브라우저에만 저장)</div>'
     +'<div class="posrow">평단 <input data-avg="'+esc(k)+'" inputmode="decimal" value="'+esc(avgVal)+'" placeholder="'+(x.us?'$':'원')+'">'
     +' 수량 <input data-qty="'+esc(k)+'" inputmode="numeric" value="'+esc(qtyVal)+'" placeholder="주">'
     +(x.pos?' <button class="btn" data-clearpos="'+esc(k)+'" style="padding:4px 10px">지우기</button>':'')+'</div>'
@@ -1058,16 +1058,16 @@ function cardHTML(x,i){
       +(pv.remain!=null?' · 배정 상한 대비 추가매수 가능 <b class="mono">'+fmtWon(pv.remain)+'</b>':'')
       +'</div>';
     if(x.sellHeld&&x.sellHeld.stop!=null&&x.price<x.sellHeld.stop)
-      h+='<div><span class="chip bad">⚠ 손절선('+fmtPx(x.sellHeld.stop,x.us)+') 이탈 상태 — 원칙상 전량 매도 검토</span></div>';
-    if(pv.remain===0) h+='<div><span class="chip bad">배정 상한 도달 — 추가매수 불가(상한 초과 물타기 금지)</span></div>';
+      h+='<div><span class="chip bad">⚠ 손절선('+fmtPx(x.sellHeld.stop,x.us)+') 이탈 상태. 원칙상 전량 매도 검토</span></div>';
+    if(pv.remain===0) h+='<div><span class="chip bad">배정 상한 도달. 추가매수 불가(상한 초과 물타기 금지)</span></div>';
     else if(pv.plPct<0&&(x.style==='wait'))
-      h+='<div><span class="chip bad">손실 + 매도 계열 판정 — 계획 밖 물타기 금지, 비중 축소 검토</span></div>';
+      h+='<div><span class="chip bad">손실 + 매도 계열 판정. 계획 밖 물타기 금지, 비중 축소 검토</span></div>';
   }
   return h+'</div>';
 }
 let LIST=[], RESULTS=[];
 function summaryHTML(){
-  const prioNote='<div class="boxnote" style="margin-top:6px">카드 순서 = <b>우선순위</b> — 각 카드의 ▲▼로 조정합니다. '
+  const prioNote='<div class="boxnote" style="margin-top:6px">카드 순서가 <b>우선순위</b>입니다. 각 카드의 ▲▼로 조정합니다. '
     +'시드와 오픈리스크 6% 예산을 상위 종목부터 배정하므로, 예산이 부족하면 하위 종목 배정이 자동으로 축소·생략됩니다.</div>';
   if(!SEED) return '<h5>포트폴리오 요약</h5><div class="boxnote">상단에 시드 금액을 입력하면 배정 합계·현금 잔여·총 오픈리스크를 계산합니다. '
     +'권장: 종목 수 5~10개, 현금 예비 10~30% 유지.</div>'+prioNote;
@@ -1093,22 +1093,22 @@ function summaryHTML(){
     +'<div class="sumitem"><div class="sl">총 오픈리스크 (전 종목 손절 시 손실)</div>'
     +'<b class="big mono '+(riskPct>PORT_RISK_MAX?'up':'')+'">'+riskPct.toFixed(2)+'%</b> <span class="flat">/ 상한 '+PORT_RISK_MAX+'% (엘더 6% 룰)</span>'
     +'<div class="gauge"><i class="'+gcls+'" style="width:'+gw+'%"></i><em style="left:60%"></em></div>'
-    +(riskPct>PORT_RISK_MAX?'<div style="margin-top:4px"><span class="chip bad">오픈리스크 초과 — 신규 진입 축소 필요</span></div>':'')
+    +(riskPct>PORT_RISK_MAX?'<div style="margin-top:4px"><span class="chip bad">오픈리스크 초과. 신규 진입을 줄여야 합니다</span></div>':'')
     +'</div>'
-    +(alloc>SEED?'<div class="sumitem"><span class="chip bad">배정 합계가 시드를 초과 — 종목 수를 줄이거나 보수 프리셋으로</span></div>':'')
+    +(alloc>SEED?'<div class="sumitem"><span class="chip bad">배정 합계가 시드를 넘습니다. 종목 수를 줄이거나 보수 프리셋으로 바꾸세요</span></div>':'')
     +'</div>'+prioNote;
 }
 function methodHTML(){
-  return '<h5>방법론 — 무엇을 근거로 계산하나</h5><div class="boxnote">'
+  return '<h5>방법론: 무엇을 근거로 계산하나</h5><div class="boxnote">'
     +'<b>① 포지션 규모(고정 비율 리스크법)</b>: 1회 매매에서 손절까지 밀렸을 때 잃는 금액을 시드의 '
-    +'보수 0.5% / 표준 1% / 공격 2%로 고정 — 수량 = 리스크 금액 ÷ (진입가−손절가). 손절가는 매매 시그널과 같은 공식'
+    +'보수 0.5% / 표준 1% / 공격 2%로 고정합니다. 수량 = 리스크 금액 ÷ (진입가−손절가). 손절가는 매매 시그널과 같은 공식'
     +'(최근 10일 저점 vs 진입가−1×ATR 중 낮은 쪽, 상한 2×ATR)입니다.<br>'
     +'<b>② 상한 3중 체크</b>: 위 리스크 기반 금액을 종목당 최대 비중(5/10/18%)과 Kelly 캡'
     +'(이 종목 백테스트 승률 W로 f*=W−(1−W)÷2, 표본 5회 이상일 때 ¼~½만 적용) 중 <b>가장 작은 값</b>으로 자릅니다. '
     +'백테스트 승률은 20거래일 적중률 근사이므로 Kelly는 목표가 아니라 상한으로만 씁니다.<br>'
     +'<b>③ 분할 매수</b>: 매수 확정 신호+강세장이면 <b>추세 피라미딩</b>(진입 후 +0.5×ATR 상승을 확인할 때마다 추가, 터틀 트레이딩 방식), '
     +'그 외에는 <b>눌림목 3분할</b>(현재가 → −1×ATR → −2×ATR, 각 레벨은 ±0.5×ATR 이내의 20·60일선/볼린저 하단/최근 저점에 스냅). '
-    +'매도 계열 판정이면 신규 진입 계획을 세우지 않습니다. <b>계획에 없는 물타기(하락 시 즉흥 추가매수)는 금지</b> — 추가매수는 배정 상한 안에서만.<br>'
+    +'매도 계열 판정이면 신규 진입 계획을 세우지 않습니다. <b>계획에 없는 물타기(하락 시 즉흥 추가매수)는 금지</b>이고, 추가매수는 배정 상한 안에서만 합니다.<br>'
     +'<b>④ 분할 매도</b>: 1R(리스크만큼 수익) 도달 시 절반 매도+손절가 본전 이동 → 2R에서 잔여 절반 → 나머지는 2×ATR 샹들리에 트레일링으로 추세 소진까지 보유(혼합 기대 ≈1.5R).<br>'
     +'<b>⑤ 포트폴리오</b>: 전 종목이 동시에 손절돼도 총손실이 시드의 6%를 넘지 않게(엘더의 6% 룰) 게이지로 감시합니다. '
     +'참고: 고정 비율 리스크법·R배수 관리(Van Tharp), 터틀 피라미딩, 알렉산더 엘더 6% 룰, Kelly 기준(¼~½ 적용 관행).'
@@ -1128,7 +1128,7 @@ function render(){
 }
 function recompute(){
   RESULTS=LIST.map(computeOne);
-  // 우선순위 예산 배분 — 카드 순서(=우선순위)대로 시드·오픈리스크 예산을 소진
+  // 우선순위 예산 배분: 카드 순서(=우선순위)대로 시드·오픈리스크 예산을 소진
   const items=RESULTS.map(x=>{
     if(x.err) return {A:0,frame:null};
     const held=x.pv?{cost:x.pv.cost, risk:Math.max(0,(x.pos.avg-x.frame.rawStop))*x.pos.qty*(x.fx||1)}:null;
@@ -1164,7 +1164,7 @@ function segInit(id,cur,fn){
   });
 }
 const descOf=k=>{ const p=PRESETS[k]; return '1회 리스크 '+p.risk+'% · 종목당 ≤'+p.maxW+'% · Kelly '+(p.kelly===0.25?'¼':'½'); };
-/* 시그널 순 자동 정렬: ① 매수 판정 강도 ② 백테스트 매수 적중률(표본 5회↑) 높은 순 — 우선순위(예산 배분)에 반영 */
+/* 시그널 순 자동 정렬: ① 매수 판정 강도 ② 백테스트 매수 적중률(표본 5회↑) 높은 순: 우선순위(예산 배분)에 반영 */
 document.getElementById('btn-autosort').addEventListener('click',()=>{
   if(!RESULTS.length) return;
   const rank={buy2:0,buy1:1,ebuy:2,nbuy:3,up1:4,neu:5,dn1:6,nsell:7,esell:8,sell1:9,sell2:10};
@@ -1182,7 +1182,7 @@ document.getElementById('btn-autosort').addEventListener('click',()=>{
 segInit('seg-preset',PRESET,v=>{ PRESET=v; PLN('preset',v); document.getElementById('preset-desc').textContent=descOf(v); recompute(); });
 document.getElementById('preset-desc').textContent=descOf(PRESET);
 /* 평단·수량: 입력 중에는 DRAFT에만 담고(재렌더에도 값 유지), 확정(change=포커스 아웃)될 때만
-   저장·재계산한다 — 입력 도중 재계산이 카드를 다시 그려 값이 지워지던 문제 방지 */
+   저장·재계산한다. 입력 도중 재계산이 카드를 다시 그려 값이 지워지던 문제를 막는다 */
 const DRAFT={};
 document.getElementById('cards').addEventListener('input',e=>{
   const a=e.target.closest('[data-avg]'), q=e.target.closest('[data-qty]');
@@ -1206,7 +1206,7 @@ document.getElementById('cards').addEventListener('change',e=>{
     delete DRAFT[k];
     if(POS[k]){ delete POS[k]; savePos(); recompute(); }
   }
-  // 한쪽만 입력된 상태(초안)는 저장·재계산하지 않음 — DRAFT가 값을 보존
+  // 한쪽만 입력된 상태(초안)는 저장·재계산하지 않음: DRAFT가 값을 보존
 });
 document.getElementById('cards').addEventListener('keydown',e=>{
   if(e.key==='Enter'&&e.target.closest('[data-prio],[data-avg],[data-qty]')) e.target.blur();   // Enter = 확정
