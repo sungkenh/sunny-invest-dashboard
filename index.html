@@ -3093,6 +3093,7 @@ renderHmDataset();
 loadWatchlistBaseline();                                                       // 저장본 없으면 data/watchlist.json 시드
 cloudInit();                                                                   // 서버(KV) 동기화 — 있으면 서버값 우선, 없으면 무중단 폴백
 loadMarket(); loadWatch(); loadBTC(); loadDeep();                              // 임계(상단 시세·관심종목·심층)
+idleLoad(()=>{ loadFearGreed(); }, 1);                                         // 공포탐욕(이후 10분 주기)
 idleLoad(()=>{ loadTossFlow(); loadTossCal(); }, 3);                            // 토스 수급·휴장 캘린더
 idleLoad(()=>{ loadStripCandles(); }, 4);                                      // 지표 미니캔들(합성 프리뷰 이미 표시)
 renderHmControls2();
