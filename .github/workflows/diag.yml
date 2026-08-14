@@ -1,6 +1,7 @@
 name: diag (수동 진단)
 
-# 배포 검증용 임시 프로브 — 단타(분봉) 전략 제거(#61)
+# 외부 데이터 소스 진단용 — 수동 실행 전용, 자동 트리거 없음.
+# 네이버 시장지표·폴링 API 를 시간차 샘플링해 실시간 반영 여부를 확인한다.
 on:
   workflow_dispatch: {}
 
@@ -8,42 +9,47 @@ jobs:
   diag:
     runs-on: ubuntu-latest
     steps:
-      - name: 단타 제거 배포 확인
+      - name: 시간차 샘플링 (3회 × 35초)
         run: |
-          B="https://sunny-invest-dashboard.pages.dev"
-          for i in $(seq 1 12); do
-            curl -sL "$B/signals" > /tmp/s.html
-            if ! grep -q '단타' /tmp/s.html; then echo "배포 확인 (try $i)"; break; fi
-            echo "  try $i: 아직 이전 버전"; sleep 30
+          sample() {
+            echo "---- sample $1 @ $(date -u +%H:%M:%S) ----"
+            # productDetail: 시간 필드 포함 앞부분을 그대로 출력 (어떤 timestamp 필드가 있는지 확인)
+            for pair in "bond US10YT=RR" "bond US2YT=RR" "exchange FX_USDKRW" "metals GCcv1" "energy CLcv1"; do
+              set -- $pair
+              body=$(curl -s -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" \
+                "https://m.stock.naver.com/front-api/marketIndex/productDetail?category=$1&reutersCode=$2")
+              echo "[$1/$2] $(echo "$body" | python3 -c "
+          import json,sys
+          try:
+              v=json.load(sys.stdin).get('result') or {}
+              keys=[k for k in v.keys() if 'ime' in k or 'ate' in k or 'At' in k]
+              print('close=%s chg=%s pct=%s | 시간필드: %s' % (v.get('closePrice'), v.get('compareToPreviousClosePrice'), v.get('fluctuationsRatio'), {k:v.get(k) for k in keys}))
+          except Exception as e: print('ERR', e)")"
+            done
+            # 폴링 선물 (NQcv1)
+            curl -s -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" \
+              "https://polling.finance.naver.com/api/realtime/worldstock/futures/NQcv1" | python3 -c "
+          import json,sys
+          d=json.load(sys.stdin); r=(d.get('datas') or [{}])[0]
+          print('[NQcv1 polling] close=%s chg=%s dir=%s time=%s' % (r.get('closePrice'), r.get('compareToPreviousClosePrice'), (r.get('compareToPreviousPrice') or {}).get('text'), d.get('time')))"
+            # 운영 API
+            curl -s "https://sunny-invest-dashboard.pages.dev/api/market" | python3 -c "
+          import json,sys
+          d=json.load(sys.stdin)
+          row=lambda k: '%s=%s(%s)' % (k, (d.get(k) or {}).get('price'), (d.get(k) or {}).get('src'))
+          print('[운영API]', ' '.join(row(k) for k in ('usdkrw','gold','wti','ndxfut','ust10y','ust2y')), '_updated=%s' % d.get('_updated'))"
+            echo
+          }
+          sample 1; sleep 35; sample 2; sleep 35; sample 3
+
+      - name: 폴링 marketindex 실시간 후보 (지연 없는 대안 탐색)
+        run: |
+          for u in "https://polling.finance.naver.com/api/realtime/marketindex/exchange/FX_USDKRW" \
+                   "https://polling.finance.naver.com/api/realtime/marketindex/bond/US10YT%3DRR" \
+                   "https://polling.finance.naver.com/api/realtime/marketindex/metals/GCcv1" \
+                   "https://polling.finance.naver.com/api/realtime/marketindex/energy/CLcv1" \
+                   "https://polling.finance.naver.com/api/realtime/worldstock/futures/GCcv1" \
+                   "https://polling.finance.naver.com/api/realtime/worldstock/futures/CLcv1"; do
+            echo "== $u"
+            curl -s -H "User-Agent: Mozilla/5.0" -H "Referer: https://m.stock.naver.com/" "$u" | head -c 400; echo
           done
-          curl -sL "$B/plan" > /tmp/p.html
-          bad=0
-          echo "== 제거 확인"
-          for m in "단타" 'data-v="day"' 'id="seg-itv"' 'id="fl-itv"' "DAY_RANGE" "MODE==='day'" "'15m'"; do
-            if grep -qF "$m" /tmp/s.html; then echo "  ! 아직 남아있음: $m"; bad=1; else echo "  제거됨: $m"; fi
-          done
-          echo "== 유지 확인"
-          for m in 'data-v="swing"' 'data-v="long"' 'id="seg-sitv"' 'data-v="120m"' "SW_RANGE='3mo'" "agg120" "BT_H={swing:30,long:20}"; do
-            if grep -qF "$m" /tmp/s.html; then echo "  있음: $m"; else echo "  ! 없음: $m"; bad=1; fi
-          done
-          echo "== 전략 버튼이 2개인지"
-          python3 - /tmp/s.html <<'PY'
-          import re, sys
-          t = open(sys.argv[1], encoding='utf-8').read()
-          seg = t.split('id="seg-mode"')[1].split('</div>')[0]
-          vs = re.findall(r'data-v="([^"]+)"', seg)
-          print('  seg-mode:', vs)
-          sys.exit(0 if vs == ['swing', 'long'] else 1)
-          PY
-          echo "== 플래너 BT 블록이 시그널과 바이트 동일한지"
-          python3 - /tmp/s.html /tmp/p.html <<'PY'
-          import sys
-          def grab(p, n):
-              t = open(p, encoding='utf-8').read()
-              return t.split('/*%s-BEGIN*/' % n)[1].split('/*%s-END*/' % n)[0]
-          for n in ('IND', 'BT', 'RES'):
-              a, b = grab(sys.argv[1], n), grab(sys.argv[2], n)
-              print('  %s: %d / %d — %s' % (n, len(a), len(b), '동일' if a == b else '불일치 !'))
-              if a != b: sys.exit(1)
-          PY
-          if [ "$bad" = "0" ]; then echo "PROBE-OK"; else echo "PROBE-FAIL"; exit 1; fi
