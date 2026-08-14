@@ -367,10 +367,6 @@
   .srep-tag{flex:none;align-self:flex-start;font-size:0.625rem;font-weight:800;color:var(--accent2);border:1px solid var(--border);border-radius:5px;padding:1px 6px;background:var(--panel2);white-space:nowrap;max-width:88px;overflow:hidden;text-overflow:ellipsis}
   .srep-pdf{font-size:0.5625rem;font-weight:800;color:var(--up);border:1px solid var(--up);border-radius:3px;padding:0 3px;margin-left:5px}
   .srep-note{font-size:0.6562rem;color:var(--muted2);margin-top:10px;line-height:1.55;border-top:1px solid var(--border);padding-top:8px}
-  /* 관심종목 저장/불러오기 */
-  .wl-io{cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--muted);border-radius:7px;font-size:0.6562rem;font-weight:700;padding:3px 8px;font-family:inherit}
-  .wl-io#wl-export{margin-left:auto}
-  .wl-io:hover{color:var(--accent);border-color:var(--accent)}
   /* 관심종목 인터랙티브 주가차트(Lightweight Charts) */
   .tv-chart{height:440px;margin:0 14px 4px;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--panel);display:flex;flex-direction:column}
   .px-bar{display:flex;gap:4px;align-items:center;padding:6px 8px;border-bottom:1px solid var(--border);flex-wrap:wrap}
@@ -572,45 +568,6 @@
     .card.fill{flex:1 1 0;min-height:0;display:flex;flex-direction:column}
     .card.fill > .scroll{flex:1;min-height:0;max-height:none}
   }
-  /* ===== 오늘의 메모 (최상단) ===== */
-  .memo-card{margin:16px 20px 0}
-  .memo-card > .head{align-items:center}
-  #memo-status:empty{display:none}
-  .sync-chip{margin-left:8px;cursor:pointer;font-size:0.62rem;font-weight:700;border:1px solid var(--border);background:var(--panel);color:var(--muted);border-radius:999px;padding:3px 9px;font-family:inherit;white-space:nowrap}
-  .sync-chip:hover{border-color:var(--accent);color:var(--accent)}
-  .sync-chip.on{color:#22c55e;border-color:#14532d;background:#06210f}
-  .sync-chip.warn{color:var(--gold);border-color:#4a3a12;background:#1c1607}
-  body.light .sync-chip.on{color:#0a7c43;border-color:#a7e3c4;background:#e7f7ee}
-  .memo-actions{margin-left:auto;display:flex;gap:6px}
-  .memo-btn{cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--text);padding:5px 13px;border-radius:999px;font-size:0.72rem;font-weight:700;font-family:inherit}
-  .memo-btn:hover{border-color:var(--accent);color:var(--accent)}
-  .memo-btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
-  .memo-btn.primary:hover{background:var(--accent2);color:#fff}
-  .memo-body{padding:12px 14px 14px}
-  .memo-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:stretch}
-  @media(max-width:760px){.memo-grid{grid-template-columns:1fr}}
-  .memo-col{min-width:0;display:flex;flex-direction:column}
-  .memo-add{display:flex;gap:6px;margin-bottom:8px}
-  .memo-add input{flex:1;min-width:0;background:#0a1120;border:1px solid var(--border);color:var(--text);padding:7px 9px;border-radius:8px;font-size:0.75rem;font-family:inherit}
-  .memo-add input:focus{outline:none;border-color:var(--accent)}
-  .memo-add button{flex:none;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:0 13px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:inherit}
-  .memo-add button:hover{background:var(--accent2)}
-  .memo-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1px;max-height:220px;overflow:auto}
-  .memo-li,.memo-li-edit{display:flex;align-items:center;gap:8px;padding:5px 3px;border-bottom:1px solid #141d31}
-  .memo-li:last-child,.memo-li-edit:last-child{border-bottom:none}
-  .memo-ck{flex:none;width:15px;height:15px;cursor:pointer;accent-color:var(--accent)}
-  .memo-tx{flex:1;font-size:0.8125rem;line-height:1.45;word-break:break-word}
-  .memo-li.done .memo-tx{text-decoration:line-through;color:var(--muted2)}
-  .memo-editin{flex:1;min-width:0;background:#0a1120;border:1px solid var(--border);color:var(--text);padding:5px 8px;border-radius:6px;font-size:0.8rem;font-family:inherit}
-  .memo-editin:focus{outline:none;border-color:var(--accent)}
-  .memo-del{flex:none;color:var(--muted2);font-size:0.8125rem;cursor:pointer;background:none;border:none;padding:0 3px;line-height:1.4;font-family:inherit}
-  .memo-del:hover{color:var(--up)}
-  .memo-empty{color:var(--muted2);font-size:0.78rem;padding:10px 2px;line-height:1.6}
-  .memo-note{display:block;width:100%;min-height:110px;height:100%;resize:vertical;background:#0a1120;border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 10px;font-size:0.8rem;font-family:inherit;line-height:1.55}
-  .memo-note:focus{outline:none;border-color:var(--accent)}
-  .memo-noteview{font-size:0.82rem;line-height:1.6;color:#cdd8e8;white-space:pre-wrap;word-break:break-word;background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:9px 11px}
-  body.light .memo-noteview{color:var(--text)}
-  body.light .memo-add input,body.light .memo-note,body.light .memo-editin{background:#fff}
   /* ===== 페이지 전환 부드럽게 — Cross-Document View Transitions(지원 브라우저). 미지원 시 일반 이동으로 무해 폴백 ===== */
   @view-transition{ navigation:auto; }
   ::view-transition-old(root){ animation:vt-out .14s ease both; }
@@ -639,35 +596,6 @@
     <button class="btn" id="colorToggle">색상: 한국식</button>
   </div>
 </header>
-
-<!-- 오늘의 메모 (최상단 고정 — 매일 중요 포인트 기록) -->
-<section class="card memo-card" id="memo-card">
-  <div class="head">
-    <h3>📝 오늘의 메모 · 중요 포인트</h3>
-    <span class="tag" id="memo-status"></span>
-    <button class="sync-chip" id="sync-chip" type="button" style="display:none" title="기기 간 동기화 설정 (클릭) — 메모·관심종목을 서버에 저장"></button>
-    <div class="memo-actions">
-      <button class="memo-btn" id="memo-edit-btn" type="button">✏️ 편집</button>
-      <button class="memo-btn primary" id="memo-save-btn" type="button" style="display:none">💾 저장</button>
-      <button class="memo-btn" id="memo-cancel-btn" type="button" style="display:none">취소</button>
-    </div>
-  </div>
-  <div class="memo-body">
-    <div class="memo-view" id="memo-view"></div>
-    <div class="memo-edit" id="memo-edit" style="display:none">
-      <div class="memo-grid">
-        <div class="memo-col">
-          <div class="memo-add">
-            <input id="memo-input" placeholder="체크 항목 추가 — 예: FOMC 결과 확인" autocomplete="off" />
-            <button id="memo-addbtn" type="button">추가</button>
-          </div>
-          <ul class="memo-list" id="memo-list"></ul>
-        </div>
-        <textarea id="memo-note" class="memo-note" placeholder="오늘의 중요 포인트를 적어두세요… (‘저장’을 눌러 보관)"></textarea>
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- 시장 스트립 -->
 <div class="strip-head">
@@ -720,9 +648,7 @@
 
     <div class="card fill">
       <div class="head" style="flex-wrap:wrap;gap:5px 6px"><h3>관심 종목</h3><span class="tag" id="wl-count">0</span>
-        <button class="wl-io" id="wl-export" title="현재 관심종목을 watchlist.json 파일로 저장합니다. 이 파일을 data/ 폴더에 넣고 재배포하면 모든 기기·재배포에서 영구 유지됩니다.">💾 저장</button>
-        <button class="wl-io" id="wl-import" title="저장해 둔 watchlist.json 을 불러옵니다.">📁 불러오기</button>
-        <input type="file" id="wl-file" accept="application/json,.json" style="display:none">
+        <button class="sync-chip" id="sync-chip" type="button" style="display:none;margin-left:auto" title="기기 간 동기화 상태 (클릭)"></button>
       </div>
       <div class="wl-add">
         <input id="wl-search" placeholder="종목 검색 — 삼성전자, 엔비디아, AAPL…" autocomplete="off" />
@@ -1255,7 +1181,7 @@ function renderStrip(){
 }
 
 /* 관심종목 — 저장본(localStorage) 우선, 없으면 data/watchlist.json(편집 가능한 영구 기본값) → DEFAULT_WL */
-/* ===== 클라우드 동기화(선택) — /api/store(Cloudflare KV)에 메모·관심종목 저장 =====
+/* ===== 클라우드 동기화(선택) — /api/store(Cloudflare KV)에 관심종목 저장 =====
    → 새로고침·재배포·브라우저 청소·다른 기기에서도 자동 유지. 서버에 KV 바인딩(변수명 KV)이 있어야 동작.
    미설정(503)이면 localStorage 만으로 동작(기존과 동일, 무중단). 토큰(STORE_TOKEN) 설정 시 일치 필요. */
 const SYNC_TOKEN_LS='alphadesk.synctoken';
@@ -1285,7 +1211,7 @@ function syncChipRender(state){
   const c=document.getElementById('sync-chip'); if(!c) return;
   if(state==='auth'){ c.textContent='🔒 토큰 필요'; c.className='sync-chip warn'; c.style.display=''; return; }
   if(CLOUD_OK===true){ c.textContent='☁️ 동기화 켜짐'; c.className='sync-chip on';
-    c.title='메모·관심종목이 서버(KV)에 저장됩니다 — 다른 기기에서도 같은 목록'; c.style.display=''; }
+    c.title='관심종목이 서버(KV)에 저장됩니다 — 다른 기기에서도 같은 목록'; c.style.display=''; }
   else if(CLOUD_OK===false){ c.textContent='💾 이 기기에만 저장'; c.className='sync-chip warn';
     c.title='서버 저장소(KV)가 연결되지 않아 관심종목이 이 브라우저에만 저장됩니다 — PC와 휴대폰 목록이 달라집니다. 클릭하면 연결 방법을 안내합니다.';
     c.style.display=''; }
@@ -1293,23 +1219,13 @@ function syncChipRender(state){
 }
 function syncConfigure(){
   if(CLOUD_OK===false){          // 서버 저장소가 없으면 토큰을 물어봐야 소용없다 — 연결 방법부터 안내
-    alert('기기 간 동기화가 꺼져 있습니다.\n\n지금은 관심종목·메모가 이 브라우저에만 저장돼서 PC와 휴대폰 목록이 서로 다릅니다.\n\n켜는 방법 (한 번만 하면 됩니다)\n1. Cloudflare 대시보드 → Storage & Databases → KV → 네임스페이스 만들기\n2. Pages 프로젝트(sunny-invest-dashboard) → Settings → Bindings(Functions)\n3. KV namespace binding 추가 — Variable name 을 정확히  KV  로 입력하고 1번 네임스페이스 선택\n4. 저장 후 재배포하면 이 칩이 «☁️ 동기화 켜짐» 으로 바뀝니다.\n\n※ 공개 URL이므로 남이 못 읽게 하려면 환경변수 STORE_TOKEN 도 설정하고, 기기마다 이 창에서 같은 값을 입력하세요.');
+    alert('기기 간 동기화가 꺼져 있습니다.\n\n지금은 관심종목이 이 브라우저에만 저장돼서 PC와 휴대폰 목록이 서로 다릅니다.\n\n켜는 방법 (한 번만 하면 됩니다)\n1. Cloudflare 대시보드 → Storage & Databases → KV → 네임스페이스 만들기\n2. Pages 프로젝트(sunny-invest-dashboard) → Settings → Bindings(Functions)\n3. KV namespace binding 추가 — Variable name 을 정확히  KV  로 입력하고 1번 네임스페이스 선택\n4. 저장 후 재배포하면 이 칩이 «☁️ 동기화 켜짐» 으로 바뀝니다.\n\n※ 공개 URL이므로 남이 못 읽게 하려면 환경변수 STORE_TOKEN 도 설정하고, 기기마다 이 창에서 같은 값을 입력하세요.');
     return;
   }
   const t=prompt('기기 간 동기화 토큰\n• 서버(Cloudflare)에 STORE_TOKEN 을 설정했다면 같은 값을 입력하세요.\n• 토큰을 안 썼다면 비워두세요(공개 저장).', syncToken());
   if(t===null) return;
   try{ localStorage.setItem(SYNC_TOKEN_LS, t.trim()); }catch(e){}
   cloudInit();
-}
-async function memoCloudLoad(){
-  const v=await cloudGet('memo');
-  if(v && typeof v==='object'){
-    MEMO={items:Array.isArray(v.items)?v.items.map(it=>({text:String(it&&it.text||''),done:!!(it&&it.done)})):[], note:typeof v.note==='string'?v.note:''};
-    try{ localStorage.setItem(MEMO_LS, JSON.stringify(MEMO)); }catch(e){}
-    if(!memoEditing) memoSetMode(false);
-    return true;
-  }
-  return false;
 }
 async function watchCloudLoad(){
   const v=await cloudGet('watchlist');
@@ -1327,10 +1243,8 @@ async function watchCloudLoad(){
   return false;
 }
 async function cloudInit(){
-  const hadMemo=await memoCloudLoad();
   const hadWatch=await watchCloudLoad();
   if(CLOUD_OK===true){                    // KV 동작 시 서버가 비어 있던 항목은 현재 로컬값으로 시드(첫 동기화)
-    if(!hadMemo && typeof MEMO==='object') cloudPut('memo', MEMO);
     if(!hadWatch) cloudPut('watchlist', WL.map(x=>({sym:x.sym,name:x.name,mk:x.mk})));
   }
 }
@@ -1405,20 +1319,6 @@ async function loadWatchlistBaseline(){
     if(r.ok){ const j=await r.json(); const arr=Array.isArray(j)?j:(j.items||j.watchlist||[]);
       if(Array.isArray(arr)&&arr.length){ WL=arr.filter(x=>x&&x.sym).map(normWL); SEL=WL[0].sym; renderWL(); renderDeep(); loadWatch(); } }
   }catch(e){}
-}
-function exportWL(){
-  const data={_updated:new Date().toISOString().slice(0,19), items:WL.map(x=>({sym:x.sym,name:x.name,mk:x.mk}))};
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,1)],{type:'application/json'}));
-  a.download='watchlist.json'; document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(()=>URL.revokeObjectURL(a.href),1500);
-}
-function importWLFile(file){
-  const rd=new FileReader();
-  rd.onload=()=>{ try{ const j=JSON.parse(rd.result); const arr=Array.isArray(j)?j:(j.items||j.watchlist||[]);
-    if(Array.isArray(arr)&&arr.length){ setWL(arr); } else alert('비어 있거나 형식이 올바르지 않습니다.'); }
-    catch(e){ alert('불러오기 실패: 올바른 watchlist.json 파일이 아닙니다.'); } };
-  rd.readAsText(file);
 }
 /* 다른 탭(매매 시그널·분할 플래너)에서 관심종목이 바뀌면 즉시 반영 — 읽기만 하고 다시 쓰지 않는다(루프 방지) */
 let wlsEvtTimer=null;
@@ -2233,7 +2133,7 @@ function cmpFmt(v){ if(v==null||isNaN(v)) return '–'; return v>=100?Math.round
 function cmpTableHtml(d){
   const ps=Array.isArray(d.peers)?d.peers.filter(p=>p&&(p.name||p.sym)):[];
   if(ps.length<2) return '';   // 본종목 + 비교대상 1개 이상일 때만
-  const rows=ps.map(p=>{ const nm=memoEsc(p.name||p.sym);
+  const rows=ps.map(p=>{ const nm=htmlEsc(p.name||p.sym);
     return `<tr class="${p.self?'self':''}"><td class="l">${p.self?'<b>'+nm+'</b>':nm}</td><td class="mono">${cmpFmt(p.per)}</td><td class="mono">${cmpFmt(p.pbr)}</td><td class="mono">${cmpFmt(p.psr)}</td></tr>`;
   }).join('');
   return `<div class="cmp-wrap"><div class="cmp-title">동종 비교 · PER · PBR · PSR</div>
@@ -2719,10 +2619,14 @@ async function loadWatch(){
     if(fixed){ if(!WL.some(x=>x.sym===SEL)) SEL=WL.length?WL[0].sym:null; saveWL(); }
     renderWL(); renderDeep(); };
   if(syms.length){
-    try{   // 1) 로컬 서버 실시간 API — 임의 종목도 실시간
-      const r=await fetch('/api/quote?syms='+encodeURIComponent(syms.join(',')),{cache:'no-store'});
-      if(r.ok){ apply(await r.json()); return; }
-    }catch(e){}
+    // 1) 서버 실시간 API — 요청당 25종목이 상한이라 나눠 보내고 합친다.
+    //    한 번에 다 보내면 상한을 넘은 뒤쪽 종목이 통째로 «…» 로 남는다.
+    const parts=[];
+    for(let i=0;i<syms.length;i+=25) parts.push(syms.slice(i,i+25));
+    const rs=await Promise.all(parts.map(p=>
+      fetch('/api/quote?syms='+encodeURIComponent(p.join(',')),{cache:'no-store'})
+        .then(r=>r.ok?r.json():null).catch(()=>null)));
+    if(rs.some(Boolean)){ apply(Object.assign({},...rs.filter(Boolean))); return; }
   }
   try{     // 2) 폴백: 미리 수집된 quotes.json (정적 배포 환경)
     const r=await fetch('data/quotes.json?t='+Date.now(),{cache:'no-store'});
@@ -3170,10 +3074,6 @@ document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
   document.querySelectorAll('.tabpane').forEach(x=>x.classList.remove('on'));
   t.classList.add('on'); document.getElementById('pane-'+t.dataset.t).classList.add('on');
 }));
-/* 관심종목 저장(내보내기)/불러오기 */
-document.getElementById('wl-export').addEventListener('click',exportWL);
-document.getElementById('wl-import').addEventListener('click',()=>document.getElementById('wl-file').click());
-document.getElementById('wl-file').addEventListener('change',e=>{ if(e.target.files&&e.target.files[0]) importWLFile(e.target.files[0]); e.target.value=''; });
 /* 종목 검색 → /api/search (네이버 한글 + yfinance, 로컬 서버에서 동작) */
 let wlSearchTimer=null;
 const wlSearchInput=document.getElementById('wl-search');
@@ -3607,64 +3507,9 @@ function setupHeatmapLazy(){
     setTimeout(start,5000);   // 안전망 — 1회 렌더만. 폴링 여부(hmVisible)는 IO 의 실제 교차 상태만 신뢰
   } else { hmVisible=true; setTimeout(start,1500); }
 }
-/* 오늘의 메모 · 중요 포인트 — 보기/편집 모드(편집·저장·취소 버튼). 브라우저(localStorage)에 저장, 재방문 유지(이 브라우저 한정). */
-const MEMO_LS='alphadesk.memo';
-let MEMO={items:[], note:''};
-let memoEditing=false;
-function memoEsc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function memoLoad(){ try{ const o=JSON.parse(localStorage.getItem(MEMO_LS)||'null'); if(o&&typeof o==='object'){ MEMO={items:Array.isArray(o.items)?o.items.map(it=>({text:String(it&&it.text||''),done:!!(it&&it.done)})):[], note:typeof o.note==='string'?o.note:''}; } else MEMO={items:[],note:''}; }catch(e){ MEMO={items:[],note:''}; } }
-function memoSave(){ try{ localStorage.setItem(MEMO_LS, JSON.stringify(MEMO)); }catch(e){}
-  cloudPut('memo', MEMO);   // 서버(KV) 동기화
-  const s=document.getElementById('memo-status'); if(s){ s.textContent='저장됨 ✓'; clearTimeout(memoSave._t); memoSave._t=setTimeout(()=>{ s.textContent=''; },1600); } }
-// 보기 모드 렌더(읽기 전용 — 체크박스만 빠른 완료 토글)
-function memoRenderView(){
-  const v=document.getElementById('memo-view'); if(!v) return;
-  const hasItems=MEMO.items.length, hasNote=MEMO.note&&MEMO.note.trim();
-  if(!hasItems && !hasNote){ v.innerHTML='<div class="memo-empty">‘✏️ 편집’을 눌러 오늘의 중요 포인트·체크 항목을 적어보세요. (이 브라우저에 보관)</div>'; return; }
-  const parts=[];
-  if(hasItems) parts.push('<ul class="memo-list">'+MEMO.items.map((it,i)=>`<li class="memo-li${it.done?' done':''}" data-i="${i}"><input type="checkbox" class="memo-ck" ${it.done?'checked':''}><span class="memo-tx">${memoEsc(it.text)}</span></li>`).join('')+'</ul>');
-  if(hasNote) parts.push(`<div class="memo-noteview">${memoEsc(MEMO.note)}</div>`);
-  v.innerHTML = parts.length===2 ? '<div class="memo-grid">'+parts.map(p=>'<div class="memo-col">'+p+'</div>').join('')+'</div>' : parts[0];
-}
-// 편집 모드 렌더(항목 텍스트 직접 수정 + 추가/삭제/체크 + 메모)
-function memoRenderEdit(){
-  const list=document.getElementById('memo-list'); if(!list) return;
-  list.innerHTML = MEMO.items.map((it,i)=>`<li class="memo-li-edit" data-i="${i}"><input type="checkbox" class="memo-ck" ${it.done?'checked':''}><input type="text" class="memo-editin" maxlength="200" value="${memoEsc(it.text)}"><button class="memo-del" type="button" title="삭제" aria-label="삭제">✕</button></li>`).join('');
-  const note=document.getElementById('memo-note'); if(note) note.value=MEMO.note;
-}
-// 편집 폼의 현재 입력값을 MEMO로 동기화(추가/삭제 재렌더·저장 직전에 호출 → 미저장 입력 보존)
-function memoSyncFromDOM(){
-  const items=[];
-  document.querySelectorAll('#memo-list .memo-li-edit').forEach(li=>{ items.push({text:li.querySelector('.memo-editin').value, done:li.querySelector('.memo-ck').checked}); });
-  MEMO.items=items;
-  const note=document.getElementById('memo-note'); if(note) MEMO.note=note.value;
-}
-function memoSetMode(editing){
-  memoEditing=editing;
-  const show=(id,on)=>{ const e=document.getElementById(id); if(e) e.style.display=on?'':'none'; };
-  show('memo-view',!editing); show('memo-edit',editing);
-  show('memo-edit-btn',!editing); show('memo-save-btn',editing); show('memo-cancel-btn',editing);
-  if(editing) memoRenderEdit(); else memoRenderView();
-}
-function memoInit(){
-  if(!document.getElementById('memo-card')) return;
-  memoLoad(); memoSetMode(false);
-  document.getElementById('memo-edit-btn').onclick=()=>memoSetMode(true);
-  document.getElementById('memo-cancel-btn').onclick=()=>{ memoLoad(); memoSetMode(false); };   // 변경 취소 → 저장본으로 되돌림
-  document.getElementById('memo-save-btn').onclick=()=>{
-    memoSyncFromDOM();
-    MEMO.items=MEMO.items.filter(it=>(it.text||'').trim()).map(it=>({text:it.text.trim().slice(0,200), done:!!it.done}));   // 빈 항목 정리
-    memoSave(); memoSetMode(false);
-  };
-  const input=document.getElementById('memo-input');
-  const doAdd=()=>{ const t=(input.value||'').trim(); if(!t) return; memoSyncFromDOM(); MEMO.items.push({text:t.slice(0,200), done:false}); input.value=''; memoRenderEdit(); input.focus(); };
-  document.getElementById('memo-addbtn').onclick=doAdd;
-  input.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); doAdd(); } });
-  document.getElementById('memo-list').addEventListener('click',e=>{ if(e.target.classList.contains('memo-del')){ const li=e.target.closest('.memo-li-edit'); if(!li) return; memoSyncFromDOM(); MEMO.items.splice(+li.dataset.i,1); memoRenderEdit(); } });
-  // 보기 모드 체크박스: 빠른 완료 체크(즉시 저장)
-  document.getElementById('memo-view').addEventListener('click',e=>{ if(e.target.classList.contains('memo-ck')){ const li=e.target.closest('.memo-li'); if(!li) return; const i=+li.dataset.i; if(MEMO.items[i]){ MEMO.items[i].done=e.target.checked; memoSave(); memoRenderView(); } } });
-  const sc=document.getElementById('sync-chip'); if(sc) sc.onclick=syncConfigure;   // 동기화 설정(토큰)
-}
+/* HTML 이스케이프 — 표·목록 렌더에서 공용 */
+function htmlEsc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+{ const el=document.getElementById('sync-chip'); if(el) el.onclick=syncConfigure; }   // 동기화 상태 칩
 
 /* 초기화 — ① 동기 렌더(샘플/캐시) 즉시 ② 임계 데이터 먼저 ③ 무거운·비임계는 유휴/뷰포트 진입 시 */
 const idleLoad=(fn,n=1)=>{ if(window.requestIdleCallback) requestIdleCallback(fn,{timeout:600*n+800}); else setTimeout(fn,250*n); };
@@ -3672,7 +3517,7 @@ seedDeepFromCache();                                                            
 if(!seedNewsFromCache()) SAMPLE_NEWS=[];                                        // 보관본 즉시 시드, 없으면 가짜 예시 대신 '불러오는 중'
 seedMarketFromCache();                                                          // 데모값 대신 직전 시세 즉시 시드(과거값 깜빡임 방지)
 seedCalFromCache();                                                             // 빈 일정 대신 직전 일정 즉시 시드
-renderStrip(); renderWL(); renderSched(); renderDeep(); renderThemes(); renderNews(); bindNewsTabs(); bindThemeTabs(); renderFooter(); tick(); memoInit(); renderNps();
+renderStrip(); renderWL(); renderSched(); renderDeep(); renderThemes(); renderNews(); bindNewsTabs(); bindThemeTabs(); renderFooter(); tick(); renderNps();
 renderHmDataset();
 loadWatchlistBaseline();                                                       // 저장본 없으면 data/watchlist.json 시드
 cloudInit();                                                                   // 서버(KV) 동기화 — 있으면 서버값 우선, 없으면 무중단 폴백
