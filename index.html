@@ -961,13 +961,16 @@ const ENGINE = [
 /* ========================= 렌더링 ========================= */
 // 라인 스파크라인(폴백) — baseline(전일종가) 가로 점선 포함
 function spark(data, up, baseline){
-  const w=96,h=30; if(!data||!data.length) return `<svg width="${w}" height="${h}"></svg>`;
+  const w=96,h=30;
+  // 값이 하나뿐이거나 숫자가 아닌 게 섞이면 좌표가 NaN 이 된다 — 그리지 않는다
+  if(!data||data.length<2||data.some(v=>!isFinite(v))) return `<svg width="${w}" height="${h}"></svg>`;
+  const bl=(baseline!=null&&isFinite(baseline))?baseline:null;
   let max=Math.max(...data),min=Math.min(...data);
-  if(baseline!=null){ if(baseline>max)max=baseline; if(baseline<min)min=baseline; }
+  if(bl!=null){ if(bl>max)max=bl; if(bl<min)min=bl; }
   const rng=(max-min)||1, y=v=>h-((v-min)/rng)*h;
   const pts=data.map((v,i)=>`${((i/(data.length-1))*w).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
   const c = up>0?'var(--up)':(up<0?'var(--down)':'var(--flat)');
-  const base = baseline!=null?`<line x1="0" y1="${y(baseline).toFixed(1)}" x2="${w}" y2="${y(baseline).toFixed(1)}" stroke="var(--gold)" stroke-width="0.9" stroke-dasharray="2.2 2" opacity="0.85"/>`:'';
+  const base = bl!=null?`<line x1="0" y1="${y(bl).toFixed(1)}" x2="${w}" y2="${y(bl).toFixed(1)}" stroke="var(--gold)" stroke-width="0.9" stroke-dasharray="2.2 2" opacity="0.85"/>`:'';
   return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">${base}<polyline points="${pts}" fill="none" stroke="${c}" stroke-width="1.5"/></svg>`;
 }
 // 미니 캔들스틱 + baseline(전일종가/장 시작) 가로 점선
@@ -975,7 +978,9 @@ function miniCandle(ohlc, baseline){
   const W=96,H=30,n=ohlc.length; if(!n) return `<svg width="${W}" height="${H}"></svg>`;
   let lo=Infinity,hi=-Infinity;
   for(const b of ohlc){ if(b.l<lo)lo=b.l; if(b.h>hi)hi=b.h; }
-  if(baseline!=null){ if(baseline<lo)lo=baseline; if(baseline>hi)hi=baseline; }
+  if(!isFinite(lo)||!isFinite(hi)) return `<svg width="${W}" height="${H}"></svg>`;   // 고가·저가 없는 봉 — NaN 좌표 방지
+  const bl=(baseline!=null&&isFinite(baseline))?baseline:null;                        // 전일종가가 NaN 인 경우 점선 생략
+  if(bl!=null){ if(bl<lo)lo=bl; if(bl>hi)hi=bl; }
   const rng=(hi-lo)||1, y=v=>H-((v-lo)/rng)*H, cw=W/n, bw=Math.max(1.1, cw*0.6);
   let s='';
   for(let i=0;i<n;i++){ const b=ohlc[i], cx=i*cw+cw/2, c=(b.c>=b.o)?'var(--up)':'var(--down)';
@@ -983,7 +988,7 @@ function miniCandle(ohlc, baseline){
     s+=`<line x1="${cx.toFixed(1)}" y1="${y(b.h).toFixed(1)}" x2="${cx.toFixed(1)}" y2="${y(b.l).toFixed(1)}" stroke="${c}" stroke-width="0.7"/>`+
        `<rect x="${(cx-bw/2).toFixed(1)}" y="${top.toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" fill="${c}"/>`;
   }
-  const base = baseline!=null?`<line x1="0" y1="${y(baseline).toFixed(1)}" x2="${W}" y2="${y(baseline).toFixed(1)}" stroke="var(--gold)" stroke-width="0.9" stroke-dasharray="2.2 2" opacity="0.9"/>`:'';
+  const base = bl!=null?`<line x1="0" y1="${y(bl).toFixed(1)}" x2="${W}" y2="${y(bl).toFixed(1)}" stroke="var(--gold)" stroke-width="0.9" stroke-dasharray="2.2 2" opacity="0.9"/>`:'';
   return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${base}${s}</svg>`;
 }
 // 종가 배열 → 근사 OHLC(실데이터 캔들 없을 때의 프리뷰; 바디=종가 변화)
@@ -3073,8 +3078,10 @@ function setupHeatmapLazy(){
     setTimeout(start,5000);   // 안전망 — 1회 렌더만. 폴링 여부(hmVisible)는 IO 의 실제 교차 상태만 신뢰
   } else { hmVisible=true; setTimeout(start,1500); }
 }
-/* HTML 이스케이프 — 표·목록 렌더에서 공용 */
-function htmlEsc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+/* HTML 이스케이프 — 표·목록 렌더에서 공용.
+   히트맵 타일·종목 공시·증권사 리포트는 코드·시총 같은 숫자도 넘기므로 String() 으로 강제한다. */
+function calEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function htmlEsc(s){ return calEsc(s); }
 { const el=document.getElementById('sync-chip'); if(el) el.onclick=syncConfigure; }   // 동기화 상태 칩
 
 /* 초기화 — ① 동기 렌더(샘플/캐시) 즉시 ② 임계 데이터 먼저 ③ 무거운·비임계는 유휴/뷰포트 진입 시 */
