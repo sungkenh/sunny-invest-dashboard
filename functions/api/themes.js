@@ -288,6 +288,54 @@ function bullets(m) {
 
 const CAVEAT = '가격(추세) 기반 상대 판단 — 밸류에이션·실적·수급 미반영. 매수/매도 신호가 아닌 비중 참고지표입니다.';
 
+/*STOCK-BEGIN*/
+// 종목 단위 지표 — 섹터 안에서 «어디에 집중할지»를 근거 있게 고르기 위한 값들.
+// 섹터 컴포지트와 같은 벤치 거래일 축을 쓰므로 섹터 수치와 직접 비교할 수 있다.
+// a = alignToDays 결과({arr,lastRealIdx}), bench = {c:[...]}(벤치 종가), L = 벤치 거래일 수.
+function stockMetrics(a, bench, L) {
+  if (!a || !bench || !bench.c || bench.c.length < 60) return null;
+  const arr = a.arr;
+  // 결측 없는 최근 구간만 사용 — 중간 갭이 있으면 그 뒤부터
+  let start = 0;
+  for (let i = L - 1; i >= 0; i--) { if (arr[i] == null) { start = i + 1; break; } }
+  const n = L - start;
+  if (n < 60) return null;
+  const c = arr.slice(start);
+  if (staleSeries(c)) return null;
+  const b = bench.c.slice(bench.c.length - n);
+  const i = n - 1;
+  const at = (w) => c[i] / c[i - Math.min(w, n - 1)] - 1;
+  const bAt = (w) => b[i] / b[i - Math.min(w, n - 1)] - 1;
+  const r63 = at(63), r126 = at(126);
+  const rs126 = r126 - bAt(126);
+  const ma50 = mean(c.slice(n - Math.min(50, n)));
+  const ma200 = n >= 150 ? mean(c.slice(n - Math.min(200, n))) : null;
+  const hi252 = Math.max.apply(null, c.slice(n - Math.min(252, n)));
+  return {
+    r63: round(r63, 4), r126: round(r126, 4), rs126: round(rs126, 4),
+    aboveMa50: c[i] > ma50, aboveMa200: ma200 != null ? c[i] > ma200 : null,
+    ext50: round(c[i] / ma50 - 1, 4),
+    dd: round(c[i] / hi252 - 1, 4),           // 52주 고점 대비
+    rsi14: round(wilderRSI(c, 14), 1),
+    vol: round(stdev(dailyRets(c).slice(-60)) * Math.sqrt(252), 3),
+    n,
+  };
+}
+
+// 섹터 안에서 종목을 «집중 후보» 순으로 세운다.
+// 상대강도(지수 대비 6개월) 40% + 중기 모멘텀(3개월) 25% + 추세구조(50·200일선) 25% + 낙폭 여유 10%.
+// 과열(RSI>75, 50일선 이격 15%↑)은 감점 — 급등 직후 추격을 상위로 올리지 않기 위함.
+function stockScore(s) {
+  if (!s) return null;
+  const sub = clamp(s.rs126 / 0.25, -1, 1) * 40
+    + clamp(s.r63 / 0.20, -1, 1) * 25
+    + ((s.aboveMa50 ? 12.5 : -12.5) + (s.aboveMa200 == null ? 0 : (s.aboveMa200 ? 12.5 : -12.5)))
+    + clamp((s.dd + 0.30) / 0.30, -1, 1) * 10;
+  const pen = clamp((s.rsi14 - 75) / 15, 0, 1) * 12 + clamp((s.ext50 - 0.15) / 0.15, 0, 1) * 10;
+  return Math.round(clamp(sub - pen, -100, 100));
+}
+/*STOCK-END*/
+
 /* ── 동시 요청 제한 풀 ── */
 async function runPool(items, limit, fn) {
   const out = new Array(items.length); let idx = 0;
@@ -325,7 +373,9 @@ async function build(mkt) {
       const fresh = a && a.lastRealIdx >= 1 && (L - 1 - a.lastRealIdx) <= MAX_LAG;
       const p = (fresh && a.arr[L - 1] != null && a.arr[L - 2] != null)
         ? round((a.arr[L - 1] / a.arr[L - 2] - 1) * 100, 2) : null;
-      return { name, pct: p };
+      // 종목 단위 지표·점수 — 섹터 가이드 페이지의 «집중 종목» 근거 (대시보드는 name·pct 만 쓴다)
+      const sm = fresh ? stockMetrics(a, benchSeries, L) : null;
+      return { name, sym: s, pct: p, m: sm, score: stockScore(sm) };
     });
     let lead = null; for (const p of picks) if (typeof p.pct === 'number' && (!lead || p.pct > lead.pct)) lead = p;
     return {
