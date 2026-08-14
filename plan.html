@@ -527,7 +527,7 @@ function frgnStats(f){
 
 /*BT-BEGIN*/
 const PERF={};                             // `${code}|${modeKey()}|${LOOK}` → {ts,H,std,fast}
-const BT_H={day:20,swing:30,long:20};
+const BT_H={swing:30,long:20};
 const BT_BUY=['buy2','buy1','ebuy'], BT_SELL=['sell2','sell1','esell'];
 function backtestOne(closes,his,los,look,cfg,H){
   const P=judgePrep(closes,his,los,cfg), L=closes.length;
