@@ -4,7 +4,9 @@
 // 미국: 야후 5분봉 includePrePost 마지막 체결(프리·애프터 포함).
 // 응답 {price, pct, ext?:'pre'|'post', rp?, src} — rp 는 직전 정규장 종가(시간외일 때 판정 기준가).
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36';
-const KR_RE = /^(\d{6})\.(KS|KQ)$/;
+// 접미사 없는 6자리 코드도 받는다 — 관심종목이 예전 형식(코드만)으로 저장돼 있어도 시세가 나와야 한다.
+// 이때 응답의 ex(KS|KQ)로 클라이언트가 저장된 심볼을 스스로 고칠 수 있다.
+const KR_RE = /^(\d{6})(?:\.(KS|KQ))?$/;
 const r2 = (x) => Math.round(x * 100) / 100;
 
 /*KR-BEGIN*/
@@ -36,6 +38,9 @@ function krPick(row, win) {
   if (!row) return null;
   const close = krNum(row.closePriceRaw || row.closePrice);
   if (!(close > 0)) return null;
+  // 코스피/코스닥 구분 — 코드만 저장된 관심종목의 심볼 복구용
+  const exc = String(((row.stockExchangeType || {}).code) || '').toUpperCase();
+  const ex = (exc === 'KS' || exc === 'KQ') ? exc : null;
   const o = row.overMarketPriceInfo;
   const over = o ? krNum(o.overPrice) : NaN;
   if (win && over > 0) {
@@ -43,14 +48,18 @@ function krPick(row, win) {
     // 세션 표기가 창과 어긋나면(예: 애프터 창인데 아침 프리마켓 값이 남아 있음) 시간외로 쓰지 않는다.
     const kind = /PRE/i.test(ses) ? 'pre' : (ses ? 'post' : win);
     if (kind === win) {
-      return { price: r2(over), pct: r2((over - close) / close * 100), ext: kind, rp: r2(close) };
+      const q = { price: r2(over), pct: r2((over - close) / close * 100), ext: kind, rp: r2(close) };
+      if (ex) q.ex = ex;
+      return q;
     }
   }
   // 정규장 체결이 있을 때만 네이버 값을 쓴다 — 장 시작 전(PREOPEN)에는 등락률이 0 으로 초기화돼
   // 전일 등락이 사라진다. 그 구간은 야후(전일 종가·전일 등락)로 넘긴다.
   const op = String(row.openPriceRaw != null && row.openPriceRaw !== '' ? row.openPriceRaw : row.openPrice || '').trim();
   if (op && op !== '-' && krNum(op) > 0) {
-    return { price: r2(close), pct: r2(Math.abs(krNum(row.fluctuationsRatio)) * krDir(row)) };
+    const q = { price: r2(close), pct: r2(Math.abs(krNum(row.fluctuationsRatio)) * krDir(row)) };
+    if (ex) q.ex = ex;
+    return q;
   }
   return null;
 }
