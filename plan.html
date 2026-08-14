@@ -736,10 +736,14 @@ const savePrio=()=>PLN('prio',JSON.stringify(PRIO));
    시그널 항목의 메타(rc·lev·cap·세부 mkt)는 보존하고, 새로 넘어온 항목은 kospi/kosdaq/us 로 변환한다. */
 const WLS_US=['sp500','nasdaq','russell2000','usetf','us'];
 const wlsKeyOfSig=w=>/^\d{6}$/.test(String(w.code))?String(w.code):('US|'+String(w.code).toUpperCase());
-const wlsKeyOfSym=sym=>{ const m=String(sym).match(/^(\d{6})\.(KS|KQ)$/); return m?m[1]:('US|'+String(sym).toUpperCase()); };
+// ⚠ 접미사 없는 6자리 코드(옛 저장 형식)도 국내로 본다 — 미국 티커로 오인하면 저장할 때마다
+//   심볼이 맨코드로 되돌아가 시세·차트·지표가 모두 빗나간다(코스피/코스닥은 /api/quote 의 ex 로 교정).
+const wlsKeyOfSym=sym=>{ const m=String(sym).match(/^(\d{6})(?:\.(KS|KQ))?$/); return m?m[1]:('US|'+String(sym).toUpperCase()); };
 const wlsSymOfSig=w=>WLS_US.indexOf(w.mkt)>=0?String(w.code):(String(w.code)+(w.mkt==='kosdaq'?'.KQ':'.KS'));
-const wlsSigOfSym=(sym,name)=>{ const m=String(sym).match(/^(\d{6})\.(KS|KQ)$/);
+const wlsSigOfSym=(sym,name)=>{ const m=String(sym).match(/^(\d{6})(?:\.(KS|KQ))?$/);
   return m?{code:m[1],mkt:m[2]==='KQ'?'kosdaq':'kospi',name:name||m[1]}:{code:String(sym),mkt:'us',name:name||String(sym)}; };
+const wlsIsUs=m=>WLS_US.indexOf(m)>=0;
+const WLS_KR_PLAIN=['kospi','kosdaq'];        // 국내 개별주 — 이 둘 사이의 어긋남만 심볼 기준으로 교정(kretf 등은 보존)
 function wlsRead(k){ try{ const a=JSON.parse(localStorage.getItem(k)||'null'); return Array.isArray(a)?a:null; }catch(e){ return null; } }
 /* 시그널 형식 배열을 정본으로 두 키를 함께 기록(식별키 기준 중복 제거). 값이 바뀐 키만 실제로 쓴다. */
 function wlsWriteBoth(sigArr){
@@ -769,7 +773,14 @@ function wlsWriteFromWL(wlArr){
   const byKey={};
   for(const w of (wlsRead('alphadesk.sig.watchlist')||[])) if(w&&w.code&&w.mkt) byKey[wlsKeyOfSig(w)]=w;
   const sig=[];
-  for(const x of (wlArr||[])){ if(!x||!x.sym) continue; const k=wlsKeyOfSym(x.sym); sig.push(byKey[k]||wlsSigOfSym(x.sym,x.name)); }
+  for(const x of (wlArr||[])){ if(!x||!x.sym) continue;
+    const k=wlsKeyOfSym(x.sym), kept=byKey[k], derived=wlsSigOfSym(x.sym,x.name);
+    // 시그널 쪽 메타(rc·lev·cap·kretf 같은 세부 시장)는 보존하되, 시장 구분이 심볼과 어긋나면
+    // 심볼 기준이 맞다 — 심볼은 /api/quote 가 알려준 실제 거래소로 교정된 값이기 때문.
+    // 맨코드가 us 로 잘못 기록됐던 이력과 코스피↔코스닥 이전을 여기서 바로잡는다(ETF 표식 kretf 는 유지).
+    const stale=kept && (wlsIsUs(kept.mkt)!==wlsIsUs(derived.mkt)
+      || (WLS_KR_PLAIN.indexOf(kept.mkt)>=0 && kept.mkt!==derived.mkt));
+    sig.push(kept ? (stale ? Object.assign({},kept,{mkt:derived.mkt}) : kept) : derived); }
   return wlsWriteBoth(sig);
 }
 /*WLSYNC-END*/

@@ -1284,11 +1284,18 @@ async function cloudPut(key,value){
 function syncChipRender(state){
   const c=document.getElementById('sync-chip'); if(!c) return;
   if(state==='auth'){ c.textContent='🔒 토큰 필요'; c.className='sync-chip warn'; c.style.display=''; return; }
-  if(CLOUD_OK===true){ c.textContent='☁️ 동기화 켜짐'; c.className='sync-chip on'; c.style.display=''; }
-  else if(CLOUD_OK===false){ c.textContent='💾 로컬 저장'; c.className='sync-chip'; c.style.display=''; }
+  if(CLOUD_OK===true){ c.textContent='☁️ 동기화 켜짐'; c.className='sync-chip on';
+    c.title='메모·관심종목이 서버(KV)에 저장됩니다 — 다른 기기에서도 같은 목록'; c.style.display=''; }
+  else if(CLOUD_OK===false){ c.textContent='💾 이 기기에만 저장'; c.className='sync-chip warn';
+    c.title='서버 저장소(KV)가 연결되지 않아 관심종목이 이 브라우저에만 저장됩니다 — PC와 휴대폰 목록이 달라집니다. 클릭하면 연결 방법을 안내합니다.';
+    c.style.display=''; }
   else { c.style.display='none'; }
 }
 function syncConfigure(){
+  if(CLOUD_OK===false){          // 서버 저장소가 없으면 토큰을 물어봐야 소용없다 — 연결 방법부터 안내
+    alert('기기 간 동기화가 꺼져 있습니다.\n\n지금은 관심종목·메모가 이 브라우저에만 저장돼서 PC와 휴대폰 목록이 서로 다릅니다.\n\n켜는 방법 (한 번만 하면 됩니다)\n1. Cloudflare 대시보드 → Storage & Databases → KV → 네임스페이스 만들기\n2. Pages 프로젝트(sunny-invest-dashboard) → Settings → Bindings(Functions)\n3. KV namespace binding 추가 — Variable name 을 정확히  KV  로 입력하고 1번 네임스페이스 선택\n4. 저장 후 재배포하면 이 칩이 «☁️ 동기화 켜짐» 으로 바뀝니다.\n\n※ 공개 URL이므로 남이 못 읽게 하려면 환경변수 STORE_TOKEN 도 설정하고, 기기마다 이 창에서 같은 값을 입력하세요.');
+    return;
+  }
   const t=prompt('기기 간 동기화 토큰\n• 서버(Cloudflare)에 STORE_TOKEN 을 설정했다면 같은 값을 입력하세요.\n• 토큰을 안 썼다면 비워두세요(공개 저장).', syncToken());
   if(t===null) return;
   try{ localStorage.setItem(SYNC_TOKEN_LS, t.trim()); }catch(e){}
@@ -1335,10 +1342,14 @@ async function cloudInit(){
    시그널 항목의 메타(rc·lev·cap·세부 mkt)는 보존하고, 새로 넘어온 항목은 kospi/kosdaq/us 로 변환한다. */
 const WLS_US=['sp500','nasdaq','russell2000','usetf','us'];
 const wlsKeyOfSig=w=>/^\d{6}$/.test(String(w.code))?String(w.code):('US|'+String(w.code).toUpperCase());
-const wlsKeyOfSym=sym=>{ const m=String(sym).match(/^(\d{6})\.(KS|KQ)$/); return m?m[1]:('US|'+String(sym).toUpperCase()); };
+// ⚠ 접미사 없는 6자리 코드(옛 저장 형식)도 국내로 본다 — 미국 티커로 오인하면 저장할 때마다
+//   심볼이 맨코드로 되돌아가 시세·차트·지표가 모두 빗나간다(코스피/코스닥은 /api/quote 의 ex 로 교정).
+const wlsKeyOfSym=sym=>{ const m=String(sym).match(/^(\d{6})(?:\.(KS|KQ))?$/); return m?m[1]:('US|'+String(sym).toUpperCase()); };
 const wlsSymOfSig=w=>WLS_US.indexOf(w.mkt)>=0?String(w.code):(String(w.code)+(w.mkt==='kosdaq'?'.KQ':'.KS'));
-const wlsSigOfSym=(sym,name)=>{ const m=String(sym).match(/^(\d{6})\.(KS|KQ)$/);
+const wlsSigOfSym=(sym,name)=>{ const m=String(sym).match(/^(\d{6})(?:\.(KS|KQ))?$/);
   return m?{code:m[1],mkt:m[2]==='KQ'?'kosdaq':'kospi',name:name||m[1]}:{code:String(sym),mkt:'us',name:name||String(sym)}; };
+const wlsIsUs=m=>WLS_US.indexOf(m)>=0;
+const WLS_KR_PLAIN=['kospi','kosdaq'];        // 국내 개별주 — 이 둘 사이의 어긋남만 심볼 기준으로 교정(kretf 등은 보존)
 function wlsRead(k){ try{ const a=JSON.parse(localStorage.getItem(k)||'null'); return Array.isArray(a)?a:null; }catch(e){ return null; } }
 /* 시그널 형식 배열을 정본으로 두 키를 함께 기록(식별키 기준 중복 제거). 값이 바뀐 키만 실제로 쓴다. */
 function wlsWriteBoth(sigArr){
@@ -1368,7 +1379,14 @@ function wlsWriteFromWL(wlArr){
   const byKey={};
   for(const w of (wlsRead('alphadesk.sig.watchlist')||[])) if(w&&w.code&&w.mkt) byKey[wlsKeyOfSig(w)]=w;
   const sig=[];
-  for(const x of (wlArr||[])){ if(!x||!x.sym) continue; const k=wlsKeyOfSym(x.sym); sig.push(byKey[k]||wlsSigOfSym(x.sym,x.name)); }
+  for(const x of (wlArr||[])){ if(!x||!x.sym) continue;
+    const k=wlsKeyOfSym(x.sym), kept=byKey[k], derived=wlsSigOfSym(x.sym,x.name);
+    // 시그널 쪽 메타(rc·lev·cap·kretf 같은 세부 시장)는 보존하되, 시장 구분이 심볼과 어긋나면
+    // 심볼 기준이 맞다 — 심볼은 /api/quote 가 알려준 실제 거래소로 교정된 값이기 때문.
+    // 맨코드가 us 로 잘못 기록됐던 이력과 코스피↔코스닥 이전을 여기서 바로잡는다(ETF 표식 kretf 는 유지).
+    const stale=kept && (wlsIsUs(kept.mkt)!==wlsIsUs(derived.mkt)
+      || (WLS_KR_PLAIN.indexOf(kept.mkt)>=0 && kept.mkt!==derived.mkt));
+    sig.push(kept ? (stale ? Object.assign({},kept,{mkt:derived.mkt}) : kept) : derived); }
   return wlsWriteBoth(sig);
 }
 /*WLSYNC-END*/
@@ -1377,7 +1395,7 @@ let WL_HAS_STORAGE = !!localStorage.getItem('alphadesk.wl2');
 { const _m=wlsMergeAll(); if(_m){ WL=_m.wl.map(normWL); WL_HAS_STORAGE=true; } }   // 시그널 ⭐관심과 합집합 동기화(첫 진입 마이그레이션 포함)
 let SEL = WL.length?WL[0].sym:null;
 const saveWL = ()=>{ const v=wlsWriteFromWL(WL.map(x=>({sym:x.sym,name:x.name,mk:x.mk}))).wl; cloudPut('watchlist', v); };   // 양쪽 저장 키 + 클라우드(KV) 동기화
-function normWL(x){ return {sym:x.sym, name:x.name||x.sym, mk:x.mk||(/\.(KS|KQ)$/.test(x.sym)?'kr':'us'), px:null, pct:null}; }
+function normWL(x){ return {sym:x.sym, name:x.name||x.sym, mk:x.mk||(/^\d{6}(\.(KS|KQ))?$/.test(x.sym)?'kr':'us'), px:null, pct:null}; }
 function setWL(arr){ WL=arr.filter(x=>x&&x.sym).map(normWL); SEL=WL.length?WL[0].sym:null; saveWL(); renderWL(); renderDeep(); loadWatch(); rsMaybeReload(); }
 /* 저장본이 없을 때만 배포 파일(data/watchlist.json)을 기본값으로 시드 → 모든 기기·재배포에서 동일 */
 async function loadWatchlistBaseline(){
@@ -2689,7 +2707,17 @@ function updateLiveBadge(n){
 async function loadWatch(){
   wlSigRefresh();                          // 매수시기 진단(10분 캐시 — 대부분 즉시 반환, quote 조기 return 과 무관하게 먼저)
   const syms=[...new Set(WL.map(x=>x.sym))];
-  const apply=q=>{ WL.forEach(it=>{ const v=q[it.sym]; if(v && typeof v.price==='number'){ it.px=v.price; it.pct=v.pct; it.ext=v.ext||null; } }); renderWL(); renderDeep(); };
+  // 코드만 저장된 옛 항목(예: '005930')은 서버가 알려준 거래소로 심볼을 고쳐 저장한다 —
+  // 그대로 두면 차트·지표 조회가 모두 빗나가고 시세도 «…» 로 남는다.
+  const apply=q=>{ let fixed=false;
+    WL.forEach(it=>{ const v=q[it.sym]; if(!v) return;
+      if(v.ex){                                  // 서버가 알려준 실제 거래소로 교정 — 맨코드·이전 시장 이력 모두
+        const m=String(it.sym).match(/^(\d{6})(?:\.(KS|KQ))?$/);
+        if(m && m[2]!==v.ex){ it.sym=m[1]+'.'+v.ex; it.mk='kr'; fixed=true; }
+      }
+      if(typeof v.price==='number'){ it.px=v.price; it.pct=v.pct; it.ext=v.ext||null; } });
+    if(fixed){ if(!WL.some(x=>x.sym===SEL)) SEL=WL.length?WL[0].sym:null; saveWL(); }
+    renderWL(); renderDeep(); };
   if(syms.length){
     try{   // 1) 로컬 서버 실시간 API — 임의 종목도 실시간
       const r=await fetch('/api/quote?syms='+encodeURIComponent(syms.join(',')),{cache:'no-store'});
@@ -3660,7 +3688,11 @@ setInterval(loadDeep,120000);                    // 심층분석 2분(큐레이�
 setInterval(tick,1000);
 setInterval(loadMarket,5000);                    // 지표 5초(거의 실시간)
 setInterval(loadStripCandles,180000);            // 지표 미니 캔들 3분(장중 봉 갱신)
-setInterval(loadWatch,10000);                    // 관심종목 10초
+setInterval(()=>{                                // 관심종목 1분 — 장중에만(탭 숨김·양쪽 휴장이면 스킵)
+  if(document.hidden) return;
+  if(!krSessionOpen()&&!usSessionOpen()) return;
+  loadWatch();
+},60000);
 TF_TIMER=setInterval(loadTossFlow,600000);       // 토스 투자자별 수급 10분 (미사용이면 첫 응답에서 해제)
 setInterval(loadBTC,5000);                       // 비트코인 5초(바이낸스 실시간)
 setInterval(loadNewsLive,60000);                 // 뉴스 60초
