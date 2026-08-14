@@ -886,8 +886,21 @@ const saveWatch=()=>{ WATCH=wlsWriteBoth(WATCH).sig; };
 const inWatch=(code,mkt)=>{ const k=wlsKeyOfSig({code,mkt}); return WATCH.some(w=>wlsKeyOfSig(w)===k); };
 const modeKey=()=> MODE==='swing'?SITV:'1d';
 const activeMkts=()=> [MKT];
-// 국면 카드용 지수 시장: 관심 모드에서는 담긴 종목들의 원 시장별 지수를 모두 보여준다
-const regimeMkts=()=> MKT==='watch' ? (WATCH.length?[...new Set(WATCH.map(w=>w.mkt))]:['kospi']) : activeMkts();
+/* 국면 카드용 지수 시장: 관심 모드에서는 담긴 종목들의 원 시장별 지수를 보여준다.
+   서로 다른 시장이 같은 기준지수를 쓰는 경우(한국 ETF↔코스피, 미국 ETF↔S&P500 등)가 있어
+   지수 심볼 기준으로 중복을 걷어낸다 — 같은 카드가 두 번 나오지 않게. */
+/*RGM-BEGIN*/
+function regimeMktsOf(mkts,idxSym){
+  const out=[], seen={};
+  for(const m of (mkts||[])){ const sym=idxSym[m]; if(!sym||seen[sym]) continue; seen[sym]=1; out.push(m); }
+  return out;
+}
+/*RGM-END*/
+const regimeMkts=()=>{
+  if(MKT!=='watch') return activeMkts();
+  const ms=regimeMktsOf(WATCH.map(w=>w.mkt),INDEX_SYM);
+  return ms.length?ms:['kospi'];
+};
 const US_TOP=50;                          // 미국: 전체 스캔 후 포지션 강도 상위 50만 제안
 const symOf=u=> isUSm(u.mkt)?u.code:(u.code+(u.mkt==='kosdaq'?'.KQ':'.KS'));
 
@@ -1233,8 +1246,8 @@ async function ensureVals(items){
 }
 
 /* 지수 국면: 야후 지수 일봉 1y + /api/market 실시간 표시값 */
-const INDEX_SYM={kospi:'^KS11',kosdaq:'^KQ11',sp500:'^GSPC',nasdaq:'^NDX',russell2000:'^RUT',kretf:'^KS11',usetf:'^GSPC',us:'^GSPC'};
-const INDEX_NAME={kospi:'코스피',kosdaq:'코스닥',sp500:'S&amp;P500',nasdaq:'나스닥100',russell2000:'러셀 2000',kretf:'코스피 (한국 ETF 기준지수)',usetf:'S&amp;P500 (미국 ETF 기준지수)',us:'S&amp;P500 (미국 관심 기준지수)'};
+const INDEX_SYM={kospi:'^KS11',kosdaq:'^KQ11',sp500:'^GSPC',nasdaq:'^NDX',russell2000:'^RUT',kretf:'^KS11',usetf:'^GSPC',us:'^NDX'};
+const INDEX_NAME={kospi:'코스피',kosdaq:'코스닥',sp500:'S&amp;P500',nasdaq:'나스닥100',russell2000:'러셀 2000',kretf:'코스피 (한국 ETF 기준지수)',usetf:'S&amp;P500 (미국 ETF 기준지수)',us:'나스닥100 (미국 관심 기준지수)'};
 const MARKET_KEY={kospi:'kospi',kosdaq:'kosdaq',sp500:'spx',nasdaq:'ndx',russell2000:'rut',kretf:'kospi',usetf:'spx',us:'spx'};   // data/market.json 필드명 (rut 은 없음 → 실시간 표시 생략)
 async function loadRegime(mkt,force){
   const c=REGIME[mkt];
