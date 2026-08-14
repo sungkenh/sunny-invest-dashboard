@@ -105,6 +105,12 @@
     color:#22c55e;border:1px solid rgba(34,197,94,.55);white-space:nowrap}
   .valchip.mid{color:var(--muted);border-color:var(--border)}
   .valchip.hi{color:var(--down);border-color:var(--down)}
+  .secchip{display:inline-block;font-size:9px;font-weight:800;border-radius:4px;padding:0 5px;margin-left:5px;vertical-align:1px;
+    color:var(--accent);background:var(--chip);border:1px solid var(--border);white-space:nowrap}   /* 업종(섹터) */
+  .secline{font-size:11.5px;color:var(--muted);margin-bottom:6px}
+  .secline b{color:var(--text);font-weight:800}
+  .secline a{color:var(--accent);text-decoration:none;margin-left:6px}
+  .secline a:hover{text-decoration:underline}
   .rtag{display:inline-block;font-size:8.5px;font-weight:800;color:var(--muted2);border:1px solid var(--border);
     border-radius:3px;padding:0 3px;vertical-align:1px}                      /* 전고점(저항) 표시 */
   small.warn{color:var(--gold)}                                             /* 저항까지 1R 미만 — 손익비 불리 */
@@ -302,6 +308,9 @@
   미국은 정규장(22:30~05:00 KST) 외 프리·애프터마켓 체결가를 현재가에 반영하며, 장 성격은 S&amp;P500(^GSPC)·나스닥100(^NDX) 지수로 판별합니다.
   <b>ETF 시장</b>은 지수·섹터·레버리지·인버스 대표 상품 엄선 목록(한국 16 · 미국 24)으로, 시세는 차트 데이터 기준이라 개별주 대비 수십 초 지연될 수 있습니다.
   <b>인버스는 기초지수와 반대로 움직이는 별도 상품</b>으로서 자체 가격에 대한 신호이며, 레버리지·인버스는 음의 복리(변동성 잠식) 특성상 장기 보유에 부적합합니다.<br>
+  종목명 옆 <b>업종 칩</b>은 국내는 네이버 금융 업종 분류(약 4,000종목), 미국은 <b>GICS 11개 섹터</b>(종목 상세에서 핀비즈 세부 산업 병기)이며 매일 갱신합니다 —
+  업종이 «기타»로 미분류된 종목과 ETF에는 칩을 표시하지 않습니다. 같은 업종이 한꺼번에 매수 신호를 내면 개별 종목이 아니라 <b>섹터 전체가 움직이는 국면</b>일 수 있으니
+  «섹터 가이드» 페이지의 데스크 논지와 함께 보세요.<br>
   장 성격은 지수 일봉의 <b>20·60일 이동평균 배열·기울기와 ADX(14) 추세 강도</b>로 판별합니다(ADX 20 미만 = 횡보).
   <b>외국인(5일)</b> 열은 토스증권 Open API 키가 등록된 경우 <b>공식 투자자별 매매동향(등록외국인·기관 순매수 주식 수, 5거래일 합)</b>을 표시하고,
   키가 없거나 조회 실패 시 <b>외국인 보유한도 소진율</b>의 최근 변화량(%p, 근사 지표)으로 폴백합니다. 당일 수급은 잠정치로 장중 계속 갱신됩니다.<br>
@@ -889,6 +898,41 @@ const regimeMkts=()=> MKT==='watch' ? (WATCH.length?[...new Set(WATCH.map(w=>w.m
 const US_TOP=50;                          // 미국: 전체 스캔 후 포지션 강도 상위 50만 제안
 const symOf=u=> isUSm(u.mkt)?u.code:(u.code+(u.mkt==='kosdaq'?'.KQ':'.KS'));
 
+/*SEC-BEGIN*/
+/* 종목 업종(섹터) — 히트맵 유니버스는 API 응답에 sector 가 함께 오지만, 관심 종목은
+   시총 랭킹 밖 종목이 섞여 있어 정적 업종맵으로 따로 채운다.
+   국내 data/kr_sectors.json = {코드: '반도체와반도체장비'} (약 4,000종목)
+   미국 data/us_sectors.json = {티커: ['기술','Semiconductors']} (GICS 11섹터 한글 + 핀비즈 세부산업) */
+function secKeyOf(code,us){ return us?String(code).toUpperCase():String(code); }
+// map = {kr:{...}|null, us:{...}|null}. 이미 sec 이 있는 항목과 ETF 는 건너뛴다. 채운 개수를 반환.
+function secApply(items,map,usOf,etfOf){
+  let n=0;
+  for(const u of (items||[])){
+    if(!u||!u.code||u.sec||etfOf(u.mkt)) continue;
+    const us=usOf(u.mkt), m=map[us?'us':'kr'];
+    if(!m) continue;
+    const v=m[secKeyOf(u.code,us)];
+    if(v==null) continue;
+    if(Array.isArray(v)){ if(v[0]) u.sec=v[0]; if(v[1]) u.ind=v[1]; }
+    else u.sec=String(v);
+    if(u.sec) n++;
+  }
+  return n;
+}
+// '기타'는 업종 미분류라 칩을 띄우지 않는다(빈 라벨이 줄만 늘린다)
+function secLabel(u){ const s=u&&u.sec; return (!s||s==='기타')?null:String(s); }
+/*SEC-END*/
+const SEC_MAP={kr:null,us:null};
+async function loadSectorMaps(items){
+  const need={};
+  for(const u of (items||[])) if(u&&u.code&&!u.sec&&!isETFm(u.mkt)) need[isUSm(u.mkt)?'us':'kr']=1;
+  await Promise.all(Object.keys(need).map(async k=>{
+    if(SEC_MAP[k]) return;
+    try{ const d=await getJSON('/data/'+k+'_sectors.json'); if(d&&d.sectors) SEC_MAP[k]=d.sectors; }catch(e){}
+  }));
+  return secApply(items,SEC_MAP,isUSm,isETFm);
+}
+
 /* ── 데이터 수집 ── */
 async function loadUniverse(mkt){
   if(mkt==='watch'){
@@ -896,7 +940,7 @@ async function loadUniverse(mkt){
     const open=(WATCH.some(w=>!isUSm(w.mkt))&&krSession()==='open')
              ||(WATCH.some(w=>isUSm(w.mkt))&&usSessionNow()==='open');
     return { status:open?'OPEN':'CLOSE', updated:'', source:'chart',
-      items:WATCH.map(w=>({code:w.code,rc:w.rc,name:w.name||w.code,lev:w.lev||null,mkt:w.mkt,w:1,price:0,pct:0,cap:w.cap||0})) };
+      items:WATCH.map(w=>({code:w.code,rc:w.rc,name:w.name||w.code,lev:w.lev||null,mkt:w.mkt,w:1,price:0,pct:0,cap:w.cap||0,sec:w.sec||null})) };
   }
   if(isETFm(mkt)){
     // ETF: 엄선 목록 — 시세는 차트에서 산출(compute 의 etfQuote), 세션은 시계 기반
@@ -912,17 +956,18 @@ async function loadUniverse(mkt){
       items:d.items.map(it=>{
         // 프리·애프터마켓 실시간 체결가 우선 (heatmap 과 동일 원칙)
         const ext=d.marketStatus!=='OPEN'&&it.o&&it.o.s==='OPEN'&&isFinite(it.o.pct);
-        return {code:it.code,rc:it.rc,name:it.name,mkt,
+        return {code:it.code,rc:it.rc,name:it.name,mkt,sec:it.sector||null,ind:it.ind||null,
           price:ext?it.o.p:it.price,pct:ext?it.o.pct:it.pct,cap:it.cap,h:it.h};
       }) };
   }
   const d=await fetchLive('/api/krheatmap?mkt='+mkt+'&n=50','data/krheatmap_'+mkt+'.json');
   if(!d||!Array.isArray(d.items)) return null;
   return { status:d.marketStatus||'', updated:d._updated||'', source:d.source||'',
-    items:d.items.slice(0,50).map(it=>({code:it.code,name:it.name,mkt,price:it.price,pct:it.pct,cap:it.cap,h:it.h})) };
+    items:d.items.slice(0,50).map(it=>({code:it.code,name:it.name,mkt,sec:it.sector||null,price:it.price,pct:it.pct,cap:it.cap,h:it.h})) };
 }
 async function refreshUniv(){
   await Promise.all(activeMkts().map(async m=>{ const d=await loadUniverse(m); if(d) UNIV[m]=d; }));
+  await loadSectorMaps(univItems()).catch(()=>{});   // 히트맵이 안 준 항목(주로 관심 종목)만 정적 맵으로 보완
   if(MKT==='watch') await loadWatchQuotes(univItems()).catch(()=>{});
 }
 /* 관심 종목 실시간 시세 — 시총 랭킹 유니버스가 없는 목록이라 /api/quote 로 직접 받는다.
@@ -1648,6 +1693,8 @@ function render(){
     const u=x.u, j=x.j, vd=VD[j.v], us=isUSm(u.mkt);
     const fresh=Math.min(j.gc??99,j.dc??99,j.zu??99,j.zd??99)===0;
     const lev=u.lev?'<span class="levchip'+(u.lev.indexOf('-')===0?' inv':'')+'">'+esc(u.lev.indexOf('-')===0?'인버스 '+u.lev.slice(1):'레버리지 '+u.lev)+'</span>':'';
+    const sl=secLabel(u);
+    const secc=sl?'<span class="secchip" title="업종'+(u.ind?' · '+esc(u.ind):'')+'">'+esc(sl)+'</span>':'';
     const vl=valOf(u);
     const valc=isCheap(x)?'<span class="valchip">💎 PER '+vl.per.toFixed(1)+' · ROE '+vl.roe.toFixed(0)+'%</span>':'';
     const gp=pbrGap(vl), gpl=gp?pbrGapLabel(gp):null;
@@ -1655,7 +1702,7 @@ function render(){
     const star='<span class="star'+(inWatch(u.code,u.mkt)?' on':'')+'" data-star="'+esc(u.code)+'|'+u.mkt+'" title="관심 종목 담기/빼기">'+(inWatch(u.code,u.mkt)?'★':'☆')+'</span>';
     return '<tr class="srow'+(fresh?' fresh':'')+'" data-code="'+u.code+'">'
       +'<td class="mono" style="color:var(--muted2)">'+(i+1)+'</td>'
-      +'<td class="name">'+star+'<b>'+esc(u.name)+'</b>'+lev+valc+regc+'<span class="mkchip">'+MKCHIP[u.mkt]+'</span>'
+      +'<td class="name">'+star+'<b>'+esc(u.name)+'</b>'+lev+secc+valc+regc+'<span class="mkchip">'+MKCHIP[u.mkt]+'</span>'
         +'<small class="mono">'+u.code+'</small>'+(u.cap?' <span class="cap">'+fmtCap(u.cap,us)+'</span>':'')+'</td>'
       +'<td class="num mono">'+fmtPx(u.price,us)+'<br><small class="'+cls(u.pct)+'">'+(u.pct>0?'+':'')+u.pct.toFixed(2)+'%</small>'
         +(u.ext?'<span class="xh" title="정규장 밖 체결가 — 국내는 NXT 시간외, 미국은 프리·애프터마켓">'+(u.ext==='pre'?'프리':'애프터')+'</span>':'')+'</td>'
@@ -1827,6 +1874,9 @@ function detailRow(x){
   return '<tr class="drow"><td colspan="11"><div class="dwrap">'
     +'<div class="dchart">'+detailChartSVG(x,W)+'</div>'
     +'<div class="dinfo">'
+    +(secLabel(u)?'<div class="secline">업종 <b>'+esc(secLabel(u))+'</b>'
+      +(u.ind?' · 세부 <b>'+esc(u.ind)+'</b>':'')
+      +' <a href="sectors.html">섹터별 투자 가이드 →</a></div>':'')
     +'<div class="box"><h5>판정 근거</h5>'+judgeReason(x)+'</div>'
     +(function(){ const p=ensurePerf(x); if(!p) return '';
       const span=MODE==='long'?'약 1년 · 일봉':(MODE==='swing'?'약 3개월 · '+SITV:'최근 '+DAY_RANGE[ITV]+' · '+ITV);
