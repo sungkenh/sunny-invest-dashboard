@@ -174,27 +174,27 @@
 </main>
 
 <footer>
-  섹터 전문가 데스크 — 큐레이션 구조적 논지 + 실시세 산출 지표. 데이터: 야후 파이낸스(일봉 1년), 촉매 뉴스.
+  섹터 전문가 데스크: 큐레이션 구조적 논지 + 실시세 산출 지표. 데이터: 야후 파이낸스(일봉 1년), 촉매 뉴스.
   <a href="index.html">대시보드</a> · <a href="signals.html">매매 시그널</a> · <a href="plan.html">분할 플래너</a>
 </footer>
 
 <script>
 /* ================= 섹터별 투자 가이드 =================
-   /api/themes?mkt=kr|us 가 산출한 섹터 지표·종목 지표를 «자문 리포트» 형태로 재구성한다.
-   판단은 전부 가격(추세) 기반 규칙에서 나온다 — 밸류에이션·실적·수급은 들어있지 않다.
-   그래서 «무엇을 사라»가 아니라 «어디에 비중을 더 두고, 무엇을 확인하라»로 쓴다. */
+   /api/themes?mkt=kr|us 가 산출한 섹터 지표·종목 지표를 자문 리포트 형태로 재구성한다.
+   판단은 전부 가격(추세) 기반 규칙에서 나온다. 밸류에이션·실적·수급은 들어있지 않다.
+   그래서 '무엇을 사라'가 아니라 '어디에 비중을 더 두고 무엇을 확인하라'로 쓴다. */
 
 const $ = (id) => document.getElementById(id);
 let MKT = 'kr', SORT = 'score';
 const CACHE = {};                        // mkt → 응답
-const pct = (x, d) => (x == null || !isFinite(x)) ? '—' : ((x > 0 ? '+' : '') + (x * 100).toFixed(d == null ? 1 : d) + '%');
+const pct = (x, d) => (x == null || !isFinite(x)) ? '-' : ((x > 0 ? '+' : '') + (x * 100).toFixed(d == null ? 1 : d) + '%');
 const esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const cls = (n) => n > 0 ? 'up' : (n < 0 ? 'down' : 'flat');
 
 /*VIEW-BEGIN*/
-/* 아래 함수들은 응답 객체만 받아 문장을 만드는 순수 함수 — 유닛테스트로 고정한다. */
+/* 아래 함수들은 응답 객체만 받아 문장을 만드는 순수 함수: 유닛테스트로 고정한다. */
 
-// 데스크 총평 — 비중의견과 스코어를 «사람이 읽는 한 문장»으로.
+// 데스크 총평: 비중의견과 스코어를 사람이 읽는 한 문장으로.
 function headline(t) {
   const nm = t.nm;
   if (t.opTxt === '판단보류') return nm + ' 섹터는 유효 표본이 부족해 이번 회차 판단을 보류합니다.';
@@ -207,7 +207,7 @@ function headline(t) {
   return nm + ' 섹터는 최근 6개월 ' + pct(m.r126) + '로 ' + trend + ' 있습니다. ' + tail;
 }
 
-// 네 가지 렌즈 — 같은 섹터를 추세·역발상·참여폭·리스크 관점에서 각각 본다.
+// 네 가지 렌즈: 같은 섹터를 추세·역발상·참여폭·리스크 관점에서 각각 본다.
 // 관점이 서로 엇갈리는 것이 정상이며, 엇갈릴수록 확신을 낮춰 잡으라는 뜻이다.
 function lenses(t) {
   const m = t.metrics;
@@ -216,41 +216,41 @@ function lenses(t) {
   // ① 추세
   out.push({ k: '추세', tone: m.rs > 0.02 ? 'pos' : (m.rs < -0.02 ? 'neg' : 'neu'),
     v: '6개월 ' + pct(m.r126) + ', 지수 대비 ' + pct(m.rs) + 'p. '
-      + (m.rs > 0.02 ? '주도 섹터 쪽에 서 있습니다 — 추세를 따라가는 전략이 유리합니다.'
-        : (m.rs < -0.02 ? '시장에 뒤처져 있습니다 — 반등을 확인하기 전 선취매는 근거가 약합니다.'
-          : '시장과 큰 차이가 없습니다 — 섹터보다 개별 종목 선택이 성과를 가릅니다.')) });
-  // ② 역발상 — 과열/낙폭을 반대 방향에서 본다
+      + (m.rs > 0.02 ? '주도 섹터 쪽에 서 있습니다. 추세를 따라가는 전략이 유리합니다.'
+        : (m.rs < -0.02 ? '시장에 뒤처져 있습니다. 반등을 확인하기 전 선취매는 근거가 약합니다.'
+          : '시장과 큰 차이가 없습니다. 섹터보다 개별 종목 선택이 성과를 가릅니다.')) });
+  // ② 역발상: 과열/낙폭을 반대 방향에서 본다
   const hot = m.rsi14 > 70 || m.ext20 > 0.15;
   const deep = m.curDD < -0.20;
   out.push({ k: '역발상', tone: hot ? 'neg' : (deep ? 'neu' : 'pos'),
     v: 'RSI ' + m.rsi14.toFixed(0) + ' · 20일 이격 ' + pct(m.ext20) + ' · 52주 고점 대비 ' + pct(m.curDD) + '. '
-      + (hot ? '단기 과열 구간입니다 — 지금 전량 진입보다 눌림목을 기다리는 편이 기대값이 낫습니다.'
+      + (hot ? '단기 과열 구간입니다. 지금 전량 진입보다 눌림목을 기다리는 편이 기대값이 낫습니다.'
         : (deep ? '고점에서 많이 내려와 가격 부담은 낮지만, 추세가 돌아섰다는 증거는 아직 없습니다.'
-          : '과열도 급락도 아닌 구간 — 계획대로 분할 접근하기 무난합니다.')) });
-  // ③ 참여 폭 — 섹터가 고르게 오르는가, 한두 종목이 끌고 가는가
+          : '과열도 급락도 아닌 구간입니다. 계획대로 분할 접근하기 무난합니다.')) });
+  // ③ 참여 폭: 섹터가 고르게 오르는가, 한두 종목이 끌고 가는가
   const wide = m.breadth >= 0.6, narrow = m.breadth <= 0.4;
   out.push({ k: '참여폭', tone: wide ? 'pos' : (narrow ? 'neg' : 'neu'),
     v: '폭 ' + Math.round(m.breadth * 100) + '%. '
-      + (wide ? '섹터 전반이 함께 움직입니다 — 대표주로 담아도 섹터 흐름을 대체로 따라갑니다.'
-        : (narrow ? '소수 종목만 버티고 있습니다 — 섹터로 접근하면 평균에 물릴 수 있어 종목을 골라야 합니다.'
-          : '참여가 반반입니다 — 상위 종목에 압축하는 편이 낫습니다.')) });
-  // ④ 리스크 — 같은 비중이라도 흔들림의 크기가 다르다
+      + (wide ? '섹터 전반이 함께 움직입니다. 대표주로 담아도 섹터 흐름을 대체로 따라갑니다.'
+        : (narrow ? '소수 종목만 버티고 있습니다. 섹터로 접근하면 평균에 물릴 수 있어 종목을 골라야 합니다.'
+          : '참여가 반반입니다. 상위 종목에 압축하는 편이 낫습니다.')) });
+  // ④ 리스크: 같은 비중이라도 흔들림의 크기가 다르다
   out.push({ k: '리스크', tone: m.volRatio > 1.6 ? 'neg' : (m.volRatio < 1.1 ? 'pos' : 'neu'),
     v: '변동성 지수 대비 ' + m.volRatio.toFixed(1) + '배 · 리스크 감점 −' + m.penalty + '. '
-      + (m.volRatio > 1.6 ? '같은 금액을 넣어도 계좌가 훨씬 크게 흔들립니다 — 비중을 평소의 절반으로 보세요.'
-        : (m.volRatio < 1.1 ? '지수와 비슷한 흔들림입니다 — 표준 비중으로 접근해도 무리가 없습니다.'
-          : '변동성은 보통 수준입니다 — 손절 폭을 넉넉히 잡으면 감당 가능합니다.')) });
+      + (m.volRatio > 1.6 ? '같은 금액을 넣어도 계좌가 훨씬 크게 흔들립니다. 비중을 평소의 절반으로 보세요.'
+        : (m.volRatio < 1.1 ? '지수와 비슷한 흔들림입니다. 표준 비중으로 접근해도 무리가 없습니다.'
+          : '변동성은 보통 수준입니다. 손절 폭을 넉넉히 잡으면 감당할 만합니다.')) });
   return out;
 }
 
-// 시나리오 — 논지가 유효해지는 조건과 깨지는 조건을 미리 못박아 둔다.
+// 시나리오: 논지가 유효해지는 조건과 깨지는 조건을 미리 못박아 둔다.
 function scenarios(t) {
   const m = t.metrics;
   if (!m) return { bull: [], bear: [] };
   const bull = [
     '지수 대비 초과성과(현재 ' + pct(m.rs) + 'p)가 유지되거나 확대될 것',
     '폭이 60% 위로 올라서 섹터 전반이 함께 오를 것 (현재 ' + Math.round(m.breadth * 100) + '%)',
-    t.thesis + ' — 이 논지를 뒷받침하는 실적·수주 발표가 이어질 것',
+    t.thesis + '. 이 논지를 뒷받침하는 실적·수주 발표가 이어질 것',
   ];
   const bear = [
     '지수 대비 초과성과가 마이너스로 돌아설 것',
@@ -260,7 +260,7 @@ function scenarios(t) {
   return { bull, bear };
 }
 
-// 종목 배분 — 섹터 안에서 어디에 집중할지. score 는 서버가 상대강도·추세·과열로 산출한 값.
+// 종목 배분: 섹터 안에서 어디에 집중할지. score 는 서버가 상대강도·추세·과열로 산출한 값.
 function rankPicks(t) {
   const ps = (t.picks || []).slice();
   const scored = ps.filter((p) => typeof p.score === 'number');
@@ -277,14 +277,14 @@ function rankPicks(t) {
     why.push(m.rs126 > 0.02 ? '지수 대비 ' + pct(m.rs126) + 'p 우위'
       : (m.rs126 < -0.02 ? '지수 대비 ' + pct(m.rs126) + 'p 열위' : '지수와 유사'));
     why.push(m.aboveMa50 ? (m.aboveMa200 === false ? '50일선 위·200일선 아래(추세 회복 중)' : '50·200일선 위') : '50일선 아래');
-    if (m.rsi14 > 75) why.push('RSI ' + m.rsi14.toFixed(0) + ' 과열 — 추격 자제');
-    else if (m.dd < -0.25) why.push('고점 대비 ' + pct(m.dd) + ' — 낙폭 과대');
+    if (m.rsi14 > 75) why.push('RSI ' + m.rsi14.toFixed(0) + ' 과열, 추격 자제');
+    else if (m.dd < -0.25) why.push('고점 대비 ' + pct(m.dd) + ', 낙폭 과대');
     return { name: p.name, sym: p.sym, score: p.score, pct: p.pct, role, roleTxt, why: why.join(' · '), m };
   }).concat(rest.map((p) => ({ name: p.name, sym: p.sym, score: null, pct: p.pct,
     role: 'watch', roleTxt: '자료부족', why: '시세 이력이 짧거나 결측이 있어 순위에서 제외', m: {} })));
 }
 
-// 실행 가이드 — 비중의견·과열도·폭을 조합해 «어떻게 들어갈지»를 적는다.
+// 실행 가이드: 비중의견·과열도·폭을 조합해 어떻게 들어갈지를 적는다.
 function playbook(t) {
   const m = t.metrics;
   if (!m) return ['표본이 부족해 실행 가이드를 제시하지 않습니다. 다음 갱신을 기다려 주세요.'];
@@ -299,10 +299,10 @@ function playbook(t) {
     out.push('섹터 전체를 사기보다 상위 1~2종목으로 압축하고, 나머지는 관찰 목록에 두세요.');
   }
   out.push(m.breadth <= 0.4
-    ? '폭이 좁아 섹터 평균은 소수 종목이 만든 착시일 수 있습니다 — 반드시 개별 종목으로 확인하세요.'
+    ? '폭이 좁아 섹터 평균은 소수 종목이 만든 착시일 수 있습니다. 개별 종목으로 확인하세요.'
     : '폭이 받쳐주므로 대표주 중심 접근이 섹터 흐름을 크게 벗어나지 않습니다.');
   out.push(m.volRatio > 1.5
-    ? '변동성이 지수의 ' + m.volRatio.toFixed(1) + '배입니다 — 같은 확신이어도 금액은 절반으로 잡으세요.'
+    ? '변동성이 지수의 ' + m.volRatio.toFixed(1) + '배입니다. 같은 확신이어도 금액은 절반으로 잡으세요.'
     : '손절선은 진입가 기준으로 미리 정해 두고, 그 선을 종가로 깨면 기계적으로 줄이세요.');
   return out;
 }
@@ -310,7 +310,7 @@ function playbook(t) {
 
 /* ── 렌더 ── */
 function scoreBar(score) {
-  if (score == null) return '<div class="scorebar"><div class="track"><em></em></div><span class="sv">—</span></div>';
+  if (score == null) return '<div class="scorebar"><div class="track"><em></em></div><span class="sv">-</span></div>';
   const w = Math.min(Math.abs(score), 100) / 2;
   const left = score >= 0 ? 50 : 50 - w;
   return '<div class="scorebar"><div class="track"><em></em>'
@@ -344,7 +344,7 @@ function deskCard(t, i) {
   return '<section class="desk" id="desk-' + i + '">'
     + '<div class="dhead"><b class="nm">' + esc(t.nm) + '</b>'
       + '<span class="op ' + t.op + '">' + esc(t.opTxt) + '</span>'
-      + '<span class="who">' + esc(t.desk) + ' · 신뢰도 ' + esc(t.confBand || '—') + '(' + (t.conf != null ? t.conf : '—') + ')</span>'
+      + '<span class="who">' + esc(t.desk) + ' · 신뢰도 ' + esc(t.confBand || '-') + '(' + (t.conf != null ? t.conf : '-') + ')</span>'
       + today + '</div>'
     + scoreBar(t.score)
     + '<div class="cmt" style="margin-top:4px">' + esc(headline(t)) + '</div>'
@@ -352,31 +352,31 @@ function deskCard(t, i) {
     + '<div class="sec"><h6>① 지금 어떤 상태인가</h6>' + metricTable(t.metrics)
       + (warns ? '<div style="margin-top:5px">' + warns + '</div>' : '') + '</div>'
 
-    + '<div class="sec"><h6>② 무엇이 움직였나 — 최근 시황·촉매</h6>'
+    + '<div class="sec"><h6>② 무엇이 움직였나: 최근 시황·촉매</h6>'
       + '<div class="cat">' + cat + '</div>'
       + (t.lead && t.lead.name ? '<div class="boxnote" style="margin-top:4px">오늘 섹터 내 주도: <b style="color:var(--text)">'
           + esc(t.lead.name) + '</b> ' + (t.lead.pct > 0 ? '+' : '') + Number(t.lead.pct).toFixed(2) + '%</div>' : '')
       + '</div>'
 
-    + '<div class="sec"><h6>③ 전망 — 데스크 논지</h6>'
+    + '<div class="sec"><h6>③ 전망: 데스크 논지</h6>'
       + '<div class="cmt q">' + esc(t.thesis) + '</div>'
       + (ls.length ? '<div style="margin-top:6px">' + ls.map((l) =>
           '<div class="lens ' + l.tone + '"><span class="lk">' + l.k + '</span><span>' + esc(l.v) + '</span></div>').join('') + '</div>' : '')
       + '</div>'
 
-    + (sc.bull.length ? '<div class="sec"><h6>④ 시나리오 — 무엇을 확인하고 무엇을 경계할까</h6>'
+    + (sc.bull.length ? '<div class="sec"><h6>④ 시나리오: 무엇을 확인하고 무엇을 경계할까</h6>'
       + '<div style="font-size:11px;font-weight:800;color:var(--up);margin-bottom:2px">논지가 유지되려면</div>'
       + '<ul class="sn bull">' + sc.bull.map((x) => '<li>' + esc(x) + '</li>').join('') + '</ul>'
       + '<div style="font-size:11px;font-weight:800;color:var(--down);margin:6px 0 2px">이러면 물러섭니다</div>'
       + '<ul class="sn bear">' + sc.bear.map((x) => '<li>' + esc(x) + '</li>').join('') + '</ul></div>' : '')
 
-    + '<div class="sec"><h6>⑤ 어디에 집중할까 — 구성 종목</h6>'
+    + '<div class="sec"><h6>⑤ 어디에 집중할까: 구성 종목</h6>'
       + '<table class="pk"><thead><tr><th>종목</th><th style="width:64px">역할</th><th class="num" style="width:56px">점수</th><th class="num" style="width:60px">오늘</th></tr></thead><tbody>'
       + pk.map((p) => '<tr><td><b>' + esc(p.name) + '</b>'
           + '<span class="why">' + esc(p.why) + '</span></td>'
           + '<td><span class="role ' + p.role + '">' + esc(p.roleTxt) + '</span></td>'
-          + '<td class="num ' + (p.score == null ? '' : cls(p.score)) + '">' + (p.score == null ? '—' : (p.score > 0 ? '+' : '') + p.score) + '</td>'
-          + '<td class="num ' + (p.pct == null ? '' : cls(p.pct)) + '">' + (p.pct == null ? '—' : (p.pct > 0 ? '+' : '') + p.pct.toFixed(2) + '%') + '</td></tr>').join('')
+          + '<td class="num ' + (p.score == null ? '' : cls(p.score)) + '">' + (p.score == null ? '-' : (p.score > 0 ? '+' : '') + p.score) + '</td>'
+          + '<td class="num ' + (p.pct == null ? '' : cls(p.pct)) + '">' + (p.pct == null ? '-' : (p.pct > 0 ? '+' : '') + p.pct.toFixed(2) + '%') + '</td></tr>').join('')
       + '</tbody></table></div>'
 
     + '<div class="sec"><h6>⑥ 실행 가이드</h6>'
@@ -391,10 +391,10 @@ function render() {
   if (SORT === 'score') ts.sort((a, b) => (b.score == null ? -999 : b.score) - (a.score == null ? -999 : a.score));
 
   $('riskoff').innerHTML = d.riskOff
-    ? '<div class="riskoff">⚠ 시장 리스크오프 — ' + esc(d.benchmark) + ' 20일 −8% 이하. 전 섹터의 비중확대 의견을 한 단계 보수적으로 조정했습니다. 이런 국면에서는 섹터 선택보다 현금 비중이 성과를 가릅니다.</div>' : '';
+    ? '<div class="riskoff">⚠ 시장 리스크오프. ' + esc(d.benchmark) + ' 20일 −8% 이하. 전 섹터의 비중확대 의견을 한 단계 보수적으로 조정했습니다. 이런 국면에서는 섹터 선택보다 현금 비중이 성과를 가릅니다.</div>' : '';
 
   const buy = ts.filter((t) => t.opTxt === '비중확대'), sell = ts.filter((t) => t.opTxt === '비중축소');
-  $('summary').innerHTML = '<h5>오늘의 데스크 브리핑 — ' + esc(d.benchmark) + ' 기준</h5>'
+  $('summary').innerHTML = '<h5>오늘의 데스크 브리핑: ' + esc(d.benchmark) + ' 기준</h5>'
     + '<div class="cmt" style="margin-bottom:7px">'
     + (buy.length ? '비중확대 의견은 <b>' + buy.map((t) => esc(t.nm)).join(', ') + '</b> 입니다. ' : '지금은 비중확대로 볼 섹터가 없습니다. ')
     + (sell.length ? '반대로 <b>' + sell.map((t) => esc(t.nm)).join(', ') + '</b> 은(는) 비중을 줄여 보는 구간입니다. ' : '')
@@ -402,7 +402,7 @@ function render() {
     + '<div class="rank">' + ts.map((t, i) => '<a class="rk" href="#desk-' + i + '">'
       + '<span class="op ' + t.op + '" style="font-size:9.5px;padding:1px 6px">' + esc(t.opTxt) + '</span>'
       + '<b>' + esc(t.nm) + '</b>'
-      + '<span class="sc ' + (t.score == null ? '' : cls(t.score)) + '">' + (t.score == null ? '—' : (t.score > 0 ? '+' : '') + t.score) + '</span></a>').join('') + '</div>';
+      + '<span class="sc ' + (t.score == null ? '' : cls(t.score)) + '">' + (t.score == null ? '-' : (t.score > 0 ? '+' : '') + t.score) + '</span></a>').join('') + '</div>';
 
   $('desks').innerHTML = ts.map((t, i) => deskCard(t, i)).join('');
   $('meta-chip').textContent = '기준 ' + (d._updated || '').replace('T', ' ') + ' · ' + (d.count || ts.length) + '개 데스크';
@@ -410,9 +410,9 @@ function render() {
   $('method').innerHTML = '<h5>이 페이지를 읽는 법</h5><div class="boxnote">'
     + '<b style="color:var(--text)">비중의견</b>은 절대모멘텀(6개월) 30% + 지수 대비 상대강도 30% + 추세구조(50·200일선) 25% + 참여폭 15% 로 점수를 만들고, '
     + '과열·변동성·낙폭을 최대 30점까지 감점해 산출합니다. 과열·급락·시장 리스크오프·저신뢰 구간에서는 비중확대를 한 단계 낮춥니다.<br>'
-    + '<b style="color:var(--text)">종목 점수</b>는 섹터 안에서의 상대 순위입니다 — 지수 대비 6개월 상대강도 40% + 3개월 모멘텀 25% + 추세구조 25% + 낙폭 여유 10%, 과열은 감점. '
-    + '«핵심»은 섹터 대표로 삼을 만한 1순위, «보완»은 함께 담을 후보, «관망»은 근거가 약해 지켜볼 종목입니다.<br>'
-    + '<b style="color:var(--gold)">한계</b> — ' + esc(CACHE[MKT] && CACHE[MKT].caveat ? CACHE[MKT].caveat : '')
+    + '<b style="color:var(--text)">종목 점수</b>는 섹터 안에서의 상대 순위입니다. 지수 대비 6개월 상대강도 40% + 3개월 모멘텀 25% + 추세구조 25% + 낙폭 여유 10%, 과열은 감점. '
+    + '핵심은 섹터 대표로 삼을 만한 1순위, 보완은 함께 담을 후보, 관망은 근거가 약해 지켜볼 종목입니다.<br>'
+    + '<b style="color:var(--gold)">한계</b>: ' + esc(CACHE[MKT] && CACHE[MKT].caveat ? CACHE[MKT].caveat : '')
     + ' 실적·밸류에이션·수급·공시는 반영되지 않으므로, 여기서 고른 종목은 <a href="signals.html">매매 시그널</a>과 '
     + '<a href="plan.html">분할 플래너</a>에서 진입 타이밍과 비중을 다시 확인하세요. 투자 판단과 그 결과는 본인 책임입니다.</div>';
 }
@@ -447,7 +447,7 @@ document.querySelectorAll('#seg-sort button').forEach((b) => b.addEventListener(
 }));
 $('btn-refresh').addEventListener('click', () => load(true));
 
-/* 테마 토글 — 다른 페이지와 같은 키를 공유한다 */
+/* 테마 토글: 다른 페이지와 같은 키를 공유한다 */
 const THEME_LS = 'alphadesk.theme';
 function applyTheme(t) {
   document.body.classList.toggle('light', t === 'light');
@@ -467,7 +467,7 @@ function tick() {
   $('clock').textContent = p.month + '.' + p.day + ' ' + p.hour + ':' + p.minute + ':' + p.second;
 }
 tick(); setInterval(tick, 1000);
-setInterval(() => { if (!document.hidden) load(false); }, 15 * 60 * 1000);   // 서버 캐시 30분 — 가볍게 재확인
+setInterval(() => { if (!document.hidden) load(false); }, 15 * 60 * 1000);   // 서버 캐시 30분이라 가볍게 재확인
 
 load(false);
 </script>

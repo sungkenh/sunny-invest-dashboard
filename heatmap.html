@@ -154,7 +154,7 @@
 
 <footer>
   데이터 제공: <a href="https://m.stock.naver.com/" target="_blank" rel="noopener">네이버 금융</a> ·
-  시가총액 상위 종목 · ETF·ETN·우선주·스팩·거래정지 종목 제외 · 전체 시총 1% 미만 업종은 «기타»로 묶임.<br>
+  시가총액 상위 종목 · ETF·ETN·우선주·스팩·거래정지 종목 제외 · 전체 시총 1% 미만 업종은 기타로 묶임.<br>
   한국은 정규장(09:00~15:30 KST), 미국(나스닥+NYSE 병합)은 정규장(22:30~05:00 KST)과 프리·애프터마켓까지
   <b>지연 0분 실시간</b>으로 15초마다 자동 갱신되고, 그 외 시간에는 마지막 체결가(종가) 기준으로 표시됩니다.<br>
   기간 수익률(1주~1년)은 <b>현재가 ÷ 기준일 종가(수정주가) − 1</b>로 계산합니다. 올해 = 작년 말 종가 대비.
@@ -270,7 +270,7 @@ function squarify(children,x,y,w,h){
 }
 const mixRGB=(a,b,t)=>[Math.round(a[0]+(b[0]-a[0])*t),Math.round(a[1]+(b[1]-a[1])*t),Math.round(a[2]+(b[2]-a[2])*t)];
 const rgbCss=c=>'rgb('+c[0]+','+c[1]+','+c[2]+')';
-/* 등락률 색상 팔레트 — 미국식(핀비즈: 녹↑/적↓) 또는 한국식(적↑/청↓).
+/* 등락률 색상 팔레트: 미국식(핀비즈: 녹↑/적↓) 또는 한국식(적↑/청↓).
    ±1/3, ±2/3 지점에 중간 스톱을 둔 4단 램프라 약보합·강세 구분이 뚜렷하다. */
 const FV_FLAT=[65,69,84];                                        // #414554 (보합)
 const RAMP_G=[FV_FLAT,[53,118,78],[47,158,79],[48,204,90]];      // 녹색 → #30CC5A
@@ -305,7 +305,7 @@ function capText(v){
   return Math.round(v).toLocaleString('en-US');
 }
 function fmtPct(v){
-  if(v==null || !isFinite(v)) return '—';
+  if(v==null || !isFinite(v)) return '-';
   const a=Math.abs(v);
   return (v>=0?'+':'')+(a>=100?v.toFixed(0):(a>=10?v.toFixed(1):v.toFixed(2)))+'%';
 }
@@ -344,7 +344,7 @@ function tileLabel(name, pctTxt, t, escFn, logo){
   const nm=fitChars(name, iw, fs);
   return nm ? '<text class="hm-tn" style="font-size:'+fs+'px;stroke-width:'+(fs*0.18).toFixed(1)+'px" x="'+cx+'" y="'+(cy+fs*0.36).toFixed(1)+'">'+escFn(nm)+'</text>' : '';
 }
-/* 네이버 종목 로고 CDN — 국내는 종목코드, 해외는 로이터코드. 파일이 없으면(일부 종목) onerror 로 제거 */
+/* 네이버 종목 로고 CDN: 국내는 종목코드, 해외는 로이터코드. 파일이 없으면(일부 종목) onerror 로 제거 */
 const LOGO_BASE='https://ssl.pstatic.net/imgstock/fn/real/logo/png/stock/Stock';
 const logoOf=it=>isUS() ? (it.rc?LOGO_BASE+it.rc+'.png':'') : LOGO_BASE+it.code+'.png';
 
@@ -401,7 +401,7 @@ function krTreemap(host,items,opts){
   const groups=[],rest=[];
   for(const name in bySec){
     const arr=bySec[name]; let cap=0; for(const it of arr) cap+=it.cap;
-    if(name==='기타' || cap/total<minShare) rest.push.apply(rest,arr);   // 잘게 쪼개진 업종은 «기타»로 병합
+    if(name==='기타' || cap/total<minShare) rest.push.apply(rest,arr);   // 잘게 쪼개진 업종은 기타로 병합
     else groups.push({name,value:cap,arr});
   }
   if(rest.length){ let cap=0; for(const it of rest) cap+=it.cap; groups.push({name:'기타',value:cap,arr:rest}); }
@@ -412,7 +412,7 @@ function krTreemap(host,items,opts){
   let rects;
   const zg=(opts&&opts.zoom) ? groups.find(x=>x.name===opts.zoom) : null;
   if(zg){
-    // 섹터 줌: 내부를 세부 산업별로 재그룹 — 핀비즈에서 섹터를 클릭했을 때와 동일한 상세 화면
+    // 섹터 줌: 내부를 세부 산업별로 재그룹: 핀비즈에서 섹터를 클릭했을 때와 동일한 상세 화면
     const inds={};
     for(const it of zg.arr){ const k=(it.ind||'').trim()||zg.name; (inds[k]||(inds[k]=[])).push(it); }
     const keys=Object.keys(inds);
@@ -512,7 +512,7 @@ function draw(){
   if(PERIOD!=='1d' && !curPerf()) note('기간 수익률 기준가를 아직 불러오지 못해 회색으로 표시됩니다.');
 }
 async function load(force){
-  // 진행 중이면 강제 요청은 예약해 두었다가 종료 직후 재실행 — 토글이 in-flight 요청에 삼켜지지 않게
+  // 진행 중이면 강제 요청은 예약해 두었다가 종료 직후 재실행: 토글이 in-flight 요청에 삼켜지지 않게
   if(loading){ if(force) pending=true; return; }
   if(!force && document.hidden) return;
   const mkt=MKT, n=N;
@@ -563,7 +563,7 @@ document.getElementById('seg-pal').addEventListener('click',e=>{
   applyPalVars(); renderSegs(); draw();                              // 대시보드 트리맵도 같은 저장값을 따른다
 });
 
-/* 툴팁·클릭은 #hm-body 에 위임 — 트리맵 innerHTML 재생성과 무관하게 1회만 바인딩 */
+/* 툴팁·클릭은 #hm-body 에 위임: 트리맵 innerHTML 재생성과 무관하게 1회만 바인딩 */
 (function bindTiles(){
   const body=document.getElementById('hm-body'), tip=document.getElementById('hm-tip');
   body.addEventListener('mousemove',e=>{

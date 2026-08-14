@@ -12,7 +12,7 @@
 <link rel="prefetch" href="schedule.html"><link rel="prefetch" href="videos.html">
 <style>
   :root{
-    /* Coinbase 디자인 시스템(다크) — getdesign DESIGN.md 기반 */
+    /* Coinbase 디자인 시스템(다크): getdesign DESIGN.md 기반 */
     --bg:#0a0b0d; --panel:#16181c; --panel2:#1c1f25; --border:#2a2d34;
     --text:#f5f7fa; --muted:#a8acb3; --muted2:#7c828a;
     --accent:#1268ff; --accent2:#5b8cff; --gold:#f4b000;
@@ -37,7 +37,7 @@
   body.light .seg{background:var(--panel)}
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
-  /* 화면폭 가변 폰트(반응형 타이포) — 1280px=현행과 동일, 넓을수록 비례 확대. 모든 글씨는 rem(루트 비례) */
+  /* 화면폭 가변 폰트(반응형 타이포): 1280px=현행과 동일, 넓을수록 비례 확대. 모든 글씨는 rem(루트 비례) */
   html{font-size:clamp(15px, 0.55vw + 8.96px, 22px)}
   body.resizing *{transition:none !important}   /* 리사이즈 중 애니메이션 비용 제거(맥 버벅임 완화) */
   body{
@@ -213,7 +213,7 @@
   .live-badge.stale{background:var(--muted2);color:#0a0e17}
 
   /* ===== 메인 그리드 ===== */
-  /* 2컬럼 — 왼쪽 관심종목, 오른쪽 종목 상세. 일정·뉴스 카드를 뺀 만큼 둘 다 넓게 쓴다. */
+  /* 2컬럼: 왼쪽 관심종목, 오른쪽 종목 상세. 일정·뉴스 카드를 뺀 만큼 둘 다 넓게 쓴다. */
   main{display:grid;grid-template-columns:minmax(340px,1fr) minmax(0,2.1fr);gap:14px;padding:4px 20px 30px}
   .col{display:flex;flex-direction:column;gap:14px;min-width:0}
   .card{border:1px solid var(--border);border-radius:14px;background:var(--panel);overflow:hidden}
@@ -359,7 +359,7 @@
   .ma-row .ma-del:hover{border-color:#ef5350}
   .ma-add{width:100%;margin-top:2px;background:var(--panel2);border:1px dashed var(--border);color:var(--muted);border-radius:6px;padding:5px;cursor:pointer;font-family:inherit;font-size:0.75rem}
   .ma-add:hover{color:var(--accent);border-color:var(--accent)}
-  /* 지표(볼린저·RSI) 설정 패널 필드 — .ma-config 재사용 */
+  /* 지표(볼린저·RSI) 설정 패널 필드: .ma-config 재사용 */
   #ind-config{min-width:264px}
   .ic-row{display:flex;align-items:center;gap:7px;margin-bottom:7px}
   .ic-row .ic-l{font-size:0.6875rem;color:var(--muted);min-width:82px}
@@ -373,7 +373,7 @@
   /* 볼린저·일목 밴드 배경 채우기 캔버스 */
   #px-fill{position:absolute;inset:0;pointer-events:none;z-index:2}
   /* 보조지표 높이 조절 구분선(드래그) */
-  /* 지표별 높이 조절 구분선 — 라인은 비상호작용(전폭), 중앙 그립만 드래그(팬/크로스헤어/그리기 클릭 통과) */
+  /* 지표별 높이 조절 구분선: 라인은 비상호작용(전폭), 중앙 그립만 드래그(팬/크로스헤어/그리기 클릭 통과) */
   .osc-divider{position:absolute;left:0;right:0;height:10px;z-index:4;pointer-events:none;display:none}
   .osc-divider::before{content:'';position:absolute;left:0;right:0;top:4px;height:1px;background:var(--border)}
   .osc-divider .osc-grip{position:absolute;left:50%;top:0;width:46px;height:10px;margin-left:-23px;cursor:ns-resize;pointer-events:auto;touch-action:none;display:flex;align-items:center;justify-content:center}
@@ -491,7 +491,7 @@
     .card.fill{flex:1 1 0;min-height:0;display:flex;flex-direction:column}
     .card.fill > .scroll{flex:1;min-height:0;max-height:none}
   }
-  /* ===== 페이지 전환 부드럽게 — Cross-Document View Transitions(지원 브라우저). 미지원 시 일반 이동으로 무해 폴백 ===== */
+  /* ===== 페이지 전환 부드럽게: Cross-Document View Transitions(지원 브라우저). 미지원 시 일반 이동으로 무해 폴백 ===== */
   @view-transition{ navigation:auto; }
   ::view-transition-old(root){ animation:vt-out .14s ease both; }
   ::view-transition-new(root){ animation:vt-in .18s ease both; }
@@ -508,8 +508,8 @@
   <div class="brand"><div class="logo">S</div>써니의&nbsp;투자&nbsp;인사이트</div>
   <nav class="mainnav"><a href="index.html" class="active">대시보드</a><a href="sectors.html">섹터 가이드</a><a href="schedule.html">일정</a><a href="videos.html">추천 영상</a><a href="heatmap.html">히트맵</a><a href="signals.html">매매 시그널</a><a href="plan.html">분할 플래너</a><a href="yieldgap.html">일드갭</a></nav>
   <div class="status-pills">
-    <span class="pill" title="KOSPI·KOSDAQ (서울 KST) — 프리마켓 08:00–09:00 · 정규장 09:00–15:30 · 애프터마켓 15:30–20:00"><span class="dot" id="krx-dot"></span>KOSPI <b id="krx-st">—</b></span>
-    <span class="pill" title="NASDAQ (서울 KST) — 데이마켓 09:00–17:00 · 프리마켓 17:00–22:30 · 정규장 22:30–05:00 · 애프터마켓 05:00–09:00"><span class="dot" id="us-dot"></span>NASDAQ <b id="us-st">—</b></span>
+    <span class="pill" title="KOSPI·KOSDAQ (서울 KST): 프리마켓 08:00~09:00 · 정규장 09:00~15:30 · 애프터마켓 15:30~20:00"><span class="dot" id="krx-dot"></span>KOSPI <b id="krx-st">-</b></span>
+    <span class="pill" title="NASDAQ (서울 KST): 데이마켓 09:00~17:00 · 프리마켓 17:00~22:30 · 정규장 22:30~05:00 · 애프터마켓 05:00~09:00"><span class="dot" id="us-dot"></span>NASDAQ <b id="us-st">-</b></span>
     <span class="pill">USD/KRW <b class="mono" id="fx">1,378.0</b></span>
   </div>
   <div class="spacer"></div>
@@ -527,7 +527,7 @@
 </div>
 <section class="strip" id="strip"></section>
 
-<!-- 시가총액 히트맵 — 코스피/코스닥/S&P500/나스닥 전부 네이버 실시간 자체 트리맵 (전용 페이지와 동일 엔진) -->
+<!-- 시가총액 히트맵: 코스피/코스닥/S&P500/나스닥 전부 네이버 실시간 자체 트리맵 (전용 페이지와 동일 엔진) -->
 <section class="card heatmap-card">
   <div class="head">
     <h3>시가총액 히트맵</h3>
@@ -543,12 +543,12 @@
     <span class="legend" id="hm-legend"></span>
   </div>
   <div class="hm-body" id="hm-body">
-    <div class="hm-fb-note" id="hm-note">실시간 히트맵 — 온라인·http(localhost:4321) 환경에서 표시됩니다.</div>
+    <div class="hm-fb-note" id="hm-note">실시간 히트맵은 온라인·http(localhost:4321) 환경에서 표시됩니다.</div>
     <div id="hm-widget"></div>
     <button id="hm-back" style="display:none"></button>
     <div id="hm-tip"></div>
   </div>
-  <div class="tradingview-widget-copyright" id="hm-copy">데이터 제공: <a href="https://m.stock.naver.com/" rel="noopener" target="_blank">네이버 금융</a> · 실시간(지연 0분) · 미국은 프리·애프터마켓 포함 · ETF·우선주·스팩 제외 · 시총 1% 미만 업종은 «기타» · 타일 클릭 → 네이버 종목 페이지</div>
+  <div class="tradingview-widget-copyright" id="hm-copy">데이터 제공: <a href="https://m.stock.naver.com/" rel="noopener" target="_blank">네이버 금융</a> · 실시간(지연 0분) · 미국은 프리·애프터마켓 포함 · ETF·우선주·스팩 제외 · 시총 1% 미만 업종은 기타 · 타일 클릭 → 네이버 종목 페이지</div>
 </section>
 
 <!-- 메인 -->
@@ -559,7 +559,7 @@
       <div class="head"><h3>시장 심리 · 공포탐욕</h3><span class="tag" id="fng-tag">CNN</span></div>
       <div class="fng">
         <div class="fng-top">
-          <span class="fng-num mono" id="fng-num">—</span>
+          <span class="fng-num mono" id="fng-num">-</span>
           <span class="fng-label" id="fng-label">불러오는 중…</span>
           <span class="fng-when" id="fng-when"></span>
         </div>
@@ -574,7 +574,7 @@
         <button class="sync-chip" id="sync-chip" type="button" style="display:none;margin-left:auto" title="기기 간 동기화 상태 (클릭)"></button>
       </div>
       <div class="wl-add">
-        <input id="wl-search" placeholder="종목 검색 — 삼성전자, 엔비디아, AAPL…" autocomplete="off" />
+        <input id="wl-search" placeholder="종목 검색: 삼성전자, 엔비디아, AAPL…" autocomplete="off" />
       </div>
       <div id="wl-results" class="wl-results"></div>
       <div class="scroll"><table class="wl"><tbody id="wl-body"></tbody></table></div>
@@ -613,7 +613,7 @@
   </div>
 </main>
 
-<!-- 지수 대비 주도주 (상대강도) — 관심종목을 상장 지수와 100 기준 비교해 '지수 이기는 종목' 발굴 -->
+<!-- 지수 대비 주도주 (상대강도): 관심종목을 상장 지수와 100 기준 비교해 '지수 이기는 종목' 발굴 -->
 <section class="card rs-card" id="rs-card">
   <div class="head">
     <h3>지수 대비 주도주</h3>
@@ -637,7 +637,7 @@
 
 <script>
 /* =========================================================================
-   써니의 투자 인사이트 — 샘플 데이터 & 렌더링 (백엔드 없음 / 완전 오프라인)
+   써니의 투자 인사이트: 샘플 데이터 & 렌더링 (백엔드 없음 / 완전 오프라인)
    실제 서비스에서는 아래 SAMPLE_* 를 data/*.json (Claude 에이전트·수집
    스크립트가 갱신) 또는 API fetch 결과로 교체하면 됩니다.
    ========================================================================= */
@@ -726,7 +726,7 @@ const DEEP_SEED = {
       bull:['하이퍼스케일러 CapEx 가이던스 연속 상향','Blackwell 양산 램프업 + 네트워킹(NVLink) 부가가치','주권 AI·엔터프라이즈 추론 수요 확산'],
       bear:['커스텀 ASIC(브로드컴·자체칩) 침투','대중국 수출규제 변수','피크아웃 우려 시 멀티플 축소'],
       cat:['차세대 GPU 출시·가이던스 (분기 실적)','주요 고객 CapEx 시즌','GTC 컨퍼런스 신제품'],
-      risk:'밸류에이션 민감도 높음 — 성장률 둔화 신호 시 변동성 확대. 포지션 분할·헤지 권장.'
+      risk:'밸류에이션 민감도가 높아 성장률 둔화 신호가 나오면 변동성이 커집니다. 포지션 분할·헤지 권장.'
     }
   },
   '005930':{
@@ -792,7 +792,7 @@ const DEEP_SEED = {
       bull:['HBM 점유율·마진 1위','엔비디아 동반 성장'],
       bear:['삼성·마이크론 추격','메모리 가격 변동성'],
       cat:['HBM4 공급계약','분기 실적'],
-      risk:'단기 과열 — 변동성 확대 가능. 신규 진입은 분할 권장.'
+      risk:'단기 과열 구간이라 변동성이 커질 수 있습니다. 신규 진입은 분할을 권합니다.'
     }
   },
 };
@@ -800,7 +800,7 @@ function deepFor(sym,row){
   const base=(sym||'').replace(/\.(KS|KQ)$/,'');
   const hit = DEEPDATA[sym]||DEEPDATA[base]||DEEP_SEED[sym]||DEEP_SEED[base];
   if(hit) return hit;
-  ensureDeep(sym,row);   // 온디맨드 생성(비동기) — 완료 시 자동 재렌더
+  ensureDeep(sym,row);   // 온디맨드 생성(비동기). 완료되면 자동 재렌더
   return {
     name:(row?row.name:sym)+' ('+sym+')', mk:row?(row.mk==='kr'?'KR':'US'):'-',
     px:row&&row.px!=null?row.px:0, pct:row&&row.pct!=null?row.pct:0, fallback:true,
@@ -819,14 +819,14 @@ async function loadDeep(){
     if(r.ok){ const j=await r.json(); if(j&&typeof j==='object'){ for(const k in j) DEEPDATA[k]=j[k]; if(SEL) renderDeep(); } }  // 병합(저장본 시드 보존, 큐레이션 우선)
   }catch(e){}
 }
-/* 신규 종목 온디맨드 생성: /api/deep — 직렬 큐로 폭주 방지(대량 등록 시 야후 레이트리밋 회피),
+/* 신규 종목 온디맨드 생성: /api/deep: 직렬 큐로 폭주 방지(대량 등록 시 야후 레이트리밋 회피),
    실패는 45초 후 자동 재시도(renderDeep 주기 호출이 트리거). 저장본 있으면 호출 안 함, 큐레이션 덮어쓰지 않음 */
 const DEEP_RETRY_MS=45*1000;
 let DEEP_Q=Promise.resolve();
 async function ensureDeep(sym,row){
   const base=(sym||'').replace(/\.(KS|KQ)$/,'');
   const cur=DEEPDATA[sym]||DEEPDATA[base];
-  if(cur&&!cur.degraded) return;                            // 완전한 데이터 보유 — 재생성 불필요
+  if(cur&&!cur.degraded) return;                            // 완전한 데이터를 갖고 있어 재생성 불필요
   const p=DEEP_PENDING[base];
   if(p&&(p.busy||Date.now()-p.ts<DEEP_RETRY_MS)) return;   // 진행 중이거나 실패 후 45초 이내
   DEEP_PENDING[base]={ts:Date.now(),busy:true};
@@ -841,16 +841,16 @@ async function ensureDeep(sym,row){
       if(r.ok){ const d=await r.json();
         if(d&&!d.error){
           DEEPDATA[base]=d;
-          if(!d.degraded){ deepCacheSet(base,d); ok=true; }  // 스텁은 영구 캐시하지 않음 — 45초 뒤 자동 재생성
+          if(!d.degraded){ deepCacheSet(base,d); ok=true; }  // 스텁은 영구 캐시하지 않는다. 45초 뒤 자동 재생성
           if(SEL===sym) renderDeep();
         } }
     }catch(e){}
     if(ok) delete DEEP_PENDING[base];
-    else DEEP_PENDING[base]={ts:Date.now(),busy:false};    // 실패/스텁 — 45초 뒤 자동 재시도 허용
+    else DEEP_PENDING[base]={ts:Date.now(),busy:false};    // 실패·스텁이면 45초 뒤 자동 재시도 허용
     await new Promise(res=>setTimeout(res,400));           // 연속 생성 사이 간격(레이트리밋 완화)
   }).catch(()=>{});
 }
-/* 사용자 '새로고침' — 저장본·세션·서버·엣지 캐시를 모두 우회해 강제 재생성 */
+/* 사용자 '새로고침': 저장본·세션·서버·엣지 캐시를 모두 우회해 강제 재생성 */
 async function refreshDeep(sym){
   if(!sym) return;
   const base=(sym||'').replace(/\.(KS|KQ)$/,'');
@@ -865,10 +865,10 @@ async function refreshDeep(sym){
       if(d&&!d.error){ DEEPDATA[base]=d; deepCacheSet(base,d); ok=true; if(SEL===sym) renderDeep(); } }
   }catch(e){}
   if(ok) delete DEEP_PENDING[base];
-  else DEEP_PENDING[base]={ts:Date.now(),busy:false};   // 실패 — 45초 뒤 자동 재시도
+  else DEEP_PENDING[base]={ts:Date.now(),busy:false};   // 실패하면 45초 뒤 자동 재시도
 }
 
-/* ===== 토스증권 Open API (키 등록 시 활성 — /api/toss, 미등록이면 자동 숨김) =====
+/* ===== 토스증권 Open API (키 등록 시 활성: /api/toss, 미등록이면 자동 숨김) =====
    ① 투자자별 매매동향 카드(코스피/코스닥 외국인·기관·개인 일별 순매수 대금)
    ② 개장일 캘린더 → 휴장일에 세션 pill '휴장' 표시 (24시간 localStorage 캐시) */
 let TF_MKT='KOSPI';
@@ -919,7 +919,7 @@ async function loadTossFlow(){
       +'<i style="display:inline-block;width:8px;height:8px;background:#f4b000;border-radius:2px;margin-right:3px"></i>외국인'
       +'<i style="display:inline-block;width:8px;height:8px;background:#3b82f6;border-radius:2px;margin:0 3px 0 9px"></i>기관'
       +'<i style="display:inline-block;width:8px;height:8px;background:#22c55e;border-radius:2px;margin:0 3px 0 9px"></i>개인'
-      +' — '+(TF_MKT==='KOSPI'?'코스피':'코스닥')+' 일별 순매수 대금(외국인=등록+미등록 합계) · 당일은 잠정치 · 토스증권 Open API</div>';
+      +': '+(TF_MKT==='KOSPI'?'코스피':'코스닥')+' 일별 순매수 대금(외국인=등록+미등록 합계) · 당일은 잠정치 · 토스증권 Open API</div>';
   }catch(e){}
 }
 document.querySelectorAll('#tf-seg button').forEach(b=>b.addEventListener('click',()=>{
@@ -940,11 +940,11 @@ async function loadTossCal(){
 }
 
 /* ---- 영상 상위 10 ---- */
-let SAMPLE_VIDEOS = [   // 폴백(로드 전 잠깐 표시) — 실제는 /api/videos·data/videos.json(국내 경제 유튜브 인기순)
+let SAMPLE_VIDEOS = [   // 폴백(로드 전 잠깐 표시). 실제는 /api/videos·data/videos.json(국내 경제 유튜브 인기순)
   {ti:'[오전 방송 전체보기] 엔비디아 상승 속 반도체주 점검',ch:'삼프로TV',viewsKo:'48만',tm:'1시간 전',hot:true},
   {ti:'"전국민이 주식에 취해있다."',ch:'슈카월드',viewsKo:'52만',tm:'4일 전',hot:true},
   {ti:'엔비디아·인텔·AMD가 동시에 찍었다, 지금 주목할 종목',ch:'소수몽키',viewsKo:'32만',tm:'반나절 전',hot:true},
-  {ti:'월간 이선엽 — 이제 돈 버는 사람이 줄어든다',ch:'와이스트릿',viewsKo:'35만',tm:'1일 전'},
+  {ti:'월간 이선엽: 이제 돈 버는 사람이 줄어든다',ch:'와이스트릿',viewsKo:'35만',tm:'1일 전'},
   {ti:'[장 시작 전] 브로드컴 쇼크로 반도체주 약세',ch:'815머니톡',viewsKo:'20만',tm:'1일 전'},
   {ti:'HBM 전쟁 2라운드: 삼성 vs SK하이닉스',ch:'한국경제TV',viewsKo:'14만',tm:'1일 전'},
 ];
@@ -959,10 +959,10 @@ const ENGINE = [
 ];
 
 /* ========================= 렌더링 ========================= */
-// 라인 스파크라인(폴백) — baseline(전일종가) 가로 점선 포함
+// 라인 스파크라인(폴백): baseline(전일종가) 가로 점선 포함
 function spark(data, up, baseline){
   const w=96,h=30;
-  // 값이 하나뿐이거나 숫자가 아닌 게 섞이면 좌표가 NaN 이 된다 — 그리지 않는다
+  // 값이 하나뿐이거나 숫자가 아닌 게 섞이면 좌표가 NaN 이 된다: 그리지 않는다
   if(!data||data.length<2||data.some(v=>!isFinite(v))) return `<svg width="${w}" height="${h}"></svg>`;
   const bl=(baseline!=null&&isFinite(baseline))?baseline:null;
   let max=Math.max(...data),min=Math.min(...data);
@@ -978,7 +978,7 @@ function miniCandle(ohlc, baseline){
   const W=96,H=30,n=ohlc.length; if(!n) return `<svg width="${W}" height="${H}"></svg>`;
   let lo=Infinity,hi=-Infinity;
   for(const b of ohlc){ if(b.l<lo)lo=b.l; if(b.h>hi)hi=b.h; }
-  if(!isFinite(lo)||!isFinite(hi)) return `<svg width="${W}" height="${H}"></svg>`;   // 고가·저가 없는 봉 — NaN 좌표 방지
+  if(!isFinite(lo)||!isFinite(hi)) return `<svg width="${W}" height="${H}"></svg>`;   // 고가·저가 없는 봉이면 NaN 좌표가 되므로 그리지 않는다
   const bl=(baseline!=null&&isFinite(baseline))?baseline:null;                        // 전일종가가 NaN 인 경우 점선 생략
   if(bl!=null){ if(bl<lo)lo=bl; if(bl>hi)hi=bl; }
   const rng=(hi-lo)||1, y=v=>H-((v-lo)/rng)*H, cw=W/n, bw=Math.max(1.1, cw*0.6);
@@ -1022,8 +1022,8 @@ function renderStrip(){
   }).join('');
 }
 
-/* 관심종목 — 저장본(localStorage) 우선, 없으면 data/watchlist.json(편집 가능한 영구 기본값) → DEFAULT_WL */
-/* ===== 클라우드 동기화(선택) — /api/store(Cloudflare KV)에 관심종목 저장 =====
+/* 관심종목: 저장본(localStorage) 우선, 없으면 data/watchlist.json(편집 가능한 영구 기본값) → DEFAULT_WL */
+/* ===== 클라우드 동기화(선택): /api/store(Cloudflare KV)에 관심종목 저장 =====
    → 새로고침·재배포·브라우저 청소·다른 기기에서도 자동 유지. 서버에 KV 바인딩(변수명 KV)이 있어야 동작.
    미설정(503)이면 localStorage 만으로 동작(기존과 동일, 무중단). 토큰(STORE_TOKEN) 설정 시 일치 필요. */
 const SYNC_TOKEN_LS='alphadesk.synctoken';
@@ -1053,15 +1053,15 @@ function syncChipRender(state){
   const c=document.getElementById('sync-chip'); if(!c) return;
   if(state==='auth'){ c.textContent='🔒 토큰 필요'; c.className='sync-chip warn'; c.style.display=''; return; }
   if(CLOUD_OK===true){ c.textContent='☁️ 동기화 켜짐'; c.className='sync-chip on';
-    c.title='관심종목이 서버(KV)에 저장됩니다 — 다른 기기에서도 같은 목록'; c.style.display=''; }
+    c.title='관심종목이 서버(KV)에 저장됩니다. 다른 기기에서도 같은 목록'; c.style.display=''; }
   else if(CLOUD_OK===false){ c.textContent='💾 이 기기에만 저장'; c.className='sync-chip warn';
-    c.title='서버 저장소(KV)가 연결되지 않아 관심종목이 이 브라우저에만 저장됩니다 — PC와 휴대폰 목록이 달라집니다. 클릭하면 연결 방법을 안내합니다.';
+    c.title='서버 저장소(KV)가 연결되지 않아 관심종목이 이 브라우저에만 저장됩니다. PC와 휴대폰 목록이 달라집니다. 클릭하면 연결 방법을 안내합니다.';
     c.style.display=''; }
   else { c.style.display='none'; }
 }
 function syncConfigure(){
-  if(CLOUD_OK===false){          // 서버 저장소가 없으면 토큰을 물어봐야 소용없다 — 연결 방법부터 안내
-    alert('기기 간 동기화가 꺼져 있습니다.\n\n지금은 관심종목이 이 브라우저에만 저장돼서 PC와 휴대폰 목록이 서로 다릅니다.\n\n켜는 방법 (한 번만 하면 됩니다)\n1. Cloudflare 대시보드 → Storage & Databases → KV → 네임스페이스 만들기\n2. Pages 프로젝트(sunny-invest-dashboard) → Settings → Bindings(Functions)\n3. KV namespace binding 추가 — Variable name 을 정확히  KV  로 입력하고 1번 네임스페이스 선택\n4. 저장 후 재배포하면 이 칩이 «☁️ 동기화 켜짐» 으로 바뀝니다.\n\n※ 공개 URL이므로 남이 못 읽게 하려면 환경변수 STORE_TOKEN 도 설정하고, 기기마다 이 창에서 같은 값을 입력하세요.');
+  if(CLOUD_OK===false){          // 서버 저장소가 없으면 토큰을 물어봐야 소용없다. 연결 방법부터 안내
+    alert('기기 간 동기화가 꺼져 있습니다.\n\n지금은 관심종목이 이 브라우저에만 저장돼서 PC와 휴대폰 목록이 서로 다릅니다.\n\n켜는 방법 (한 번만 하면 됩니다)\n1. Cloudflare 대시보드 → Storage & Databases → KV → 네임스페이스 만들기\n2. Pages 프로젝트(sunny-invest-dashboard) → Settings → Bindings(Functions)\n3. KV namespace binding 추가. Variable name 을 정확히  KV  로 입력하고 1번 네임스페이스 선택\n4. 저장 후 재배포하면 이 칩이 "☁️ 동기화 켜짐" 으로 바뀝니다.\n\n※ 공개 URL이므로 남이 못 읽게 하려면 환경변수 STORE_TOKEN 도 설정하고, 기기마다 이 창에서 같은 값을 입력하세요.');
     return;
   }
   const t=prompt('기기 간 동기화 토큰\n• 서버(Cloudflare)에 STORE_TOKEN 을 설정했다면 같은 값을 입력하세요.\n• 토큰을 안 썼다면 비워두세요(공개 저장).', syncToken());
@@ -1072,7 +1072,7 @@ function syncConfigure(){
 async function watchCloudLoad(){
   const v=await cloudGet('watchlist');
   if(Array.isArray(v) && v.length){
-    // 클라우드 값 ∪ 로컬(매매 시그널 쪽에서 추가한 종목 포함) — 병합 결과를 양쪽 키에 기록하고, 서버와 다르면 서버에도 반영
+    // 클라우드 값 ∪ 로컬(매매 시그널 쪽에서 추가한 종목 포함): 병합 결과를 양쪽 키에 기록하고, 서버와 다르면 서버에도 반영
     const cur=wlsRead('alphadesk.wl2')||[];
     const seen=new Set(), merged=[];
     for(const x of v.concat(cur)){ if(!x||!x.sym) continue; const k=wlsKeyOfSym(x.sym); if(seen.has(k)) continue; seen.add(k); merged.push({sym:x.sym,name:x.name,mk:x.mk}); }
@@ -1092,20 +1092,20 @@ async function cloudInit(){
 }
 
 /*WLSYNC-BEGIN*/
-/* 관심종목 동기화 — 대시보드(alphadesk.wl2) · 매매 시그널(alphadesk.sig.watchlist) · 분할 플래너가
+/* 관심종목 동기화: 대시보드(alphadesk.wl2) · 매매 시그널(alphadesk.sig.watchlist) · 분할 플래너가
    항상 같은 집합을 보도록, 어느 페이지에서 바꾸든 두 저장 키를 함께 기록한다.
    식별키: 국내 6자리 코드는 코드만(코스피·코스닥·ETF 공통), 미국은 대문자 티커(세부 시장 구분 무시).
    시그널 항목의 메타(rc·lev·cap·세부 mkt)는 보존하고, 새로 넘어온 항목은 kospi/kosdaq/us 로 변환한다. */
 const WLS_US=['sp500','nasdaq','russell2000','usetf','us'];
 const wlsKeyOfSig=w=>/^\d{6}$/.test(String(w.code))?String(w.code):('US|'+String(w.code).toUpperCase());
-// ⚠ 접미사 없는 6자리 코드(옛 저장 형식)도 국내로 본다 — 미국 티커로 오인하면 저장할 때마다
+// ⚠ 접미사 없는 6자리 코드(옛 저장 형식)도 국내로 본다: 미국 티커로 오인하면 저장할 때마다
 //   심볼이 맨코드로 되돌아가 시세·차트·지표가 모두 빗나간다(코스피/코스닥은 /api/quote 의 ex 로 교정).
 const wlsKeyOfSym=sym=>{ const m=String(sym).match(/^(\d{6})(?:\.(KS|KQ))?$/); return m?m[1]:('US|'+String(sym).toUpperCase()); };
 const wlsSymOfSig=w=>WLS_US.indexOf(w.mkt)>=0?String(w.code):(String(w.code)+(w.mkt==='kosdaq'?'.KQ':'.KS'));
 const wlsSigOfSym=(sym,name)=>{ const m=String(sym).match(/^(\d{6})(?:\.(KS|KQ))?$/);
   return m?{code:m[1],mkt:m[2]==='KQ'?'kosdaq':'kospi',name:name||m[1]}:{code:String(sym),mkt:'us',name:name||String(sym)}; };
 const wlsIsUs=m=>WLS_US.indexOf(m)>=0;
-const WLS_KR_PLAIN=['kospi','kosdaq'];        // 국내 개별주 — 이 둘 사이의 어긋남만 심볼 기준으로 교정(kretf 등은 보존)
+const WLS_KR_PLAIN=['kospi','kosdaq'];        // 국내 개별주. 이 둘 사이의 어긋남만 심볼 기준으로 교정한다(kretf 등은 보존)
 function wlsRead(k){ try{ const a=JSON.parse(localStorage.getItem(k)||'null'); return Array.isArray(a)?a:null; }catch(e){ return null; } }
 /* 시그널 형식 배열을 정본으로 두 키를 함께 기록(식별키 기준 중복 제거). 값이 바뀐 키만 실제로 쓴다. */
 function wlsWriteBoth(sigArr){
@@ -1130,7 +1130,7 @@ function wlsMergeAll(){
   for(const w of (sig||[])){ if(w&&w.code&&w.mkt) all.push(w); }
   return wlsWriteBoth(all);
 }
-/* 대시보드(wl2) 형식 배열을 정본으로 동기화 — 기존 시그널 메타는 유지, 빠진 종목은 양쪽에서 제거 */
+/* 대시보드(wl2) 형식 배열을 정본으로 동기화: 기존 시그널 메타는 유지, 빠진 종목은 양쪽에서 제거 */
 function wlsWriteFromWL(wlArr){
   const byKey={};
   for(const w of (wlsRead('alphadesk.sig.watchlist')||[])) if(w&&w.code&&w.mkt) byKey[wlsKeyOfSig(w)]=w;
@@ -1138,7 +1138,7 @@ function wlsWriteFromWL(wlArr){
   for(const x of (wlArr||[])){ if(!x||!x.sym) continue;
     const k=wlsKeyOfSym(x.sym), kept=byKey[k], derived=wlsSigOfSym(x.sym,x.name);
     // 시그널 쪽 메타(rc·lev·cap·kretf 같은 세부 시장)는 보존하되, 시장 구분이 심볼과 어긋나면
-    // 심볼 기준이 맞다 — 심볼은 /api/quote 가 알려준 실제 거래소로 교정된 값이기 때문.
+    // 심볼 기준이 맞다: 심볼은 /api/quote 가 알려준 실제 거래소로 교정된 값이기 때문.
     // 맨코드가 us 로 잘못 기록됐던 이력과 코스피↔코스닥 이전을 여기서 바로잡는다(ETF 표식 kretf 는 유지).
     const stale=kept && (wlsIsUs(kept.mkt)!==wlsIsUs(derived.mkt)
       || (WLS_KR_PLAIN.indexOf(kept.mkt)>=0 && kept.mkt!==derived.mkt));
@@ -1162,7 +1162,7 @@ async function loadWatchlistBaseline(){
       if(Array.isArray(arr)&&arr.length){ WL=arr.filter(x=>x&&x.sym).map(normWL); SEL=WL[0].sym; renderWL(); renderDeep(); loadWatch(); } }
   }catch(e){}
 }
-/* 다른 탭(매매 시그널·분할 플래너)에서 관심종목이 바뀌면 즉시 반영 — 읽기만 하고 다시 쓰지 않는다(루프 방지) */
+/* 다른 탭(매매 시그널·분할 플래너)에서 관심종목이 바뀌면 즉시 반영: 읽기만 하고 다시 쓰지 않는다(루프 방지) */
 let wlsEvtTimer=null;
 window.addEventListener('storage',e=>{
   if(!e || (e.key!=='alphadesk.wl2'&&e.key!=='alphadesk.sig.watchlist')) return;
@@ -1205,9 +1205,9 @@ function addWL(sym,name,mk){
   SEL=sym; saveWL(); renderWL(); renderDeep(); loadWatch(); rsMaybeReload();   // 즉시 실시간 시세 조회 + 주도주 갱신
 }
 
-/* KST 오늘 날짜 — 토스 개장일 캘린더 캐시 키로 쓴다 */
+/* KST 오늘 날짜: 토스 개장일 캘린더 캐시 키로 쓴다 */
 function calToday(){ return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()); }
-/* ---- 공포·탐욕 지수 — /api/feargreed (CNN) → data/feargreed.json 폴백 ---- */
+/* ---- 공포·탐욕 지수: /api/feargreed (CNN) → data/feargreed.json 폴백 ---- */
 const FNG_COLOR={ef:'#cf202f',f:'#e8833a',n:'#f4b000',g:'#6cc04a',eg:'#05b169'};
 function renderFNG(d){
   if(!d || typeof d.score!=='number') return;
@@ -1226,7 +1226,7 @@ async function loadFearGreed(){
   if(!d || d.error || typeof d.score!=='number'){ try{ const r=await fetch('data/feargreed.json?t='+Date.now(),{cache:'no-store'}); if(r.ok) d=await r.json(); }catch(e){} }
   if(d && typeof d.score==='number') renderFNG(d);
 }
-/* ---- 트럼프 Truth Social — /api/trump(한국어 번역) → data/trump.json 폴백 ---- */
+/* ---- 트럼프 Truth Social: /api/trump(한국어 번역) → data/trump.json 폴백 ---- */
 let TRUMP=[];
 function renderTrump(){
   const host=document.getElementById('trump'); if(!host) return;
@@ -1252,13 +1252,13 @@ async function loadTrump(){
 }
 
 /* 심층 분석 */
-/* 관심종목 인터랙티브 주가차트 — Lightweight Charts(오픈소스) + 야후 데이터(/api/chart).
+/* 관심종목 인터랙티브 주가차트: Lightweight Charts(오픈소스) + 야후 데이터(/api/chart).
    한국(.KS/.KQ)·미국 모두 동작. 기본 일봉. 타임프레임 버튼으로 기간 전환. */
 const CHART_RANGES=[
   ['1분','1d','1m'],['5분','5d','5m'],['15분','1mo','15m'],['30분','1mo','30m'],['60분','3mo','60m'],
   ['일','6mo','1d'],['주','2y','1wk'],['월','10y','1mo']
 ];
-const isIntraday=iv=>/^\d+(m|h)$/.test(iv);   // 분/시간봉 판별('1mo'·'1wk'·'1d' 제외 — 'm' 오탐 방지)
+const isIntraday=iv=>/^\d+(m|h)$/.test(iv);   // 분/시간봉 판별('1mo'·'1wk'·'1d' 제외. 'm' 오탐 방지)
 let lwc=null,lwcCandle=null,lwcVol=null,curChartSym=null,curRange='6mo',curInterval='1d',chartTimer=null,lastChartSig=null;
 /* ── 보조지표·그리기 상태 ── */
 let curOHLC=[],curVOL=[];
@@ -1280,7 +1280,7 @@ let MA_LINES=(()=>{ try{ const a=JSON.parse(localStorage.getItem('alphadesk.mali
   if(Array.isArray(a)&&a.length) return a.map(x=>({p:Math.max(1,Math.min(480,+x.p||1)),c:x.c||'#f0b90b'})); }catch(e){}
   return MA_DEFAULT.map(x=>({...x})); })();
 function saveMALines(){ try{ localStorage.setItem('alphadesk.malines', JSON.stringify(MA_LINES)); }catch(e){} }
-/* 지표 세부 설정(볼린저·RSI·일목) — 기간·색상·굵기·토글·배경 (localStorage 저장) */
+/* 지표 세부 설정(볼린저·RSI·일목): 기간·색상·굵기·토글·배경 (localStorage 저장) */
 const INDCFG_DEFAULT={
   boll:{ period:20, stddev:2, upC:'#f0b90b', upW:1, upOn:true, midC:'#22c55e', midW:1, midOn:true, loC:'#f0b90b', loW:1, loOn:true, fillOn:true, fillC:'#f0b90b' },
   rsi:{ period:14, signal:14, upper:70, mid:50, lower:30, lineC:'#f0b90b', sigC:'#3b82f6' },
@@ -1303,13 +1303,13 @@ function clampNum(k,v){ if(!isFinite(v)) v=0;
   if(k==='stddev') return Math.max(0.1,Math.min(6,Math.round(v*10)/10));
   if(k==='upper'||k==='mid'||k==='lower') return Math.max(0,Math.min(100,Math.round(v)));
   return v; }
-/* null을 만나면 리셋하는 단순이동평균(RSI 시그널선용 — 선행 null 스킵) */
+/* null을 만나면 리셋하는 단순이동평균(RSI 시그널선용: 선행 null 스킵) */
 function smaSparse(a,p){ const o=new Array(a.length).fill(null); let q=[],sum=0; for(let i=0;i<a.length;i++){ const x=a[i]; if(x==null){ q=[]; sum=0; continue; } q.push(x); sum+=x; if(q.length>p){ sum-=q.shift(); } if(q.length===p) o[i]=sum/p; } return o; }
 function hexA(hex,a){ const h=(hex||'#000').replace('#',''); const r=parseInt(h.slice(0,2),16)||0,g=parseInt(h.slice(2,4),16)||0,b=parseInt(h.slice(4,6),16)||0; return 'rgba('+r+','+g+','+b+','+a+')'; }
 let PANES=[];   // relayoutPanes가 채우는 하단 밴드 목록(범례·상하단값 표시용)
 let lblResizeObs=null, _lblRAF=0;   // 범례 오버레이 리사이즈 감시
 let FILLDATA=null, _fillRAF=0, _cfgDebounce=0;   // 밴드 채우기용 지표값 캐시(applyIndicators에서만 재계산) + 스크롤 rAF 스로틀 + 설정 디바운스
-// 보조지표(RSI·MACD·거래량) 밴드 높이 — 지표별로 드래그 조절, localStorage 저장
+// 보조지표(RSI·MACD·거래량) 밴드 높이: 지표별로 드래그 조절, localStorage 저장
 const clampBandH=h=>Math.max(0.06,Math.min(0.34, (h!=null&&isFinite(h))?h:0.18));
 let OSC_H=(()=>{ const def={rsi:0.18,macd:0.18,vol:0.18};
   try{ const s=JSON.parse(localStorage.getItem('alphadesk.osch')||'null'); if(s&&typeof s==='object'){ for(const k in def) if(s[k]!=null) def[k]=clampBandH(s[k]); return def; } }catch(e){}
@@ -1400,7 +1400,7 @@ async function renderChart(sym){
   lwc.timeScale().subscribeVisibleLogicalRangeChange(()=>{ if(_fillRAF) return; _fillRAF=requestAnimationFrame(()=>{ _fillRAF=0; renderChartLegend(); }); });   // 스크롤·줌 rAF 코얼레싱(프레임당 1회)
   // 캔버스 크기 변경(창 리사이즈·사이드바·브레이크포인트·툴바 줄바꿈) 시에도 라벨 위치·값 갱신
   if(lblResizeObs){ try{lblResizeObs.disconnect()}catch(e){} lblResizeObs=null; }
-  // setTimeout 디바운스(백그라운드 탭에서도 실행 — rAF는 지연될 수 있음)
+  // setTimeout 디바운스(백그라운드 탭에서도 실행: rAF는 지연될 수 있음)
   try{ lblResizeObs=new ResizeObserver(()=>{ clearTimeout(_lblRAF); _lblRAF=setTimeout(()=>renderChartLegend(),60); }); lblResizeObs.observe(canvasEl); }catch(e){}
   document.getElementById('px-sym').textContent=((WL.find(x=>x.sym===sym)||{}).name||sym)+' · 주가차트';
   loadChartData(sym);
@@ -1443,7 +1443,7 @@ function startChartTimer(){ stopChartTimer();
 /* ── 보조지표·그리기 툴바 ── */
 function buildIndBar(host){
   const bar=host.querySelector('#px-bar2'); if(!bar) return;
-  // 지표 버튼 뒤에 설정(⚙) 버튼 삽입 — MA는 전용 패널, 볼린저·RSI는 공용 설정 패널
+  // 지표 버튼 뒤에 설정(⚙) 버튼 삽입: MA는 전용 패널, 볼린저·RSI는 공용 설정 패널
   const inds=IND_DEFS.map(d=>{ let btn=`<button class="px-tf ind${IND[d.k]?' on':''}" data-ind="${d.k}" title="${d.tip}">${d.label}</button>`;
     if(d.k==='ma') btn+='<button class="px-tf ma-gear" title="이동평균선 기간·색상 설정">⚙</button>';
     else if(d.k==='boll'||d.k==='rsi') btn+=`<button class="px-tf cfg-gear" data-cfg="${d.k}" title="${d.label} 설정">⚙</button>`;
@@ -1514,7 +1514,7 @@ function applyIndicators(){
     ich:(IND.ich&&INDCFG.ich.fillOn&&_iB)?{spanA:_iB.spanA,spanB:_iB.spanB}:null, fillC:INDCFG.boll.fillC };
   relayoutPanes(); renderChartLegend();
 }
-/* 오실레이터(RSI·MACD)·거래량 하단 밴드 배치 — v4는 패널이 없어 scaleMargins로 구획.
+/* 오실레이터(RSI·MACD)·거래량 하단 밴드 배치: v4는 패널이 없어 scaleMargins로 구획.
    각 밴드 메타를 PANES에 기록해 범례·상하단 숫자 라벨에 사용. */
 function relayoutPanes(){
   if(!lwc) return;
@@ -1575,7 +1575,7 @@ function redrawDrawings(){
 }
 function clearDrawings(){ drawStore[drawKey()]={h:[],t:[]}; pendingTrend=null; redrawDrawings(); saveDraw(); }
 
-/* ── 밴드 배경 채우기(볼린저·일목 구름) — LWC v4는 밴드 채움이 없어 오버레이 캔버스에 직접 그림 ── */
+/* ── 밴드 배경 채우기(볼린저·일목 구름): LWC v4는 밴드 채움이 없어 오버레이 캔버스에 직접 그림 ── */
 function renderChartFills(){
   const cv=document.getElementById('px-fill'), host=document.getElementById('px-canvas');
   if(!cv||!host||!lwc||!lwcCandle) return;
@@ -1620,7 +1620,7 @@ function fillCloud(ctx,times,a,b,X,Yp,colUp,colDn){   // 세그먼트별 색(선
 /* ── 차트 위 범례 + 밴드 상/하단 숫자 라벨 ── */
 function fmtVol(v){ if(v==null||!isFinite(v)) return '-'; v=Math.max(0,v);
   if(v>=1e8) return (v/1e8).toFixed(v>=1e9?0:1)+'억'; if(v>=1e4) return Math.round(v/1e4).toLocaleString('en-US')+'만'; return Math.round(v).toLocaleString('en-US'); }
-/* 지표별 높이 조절 구분선 하나 생성 — di번째 밴드 경계(위=가격/밴드0, 그 아래는 두 지표 사이) */
+/* 지표별 높이 조절 구분선 하나 생성: di번째 밴드 경계(위=가격/밴드0, 그 아래는 두 지표 사이) */
 function makeOscDivider(canvasEl, di){
   const el=document.createElement('div'); el.className='osc-divider'; el.dataset.di=di;
   const grip=document.createElement('div'); grip.className='osc-grip'; el.appendChild(grip); canvasEl.appendChild(el);
@@ -1841,8 +1841,8 @@ function setupRelStrLazy(){
   if('IntersectionObserver' in window){ const io=new IntersectionObserver(es=>{ if(es.some(e=>e.isIntersecting)){ io.disconnect(); go(); } },{rootMargin:'250px'}); io.observe(card); setTimeout(go,7000); }
   else setTimeout(go,1500);
 }
-/* 동종 비교 테이블(PER·PBR·PSR) — d.peers[0]=본종목, 나머지=연관종목. 값 없으면 '–' */
-function cmpFmt(v){ if(v==null||isNaN(v)) return '–'; return v>=100?Math.round(v).toLocaleString('en-US'):(+v).toFixed(v>=10?1:2); }
+/* 동종 비교 테이블(PER·PBR·PSR): d.peers[0]=본종목, 나머지=연관종목. 값 없으면 '-' */
+function cmpFmt(v){ if(v==null||isNaN(v)) return '-'; return v>=100?Math.round(v).toLocaleString('en-US'):(+v).toFixed(v>=10?1:2); }
 function cmpTableHtml(d){
   const ps=Array.isArray(d.peers)?d.peers.filter(p=>p&&(p.name||p.sym)):[];
   if(ps.length<2) return '';   // 본종목 + 비교대상 1개 이상일 때만
@@ -1851,7 +1851,7 @@ function cmpTableHtml(d){
   }).join('');
   return `<div class="cmp-wrap"><div class="cmp-title">동종 비교 · PER · PBR · PSR</div>
     <table class="cmp"><thead><tr><th class="l">종목</th><th>PER</th><th>PBR</th><th>PSR</th></tr></thead><tbody>${rows}</tbody></table>
-    <div class="cmp-note">PER 주가수익 · PBR 주가순자산 · PSR 주가매출 — 낮을수록 저평가(업종 따라 상이) · 데이터: 야후 · 한국 종목 일부 미제공(–)</div></div>`;
+    <div class="cmp-note">PER 주가수익 · PBR 주가순자산 · PSR 주가매출. 낮을수록 저평가지만 업종에 따라 기준이 다릅니다. 데이터는 야후이고 한국 종목 일부는 제공되지 않습니다(-)</div></div>`;
 }
 function renderDeep(){
   const row = WL.find(x=>x.sym===SEL);
@@ -1976,7 +1976,7 @@ async function loadStockNews(sym, row){
   if(baseSym(SEL)===base) renderStockNews(sym, row);
 }
 
-/* ---- 증권사 리포트(한국=네이버 리서치 PDF) / SEC 공식 공시(미국) — /api/reports ---- */
+/* ---- 증권사 리포트(한국=네이버 리서치 PDF) / SEC 공식 공시(미국): /api/reports ---- */
 const STOCKREPORTS={};
 function renderStockReports(sym, row){
   const pane=document.getElementById('pane-report'); if(!pane) return;
@@ -2016,10 +2016,10 @@ async function loadStockReports(sym, row){
 function renderFooter(){
   document.getElementById('engine').innerHTML = ENGINE.map(e=>`<div class="e"><div class="k">${e.k}</div><div class="v">${e.v}</div></div>`).join('');
   document.getElementById('disc').innerHTML =
-    '✅ <b>자동 갱신</b>: 시장지표 16종·환율·역레포잔고(거의 실시간 — 미국 CNBC·국내 네이버금융(코스피·코스닥 실시간)·역레포 NY연준, 5초 갱신) · 관심종목 시세(10초) · 비트코인(5초·Binance) · 실시간 뉴스(60초) · 추천 영상(5분) · 핵심 일정의 경제지표·실적(5분) · 시가총액 히트맵(네이버 실시간·5초). 각 지표 클릭 시 출처 사이트로 이동(새 탭). ' +
-    '📅 <b>주요 지표·실적</b>: 지난주(−7일)~다음달(+30일) 한·미 경제지표·실적을 수집하며, 발표되면 <b>실제 수치·서프라이즈</b>와 한국어 <b>📰 분석 기사</b>를 함께 표시합니다(대시보드는 지난주~이번주, 전체는 일정 페이지). ' +
+    '✅ <b>자동 갱신</b>: 시장지표 16종·환율·역레포잔고(거의 실시간. 미국 CNBC·국내 네이버금융(코스피·코스닥 실시간)·역레포 NY연준, 5초 갱신) · 관심종목 시세(10초) · 비트코인(5초·Binance) · 실시간 뉴스(60초) · 추천 영상(5분) · 핵심 일정의 경제지표·실적(5분) · 시가총액 히트맵(네이버 실시간·5초). 각 지표 클릭 시 출처 사이트로 이동(새 탭). ' +
+    '📅 <b>주요 지표·실적</b>: 지난주(−7일)부터 다음달(+30일)까지 한·미 경제지표와 실적을 모읍니다. 발표가 나오면 <b>실제 수치·서프라이즈</b>와 한국어 <b>📰 분석 기사</b>를 함께 붙입니다(대시보드는 지난주~이번주, 전체는 일정 페이지). ' +
     '🔄 <b>주기적 갱신</b>: 종목 심층분석(에이전트 생성) · 한국/원거리 실적 일정(분기 단위, 재수집 시 반영). ' +
-    '⚠ <b>샘플</b>: 테마별 전문가 데스크 리포트(예시). &nbsp; 본 화면은 정보 제공용이며 투자자문·매매 권유가 아닙니다. 투자 판단과 책임은 이용자 본인에게 있습니다.';
+    '⚠ <b>샘플</b>: 테마별 전문가 데스크 리포트(예시). &nbsp; 이 화면은 정보 제공용이지 투자자문이나 매매 권유가 아닙니다. 투자 판단과 책임은 본인에게 있습니다.';
 }
 
 /* 시계 / 마켓 세션 (대한민국 서울 KST 기준) */
@@ -2103,7 +2103,7 @@ function seedMarketFromCache(){                  // 데모값 대신 직전 시�
    가격·등락은 실시간 소스, 스파크라인은 스냅샷(장중 5분봉)으로 시드한 뒤 실시간 틱을 누적. */
 let marketTime='';
 let MKT_SP_SEEDED=false;
-async function seedSpark(){                       // 스파크라인 시드(스냅샷 5분봉) — 1회
+async function seedSpark(){                       // 스파크라인 시드(스냅샷 5분봉). 1회만
   if(MKT_SP_SEEDED) return; MKT_SP_SEEDED=true;
   try{ const r=await fetch('data/market.json?t='+Date.now(),{cache:'no-store'});
     if(r.ok){ const m=await r.json(); SAMPLE_INDEX.forEach(d=>{ const q=m[d.key]; if(q&&Array.isArray(q.sp)&&q.sp.length>1) d.sp=q.sp.slice(-48); }); } }catch(e){}
@@ -2113,7 +2113,7 @@ function pushSpark(d, price){                      // 실시간 틱 누적(롤�
   if(!Array.isArray(d.sp)) d.sp=[];
   if(d.sp[d.sp.length-1]!==price){ d.sp.push(price); if(d.sp.length>48) d.sp.shift(); }
 }
-/* 상단 지표 미니 캔들용 OHLC — /api/chart(야후, 지수 심볼 동작). 장 마감(주말)이면 직전 세션을 미리보기로 표시. */
+/* 상단 지표 미니 캔들용 OHLC: /api/chart(야후, 지수 심볼 동작). 장 마감(주말)이면 직전 세션을 미리보기로 표시. */
 const STRIP_YF={kospi:'^KS11',ewy:'EWY',kosdaq:'^KQ11',spx:'^GSPC',ndx:'^NDX',ndxfut:'NQ=F',sox:'^SOX',btc:'BTC-USD',gold:'GC=F',wti:'CL=F',ust10y:'^TNX',usdkrw:'KRW=X',usdjpy:'JPY=X',vix:'^VIX'};
 function downOHLC(arr,n){
   if(arr.length<=n) return arr.map(b=>({o:b.open,h:b.high,l:b.low,c:b.close}));
@@ -2194,13 +2194,12 @@ function updateLiveBadge(n){
 
 /* ---- 관심종목 실시간 시세: data/quotes.json ---- */
 async function loadWatch(){
-  wlSigRefresh();                          // 매수시기 진단(10분 캐시 — 대부분 즉시 반환, quote 조기 return 과 무관하게 먼저)
+  wlSigRefresh();                          // 매수시기 진단(10분 캐시라 대부분 즉시 반환, quote 조기 return 과 무관하게 먼저)
   const syms=[...new Set(WL.map(x=>x.sym))];
-  // 코드만 저장된 옛 항목(예: '005930')은 서버가 알려준 거래소로 심볼을 고쳐 저장한다 —
-  // 그대로 두면 차트·지표 조회가 모두 빗나가고 시세도 «…» 로 남는다.
+  // 코드만 저장된 옛 항목(예: '005930')은 서버가 알려준 거래소로 심볼을 고쳐 저장한다:   // 그대로 두면 차트·지표 조회가 모두 빗나가고 시세가 빈칸으로 남는다.
   const apply=q=>{ let fixed=false;
     WL.forEach(it=>{ const v=q[it.sym]; if(!v) return;
-      if(v.ex){                                  // 서버가 알려준 실제 거래소로 교정 — 맨코드·이전 시장 이력 모두
+      if(v.ex){                                  // 서버가 알려준 실제 거래소로 교정. 맨코드·이전 시장 이력 모두
         const m=String(it.sym).match(/^(\d{6})(?:\.(KS|KQ))?$/);
         if(m && m[2]!==v.ex){ it.sym=m[1]+'.'+v.ex; it.mk='kr'; fixed=true; }
       }
@@ -2208,8 +2207,8 @@ async function loadWatch(){
     if(fixed){ if(!WL.some(x=>x.sym===SEL)) SEL=WL.length?WL[0].sym:null; saveWL(); }
     renderWL(); renderDeep(); };
   if(syms.length){
-    // 1) 서버 실시간 API — 요청당 25종목이 상한이라 나눠 보내고 합친다.
-    //    한 번에 다 보내면 상한을 넘은 뒤쪽 종목이 통째로 «…» 로 남는다.
+    // 1) 서버 실시간 API: 요청당 25종목이 상한이라 나눠 보내고 합친다.
+    //    한 번에 다 보내면 상한을 넘은 뒤쪽 종목이 통째로 빈칸으로 남는다.
     const parts=[];
     for(let i=0;i<syms.length;i+=25) parts.push(syms.slice(i,i+25));
     const rs=await Promise.all(parts.map(p=>
@@ -2223,11 +2222,11 @@ async function loadWatch(){
   }catch(e){}
 }
 
-/* ===== 관심종목 매수시기 진단 — 일봉 MACD·RSI 판정 + PBR-ROE 회귀 적정 PBR =====
+/* ===== 관심종목 매수시기 진단: 일봉 MACD·RSI 판정 + PBR-ROE 회귀 적정 PBR =====
    판정: 최근 5거래일 내 MACD(12,26,9) 골든크로스 + RSI(14)≥50 → 매수 신호(반대는 매도),
-         크로스가 없으면 MACD-시그널 배열과 RSI 로 상승/하락/중립 — 매매 시그널 페이지 장기 모드와 같은 기준.
+         크로스가 없으면 MACD-시그널 배열과 RSI 로 상승/하락/중립. 매매 시그널 페이지 장기 모드와 같은 기준.
    회귀: 잔여이익모형 justified PBR=(ROE−g)/(r−g)를 시장 평균 가격선으로 근사한
-         코스피 12MF 회귀식 y=0.0696×ROE+0.2953 — 현 PBR 이 −10% 이하면 저평가(매수 검토 구간). */
+         코스피 12MF 회귀식 y=0.0696×ROE+0.2953. 현 PBR 이 −10% 이하면 저평가(매수 검토 구간). */
 const WLSIG={};                            // sym → {ts, j, val, gap}
 const WLSIG_TTL=10*60*1000;
 const WLREG_A=0.0696, WLREG_B=0.2953;
@@ -2243,7 +2242,7 @@ function wlJudge(closes){
   if(m!=null&&s!=null&&m<s&&rsi<50)  return {v:'down',t:'하락 추세',rsi};
   return {v:'neu',t:'중립',rsi};
 }
-function wlValMeta(sym){                   // 밸류 조회용 시장·코드 (kr: 6자리 / us: 티커 — 서버가 .O·.K 접미사 자동 탐색)
+function wlValMeta(sym){                   // 밸류 조회용 시장·코드 (kr: 6자리 / us: 티커. 서버가 .O·.K 접미사를 자동 탐색)
   const m=String(sym).match(/^(\d{6})\.(KS|KQ)$/);
   return m?{mkt:'kr',code:m[1]}:{mkt:'us',code:String(sym)};
 }
@@ -2296,7 +2295,7 @@ function wlSigChips(sym){
       +(c.j.ago!=null?(c.j.ago===0?'·오늘':'·'+c.j.ago+'일 전'):'')+'</span>';
   }
   if(c.gap){ const gl=wlGapLabel(c.gap);
-    h+='<span class="wl-chip '+gl[1]+'" title="적정 PBR(ROE 회귀) '+c.gap.fair.toFixed(2)+'배 대비 현 PBR — y=0.0696×ROE+0.2953">회귀 '
+    h+='<span class="wl-chip '+gl[1]+'" title="적정 PBR(ROE 회귀) '+c.gap.fair.toFixed(2)+'배 대비 현 PBR. y=0.0696×ROE+0.2953">회귀 '
       +(c.gap.gap>0?'+':'')+c.gap.gap.toFixed(0)+'% '+gl[0]+'</span>'; }
   return h?('<div class="wl-sig">'+h+'</div>'):'';
 }
@@ -2307,7 +2306,7 @@ function renderWLDiag(){
   const j=c.j, v=c.val, g=c.gap;
   const vdCls=j?(j.v==='buy'?'up':(j.v==='sell'?'down':'')):'';
   const head=j?('<b class="v '+vdCls+'">'+(j.v==='buy'?'▲ ':(j.v==='sell'?'▼ ':''))+j.t+'</b>'
-    +(j.ago!=null?' — MACD '+(j.v==='buy'?'골든':'데드')+'크로스 '+(j.ago===0?'오늘':j.ago+'거래일 전')+' 발생':'')
+    +(j.ago!=null?', MACD '+(j.v==='buy'?'골든':'데드')+'크로스 '+(j.ago===0?'오늘':j.ago+'거래일 전')+' 발생':'')
     +(j.rsi!=null?' · RSI(14) '+j.rsi.toFixed(1)+(j.rsi>=50?' ≥ 50':' < 50'):'')
     +' <small style="color:var(--muted2)">(일봉 기준)</small>'):'';
   let reg='';
@@ -2315,35 +2314,35 @@ function renderWLDiag(){
     reg='적정 PBR(ROE 회귀) <b class="mono">'+g.fair.toFixed(2)+'배</b> · 현 PBR <b class="mono">'+v.pbr.toFixed(2)+'배</b>'
       +' → 괴리 <b class="mono '+gc+'">'+(g.gap>0?'+':'')+g.gap.toFixed(1)+'%</b> <b class="'+gc+'">['+gl[0]+']</b>'
       +' <small style="color:var(--muted2)">y=0.0696×ROE+0.2953</small>';
-  } else if(v&&v.eps!=null&&v.eps<0){ reg='적정 PBR(ROE 회귀) — <span style="color:var(--muted2)">적자 기업(PER 없음)이라 산출 불가</span>'; }
+  } else if(v&&v.eps!=null&&v.eps<0){ reg='적정 PBR(ROE 회귀): <span style="color:var(--muted2)">적자 기업(PER 없음)이라 산출 불가</span>'; }
   let meta='';
   if(v){ const drop=(v.hi52>0&&it.px>0)?((it.px/v.hi52-1)*100):null;
-    meta='PER <b class="mono">'+(v.per!=null?v.per.toFixed(1)+'배':'적자')+'</b> · ROE(근사) <b class="mono">'+(v.roe!=null?v.roe.toFixed(1)+'%':'—')+'</b>'
-      +' · 배당 <b class="mono">'+(v.divYield!=null?v.divYield.toFixed(2)+'%':'—')+'</b>'
+    meta='PER <b class="mono">'+(v.per!=null?v.per.toFixed(1)+'배':'적자')+'</b> · ROE(근사) <b class="mono">'+(v.roe!=null?v.roe.toFixed(1)+'%':'-')+'</b>'
+      +' · 배당 <b class="mono">'+(v.divYield!=null?v.divYield.toFixed(2)+'%':'-')+'</b>'
       +(drop!=null?' · 52주 고점 대비 <b class="mono">'+drop.toFixed(0)+'%</b>':'');
   }
   const buyish=j&&j.v==='buy', cheap=g&&g.gap<=-10;
-  const sum= buyish&&cheap ? '✅ <b>기술적 매수 신호와 회귀 저평가가 겹칩니다 — 매수 검토 구간입니다.</b>'
-    : buyish ? '기술적 매수 신호는 있으나 밸류에이션은 '+(g?wlGapLabel(g)[0]:'미확인')+' — 비중을 줄인 진입을 고려하세요.'
-    : cheap ? '수익성 대비 저평가 상태지만 기술적 매수 신호는 아직입니다 — 반등 신호(골든크로스) 확인 후 진입이 안전합니다.'
-    : (j&&j.v==='sell') ? '매도 신호 구간 — 신규 매수보다 리스크 관리가 우선입니다.'
-    : '뚜렷한 매수 근거가 아직 없습니다 — 신호 대기.';
-  el.innerHTML='<b>🎯 매수 타이밍 진단</b> — '+(it.name||SEL)
+  const sum= buyish&&cheap ? '✅ <b>기술적 매수 신호와 회귀 저평가가 겹칩니다. 매수 검토 구간입니다.</b>'
+    : buyish ? '기술적 매수 신호는 있으나 밸류에이션은 '+(g?wlGapLabel(g)[0]:'미확인')+'입니다. 비중을 줄인 진입을 고려하세요.'
+    : cheap ? '수익성 대비 저평가 상태지만 기술적 매수 신호는 아직입니다. 반등 신호(골든크로스)를 확인한 뒤 진입이 안전합니다.'
+    : (j&&j.v==='sell') ? '매도 신호 구간입니다. 신규 매수보다 리스크 관리가 우선입니다.'
+    : '뚜렷한 매수 근거가 아직 없습니다. 신호를 기다리세요.';
+  el.innerHTML='<b>🎯 매수 타이밍 진단</b>: '+(it.name||SEL)
     +'<span style="float:right"><a class="go" href="javascript:void 0" id="wl-diag-go">매매 시그널 ⭐관심에서 상세 분석 →</a></span>'
     +'<br>'+[head,reg,meta].filter(Boolean).join('<br>')
     +'<div class="sum">'+sum+'</div>';
   el.style.display='';
   const go=document.getElementById('wl-diag-go'); if(go) go.onclick=openSignalsWatch;
 }
-/* 대시보드 관심종목 → 매매 시그널 ⭐관심 — 저장 키는 항상 동기화되어 있으므로 watch 탭만 지정하고 이동 */
+/* 대시보드 관심종목 → 매매 시그널 ⭐관심: 저장 키는 항상 동기화되어 있으므로 watch 탭만 지정하고 이동 */
 function openSignalsWatch(){
   try{ wlsMergeAll(); localStorage.setItem('alphadesk.sig.mkt','watch'); }catch(e){}
   location.href='signals.html';
 }
 
-/* ===== 재무제표 분석 탭 — /api/finance(네이버) · 연간/분기 토글 · 인터랙티브 SVG 차트 + 전체 표 =====
+/* ===== 재무제표 분석 탭: /api/finance(네이버) · 연간/분기 토글 · 인터랙티브 SVG 차트 + 전체 표 =====
    국내: 억원 단위 16개 항목(매출·이익·이익률·ROE·부채비율·EPS·PER·BPS·PBR·배당 등)
-   미국: USD 백만 단위 동일 구조. isConsensus='Y' 열은 증권가 컨센서스 추정치(E) — 파랑 표시. */
+   미국: USD 백만 단위 동일 구조. isConsensus='Y' 열은 증권가 컨센서스 추정치(E)로 파랑 표시. */
 const FIN={};                              // `${sym}|${period}` → {ts, data}
 let FIN_PERIOD=(()=>{ try{ return localStorage.getItem('alphadesk.finperiod')==='quarter'?'quarter':'annual'; }catch(e){ return 'annual'; } })();
 let FIN_LAST='';
@@ -2364,7 +2363,7 @@ function finRowOf(d,names){
   return null;
 }
 function finFmt(v,us){
-  if(v==null||!isFinite(v)) return '—';
+  if(v==null||!isFinite(v)) return '-';
   const a=Math.abs(v), s=v<0?'-':'';
   if(us) return s+(a>=1000?(a/1000).toFixed(1)+'B':Math.round(a).toLocaleString()+'M');
   return s+(a>=10000?(a/10000).toFixed(1)+'조':Math.round(a).toLocaleString()+'억');
@@ -2408,7 +2407,7 @@ function finBarsSVG(view,us){
     svg+='<rect data-fi="'+i+'" x="'+(PX+i/n*PW).toFixed(1)+'" y="0" width="'+(PW/n).toFixed(1)+'" height="'+H+'" fill="transparent"/>';
   return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block">'+svg+'</svg>';
 }
-/* 범용 다중 꺾은선 (수익성·밸류에이션·배당 공용) — yFmt 로 축 단위 지정 */
+/* 범용 다중 꺾은선 (수익성·밸류에이션·배당 공용): yFmt 로 축 단위 지정 */
 function finMultiLine(cols,seriesIn,yFmt,H){
   const series=(seriesIn||[]).filter(s=>s&&s.row&&s.row.view.some(v=>v!=null));
   const n=cols.length; if(!n||!series.length) return '';
@@ -2434,7 +2433,7 @@ function finMultiLine(cols,seriesIn,yFmt,H){
       +'<rect data-fi="'+i+'" x="'+(PX+i/n*PW).toFixed(1)+'" y="0" width="'+(PW/n).toFixed(1)+'" height="'+H+'" fill="transparent"/>';
   return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block">'+svg+'</svg>';
 }
-/* 성장률(YoY) 묶음 막대 — 연간=전기 대비 · 분기=전년 동기 대비 */
+/* 성장률(YoY) 묶음 막대: 연간=전기 대비 · 분기=전년 동기 대비 */
 function finGrowthSVG(cols,grow){
   const series=[['매출',grow.sales,'var(--accent)'],['영업이익',grow.op,'#f4b000'],['순이익',grow.ni,'#22c55e']].filter(s=>s[1]&&s[1].some(v=>v!=null));
   const n=cols.length; if(!n||!series.length) return '';
@@ -2483,7 +2482,7 @@ async function finRender(force){
     return;
   }
   const us=wlValMeta(SEL).mkt==='us';
-  // 표시 열: 분기는 최근 8개(추정 포함), 연간은 전체 — 성장률은 절단 전 전체 열로 계산
+  // 표시 열: 분기는 최근 8개(추정 포함), 연간은 전체: 성장률은 절단 전 전체 열로 계산
   const keep=d.cols.map((c,i)=>i);
   const idx=FIN_PERIOD==='quarter'&&keep.length>8?keep.slice(-8):keep;
   const cols=idx.map(i=>({key:d.cols[i].key,est:!!d.cols[i].est,lab:finPeriodLab(d.cols[i].key,d.mkt)}));
@@ -2561,8 +2560,8 @@ async function finRender(force){
   const tbl='<div class="fin-tbl-wrap"><table class="fin"><thead><tr><th>항목</th>'
     +cols.map(c=>'<th'+(c.est?' class="est"':'')+'>'+c.lab+(c.est?' (E)':'')+'</th>').join('')+'</tr></thead><tbody>'
     +d.rows.map(r=>'<tr><td>'+esc2(r.title)+'</td>'
-      +idx.map((i,k)=>{ const rv=r.raw[i]||'—';
-        return '<td class="'+(cols[k].est?'est ':'')+(String(rv).indexOf('-')===0&&rv!=='-'?'neg':'')+'">'+esc2(rv==='' ?'—':rv)+'</td>'; }).join('')
+      +idx.map((i,k)=>{ const rv=r.raw[i]||'-';
+        return '<td class="'+(cols[k].est?'est ':'')+(String(rv).indexOf('-')===0&&rv!=='-'?'neg':'')+'">'+esc2(rv==='' ?'-':rv)+'</td>'; }).join('')
       +'</tr>').join('')+'</tbody></table></div>';
   pane.innerHTML=seg+sum
     +'<div class="fin-chart" id="fin-c1"><h5>실적 추이'+(FIN_PERIOD==='quarter'?' (분기)':' (연간)')+' '+lg1+'</h5>'+finBarsSVG(view,us)+'<div class="fin-tip" id="fin-tip1"></div></div>'
@@ -2570,7 +2569,7 @@ async function finRender(force){
     +(gSvg?'<div class="fin-chart" id="fin-c3"><h5>성장률 YoY ('+yoyLbl+') '+lgG+'</h5>'+gSvg+'<div class="fin-tip" id="fin-tip3"></div></div>':'')
     +(linesSvg?'<div class="fin-chart" id="fin-c2"><h5>수익성 · 건전성 (%) '+lg2+'</h5>'+linesSvg+'<div class="fin-tip" id="fin-tip2"></div></div>':'')
     +(vSvg?'<div class="fin-chart" id="fin-c4"><h5>밸류에이션 추이 (배) '+lgV+'</h5>'+vSvg+'<div class="fin-tip" id="fin-tip4"></div></div>':'')
-    +(dSvg?'<div class="fin-chart" id="fin-c5"><h5>주주환원 — '+(view.dps&&view.dps.view.some(v=>v!=null)?'주당배당금(원)':'배당수익률(%)')+'</h5>'+dSvg+'<div class="fin-tip" id="fin-tip5"></div></div>':'')
+    +(dSvg?'<div class="fin-chart" id="fin-c5"><h5>주주환원: '+(view.dps&&view.dps.view.some(v=>v!=null)?'주당배당금(원)':'배당수익률(%)')+'</h5>'+dSvg+'<div class="fin-tip" id="fin-tip5"></div></div>':'')
     +'</div>'
     +tbl
     +'<div class="srep-note">차트에 마우스를 올리면 기간별 상세 값이 표시됩니다. 컨센서스(E)는 증권가 추정 평균으로 실제 발표치와 다를 수 있습니다. '
@@ -2581,7 +2580,7 @@ async function finRender(force){
     FIN_PERIOD=b.dataset.fp; try{ localStorage.setItem('alphadesk.finperiod',FIN_PERIOD); }catch(e){}
     finRender(true);
   }));
-  // 호버 툴팁 (기간별 상세 — 모든 차트 공용)
+  // 호버 툴팁 (기간별 상세: 모든 차트 공용)
   const tipFor=(host,tip)=>{
     host.addEventListener('mousemove',e=>{
       const t=e.target.closest('[data-fi]'); const el=document.getElementById(tip);
@@ -2626,7 +2625,7 @@ document.getElementById('colorToggle').addEventListener('click',e=>{
   document.body.classList.toggle('us-colors');
   e.target.textContent = document.body.classList.contains('us-colors') ? '색상: 미국식' : '색상: 한국식';
 });
-/* 라이트/다크 테마 토글 — localStorage 저장, 페이지 간 공유 */
+/* 라이트/다크 테마 토글: localStorage 저장, 페이지 간 공유 */
 function setThemeClass(mode){
   const light=mode==='light';
   document.body.classList.toggle('light',light);
@@ -2743,7 +2742,7 @@ function hmLegend(){
 }
 function renderHeatmap(){
   const mkt=hmEffective();
-  // 시장이 바뀌면 이전 시장 SVG 제거 — 옛 타일이 남아 잘못된 종목이 클릭되는 것 방지
+  // 시장이 바뀌면 이전 시장 SVG 제거: 옛 타일이 남아 잘못된 종목이 클릭되는 것 방지
   if(hmMkt!==mkt){ const h=document.getElementById('hm-widget'); if(h) h.innerHTML=''; krData=null; hmZoom=null; hmBackChip(); }
   hmMkt=mkt;
   const open=document.getElementById('hm-open');
@@ -2755,7 +2754,7 @@ function renderHeatmap(){
 
 /* ── 실시간 트리맵: 데이터 ── */
 async function loadKrHeatmap(force){
-  // 진행 중이면 강제 요청은 예약해 두었다가 종료 직후 재실행 — 시장 전환이 in-flight 요청에 삼켜지지 않게
+  // 진행 중이면 강제 요청은 예약해 두었다가 종료 직후 재실행: 시장 전환이 in-flight 요청에 삼켜지지 않게
   if(krLoading){ if(force) krPending=true; return; }
   if(!force && (document.hidden || !hmVisible)) return;
   const mkt=hmMkt||'kospi';
@@ -2847,7 +2846,7 @@ function squarify(children, x, y, w, h){
 /* 색: --up/--down/--flat 을 읽어 보간 → 한국식/미국식 색상과 라이트/다크가 자동 반영 */
 const mixRGB=(a,b,t)=>[Math.round(a[0]+(b[0]-a[0])*t),Math.round(a[1]+(b[1]-a[1])*t),Math.round(a[2]+(b[2]-a[2])*t)];
 const rgbCss=c=>'rgb('+c[0]+','+c[1]+','+c[2]+')';
-/* 등락률 색상 팔레트 — 미국식(핀비즈: 녹↑/적↓) 또는 한국식(적↑/청↓).
+/* 등락률 색상 팔레트: 미국식(핀비즈: 녹↑/적↓) 또는 한국식(적↑/청↓).
    ±1/3, ±2/3 지점에 중간 스톱을 둔 4단 램프라 약보합·강세 구분이 뚜렷하다. */
 const FV_FLAT=[65,69,84];                                        // #414554 (보합)
 const RAMP_G=[FV_FLAT,[53,118,78],[47,158,79],[48,204,90]];      // 녹색 → #30CC5A
@@ -2895,7 +2894,7 @@ let HM_PERIOD=(()=>{ try{ const v=localStorage.getItem('alphadesk.hmperiod'); if
 const hmPeriod=()=>PERIODS.find(p=>p.v===HM_PERIOD)||PERIODS[0];
 const HM_PERF={kr:null, us:null};
 let _perfLoaded=false;
-function loadPerf(){                                     // 기간 수익률 기준가(정적 JSON) — 1회 지연 로드
+function loadPerf(){                                     // 기간 수익률 기준가(정적 JSON). 1회만 지연 로드
   if(_perfLoaded) return; _perfLoaded=true;
   [['kr','data/kr_perf.json'],['us','data/us_perf.json']].forEach(async pair=>{
     try{ const r=await fetch(pair[1]); if(r.ok){ HM_PERF[pair[0]]=await r.json(); if(HM_PERIOD!=='1d'&&krData) drawKr(); } }catch(e){}
@@ -2916,13 +2915,13 @@ function effOf(it){
 }
 const sessKor=t=>t==='PRE_MARKET'?'프리마켓':(t==='AFTER_MARKET'?'애프터마켓':'');
 function fmtPct(v){
-  if(v==null || !isFinite(v)) return '—';
+  if(v==null || !isFinite(v)) return '-';
   const a=Math.abs(v);
   return (v>=0?'+':'')+(a>=100?v.toFixed(0):(a>=10?v.toFixed(1):v.toFixed(2)))+'%';
 }
 const fmtPx=v=>isUSm(hmMkt) ? '$'+Number(v).toLocaleString('en-US',{maximumFractionDigits:2}) : Number(v).toLocaleString('en-US')+'원';
 const fmtCap=v=>isUSm(hmMkt) ? (v>=1e12 ? '$'+(v/1e12).toFixed(2)+'T' : '$'+Math.round(v/1e9)+'B') : capText(v);
-/* 네이버 종목 로고 CDN — 국내는 종목코드, 해외는 로이터코드. 파일이 없으면 onerror 로 제거 */
+/* 네이버 종목 로고 CDN: 국내는 종목코드, 해외는 로이터코드. 파일이 없으면 onerror 로 제거 */
 const LOGO_BASE='https://ssl.pstatic.net/imgstock/fn/real/logo/png/stock/Stock';
 const logoOf=it=>isUSm(hmMkt) ? (it.rc?LOGO_BASE+it.rc+'.png':'') : LOGO_BASE+it.code+'.png';
 /* 주어진 폭에 들어가는 만큼만 이름을 자른다 (한글≈1em · 영문/숫자≈0.58em, 넘치면 …) */
@@ -2970,7 +2969,7 @@ function krTreemap(host, items, opts){
   const groups=[], rest=[];
   for(const name in bySec){
     const arr=bySec[name]; let cap=0; for(const it of arr) cap+=it.cap;
-    if(name==='기타' || cap/total<minShare) rest.push.apply(rest,arr);   // 잘게 쪼개진 업종은 «기타»로 병합
+    if(name==='기타' || cap/total<minShare) rest.push.apply(rest,arr);   // 잘게 쪼개진 업종은 기타로 병합
     else groups.push({name, value:cap, arr});
   }
   if(rest.length){ let cap=0; for(const it of rest) cap+=it.cap; groups.push({name:'기타', value:cap, arr:rest}); }
@@ -2981,7 +2980,7 @@ function krTreemap(host, items, opts){
   let rects;
   const zg = (opts&&opts.zoom) ? groups.find(x=>x.name===opts.zoom) : null;
   if(zg){
-    // 섹터 줌: 내부를 세부 산업별로 재그룹 — 핀비즈에서 섹터를 클릭했을 때와 동일한 상세 화면
+    // 섹터 줌: 내부를 세부 산업별로 재그룹: 핀비즈에서 섹터를 클릭했을 때와 동일한 상세 화면
     const inds={};
     for(const it of zg.arr){ const k=(it.ind||'').trim()||zg.name; (inds[k]||(inds[k]=[])).push(it); }
     const keys=Object.keys(inds);
@@ -3020,7 +3019,7 @@ function krTreemap(host, items, opts){
     if(g) g.querySelectorAll('text').forEach(tx=>tx.setAttribute('y', (+tx.getAttribute('y'))-(L+4)/2));
   },{once:true}));
 }
-/* 툴팁·클릭은 #hm-body 에 위임 — 트리맵 innerHTML 재생성과 무관하게 1회만 바인딩 */
+/* 툴팁·클릭은 #hm-body 에 위임: 트리맵 innerHTML 재생성과 무관하게 1회만 바인딩 */
 function bindHmTiles(){
   const body=document.getElementById('hm-body'), tip=document.getElementById('hm-tip');
   if(!body||!tip||body._hmBound) return; body._hmBound=true;
@@ -3061,7 +3060,7 @@ function hmObserveResize(){
   _hmRO=new ResizeObserver(()=>{ clearTimeout(_hmROt); _hmROt=setTimeout(()=>{ if(krData) drawKr(); },150); });
   _hmRO.observe(body);
 }
-/* 히트맵(무거운 iframe·폴링)은 뷰포트 진입 시에만 로드 — 초기 로딩 가속 */
+/* 히트맵(무거운 iframe·폴링)은 뷰포트 진입 시에만 로드: 초기 로딩 가속 */
 function setupHeatmapLazy(){
   bindHmTiles(); hmObserveResize();
   bindHmControls2();
@@ -3075,23 +3074,23 @@ function setupHeatmapLazy(){
       else { hmAutoTick(); loadKrHeatmap(); }   // 화면에 다시 들어오면 즉시 갱신
     },{rootMargin:'250px'});
     io.observe(card);
-    setTimeout(start,5000);   // 안전망 — 1회 렌더만. 폴링 여부(hmVisible)는 IO 의 실제 교차 상태만 신뢰
+    setTimeout(start,5000);   // 안전망. 1회 렌더만. 폴링 여부(hmVisible)는 IO 의 실제 교차 상태만 신뢰
   } else { hmVisible=true; setTimeout(start,1500); }
 }
-/* HTML 이스케이프 — 표·목록 렌더에서 공용.
+/* HTML 이스케이프: 표·목록 렌더에서 공용.
    히트맵 타일·종목 공시·증권사 리포트는 코드·시총 같은 숫자도 넘기므로 String() 으로 강제한다. */
 function calEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function htmlEsc(s){ return calEsc(s); }
 { const el=document.getElementById('sync-chip'); if(el) el.onclick=syncConfigure; }   // 동기화 상태 칩
 
-/* 초기화 — ① 동기 렌더(샘플/캐시) 즉시 ② 임계 데이터 먼저 ③ 무거운·비임계는 유휴/뷰포트 진입 시 */
+/* 초기화: ① 동기 렌더(샘플/캐시) 즉시 ② 임계 데이터 먼저 ③ 무거운·비임계는 유휴/뷰포트 진입 시 */
 const idleLoad=(fn,n=1)=>{ if(window.requestIdleCallback) requestIdleCallback(fn,{timeout:600*n+800}); else setTimeout(fn,250*n); };
 seedDeepFromCache();                                                            // 저장된 심층분석을 즉시 시드(재방문 빠른 로딩)
 seedMarketFromCache();                                                          // 데모값 대신 직전 시세 즉시 시드(과거값 깜빡임 방지)
 renderStrip(); renderWL(); renderDeep(); renderFooter(); tick();
 renderHmDataset();
 loadWatchlistBaseline();                                                       // 저장본 없으면 data/watchlist.json 시드
-cloudInit();                                                                   // 서버(KV) 동기화 — 있으면 서버값 우선, 없으면 무중단 폴백
+cloudInit();                                                                   // 서버(KV) 동기화. 있으면 서버값 우선, 없으면 무중단 폴백
 loadMarket(); loadWatch(); loadBTC(); loadDeep();                              // 임계(상단 시세·관심종목·심층)
 idleLoad(()=>{ loadFearGreed(); }, 1);                                         // 공포탐욕(이후 10분 주기)
 idleLoad(()=>{ loadTossFlow(); loadTossCal(); }, 3);                            // 토스 수급·휴장 캘린더
@@ -3103,7 +3102,7 @@ setInterval(loadDeep,120000);                    // 심층분석 2분(큐레이�
 setInterval(tick,1000);
 setInterval(loadMarket,5000);                    // 지표 5초(거의 실시간)
 setInterval(loadStripCandles,180000);            // 지표 미니 캔들 3분(장중 봉 갱신)
-setInterval(()=>{                                // 관심종목 1분 — 장중에만(탭 숨김·양쪽 휴장이면 스킵)
+setInterval(()=>{                                // 관심종목 1분. 장중에만(탭 숨김·양쪽 휴장이면 스킵)
   if(document.hidden) return;
   if(!krSessionOpen()&&!usSessionOpen()) return;
   loadWatch();
@@ -3112,8 +3111,7 @@ TF_TIMER=setInterval(loadTossFlow,600000);       // 토스 투자자별 수급 1
 setInterval(loadBTC,5000);                       // 비트코인 5초(바이낸스 실시간)
 setInterval(loadFearGreed,600000);               // 공포탐욕 10분
 
-/* 창 리사이즈 중 가변 폰트(vw clamp)의 연속 리플로우 완화(특히 맥에서 버벅임) —
-   드래그 중엔 루트 글씨를 고정해 매 프레임 텍스트 재배치를 막고, 크기가 확정(180ms 안정)되면 한 번에 적용.
+/* 창 리사이즈 중 가변 폰트(vw clamp)의 연속 리플로우 완화(특히 맥에서 버벅임):    드래그 중엔 루트 글씨를 고정해 매 프레임 텍스트 재배치를 막고, 크기가 확정(180ms 안정)되면 한 번에 적용.
    CSS의 clamp()는 첫 페인트·무JS 폴백으로 유지(컬럼은 fr이라 창을 가볍게 그대로 따라감). */
 (function(){
   const root=document.documentElement; let frozen=false, t=null;

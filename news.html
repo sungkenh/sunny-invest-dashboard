@@ -129,7 +129,7 @@
 
   @media(max-width:1100px){ .hotrow{grid-template-columns:repeat(2,1fr)} }
   @media(max-width:840px){ .news-cols{grid-template-columns:1fr} .search input{width:150px} }
-  /* ===== 페이지 전환 부드럽게 — Cross-Document View Transitions(지원 브라우저). 미지원 시 일반 이동으로 무해 폴백 ===== */
+  /* ===== 페이지 전환 부드럽게: Cross-Document View Transitions(지원 브라우저). 미지원 시 일반 이동으로 무해 폴백 ===== */
   @view-transition{ navigation:auto; }
   ::view-transition-old(root){ animation:vt-out .14s ease both; }
   ::view-transition-new(root){ animation:vt-in .18s ease both; }
@@ -202,13 +202,13 @@
 
 <script>
 /* ============================================================
-   실시간 투자 뉴스 페이지 — 목업 (샘플 데이터)
+   실시간 투자 뉴스 페이지: 목업 (샘플 데이터)
    실제 서비스: RSS(한경·매경·연합)+Finnhub News+Marketaux 등을 수집해
    data/news.json 으로 떨군 뒤 아래 SAMPLE_NEWS 를 교체.
    각 항목 필드: mk(kr|us) cat src tm min(분전) pop(인기점수) sum hot
    ============================================================ */
 let SAMPLE_NEWS = [
-  // 🚨 속보·전쟁(예시) — 실데이터(news.json) 로드 전 폴백
+  // 🚨 속보·전쟁(예시): 실데이터(news.json) 로드 전 폴백
   {mk:'kr',cat:'전쟁·지정학',src:'연합뉴스',tm:'7분 전',min:7,pop:99,hot:true,breaking:true,ti:'[속보] 이란, 이스라엘 본토에 탄도미사일 발사… 호르무즈 긴장 고조',sum:'중동 지정학 리스크 재부각. 국제유가 급등 우려로 정유·방산주 단기 변동성 확대 전망.'},
   {mk:'kr',cat:'국내증시',src:'한국경제',tm:'14분 전',min:14,pop:96,hot:true,breaking:true,ti:'[속보] 코스피, 美반도체 랠리에 장중 사상 첫 9300선 돌파',sum:'필라델피아 반도체지수 급등에 삼성전자·SK하이닉스 강세. 외국인·개인 동반 매수세.'},
   {mk:'us',cat:'전쟁·지정학',src:'Reuters',tm:'20분 전',min:20,pop:94,breaking:true,ti:'[속보] 미·이란 종전 합의 서명식 돌연 연기… 백악관 "물류 미해결"',ti_en:'BREAKING: US-Iran ceasefire signing postponed, White House cites logistics',sum:'합의 불확실성 부각. 유가·안전자산 변동성 확대 가능성.'},
@@ -260,7 +260,7 @@ function kstUpd(iso, withDate){
 
 let state={cat:'전체', q:'', sort:'latest', breaking:false};
 
-/* 섹터 칩 — 당일 수집된 기사 수 기준 동적 정렬·건수 표시·빈 섹터 자동 숨김(고정 목록 아님).
+/* 섹터 칩: 당일 수집된 기사 수 기준 동적 정렬·건수 표시·빈 섹터 자동 숨김(고정 목록 아님).
    전쟁·지정학은 중요도가 높아 '전체' 다음에 고정 노출(붉은 강조). */
 function categoryCounts(){
   const m={};
@@ -279,7 +279,7 @@ function renderChips(){
   }));
 }
 
-/* 🔥 오늘의 키워드 — 당일 수집 기사 '제목'에서 자주 등장한 종목·테마를 빈도순으로 추출(매일 달라짐) */
+/* 🔥 오늘의 키워드: 당일 수집 기사 '제목'에서 자주 등장한 종목·테마를 빈도순으로 추출(매일 달라짐) */
 const KW_DICT=['엔비디아','HBM','SK하이닉스','삼성전자','TSMC','마이크론','반도체','파운드리','D램','낸드',
  '금리','금리인하','연준','FOMC','인플레이션','소비자물가','고용','환율','국채','달러','관세',
  '비트코인','이더리움','가상자산','코인','스테이블코인','코인베이스',
@@ -351,7 +351,7 @@ function renderHot(){
       <div class="meta"><span class="src">${n.src} · ${n.tm}</span></div>
     </a>`).join('') || '<div class="empty" style="grid-column:1/-1">HOT 뉴스 없음</div>';
 }
-/* 🚨 속보 띠 — 분야/검색 필터는 따르되 속보토글과 무관하게 최신 속보를 상단에 노출 */
+/* 🚨 속보 띠: 분야/검색 필터는 따르되 속보토글과 무관하게 최신 속보를 상단에 노출 */
 function renderBreakingStrip(){
   const strip=document.getElementById('brk-strip'); if(!strip) return;
   const cn=document.getElementById('brk-cn'); if(cn) cn.textContent=SAMPLE_NEWS.filter(n=>n.breaking).length;
