@@ -8,6 +8,11 @@
 // 키: Cloudflare Pages 환경변수 TOSS_CLIENT_ID / TOSS_CLIENT_SECRET (secret).
 //   미설정이면 {enabled:false} 200 → 프런트는 기능 숨김·기존 소스(네이버 근사) 폴백.
 // 요율: STOCK_TRADING_TREND 10/s · MARKET_INDICATOR 10/s · MARKET_INFO 3/s — 30분·6시간 캐시로 흡수.
+//
+// ⛔ 2026-08 사용 중지. 구현·테스트는 나중에 다시 쓸 수 있게 그대로 보관하고 진입점만 막는다.
+//    (토큰 발급이 unidentified-client 로 계속 실패해 매 스캔마다 헛호출이 쌓이던 상태였다.)
+//    되살리려면 DISABLED 를 false 로 바꾸고 Cloudflare 환경변수에 키를 등록하면 된다.
+const DISABLED = true;
 const BASE = 'https://openapi.tossinvest.com';
 const CACHE = {};                    // `${fn}|${args}` → {ts, data}
 const TTL_TREND = 30 * 60 * 1000;    // 수급 30분 (일별 데이터 — 장중 잠정치 갱신 주기로 충분)
@@ -131,37 +136,19 @@ async function fnCalendar(env, p) {
   };
 }
 
-/* 키 등록 형태 진단 — 비밀값 미노출(길이·접두 2자·공백 포함 여부만). 원인 파악 후 제거 예정 */
-async function fnKeycheck(env, p) {
-  if (p.k !== 'diag2026') return { error: 'forbidden' };
-  const shape = (v) => {
-    const raw = String(v || '');
-    const t = raw.trim().replace(/^["']|["']$/g, '');
-    return { len: raw.length, trimmedLen: t.length, prefix2: t.slice(0, 2), hasWhitespace: /\s/.test(raw), hadQuotes: /^["']|["']$/.test(raw.trim()) };
-  };
-  let token = 'not-tried';
-  try { await issueToken(env); token = 'ok'; } catch (e) { token = String(e && e.message || e).slice(0, 80); }
-  return { id: shape(env.TOSS_CLIENT_ID), secret: shape(env.TOSS_CLIENT_SECRET), token };
-}
-
-/* 발신(egress) IP 진단 — 토스 IP 허용 목록 등록용. 이 함수가 실행되는 Cloudflare 콜로의 외부 IP 를 반환 */
-async function fnEgress(env, p) {
-  if (p.k !== 'diag2026') return { error: 'forbidden' };
-  const get = async (u) => { try { const r = await fetch(u); return (await r.text()).trim().slice(0, 60); } catch (e) { return 'fail'; } };
-  const [a, b] = await Promise.all([get('https://api.ipify.org'), get('https://ifconfig.me/ip')]);
-  return { egressIp: a, egressIp2: b, colo: p._colo || '', note: 'Cloudflare 엣지 콜로별로 다를 수 있음 — 여러 번·여러 기기에서 확인 권장' };
-}
-
-const FNS = { stockInvestors: [fnStockInvestors, TTL_TREND], idxInvestors: [fnIdxInvestors, TTL_TREND], calendar: [fnCalendar, TTL_CAL], keycheck: [fnKeycheck, 1], egress: [fnEgress, 1] };
+const FNS = { stockInvestors: [fnStockInvestors, TTL_TREND], idxInvestors: [fnIdxInvestors, TTL_TREND], calendar: [fnCalendar, TTL_CAL] };
 
 export async function onRequest(context) {
   const { request, env } = context;
   if (request.method === 'OPTIONS') {
     return new Response('', { status: 204, headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': '*', 'Access-Control-Allow-Methods': 'GET,OPTIONS' } });
   }
+  // 사용 중지 — 키가 남아 있어도 토스로 나가지 않는다. 미설정과 같은 응답이라 프런트는 기존 «키 없음»
+  // 경로(수급 카드 숨김·네이버 소진율 폴백)를 그대로 탄다. 되살릴 때는 이 상수만 false 로.
+  if (DISABLED) return ok({ _updated: iso(), enabled: false, disabled: true }, 3600);
+
   const url = new URL(request.url);
   const p = Object.fromEntries(url.searchParams);
-  p._colo = (request.cf && request.cf.colo) || '';   // 요청을 처리한 엣지 콜로(진단용)
 
   if (!env || !env.TOSS_CLIENT_ID || !env.TOSS_CLIENT_SECRET) {
     return ok({ _updated: iso(), enabled: false }, 600);   // 키 미설정 — 프런트 기능 숨김

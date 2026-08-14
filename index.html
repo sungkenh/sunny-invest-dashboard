@@ -1071,6 +1071,7 @@ async function refreshDeep(sym){
    ① 투자자별 매매동향 카드(코스피/코스닥 외국인·기관·개인 일별 순매수 대금)
    ② 개장일 캘린더 → 휴장일에 세션 pill '휴장' 표시 (24시간 localStorage 캐시) */
 let TF_MKT='KOSPI';
+let TF_TIMER=null;                                 // 미사용(enabled:false)이면 10분 폴링을 해제한다
 const TCAL={kr:null,us:null};             // false=휴장 확인 · null=미확인/키 없음
 const tfFmt=v=>{ const a=Math.abs(v)/1e8, s=v>0?'+':(v<0?'−':'');
   return s+(a>=1e4?(a/1e4).toFixed(2)+'조':Math.round(a).toLocaleString()+'억'); };
@@ -1103,7 +1104,7 @@ async function loadTossFlow(){
     const r=await fetch('/api/toss?fn=idxInvestors&mkt='+TF_MKT+'&n=20',{cache:'default'});
     if(!r.ok) return;
     const d=await r.json();
-    if(d.enabled===false){ card.style.display='none'; return; }
+    if(d.enabled===false){ card.style.display='none'; if(TF_TIMER){ clearInterval(TF_TIMER); TF_TIMER=null; } return; }
     if(!d.records||!d.records.length) return;
     card.style.display='';
     const last=d.records[0];
@@ -3660,7 +3661,7 @@ setInterval(tick,1000);
 setInterval(loadMarket,5000);                    // 지표 5초(거의 실시간)
 setInterval(loadStripCandles,180000);            // 지표 미니 캔들 3분(장중 봉 갱신)
 setInterval(loadWatch,10000);                    // 관심종목 10초
-setInterval(loadTossFlow,600000);                // 토스 투자자별 수급 10분
+TF_TIMER=setInterval(loadTossFlow,600000);       // 토스 투자자별 수급 10분 (미사용이면 첫 응답에서 해제)
 setInterval(loadBTC,5000);                       // 비트코인 5초(바이낸스 실시간)
 setInterval(loadNewsLive,60000);                 // 뉴스 60초
 setInterval(loadCalendar,300000);                // 일정 5분
