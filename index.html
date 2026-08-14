@@ -2015,11 +2015,7 @@ async function loadStockReports(sym, row){
 /* 엔진/면책 */
 function renderFooter(){
   document.getElementById('engine').innerHTML = ENGINE.map(e=>`<div class="e"><div class="k">${e.k}</div><div class="v">${e.v}</div></div>`).join('');
-  document.getElementById('disc').innerHTML =
-    '✅ <b>자동 갱신</b>: 시장지표 16종·환율·역레포잔고(거의 실시간. 미국 CNBC·국내 네이버금융(코스피·코스닥 실시간)·역레포 NY연준, 5초 갱신) · 관심종목 시세(10초) · 비트코인(5초·Binance) · 실시간 뉴스(60초) · 추천 영상(5분) · 핵심 일정의 경제지표·실적(5분) · 시가총액 히트맵(네이버 실시간·5초). 각 지표 클릭 시 출처 사이트로 이동(새 탭). ' +
-    '📅 <b>주요 지표·실적</b>: 지난주(−7일)부터 다음달(+30일)까지 한·미 경제지표와 실적을 모읍니다. 발표가 나오면 <b>실제 수치·서프라이즈</b>와 한국어 <b>📰 분석 기사</b>를 함께 붙입니다(대시보드는 지난주~이번주, 전체는 일정 페이지). ' +
-    '🔄 <b>주기적 갱신</b>: 종목 심층분석(에이전트 생성) · 한국/원거리 실적 일정(분기 단위, 재수집 시 반영). ' +
-    '⚠ <b>샘플</b>: 테마별 전문가 데스크 리포트(예시). &nbsp; 이 화면은 정보 제공용이지 투자자문이나 매매 권유가 아닙니다. 투자 판단과 책임은 본인에게 있습니다.';
+  document.getElementById('disc').textContent = '데이터: 네이버 금융 · 야후 파이낸스 · CNBC · Binance. 정보 제공 목적이며 투자 권유가 아닙니다.';
 }
 
 /* 시계 / 마켓 세션 (대한민국 서울 KST 기준) */
