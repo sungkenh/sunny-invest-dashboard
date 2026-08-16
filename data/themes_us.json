@@ -1,5 +1,5 @@
 {
- "_updated": "2026-08-16T12:28:46",
+ "_updated": "2026-08-16T18:21:23",
  "mkt": "us",
  "benchmark": "S&P 500",
  "riskOff": false,
@@ -13,13 +13,13 @@
    "op": "op-buy",
    "opTxt": "비중확대",
    "warns": [],
-   "conf": 91,
+   "conf": 94,
    "confBand": "높음",
-   "score": 79,
+   "score": 83,
    "pts": [
-    "최근 6개월 +47.8% · S&P 500 대비 +36.0%p — 지수 상회 (12개월 +80.3%)",
-    "구성 4종목 중 2개 50일선 위 · 3개 3개월 상승 — 폭 63%, 참여 광범위",
-    "52주 고점 대비 -5.6% · 20일 이격 +3.7% · 변동성 지수 대비 3.7배 — 종합 +79/100 (리스크 −10)"
+    "최근 6개월 +49.7% · S&P 500 대비 +35.8%p — 지수 상회 (12개월 +80.3%)",
+    "구성 4종목 중 4개 50일선 위 · 2개 3개월 상승 — 폭 75%, 참여 광범위",
+    "52주 고점 대비 -5.6% · 20일 이격 +3.3% · 변동성 지수 대비 3.8배 — 종합 +83/100 (리스크 −10)"
    ],
    "perf": -0.12,
    "lead": {
@@ -45,21 +45,21 @@
     }
    ],
    "cat": {
-    "ti": "These 5 AI Stocks Have Returned 300%-Plus Over the Past 3 Years -- and 1 Still Looks Dirt Cheap",
-    "link": "https://news.google.com/rss/articles/CBMilwFBVV95cUxOZFllNDAxOEdXb2M4OHpMbVFaRUV0R1Z2VUFaMTh0TDhhVnJkMWRhY0ktWFQ5ZVRPV0RRWWw3OWszdWJFWk11c0lUaTlTS0ZlT1YxTFN2MFZyV0kzRGRhdVlfQVlsenJYaS1QdzZHZ0NQdVNMOXFDODhLOVRkd3R2akdkZHZzdUZ4ZFdqYW1vb0tDUlJHc09B?oc=5",
-    "src": "The Motley Fool",
-    "tm": "3시간 전"
+    "ti": "Chinese chipmaker SMIC increases prices on strong AI demand",
+    "link": "https://news.google.com/rss/articles/CBMipwFBVV95cUxOckEwZzMtQ1lJZW1sR3ZnSmxxQ3BjM3phX21WczRwbWxWZ1UtY1kzTXJKcXJGVnBaOFF4XzFrSEJfZUtTTVFJMVNpU1pnVm1mb1dWb0RHN1FKSkNNWlF6eW12NmFBU1Vwazg5UzJMdlloUkFmaFhiYzdJOWZ0YXo2dFFqTGRlUXZqeVF3Z0VHdDVadU5xZkVFam1nZkxIbFZacXE4YXdTTQ?oc=5",
+    "src": "Reuters",
+    "tm": "2일 전"
    },
    "metrics": {
-    "r126": 0.478,
-    "rs": 0.3601,
-    "breadth": 0.625,
-    "ext20": 0.0368,
-    "rsi14": 54.4,
-    "volRatio": 3.7,
+    "r126": 0.4971,
+    "rs": 0.3576,
+    "breadth": 0.75,
+    "ext20": 0.0335,
+    "rsi14": 54.7,
+    "volRatio": 3.84,
     "curDD": -0.0557,
     "penalty": 10,
-    "driver": 89
+    "driver": 93
    }
   },
   {
@@ -68,17 +68,14 @@
    "thesis": "AI 수익화 초기 국면 — 클라우드·광고 현금흐름이 투자를 뒷받침",
    "op": "op-hold",
    "opTxt": "중립",
-   "warns": [
-    "지수 동반 상승 — 초과성과 없음",
-    "참고용 · 저신뢰"
-   ],
-   "conf": 37,
-   "confBand": "낮음",
-   "score": -5,
+   "warns": [],
+   "conf": 55,
+   "confBand": "보통",
+   "score": 11,
    "pts": [
-    "최근 6개월 +8.1% · S&P 500 대비 -3.7%p — 지수 하회 (12개월 +9.6%)",
+    "최근 6개월 +14.0% · S&P 500 대비 +0.0%p — 시장 수준 (12개월 +9.6%)",
     "구성 4종목 중 2개 50일선 위 · 2개 3개월 상승 — 폭 50%, 참여 보통",
-    "52주 고점 대비 -2.0% · 20일 이격 +5.3% · 변동성 지수 대비 3.8배 — 종합 -5/100 (리스크 −10)"
+    "52주 고점 대비 -2.0% · 20일 이격 +5.8% · 변동성 지수 대비 3.0배 — 종합 +11/100 (리스크 −10)"
    ],
    "perf": -1.02,
    "lead": {
@@ -104,39 +101,39 @@
     }
    ],
    "cat": {
-    "ti": "There isn't just one AI bubble, strategist says — there's a 'rolling sequence of bubbles' instead",
-    "link": "https://news.google.com/rss/articles/CBMinAFBVV95cUxPaHE5enlCZU4wRTJnUk9ETFlzMTA4RWF5cnQ5ZlhjX3pNTUEzeVhHdEJJanp6SFU2MzdVNHdCc2xNMXcyTHQyWko2SzRxLThzQkJQRDhlREVFNS1sWERyckF4THBZVlJFUjBwZHJQcU1KM2hRNEJnTjlFSmUwcE54ZWtjeThaR0NVQmZXdllsRmpncHNIRm9oRG8xc0s?oc=5",
-    "src": "Fortune",
+    "ti": "Why software engineers say AI makes old-school fundamentals matter more",
+    "link": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNUWNrWHZDOW5TdjdRa1FYbjFtQXkwZElWcDF4UGdlZENXbS1xaERuQkJTLVlQZFFaUnlreVBHaDVIMDd0ZmkweG1QNFBYUXFhTFgzLXc2akNkTWhvbWh1b1pJbkNnN1ZwZ0IzR0hCMmlOZDlnX3ZndEx5UlFyTWgtTEJXM2lrWDhNQnk3YWRnaXFCSHcyWkk4WEVnQUh5UHJuT1YyaHZ6cXlfRy1KNk9z?oc=5",
+    "src": "Northeast Times",
     "tm": "3시간 전"
    },
    "metrics": {
-    "r126": 0.0808,
-    "rs": -0.0371,
+    "r126": 0.1399,
+    "rs": 0.0005,
     "breadth": 0.5,
-    "ext20": 0.0534,
-    "rsi14": 59.4,
-    "volRatio": 3.76,
+    "ext20": 0.0577,
+    "rsi14": 60.0,
+    "volRatio": 3.02,
     "curDD": -0.0203,
     "penalty": 10,
-    "driver": 5
+    "driver": 21
    }
   },
   {
    "nm": "전력 · 원자력",
    "desk": "유틸리티 데스크",
    "thesis": "데이터센터 전력수요 급증으로 발전·원자력 계약단가가 재평가",
-   "op": "op-hold",
-   "opTxt": "중립",
+   "op": "op-sell",
+   "opTxt": "비중축소",
    "warns": [
     "지수 동반 상승 — 초과성과 없음"
    ],
-   "conf": 42,
+   "conf": 41,
    "confBand": "낮음",
-   "score": -21,
+   "score": -29,
    "pts": [
-    "최근 6개월 +5.8% · S&P 500 대비 -6.0%p — 지수 하회 (12개월 +4.7%)",
-    "구성 4종목 중 2개 50일선 위 · 0개 3개월 상승 — 폭 25%, 참여 제한적",
-    "52주 고점 대비 -11.5% · 20일 이격 +2.6% · 변동성 지수 대비 3.2배 — 종합 -21/100 (리스크 −10)"
+    "최근 6개월 +2.5% · S&P 500 대비 -11.5%p — 지수 하회 (12개월 +4.7%)",
+    "구성 4종목 중 2개 50일선 위 · 2개 3개월 상승 — 폭 50%, 참여 보통",
+    "52주 고점 대비 -11.5% · 20일 이격 +2.5% · 변동성 지수 대비 3.3배 — 종합 -29/100 (리스크 −10)"
    ],
    "perf": 2.33,
    "lead": {
@@ -165,18 +162,18 @@
     "ti": "Vistra supports Texas data center pause, execs say",
     "link": "https://news.google.com/rss/articles/CBMinAFBVV95cUxQRnZIdFdKVTFINXhNNVZ2ZDFjOVdJZjJZREtndy04Nkh4cWI1aWdHdGo3QW5HaEVPb3ZfZjlWOVZjb3B5dHVKRF96YzJOUk1PaXdiOWlwNUdWbDUya3lueHVFQnF3Q0RFMXRMajhrZUdJUEJUaXZNQW9PeXFXekZ1Nm9rVHdzcm9yRkdOeXhma1NVcGdUTXliMDFJam8?oc=5",
     "src": "Utility Dive",
-    "tm": "5일 전"
+    "tm": "6일 전"
    },
    "metrics": {
-    "r126": 0.0581,
-    "rs": -0.0597,
-    "breadth": 0.25,
-    "ext20": 0.0257,
-    "rsi14": 53.9,
-    "volRatio": 3.21,
+    "r126": 0.0248,
+    "rs": -0.1147,
+    "breadth": 0.5,
+    "ext20": 0.0251,
+    "rsi14": 54.3,
+    "volRatio": 3.3,
     "curDD": -0.1147,
     "penalty": 10,
-    "driver": -11
+    "driver": -19
    }
   },
   {
@@ -190,11 +187,11 @@
    ],
    "conf": 45,
    "confBand": "보통",
-   "score": -10,
+   "score": -12,
    "pts": [
-    "최근 6개월 +0.5% · S&P 500 대비 -11.2%p — 지수 하회 (12개월 +27.6%)",
+    "최근 6개월 +1.3% · S&P 500 대비 -12.7%p — 지수 하회 (12개월 +27.6%)",
     "구성 4종목 중 4개 50일선 위 · 4개 3개월 상승 — 폭 100%, 참여 광범위",
-    "52주 고점 대비 -5.5% · 20일 이격 +4.9% · 변동성 지수 대비 1.8배 — 종합 -10/100 (리스크 −3)"
+    "52주 고점 대비 -5.5% · 20일 이격 +4.5% · 변동성 지수 대비 1.8배 — 종합 -12/100 (리스크 −4)"
    ],
    "perf": 1.39,
    "lead": {
@@ -223,18 +220,18 @@
     "ti": "Australia to Place First AIM-260 Missile Order Under $500M+ Deal",
     "link": "https://news.google.com/rss/articles/CBMieEFVX3lxTFBaZ2ZNSHdtZmpLWTVQRy03VF9IM3ltSW5KWFdjaWZ3cloyRHdKZnVxZV9iSEExOUNUWkJSVnFyeHRldzZuTWFTdm5saldHNjJvLXpUdmxyZVMxVl95NnVfYlRvN3hvZ0Y1WGI3Z3BFUWxvbHBaVUNncNIBfkFVX3lxTE5GZWdSUjZueDNGU3hBeXNidmpuNTYtZ182MksySVd4VE5zYlhLRm5reGh5cnJnTVNoU3dvNVU0UXFDREY5dGJPczVGTXdnTFg3UDZSNWF2eF9yY0hfdXk4NFVvcWZvYVRVRXpUTzlvRWxlU25qOGViUmFBZ2Ffdw?oc=5",
     "src": "The Defense Post",
-    "tm": "5일 전"
+    "tm": "6일 전"
    },
    "metrics": {
-    "r126": 0.0055,
-    "rs": -0.1124,
+    "r126": 0.0128,
+    "rs": -0.1267,
     "breadth": 1.0,
-    "ext20": 0.0486,
-    "rsi14": 70.4,
-    "volRatio": 1.8,
+    "ext20": 0.0445,
+    "rsi14": 70.7,
+    "volRatio": 1.81,
     "curDD": -0.0552,
-    "penalty": 3,
-    "driver": -7
+    "penalty": 4,
+    "driver": -8
    }
   },
   {
@@ -244,13 +241,13 @@
    "op": "op-buy",
    "opTxt": "비중확대",
    "warns": [],
-   "conf": 84,
-   "confBand": "높음",
-   "score": 55,
+   "conf": 67,
+   "confBand": "보통",
+   "score": 27,
    "pts": [
-    "최근 6개월 +15.1% · S&P 500 대비 +3.3%p — 지수 상회 (12개월 +27.2%)",
-    "구성 4종목 중 2개 50일선 위 · 3개 3개월 상승 — 폭 63%, 참여 광범위",
-    "52주 고점 대비 -5.7% · 20일 이격 -2.0% · 변동성 지수 대비 1.8배 — 종합 +55/100 (리스크 −3)"
+    "최근 6개월 +14.3% · S&P 500 대비 +0.4%p — 시장 수준 (12개월 +27.2%)",
+    "구성 4종목 중 2개 50일선 위 · 4개 3개월 상승 — 폭 75%, 참여 광범위",
+    "52주 고점 대비 -5.7% · 20일 이격 -1.9% · 변동성 지수 대비 1.8배 — 종합 +27/100 (리스크 −3)"
    ],
    "perf": -1.01,
    "lead": {
@@ -276,21 +273,21 @@
     }
    ],
    "cat": {
-    "ti": "Lilly sues six companies over alleged illegal sales of experimental obesity drug retatrutide",
-    "link": "https://news.google.com/rss/articles/CBMiggFBVV95cUxOOTNNRk9ZT2ZhUFc2ejJqMWRYLVFPXzJxc1ZZT0FXbjI5TXR4VndleUs5OTBjam9XdjVKay1YcXN1QmpMMkF5bmcxamlEQS1ZMEI1b09kbEVRLTJCRy1RY3k2aVRnUkk2QmlDb3BTcUNYdFhFd2c4czFBUW44REhsR2xB0gGHAUFVX3lxTE10b2drOVpFRmo1TVluR3RGcGNrR0g2bk5oU2J4cHE3alRXZ0VKR2dqekdvVC1McldEZWlJWTNEcVRYZFZEM1ZNaFBTcVVEcGtHT2JuOVR6MDlSb1lJMmR0dGVzOVROcl92OHVBbnZBWVV4UUVMczBoU2NLaXJTb3FVVEt1dFhqbw?oc=5",
-    "src": "CNBC",
-    "tm": "4일 전"
+    "ti": "Eli Lilly files 6 lawsuits against businesses selling 'black market' obesity drug",
+    "link": "https://news.google.com/rss/articles/CBMivwFBVV95cUxObnpHc3MybE50TUdZbHZMMkoyZVM3R2JzektIY25MalFVclNHZmhibEZycm5yZmd0SG14b0lJMWliYjlpSGV5Nm1hd3ROdmVxdGJzdTJNV1h0bDUtNGdHYnU4eG55bnI0T1dvd0ZfVnZoTS1taG81RHlmSkFySDZkaGdjdXBTbTlzQksxM0ZkQXRDZmh6SllKLUkyeGNLV2JIaGRUSGxvRE13cXpkeHFubzQ2NGd1b3dMTkdQd2FuMA?oc=5",
+    "src": "NPR",
+    "tm": "3일 전"
    },
    "metrics": {
-    "r126": 0.1512,
-    "rs": 0.0333,
-    "breadth": 0.625,
-    "ext20": -0.0197,
-    "rsi14": 46.3,
-    "volRatio": 1.76,
+    "r126": 0.1431,
+    "rs": 0.0036,
+    "breadth": 0.75,
+    "ext20": -0.0189,
+    "rsi14": 45.9,
+    "volRatio": 1.75,
     "curDD": -0.0574,
     "penalty": 3,
-    "driver": 58
+    "driver": 30
    }
   },
   {
@@ -300,13 +297,13 @@
    "op": "op-buy",
    "opTxt": "비중확대",
    "warns": [],
-   "conf": 88,
+   "conf": 94,
    "confBand": "높음",
-   "score": 59,
+   "score": 80,
    "pts": [
-    "최근 6개월 +14.1% · S&P 500 대비 +2.3%p — 지수 상회 (12개월 +38.7%)",
+    "최근 6개월 +21.7% · S&P 500 대비 +7.7%p — 지수 상회 (12개월 +38.7%)",
     "구성 4종목 중 3개 50일선 위 · 4개 3개월 상승 — 폭 88%, 참여 광범위",
-    "52주 고점 대비 -2.0% · 20일 이격 +1.3% · 변동성 지수 대비 1.8배 — 종합 +59/100 (리스크 −3)"
+    "52주 고점 대비 -2.0% · 20일 이격 +1.6% · 변동성 지수 대비 1.7배 — 종합 +80/100 (리스크 −2)"
    ],
    "perf": -0.06,
    "lead": {
@@ -338,15 +335,15 @@
     "tm": "3일 전"
    },
    "metrics": {
-    "r126": 0.141,
-    "rs": 0.0231,
+    "r126": 0.2166,
+    "rs": 0.0771,
     "breadth": 0.875,
-    "ext20": 0.0133,
+    "ext20": 0.0156,
     "rsi14": 57.5,
-    "volRatio": 1.76,
+    "volRatio": 1.67,
     "curDD": -0.0203,
-    "penalty": 3,
-    "driver": 62
+    "penalty": 2,
+    "driver": 82
    }
   },
   {
@@ -358,13 +355,13 @@
    "warns": [
     "지수 동반 상승 — 초과성과 없음"
    ],
-   "conf": 71,
+   "conf": 70,
    "confBand": "높음",
-   "score": 40,
+   "score": 34,
    "pts": [
-    "최근 6개월 +9.2% · S&P 500 대비 -2.6%p — 지수 하회 (12개월 +43.5%)",
+    "최근 6개월 +8.9% · S&P 500 대비 -5.0%p — 지수 하회 (12개월 +43.5%)",
     "구성 4종목 중 4개 50일선 위 · 3개 3개월 상승 — 폭 88%, 참여 광범위",
-    "52주 고점 대비 -4.0% · 20일 이격 +5.5% · 변동성 지수 대비 2.0배 — 종합 +40/100 (리스크 −5)"
+    "52주 고점 대비 -4.0% · 20일 이격 +4.9% · 변동성 지수 대비 2.1배 — 종합 +34/100 (리스크 −6)"
    ],
    "perf": 1.8,
    "lead": {
@@ -396,15 +393,15 @@
     "tm": "3일 전"
    },
    "metrics": {
-    "r126": 0.0917,
-    "rs": -0.0262,
+    "r126": 0.0892,
+    "rs": -0.0503,
     "breadth": 0.875,
-    "ext20": 0.0552,
-    "rsi14": 66.5,
-    "volRatio": 2.03,
+    "ext20": 0.0489,
+    "rsi14": 66.0,
+    "volRatio": 2.07,
     "curDD": -0.04,
-    "penalty": 5,
-    "driver": 45
+    "penalty": 6,
+    "driver": 40
    }
   }
  ]
