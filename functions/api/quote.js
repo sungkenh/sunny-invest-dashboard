@@ -99,8 +99,14 @@ async function yQuote(s) {
   }
   const pc = (typeof m.chartPreviousClose === 'number') ? m.chartPreviousClose
     : (typeof m.previousClose === 'number' ? m.previousClose : price);
-  const out = { price: r2(price), pct: pc ? r2((price - pc) / pc * 100) : 0, src: 'yahoo' };
-  if (ext) { out.ext = ext; out.rp = r2(m.regularMarketPrice); }
+  // 시간외 등락은 직전 정규장 종가 대비다. 야후의 previousClose 는 그보다 한 세션 더 뒤라,
+  // 프리마켓에 쓰면 직전 정규장 상승분까지 얹혀 이틀치 등락이 나온다
+  // (SNDK 프리 1727.71: 정규장 종가 1641.11 대비 +5.28%인데 전전 종가 1528.11 대비로는 +13.06%).
+  // 국내(네이버)는 이미 당일 종가 대비로 계산하므로 미국만 기준을 맞춘다.
+  const rp = m.regularMarketPrice;
+  const base = (ext && typeof rp === 'number' && rp > 0) ? rp : pc;
+  const out = { price: r2(price), pct: base ? r2((price - base) / base * 100) : 0, src: 'yahoo' };
+  if (ext) { out.ext = ext; out.rp = r2(rp); out.rpct = pc ? r2((rp - pc) / pc * 100) : 0; }
   return out;
 }
 

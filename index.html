@@ -1185,7 +1185,7 @@ function renderWL(){
     return `<tr data-sym="${r.sym}" class="${r.sym===SEL?'sel':''}">
       <td><span class="sym">${r.name}</span><span class="mk">${(r.mk||'').toUpperCase()}</span>${wlSigChips(r.sym)}</td>
       <td class="px mono">${hasPx?`<span class="cur">${cur}</span>${fmt(r.px)}`:'…'}</td>
-      <td class="pc ${cls(r.pct||0)} mono">${hasPx?arr(r.pct)+' '+sign(r.pct)+'%'+(r.ext?`<span class="xh">${r.ext==='pre'?'프리':'애프터'}</span>`:''):''}</td>
+      <td class="pc ${cls(r.pct||0)} mono">${hasPx?arr(r.pct)+' '+sign(r.pct)+'%'+(r.ext?`<span class="xh" title="${r.ext==='pre'?'프리':'애프터'}마켓 등락(직전 정규장 종가 대비). 히트맵 타일과 같은 기준입니다${r.rpct!=null?` · 그 정규장은 ${sign(r.rpct)}%`:''}">${r.ext==='pre'?'프리':'애프터'}</span>`:''):''}</td>
       <td class="del" data-del="${r.sym}">×</td>
     </tr>`;}).join('');
   document.querySelectorAll('#wl-body tr').forEach(tr=>{
@@ -2202,7 +2202,7 @@ async function loadWatch(){
         const m=String(it.sym).match(/^(\d{6})(?:\.(KS|KQ))?$/);
         if(m && m[2]!==v.ex){ it.sym=m[1]+'.'+v.ex; it.mk='kr'; fixed=true; }
       }
-      if(typeof v.price==='number'){ it.px=v.price; it.pct=v.pct; it.ext=v.ext||null; } });
+      if(typeof v.price==='number'){ it.px=v.price; it.pct=v.pct; it.ext=v.ext||null; it.rpct=(v.rpct==null?null:v.rpct); } });
     if(fixed){ if(!WL.some(x=>x.sym===SEL)) SEL=WL.length?WL[0].sym:null; saveWL(); }
     renderWL(); renderDeep(); };
   if(syms.length){
