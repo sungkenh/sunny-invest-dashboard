@@ -221,6 +221,8 @@
   .card > .head h3{margin:0;font-size:0.9062rem;font-weight:800;letter-spacing:.2px}
   .card > .head .tag{font-size:0.6562rem;color:var(--muted);border:1px solid var(--border);
     padding:2px 7px;border-radius:6px;margin-left:auto}
+  .card > .head .tag.stale{color:var(--gold);border-color:var(--gold)}   /* 갱신이 3분 넘게 끊긴 상태 */
+  .card > .head #wl-at{margin-left:5px;font-variant-numeric:tabular-nums}   /* 개수 칩 바로 옆 */
   .card .body{padding:12px 14px}
   .scroll{max-height:520px;overflow:auto}
   .scroll::-webkit-scrollbar{width:8px}.scroll::-webkit-scrollbar-thumb{background:#22324f;border-radius:8px}
@@ -570,7 +572,7 @@
     </div>
 
     <div class="card fill">
-      <div class="head" style="flex-wrap:wrap;gap:5px 6px"><h3>관심 종목</h3><span class="tag" id="wl-count">0</span>
+      <div class="head" style="flex-wrap:wrap;gap:5px 6px"><h3>관심 종목</h3><span class="tag" id="wl-count">0</span><span class="tag" id="wl-at" title="관심종목 시세를 마지막으로 받아온 시각. 열려 있는 시장에 맞춰 자동 갱신합니다"></span>
         <button class="sync-chip" id="sync-chip" type="button" style="display:none;margin-left:auto" title="기기 간 동기화 상태 (클릭)"></button>
       </div>
       <div class="wl-add">
@@ -2063,6 +2065,7 @@ function tick(){
   if(TCAL.us===false){ const b=document.getElementById('us-st'); if(b) b.textContent='휴장'; }
   if(typeof hmAutoTick==='function') hmAutoTick();   // 08:00/20:00 세션 경계에서 히트맵 자동 전환
   if(typeof krData!=='undefined' && krData) hmBadge(krData);   // 배지 '몇 초 전' 매초 갱신
+  paintWlAt();                                                 // 관심종목 갱신 시각
 }
 function liveJitter(){
   // 관심종목(데모)만 미세 변동. 상단 지표는 실데이터(loadMarket)라 흔들지 않음.
@@ -2216,6 +2219,43 @@ async function loadWatch(){
     const r=await fetch('data/quotes.json?t='+Date.now(),{cache:'no-store'});
     if(r.ok) apply(await r.json());
   }catch(e){}
+}
+
+/*WLTICK-BEGIN*/
+/* 관심종목 시세 갱신 주기: 열려 있는 시장에 맞춘다.
+   관심종목 가격은 매수시기 진단과 매매 시그널 판정에 그대로 들어가므로, 정규장에는
+   히트맵과 비슷한 체감이 나오도록 촘촘히 받는다.
+   양쪽이 다 닫혀 있어도 아주 멈추지는 않는다: 휴장 판정이 시계 기반이라 틀릴 수 있고,
+   시간외 체결이 뒤늦게 반영되는 경우도 있다. */
+function wlTickMs(kr,us){
+  if(kr==='open'||us==='open') return 15000;       // 정규장
+  if(kr==='ext'||us==='ext')   return 30000;       // 프리·애프터·데이마켓
+  return 300000;                                    // 양쪽 휴장
+}
+/*WLTICK-END*/
+let WL_TIMER=null, WL_AT=0;
+function wlSessions(){
+  const t=kstParts(), m=t.h*60+t.m;
+  return { kr:kospiSession(t.dow,m).k, us:nasdaqSession(t.dow,m).k };
+}
+async function wlRefresh(force){
+  if(document.hidden&&!force) return;              // 숨은 탭에서는 받지 않는다(복귀 때 즉시 받는다)
+  try{ await loadWatch(); WL_AT=Date.now(); }catch(e){}
+}
+function wlSchedule(){
+  clearTimeout(WL_TIMER);
+  const s=wlSessions();
+  WL_TIMER=setTimeout(async()=>{ await wlRefresh(); wlSchedule(); }, wlTickMs(s.kr,s.us));
+}
+// 탭으로 돌아오면 다음 주기를 기다리지 않고 바로 받는다. 네트워크 복귀도 마찬가지.
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden){ wlRefresh(true); wlSchedule(); } });
+window.addEventListener('online',()=>{ wlRefresh(true); wlSchedule(); });
+function paintWlAt(){
+  const el=document.getElementById('wl-at'); if(!el) return;
+  if(!WL_AT){ el.textContent=''; return; }
+  const sec=Math.max(0,Math.round((Date.now()-WL_AT)/1000));
+  el.textContent=sec<5?'방금':(sec<60?sec+'초 전':Math.floor(sec/60)+'분 전');
+  el.className='tag'+(sec>180?' stale':'');
 }
 
 /* ===== 관심종목 매수시기 진단: 일봉 MACD·RSI 판정 + PBR-ROE 회귀 적정 PBR =====
@@ -3087,7 +3127,7 @@ renderStrip(); renderWL(); renderDeep(); renderFooter(); tick();
 renderHmDataset();
 loadWatchlistBaseline();                                                       // 저장본 없으면 data/watchlist.json 시드
 cloudInit();                                                                   // 서버(KV) 동기화. 있으면 서버값 우선, 없으면 무중단 폴백
-loadMarket(); loadWatch(); loadBTC(); loadDeep();                              // 임계(상단 시세·관심종목·심층)
+loadMarket(); wlRefresh(true); loadBTC(); loadDeep();                          // 임계(상단 시세·관심종목·심층)
 idleLoad(()=>{ loadFearGreed(); }, 1);                                         // 공포탐욕(이후 10분 주기)
 idleLoad(()=>{ loadTossFlow(); loadTossCal(); }, 3);                            // 토스 수급·휴장 캘린더
 idleLoad(()=>{ loadStripCandles(); }, 4);                                      // 지표 미니캔들(합성 프리뷰 이미 표시)
@@ -3098,11 +3138,7 @@ setInterval(loadDeep,120000);                    // 심층분석 2분(큐레이�
 setInterval(tick,1000);
 setInterval(loadMarket,5000);                    // 지표 5초(거의 실시간)
 setInterval(loadStripCandles,180000);            // 지표 미니 캔들 3분(장중 봉 갱신)
-setInterval(()=>{                                // 관심종목 1분. 장중에만(탭 숨김·양쪽 휴장이면 스킵)
-  if(document.hidden) return;
-  if(!krSessionOpen()&&!usSessionOpen()) return;
-  loadWatch();
-},60000);
+wlSchedule();                                    // 관심종목 시세: 열려 있는 시장에 맞춘 주기로 자동 갱신
 TF_TIMER=setInterval(loadTossFlow,600000);       // 토스 투자자별 수급 10분 (미사용이면 첫 응답에서 해제)
 setInterval(loadBTC,5000);                       // 비트코인 5초(바이낸스 실시간)
 setInterval(loadFearGreed,600000);               // 공포탐욕 10분
