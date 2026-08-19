@@ -1,5 +1,5 @@
 {
- "_updated": "2026-08-19T01:10:01",
+ "_updated": "2026-08-19T06:46:35",
  "source": "snapshot",
  "mkt": "russell2000",
  "n": 500,
@@ -410,7 +410,7 @@
    "mk": "NYS",
    "price": 306.48,
    "pct": 0.5,
-   "cap": 7940030359.184692,
+   "cap": 7940151418.789032,
    "sector": "기술",
    "ind": "Scientific & Technical Instruments"
   },
@@ -690,17 +690,6 @@
    "ind": "REIT - Retail"
   },
   {
-   "code": "LGN",
-   "rc": "LGN.O",
-   "name": "레전스",
-   "mk": "NSQ",
-   "price": 63.66,
-   "pct": 9.11,
-   "cap": 6880085040.3089905,
-   "sector": "산업재",
-   "ind": "Engineering & Construction"
-  },
-  {
    "code": "CGON",
    "rc": "CGON.O",
    "name": "CG 온콜로지",
@@ -800,6 +789,17 @@
    "ind": "Banks - Regional"
   },
   {
+   "code": "QLYS",
+   "rc": "QLYS.O",
+   "name": "퀄리스",
+   "mk": "NSQ",
+   "price": 187.98,
+   "pct": 2.55,
+   "cap": 6620092825.396713,
+   "sector": "기술",
+   "ind": "Software - Infrastructure"
+  },
+  {
    "code": "VSEC",
    "rc": "VSEC.O",
    "name": "VSE",
@@ -831,6 +831,17 @@
    "cap": 6587046213.233711,
    "sector": "기술",
    "ind": "Semiconductors"
+  },
+  {
+   "code": "SSRM",
+   "rc": "SSRM.O",
+   "name": "SSR 마이닝",
+   "mk": "NSQ",
+   "price": 31.69,
+   "pct": 3.33,
+   "cap": 6575392150.802187,
+   "sector": "소재",
+   "ind": "Gold"
   },
   {
    "code": "LNTH",
@@ -877,17 +888,6 @@
    "ind": "Gambling"
   },
   {
-   "code": "QLYS",
-   "rc": "QLYS.O",
-   "name": "퀄리스",
-   "mk": "NSQ",
-   "price": 187.98,
-   "pct": 2.55,
-   "cap": 6503168140.17421,
-   "sector": "기술",
-   "ind": "Software - Infrastructure"
-  },
-  {
    "code": "RIG",
    "rc": "RIG",
    "name": "트랜스오션",
@@ -908,28 +908,6 @@
    "cap": 6489834591.57811,
    "sector": "헬스케어",
    "ind": "Biotechnology"
-  },
-  {
-   "code": "DNTH",
-   "rc": "DNTH.O",
-   "name": "다이안서스 테라퓨틱스",
-   "mk": "NSQ",
-   "price": 115.54,
-   "pct": 0.59,
-   "cap": 6462658085.3294525,
-   "sector": "헬스케어",
-   "ind": "Biotechnology"
-  },
-  {
-   "code": "SSRM",
-   "rc": "SSRM.O",
-   "name": "SSR 마이닝",
-   "mk": "NSQ",
-   "price": 31.69,
-   "pct": 3.33,
-   "cap": 6461886206.179321,
-   "sector": "소재",
-   "ind": "Gold"
   },
   {
    "code": "ROAD",
@@ -1031,13 +1009,24 @@
    "ind": "Biotechnology"
   },
   {
+   "code": "DNTH",
+   "rc": "DNTH.O",
+   "name": "다이안서스 테라퓨틱스",
+   "mk": "NSQ",
+   "price": 115.54,
+   "pct": 0.59,
+   "cap": 6316136610.868431,
+   "sector": "헬스케어",
+   "ind": "Biotechnology"
+  },
+  {
    "code": "LUMN",
    "rc": "LUMN.K",
    "name": "루멘 테크놀로지스",
    "mk": "NYS",
    "price": 6.13,
    "pct": 6.84,
-   "cap": 6322760444.559559,
+   "cap": 6315806977.009745,
    "sector": "통신 서비스",
    "ind": "Telecom Services"
   },
@@ -1152,17 +1141,6 @@
    "ind": "Biotechnology"
   },
   {
-   "code": "CORZ",
-   "rc": "CORZ.O",
-   "name": "코어 사이언티픽",
-   "mk": "NSQ",
-   "price": 18.85,
-   "pct": 6.36,
-   "cap": 6057267435.43165,
-   "sector": "기술",
-   "ind": "Software - Infrastructure"
-  },
-  {
    "code": "AUB",
    "rc": "AUB",
    "name": "아틀란틱 유니온 뱅크셰어스",
@@ -1172,6 +1150,17 @@
    "cap": 6049639081.727295,
    "sector": "금융",
    "ind": "Banks - Regional"
+  },
+  {
+   "code": "CORZ",
+   "rc": "CORZ.O",
+   "name": "코어 사이언티픽",
+   "mk": "NSQ",
+   "price": 18.85,
+   "pct": 6.36,
+   "cap": 6024215071.9127655,
+   "sector": "기술",
+   "ind": "Software - Infrastructure"
   },
   {
    "code": "TVTX",
@@ -1422,7 +1411,7 @@
    "mk": "NYS",
    "price": 55.52,
    "pct": 1.0,
-   "cap": 5633500408.36834,
+   "cap": 5603165779.15823,
    "sector": "유틸리티",
    "ind": "Utilities - Regulated Gas"
   },
@@ -1515,17 +1504,6 @@
    "ind": "Insurance - Property & Casualty"
   },
   {
-   "code": "UEC",
-   "rc": "UEC",
-   "name": "우라늄 에너지",
-   "mk": "AMX",
-   "price": 10.96,
-   "pct": 1.88,
-   "cap": 5423801150.237883,
-   "sector": "에너지",
-   "ind": "Uranium"
-  },
-  {
    "code": "CSW",
    "rc": "CSW",
    "name": "CSW 인더스트리얼즈",
@@ -1570,6 +1548,28 @@
    "ind": "Software - Infrastructure"
   },
   {
+   "code": "UEC",
+   "rc": "UEC",
+   "name": "우라늄 에너지",
+   "mk": "AMX",
+   "price": 10.96,
+   "pct": 1.88,
+   "cap": 5372819800.380439,
+   "sector": "에너지",
+   "ind": "Uranium"
+  },
+  {
+   "code": "KRG",
+   "rc": "KRG",
+   "name": "카이트 리얼티 그룹 트러스트",
+   "mk": "NYS",
+   "price": 26.44,
+   "pct": 0.15,
+   "cap": 5369079716.889238,
+   "sector": "부동산",
+   "ind": "REIT - Retail"
+  },
+  {
    "code": "MMSI",
    "rc": "MMSI.O",
    "name": "메리트 메디컬 시스템즈",
@@ -1581,6 +1581,17 @@
    "ind": "Medical Instruments & Supplies"
   },
   {
+   "code": "GLNG",
+   "rc": "GLNG.O",
+   "name": "골라 LNG",
+   "mk": "NSQ",
+   "price": 52.17,
+   "pct": 0.57,
+   "cap": 5326400303.05481,
+   "sector": "에너지",
+   "ind": "Oil & Gas Midstream"
+  },
+  {
    "code": "HASI",
    "rc": "HASI.K",
    "name": "HA 서스테이너블 인프라 캐피털",
@@ -1590,28 +1601,6 @@
    "cap": 5314585952.827606,
    "sector": "금융",
    "ind": "Asset Management"
-  },
-  {
-   "code": "GLNG",
-   "rc": "GLNG.O",
-   "name": "골라 LNG",
-   "mk": "NSQ",
-   "price": 52.17,
-   "pct": 0.57,
-   "cap": 5309850153.685684,
-   "sector": "에너지",
-   "ind": "Oil & Gas Midstream"
-  },
-  {
-   "code": "KRG",
-   "rc": "KRG",
-   "name": "카이트 리얼티 그룹 트러스트",
-   "mk": "NYS",
-   "price": 26.44,
-   "pct": 0.15,
-   "cap": 5297173015.516806,
-   "sector": "부동산",
-   "ind": "REIT - Retail"
   },
   {
    "code": "PIPR",
@@ -1999,6 +1988,17 @@
    "ind": "Utilities - Regulated Gas"
   },
   {
+   "code": "LGN",
+   "rc": "LGN.O",
+   "name": "레전스",
+   "mk": "NSQ",
+   "price": 63.66,
+   "pct": 9.11,
+   "cap": 4895730654.625328,
+   "sector": "산업재",
+   "ind": "Engineering & Construction"
+  },
+  {
    "code": "INSW",
    "rc": "INSW.K",
    "name": "인터네셔널 시웨이스",
@@ -2071,7 +2071,7 @@
    "mk": "NYS",
    "price": 39.0,
    "pct": 1.27,
-   "cap": 4797210054.0,
+   "cap": 4796636052.0,
    "sector": "유틸리티",
    "ind": "Utilities - Regulated Gas"
   },
@@ -2175,17 +2175,6 @@
    "ind": "Biotechnology"
   },
   {
-   "code": "PTEN",
-   "rc": "PTEN.O",
-   "name": "패터슨-UTI 에너지",
-   "mk": "NSQ",
-   "price": 12.13,
-   "pct": 0.74,
-   "cap": 4624291597.25,
-   "sector": "에너지",
-   "ind": "Oil & Gas Drilling"
-  },
-  {
    "code": "MTH",
    "rc": "MTH",
    "name": "메리티지 홈즈",
@@ -2195,6 +2184,17 @@
    "cap": 4606504913.129555,
    "sector": "경기소비재",
    "ind": "Residential Construction"
+  },
+  {
+   "code": "PTEN",
+   "rc": "PTEN.O",
+   "name": "패터슨-UTI 에너지",
+   "mk": "NSQ",
+   "price": 12.13,
+   "pct": 0.74,
+   "cap": 4604762174.333793,
+   "sector": "에너지",
+   "ind": "Oil & Gas Drilling"
   },
   {
    "code": "ICUI",
@@ -2274,17 +2274,6 @@
    "ind": "Biotechnology"
   },
   {
-   "code": "KTB",
-   "rc": "KTB",
-   "name": "콘투어 브랜즈",
-   "mk": "NYS",
-   "price": 82.3,
-   "pct": 0.65,
-   "cap": 4548915314.377853,
-   "sector": "경기소비재",
-   "ind": "Apparel Manufacturing"
-  },
-  {
    "code": "USAR",
    "rc": "USAR.O",
    "name": "USA 레어 어스",
@@ -2340,6 +2329,17 @@
    "ind": "Specialty Industrial Machinery"
   },
   {
+   "code": "KTB",
+   "rc": "KTB",
+   "name": "콘투어 브랜즈",
+   "mk": "NYS",
+   "price": 82.3,
+   "pct": 0.65,
+   "cap": 4497993092.789612,
+   "sector": "경기소비재",
+   "ind": "Apparel Manufacturing"
+  },
+  {
    "code": "CVCO",
    "rc": "CVCO.O",
    "name": "카브코 인더스트리스",
@@ -2368,7 +2368,7 @@
    "mk": "NYS",
    "price": 32.44,
    "pct": 0.46,
-   "cap": 4493998456.714378,
+   "cap": 4491304217.508434,
    "sector": "기술",
    "ind": "Software - Infrastructure"
   },
@@ -2467,7 +2467,7 @@
    "mk": "NYS",
    "price": 38.32,
    "pct": 0.23,
-   "cap": 4402162823.421715,
+   "cap": 4402042575.262672,
    "sector": "부동산",
    "ind": "REIT - Retail"
   },
@@ -2544,7 +2544,7 @@
    "mk": "NYS",
    "price": 84.26,
    "pct": 2.48,
-   "cap": 4350428760.11573,
+   "cap": 4349620706.695244,
    "sector": "소재",
    "ind": "Specialty Chemicals"
   },
@@ -2769,17 +2769,6 @@
    "ind": "Capital Markets"
   },
   {
-   "code": "OPLN",
-   "rc": "OPLN.K",
-   "name": "오픈레인",
-   "mk": "NYS",
-   "price": 33.48,
-   "pct": 4.59,
-   "cap": 4111258737.187786,
-   "sector": "경기소비재",
-   "ind": "Auto & Truck Dealerships"
-  },
-  {
    "code": "SYNA",
    "rc": "SYNA.O",
    "name": "시냅틱스",
@@ -2789,6 +2778,28 @@
    "cap": 4099585413.98703,
    "sector": "기술",
    "ind": "Semiconductors"
+  },
+  {
+   "code": "SKYW",
+   "rc": "SKYW.O",
+   "name": "스카이웨스트",
+   "mk": "NSQ",
+   "price": 103.11,
+   "pct": 2.36,
+   "cap": 4089371598.1167145,
+   "sector": "산업재",
+   "ind": "Airlines"
+  },
+  {
+   "code": "OPLN",
+   "rc": "OPLN.K",
+   "name": "오픈레인",
+   "mk": "NYS",
+   "price": 33.48,
+   "pct": 4.59,
+   "cap": 4086899024.3208504,
+   "sector": "경기소비재",
+   "ind": "Auto & Truck Dealerships"
   },
   {
    "code": "SEI",
@@ -2890,24 +2901,13 @@
    "ind": "Semiconductor Equipment & Materials"
   },
   {
-   "code": "SKYW",
-   "rc": "SKYW.O",
-   "name": "스카이웨스트",
-   "mk": "NSQ",
-   "price": 103.11,
-   "pct": 2.36,
-   "cap": 4003588614.448929,
-   "sector": "산업재",
-   "ind": "Airlines"
-  },
-  {
    "code": "TENB",
    "rc": "TENB.O",
    "name": "테너블 홀딩스",
    "mk": "NSQ",
    "price": 36.34,
    "pct": 2.98,
-   "cap": 4002486999.0260277,
+   "cap": 4007283515.6461678,
    "sector": "기술",
    "ind": "Software - Infrastructure"
   },
@@ -2932,17 +2932,6 @@
    "cap": 3986131559.028244,
    "sector": "소재",
    "ind": "Specialty Chemicals"
-  },
-  {
-   "code": "BELFB",
-   "rc": "BELFB.O",
-   "name": "벨 퓨즈 Class B",
-   "mk": "NSQ",
-   "price": 275.97,
-   "pct": 7.36,
-   "cap": 3984855034.1262817,
-   "sector": "기술",
-   "ind": "Electronic Components"
   },
   {
    "code": "STNG",
@@ -2998,6 +2987,17 @@
    "cap": 3933513509.2163086,
    "sector": "통신 서비스",
    "ind": "Telecom Services"
+  },
+  {
+   "code": "BELFB",
+   "rc": "BELFB.O",
+   "name": "벨 퓨즈 Class B",
+   "mk": "NSQ",
+   "price": 275.97,
+   "pct": 7.36,
+   "cap": 3925040468.151703,
+   "sector": "기술",
+   "ind": "Electronic Components"
   },
   {
    "code": "ADPT",
@@ -3105,7 +3105,7 @@
    "mk": "NSQ",
    "price": 114.97,
    "pct": 0.03,
-   "cap": 3862847753.664093,
+   "cap": 3861426954.3890076,
    "sector": "금융",
    "ind": "Banks - Regional"
   },
@@ -3116,7 +3116,7 @@
    "mk": "NYS",
    "price": 16.38,
    "pct": 1.74,
-   "cap": 3861495809.615286,
+   "cap": 3861006293.3403664,
    "sector": "부동산",
    "ind": "REIT - Residential"
   },
@@ -3259,7 +3259,7 @@
    "mk": "NYS",
    "price": 65.45,
    "pct": 1.8,
-   "cap": 3715165665.7717896,
+   "cap": 3714539636.5509796,
    "sector": "소재",
    "ind": "Building Materials"
   },
@@ -3330,6 +3330,17 @@
    "ind": "Beverages - Non-Alcoholic"
   },
   {
+   "code": "OPCH",
+   "rc": "OPCH.O",
+   "name": "옵션 케어 헬스",
+   "mk": "NSQ",
+   "price": 23.41,
+   "pct": 0.17,
+   "cap": 3676013844.6795044,
+   "sector": "헬스케어",
+   "ind": "Medical Care Facilities"
+  },
+  {
    "code": "NHC",
    "rc": "NHC",
    "name": "내셔널 헬스케어",
@@ -3380,7 +3391,7 @@
    "mk": "NYS",
    "price": 309.64,
    "pct": 6.09,
-   "cap": 3656372346.6555176,
+   "cap": 3656575160.8651123,
    "sector": "산업재",
    "ind": "Specialty Industrial Machinery"
   },
@@ -3517,17 +3528,6 @@
    "ind": "Advertising Agencies"
   },
   {
-   "code": "OPCH",
-   "rc": "OPCH.O",
-   "name": "옵션 케어 헬스",
-   "mk": "NSQ",
-   "price": 23.41,
-   "pct": 0.17,
-   "cap": 3506472515.7745857,
-   "sector": "헬스케어",
-   "ind": "Medical Care Facilities"
-  },
-  {
    "code": "LEU",
    "rc": "LEU",
    "name": "센트러스 에너지",
@@ -3622,7 +3622,7 @@
    "mk": "NSQ",
    "price": 35.54,
    "pct": 0.73,
-   "cap": 3441082365.10392,
+   "cap": 3441089508.644104,
    "sector": "금융",
    "ind": "Banks - Regional"
   },
@@ -3677,7 +3677,7 @@
    "mk": "NSQ",
    "price": 46.75,
    "pct": 0.32,
-   "cap": 3416744133.0,
+   "cap": 3421029191.25,
    "sector": "경기소비재",
    "ind": "Footwear & Accessories"
   },
@@ -3710,7 +3710,7 @@
    "mk": "NYS",
    "price": 30.85,
    "pct": 0.62,
-   "cap": 3402946651.42848,
+   "cap": 3401912744.5156956,
    "sector": "부동산",
    "ind": "REIT - Office"
   },
@@ -3781,6 +3781,17 @@
    "ind": "Biotechnology"
   },
   {
+   "code": "SIG",
+   "rc": "SIG",
+   "name": "시그넷 주얼러스",
+   "mk": "NYS",
+   "price": 84.76,
+   "pct": 1.57,
+   "cap": 3333592491.097481,
+   "sector": "경기소비재",
+   "ind": "Luxury Goods"
+  },
+  {
    "code": "CWK",
    "rc": "CWK",
    "name": "쿠쉬맨 앤 웨이크필드",
@@ -3834,17 +3845,6 @@
    "cap": 3307298425.572567,
    "sector": "경기소비재",
    "ind": "Auto Parts"
-  },
-  {
-   "code": "SIG",
-   "rc": "SIG",
-   "name": "시그넷 주얼러스",
-   "mk": "NYS",
-   "price": 84.76,
-   "pct": 1.57,
-   "cap": 3292907690.07209,
-   "sector": "경기소비재",
-   "ind": "Luxury Goods"
   },
   {
    "code": "CPK",
@@ -3902,17 +3902,6 @@
    "ind": "Semiconductors"
   },
   {
-   "code": "DX",
-   "rc": "DX",
-   "name": "다이넥스 캐피털",
-   "mk": "NYS",
-   "price": 13.18,
-   "pct": 0.84,
-   "cap": 3270840041.794533,
-   "sector": "부동산",
-   "ind": "REIT - Mortgage"
-  },
-  {
    "code": "VCYT",
    "rc": "VCYT.O",
    "name": "베라사이트",
@@ -3924,15 +3913,15 @@
    "ind": "Diagnostics & Research"
   },
   {
-   "code": "OPEN",
-   "rc": "OPEN.O",
-   "name": "오픈도어 테크놀로지스",
-   "mk": "NSQ",
-   "price": 3.36,
-   "pct": 5.08,
-   "cap": 3262865826.1284947,
+   "code": "DX",
+   "rc": "DX",
+   "name": "다이넥스 캐피털",
+   "mk": "NYS",
+   "price": 13.18,
+   "pct": 0.84,
+   "cap": 3261121557.6895065,
    "sector": "부동산",
-   "ind": "Real Estate Services"
+   "ind": "REIT - Mortgage"
   },
   {
    "code": "AAMI",
@@ -3944,6 +3933,17 @@
    "cap": 3259058519.224365,
    "sector": "금융",
    "ind": "Asset Management"
+  },
+  {
+   "code": "OPEN",
+   "rc": "OPEN.O",
+   "name": "오픈도어 테크놀로지스",
+   "mk": "NSQ",
+   "price": 3.36,
+   "pct": 5.08,
+   "cap": 3241514982.3150997,
+   "sector": "부동산",
+   "ind": "Real Estate Services"
   },
   {
    "code": "RH",
@@ -4023,6 +4023,17 @@
    "ind": "Security & Protection Services"
   },
   {
+   "code": "REZI",
+   "rc": "REZI.K",
+   "name": "레지디오 테크놀러지",
+   "mk": "NYS",
+   "price": 21.02,
+   "pct": 1.84,
+   "cap": 3191831955.0702133,
+   "sector": "산업재",
+   "ind": "Industrial Distribution"
+  },
+  {
    "code": "PFS",
    "rc": "PFS",
    "name": "프로비던트 파이낸셜 서비스",
@@ -4032,17 +4043,6 @@
    "cap": 3190137116.874527,
    "sector": "금융",
    "ind": "Banks - Regional"
-  },
-  {
-   "code": "REZI",
-   "rc": "REZI.K",
-   "name": "레지디오 테크놀러지",
-   "mk": "NYS",
-   "price": 21.02,
-   "pct": 1.84,
-   "cap": 3182980054.517441,
-   "sector": "산업재",
-   "ind": "Industrial Distribution"
   },
   {
    "code": "MZTI",
@@ -4298,6 +4298,17 @@
    "ind": "Communication Equipment"
   },
   {
+   "code": "GPOR",
+   "rc": "GPOR.K",
+   "name": "걸프포트 에너지",
+   "mk": "NYS",
+   "price": 170.98,
+   "pct": 0.81,
+   "cap": 3072449141.405411,
+   "sector": "에너지",
+   "ind": "Oil & Gas E&P"
+  },
+  {
    "code": "BTU",
    "rc": "BTU",
    "name": "피바디 에너지",
@@ -4340,17 +4351,6 @@
    "cap": 3051165286.7697067,
    "sector": "금융",
    "ind": "Banks - Regional"
-  },
-  {
-   "code": "GPOR",
-   "rc": "GPOR.K",
-   "name": "걸프포트 에너지",
-   "mk": "NYS",
-   "price": 170.98,
-   "pct": 0.81,
-   "cap": 3023587333.1263733,
-   "sector": "에너지",
-   "ind": "Oil & Gas E&P"
   },
   {
    "code": "PLUG",
@@ -4414,7 +4414,7 @@
    "mk": "NYS",
    "price": 54.73,
    "pct": 0.11,
-   "cap": 2969862072.8299675,
+   "cap": 2970438160.805149,
    "sector": "산업재",
    "ind": "Specialty Business Services"
   },
@@ -4507,6 +4507,17 @@
    "ind": "Rental & Leasing Services"
   },
   {
+   "code": "CALY",
+   "rc": "CALY.K",
+   "name": "캘러웨이 골프",
+   "mk": "NYS",
+   "price": 16.14,
+   "pct": 2.83,
+   "cap": 2901286957.1046906,
+   "sector": "경기소비재",
+   "ind": "Leisure"
+  },
+  {
    "code": "AKR",
    "rc": "AKR",
    "name": "아카디아 리얼티 트러스트",
@@ -4527,17 +4538,6 @@
    "cap": 2884509850.0,
    "sector": "기술",
    "ind": "Semiconductors"
-  },
-  {
-   "code": "CALY",
-   "rc": "CALY.K",
-   "name": "캘러웨이 골프",
-   "mk": "NYS",
-   "price": 16.14,
-   "pct": 2.83,
-   "cap": 2881159699.9858246,
-   "sector": "경기소비재",
-   "ind": "Leisure"
   },
   {
    "code": "DNOW",
@@ -4617,17 +4617,6 @@
    "ind": "Recreational Vehicles"
   },
   {
-   "code": "UPST",
-   "rc": "UPST.O",
-   "name": "업스타트 홀딩스",
-   "mk": "NSQ",
-   "price": 29.11,
-   "pct": 2.15,
-   "cap": 2832782828.4551697,
-   "sector": "금융",
-   "ind": "Credit Services"
-  },
-  {
    "code": "NTCT",
    "rc": "NTCT.O",
    "name": "네트스카우트 시스템즈",
@@ -4683,17 +4672,6 @@
    "ind": "Lumber & Wood Production"
   },
   {
-   "code": "NRIX",
-   "rc": "NRIX.O",
-   "name": "누릭스 테라퓨틱스",
-   "mk": "NSQ",
-   "price": 26.93,
-   "pct": 0.88,
-   "cap": 2794840754.861656,
-   "sector": "헬스케어",
-   "ind": "Biotechnology"
-  },
-  {
    "code": "TBBK",
    "rc": "TBBK.O",
    "name": "뱅코프",
@@ -4705,6 +4683,17 @@
    "ind": "Banks - Regional"
   },
   {
+   "code": "UPST",
+   "rc": "UPST.O",
+   "name": "업스타트 홀딩스",
+   "mk": "NSQ",
+   "price": 29.11,
+   "pct": 2.15,
+   "cap": 2786163832.0077057,
+   "sector": "금융",
+   "ind": "Credit Services"
+  },
+  {
    "code": "SPSC",
    "rc": "SPSC.O",
    "name": "SPS 커머스",
@@ -4714,6 +4703,17 @@
    "cap": 2785693365.242569,
    "sector": "기술",
    "ind": "Software - Application"
+  },
+  {
+   "code": "NRIX",
+   "rc": "NRIX.O",
+   "name": "누릭스 테라퓨틱스",
+   "mk": "NSQ",
+   "price": 26.93,
+   "pct": 0.88,
+   "cap": 2784718575.64695,
+   "sector": "헬스케어",
+   "ind": "Biotechnology"
   },
   {
    "code": "IMAX",
@@ -4793,13 +4793,24 @@
    "ind": "Electronic Components"
   },
   {
+   "code": "NMRK",
+   "rc": "NMRK.O",
+   "name": "뉴마크 그룹",
+   "mk": "NSQ",
+   "price": 15.18,
+   "pct": 0.33,
+   "cap": 2751050613.166588,
+   "sector": "부동산",
+   "ind": "Real Estate Services"
+  },
+  {
    "code": "NBTB",
    "rc": "NBTB.O",
    "name": "NBT 뱅코프",
    "mk": "NSQ",
    "price": 52.92,
    "pct": 0.69,
-   "cap": 2752381382.206421,
+   "cap": 2749726332.9782867,
    "sector": "금융",
    "ind": "Banks - Regional"
   },
@@ -4813,17 +4824,6 @@
    "cap": 2748840193.1120796,
    "sector": "헬스케어",
    "ind": "Health Information Services"
-  },
-  {
-   "code": "NMRK",
-   "rc": "NMRK.O",
-   "name": "뉴마크 그룹",
-   "mk": "NSQ",
-   "price": 15.18,
-   "pct": 0.33,
-   "cap": 2747825895.3417587,
-   "sector": "부동산",
-   "ind": "Real Estate Services"
   },
   {
    "code": "ALHC",
@@ -4903,6 +4903,17 @@
    "ind": "REIT - Retail"
   },
   {
+   "code": "CUBI",
+   "rc": "CUBI.K",
+   "name": "커스터머스 뱅코프",
+   "mk": "NYS",
+   "price": 80.76,
+   "pct": 1.64,
+   "cap": 2731714179.1381836,
+   "sector": "금융",
+   "ind": "Banks - Regional"
+  },
+  {
    "code": "ALRM",
    "rc": "ALRM.O",
    "name": "알람닷컴 홀딩스",
@@ -4912,17 +4923,6 @@
    "cap": 2727943954.9788513,
    "sector": "기술",
    "ind": "Software - Application"
-  },
-  {
-   "code": "CUBI",
-   "rc": "CUBI.K",
-   "name": "커스터머스 뱅코프",
-   "mk": "NYS",
-   "price": 80.76,
-   "pct": 1.64,
-   "cap": 2727475086.626053,
-   "sector": "금융",
-   "ind": "Banks - Regional"
   },
   {
    "code": "BBT",
@@ -5261,7 +5261,7 @@
    "mk": "NYS",
    "price": 136.75,
    "pct": 6.3,
-   "cap": 2443494811.25,
+   "cap": 2440787161.25,
    "sector": "기술",
    "ind": "Electronic Components"
   },
@@ -5365,6 +5365,17 @@
    "ind": "Railroads"
   },
   {
+   "code": "ANDE",
+   "rc": "ANDE.O",
+   "name": "앤더슨스",
+   "mk": "NSQ",
+   "price": 68.86,
+   "pct": 0.03,
+   "cap": 2344962316.9449463,
+   "sector": "필수소비재",
+   "ind": "Food Distribution"
+  },
+  {
    "code": "KMT",
    "rc": "KMT",
    "name": "켄나메탈",
@@ -5374,17 +5385,6 @@
    "cap": 2342698548.7768917,
    "sector": "산업재",
    "ind": "Tools & Accessories"
-  },
-  {
-   "code": "ANDE",
-   "rc": "ANDE.O",
-   "name": "앤더슨스",
-   "mk": "NSQ",
-   "price": 68.86,
-   "pct": 0.03,
-   "cap": 2339557770.937042,
-   "sector": "필수소비재",
-   "ind": "Food Distribution"
   },
   {
    "code": "PTON",
@@ -5503,7 +5503,7 @@
    "mk": "NSQ",
    "price": 75.22,
    "pct": 1.83,
-   "cap": 2241549122.4272156,
+   "cap": 2241698277.3992615,
    "sector": "헬스케어",
    "ind": "Medical Devices"
   }

@@ -1,5 +1,5 @@
 {
- "_updated": "2026-08-19T00:55:50",
+ "_updated": "2026-08-19T06:34:59",
  "mkt": "us",
  "benchmark": "S&P 500",
  "riskOff": false,
@@ -13,13 +13,13 @@
    "op": "op-buy",
    "opTxt": "비중확대",
    "warns": [],
-   "conf": 61,
+   "conf": 62,
    "confBand": "보통",
    "score": 46,
    "pts": [
-    "최근 6개월 +40.7% · S&P 500 대비 +29.9%p — 지수 상회 (12개월 +80.6%)",
+    "최근 6개월 +45.5% · S&P 500 대비 +33.1%p — 지수 상회 (12개월 +80.6%)",
     "구성 4종목 중 1개 50일선 위 · 2개 3개월 상승 — 폭 38%, 참여 제한적",
-    "52주 고점 대비 -9.5% · 20일 이격 -0.6% · 변동성 지수 대비 3.6배 — 종합 +46/100 (리스크 −10)"
+    "52주 고점 대비 -9.5% · 20일 이격 -0.9% · 변동성 지수 대비 3.6배 — 종합 +46/100 (리스크 −10)"
    ],
    "perf": -3.46,
    "lead": {
@@ -48,15 +48,15 @@
     "ti": "AI, chip stocks tumble, broader market sees red amid US-Iran tensions",
     "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxNeGNSZWhja3N0WjdIZWVPY3MzWTN6c3RxV3I2WXNDdVJqZ1Y1cTNHSXFmMVZWdXljVl9GbG1fX3pvZ1JPNU54cnF5UHNaNWN4TmRyQlZIRTRoZUpDQXhLc2Mtc2I5dlVKczBiRkxxdzNfNEE0MEJPTjJBWTY0NWVtQk1VLTlGRHBjZTVsNzJJc0JXaVZGUmxFOXJqaUtQczZMeW5KU3p3?oc=5",
     "src": "Seeking Alpha",
-    "tm": "7시간 전"
+    "tm": "12시간 전"
    },
    "metrics": {
-    "r126": 0.4071,
-    "rs": 0.299,
+    "r126": 0.4551,
+    "rs": 0.3311,
     "breadth": 0.375,
-    "ext20": -0.0057,
-    "rsi14": 47.3,
-    "volRatio": 3.61,
+    "ext20": -0.0088,
+    "rsi14": 47.1,
+    "volRatio": 3.63,
     "curDD": -0.0949,
     "penalty": 10,
     "driver": 56
@@ -68,17 +68,14 @@
    "thesis": "AI 수익화 초기 국면 — 클라우드·광고 현금흐름이 투자를 뒷받침",
    "op": "op-hold",
    "opTxt": "중립",
-   "warns": [
-    "지수 동반 상승 — 초과성과 없음",
-    "참고용 · 저신뢰"
-   ],
-   "conf": 39,
-   "confBand": "낮음",
-   "score": 1,
+   "warns": [],
+   "conf": 54,
+   "confBand": "보통",
+   "score": 9,
    "pts": [
-    "최근 6개월 +9.2% · S&P 500 대비 -1.6%p — 시장 수준 (12개월 +11.6%)",
+    "최근 6개월 +12.4% · S&P 500 대비 +0.0%p — 시장 수준 (12개월 +11.6%)",
     "구성 4종목 중 2개 50일선 위 · 2개 3개월 상승 — 폭 50%, 참여 보통",
-    "52주 고점 대비 -4.7% · 20일 이격 +2.6% · 변동성 지수 대비 3.7배 — 종합 +1/100 (리스크 −10)"
+    "52주 고점 대비 -4.7% · 20일 이격 +2.8% · 변동성 지수 대비 3.0배 — 종합 +9/100 (리스크 −10)"
    ],
    "perf": -1.18,
    "lead": {
@@ -104,21 +101,21 @@
     }
    ],
    "cat": {
-    "ti": "Hunting MacSync Stealer infrastructure through behavioral pivots",
-    "link": "https://news.google.com/rss/articles/CBMivwFBVV95cUxNdll1RHdTam1qRE5halphNkV1X182aU1BYnppbWtMQ2otbkxaOFIxOFZfNTlQbXF3QmRWeUl4M2V6bklZQzZsZ29UVDNWdk93QUhTMW9lLWRwaWcxUTB1cW5MeWdrY0pmYTlHemRIMG0wR2hwcE9EMG1ib3hOMGM2QXJVZThyVVAzQXREc0FmNFRpTkgzY3g3cFRmNTVVV0tpTU0yUkFBcnQ5S1VBWHhGbE5Uc2NMM01rQk5ramc3Yw?oc=5",
-    "src": "Microsoft",
-    "tm": "7시간 전"
+    "ti": "Warp’s new system is an out-of-the-box software factory for AI development",
+    "link": "https://news.google.com/rss/articles/CBMirAFBVV95cUxOcG9aN0JNaUVlM2RvR2FDdW41anJfOUhXMVVrLVE5d2o1VFVaSDdZUUJOMkowbXk1S1FvMDBGTExsZzdwUElSeFF5S0RMX0pqdU9rSFI5c2lmbm14ZFhkWkdGTDRfTWNCU01FNlBxbGdOdDdOOFAtdzliQnVJdzJkNUZMWm1EX0VIVFhGZThsWmRkaFRUQXZxTDRqUWZGc1VyMlJRaVlDejkwMUVw?oc=5",
+    "src": "TechCrunch",
+    "tm": "16시간 전"
    },
    "metrics": {
-    "r126": 0.0924,
-    "rs": -0.0157,
+    "r126": 0.124,
+    "rs": 0.0,
     "breadth": 0.5,
-    "ext20": 0.0263,
-    "rsi14": 54.1,
-    "volRatio": 3.67,
+    "ext20": 0.0281,
+    "rsi14": 54.3,
+    "volRatio": 3.04,
     "curDD": -0.0473,
     "penalty": 10,
-    "driver": 11
+    "driver": 19
    }
   },
   {
@@ -128,13 +125,13 @@
    "op": "op-sell",
    "opTxt": "비중축소",
    "warns": [],
-   "conf": 79,
+   "conf": 83,
    "confBand": "높음",
-   "score": -79,
+   "score": -81,
    "pts": [
-    "최근 6개월 -3.3% · S&P 500 대비 -14.1%p — 지수 하회 (12개월 +0.3%)",
-    "구성 4종목 중 1개 50일선 위 · 0개 3개월 상승 — 폭 13%, 참여 제한적",
-    "52주 고점 대비 -16.8% · 20일 이격 -3.3% · 변동성 지수 대비 3.3배 — 종합 -79/100 (리스크 −10)"
+    "최근 6개월 -8.4% · S&P 500 대비 -20.8%p — 지수 하회 (12개월 +0.3%)",
+    "구성 4종목 중 1개 50일선 위 · 2개 3개월 상승 — 폭 38%, 참여 제한적",
+    "52주 고점 대비 -16.8% · 20일 이격 -3.2% · 변동성 지수 대비 3.5배 — 종합 -81/100 (리스크 −10)"
    ],
    "perf": -5.09,
    "lead": {
@@ -166,15 +163,15 @@
     "tm": "8일 전"
    },
    "metrics": {
-    "r126": -0.033,
-    "rs": -0.1411,
-    "breadth": 0.125,
-    "ext20": -0.0331,
-    "rsi14": 43.0,
-    "volRatio": 3.34,
+    "r126": -0.0841,
+    "rs": -0.2081,
+    "breadth": 0.375,
+    "ext20": -0.0323,
+    "rsi14": 42.7,
+    "volRatio": 3.49,
     "curDD": -0.1677,
     "penalty": 10,
-    "driver": -69
+    "driver": -71
    }
   },
   {
@@ -186,13 +183,13 @@
    "warns": [
     "지수 동반 상승 — 초과성과 없음"
    ],
-   "conf": 51,
+   "conf": 65,
    "confBand": "보통",
-   "score": -1,
+   "score": 12,
    "pts": [
-    "최근 6개월 +2.7% · S&P 500 대비 -8.1%p — 지수 하회 (12개월 +27.3%)",
+    "최근 6개월 +0.3% · S&P 500 대비 -12.1%p — 지수 하회 (12개월 +27.3%)",
     "구성 4종목 중 4개 50일선 위 · 4개 3개월 상승 — 폭 100%, 참여 광범위",
-    "52주 고점 대비 -5.3% · 20일 이격 +3.9% · 변동성 지수 대비 1.9배 — 종합 -1/100 (리스크 −4)"
+    "52주 고점 대비 -5.3% · 20일 이격 +3.5% · 변동성 지수 대비 1.9배 — 종합 +12/100 (리스크 −4)"
    ],
    "perf": 1.98,
    "lead": {
@@ -224,15 +221,15 @@
     "tm": "1일 전"
    },
    "metrics": {
-    "r126": 0.0274,
-    "rs": -0.0807,
+    "r126": 0.0034,
+    "rs": -0.1206,
     "breadth": 1.0,
-    "ext20": 0.0389,
-    "rsi14": 67.0,
+    "ext20": 0.0345,
+    "rsi14": 67.1,
     "volRatio": 1.86,
     "curDD": -0.0531,
     "penalty": 4,
-    "driver": 3
+    "driver": 16
    }
   },
   {
@@ -242,13 +239,13 @@
    "op": "op-buy",
    "opTxt": "비중확대",
    "warns": [],
-   "conf": 78,
+   "conf": 86,
    "confBand": "높음",
-   "score": 67,
+   "score": 59,
    "pts": [
-    "최근 6개월 +18.7% · S&P 500 대비 +7.9%p — 지수 상회 (12개월 +28.2%)",
-    "구성 4종목 중 2개 50일선 위 · 2개 3개월 상승 — 폭 50%, 참여 보통",
-    "52주 고점 대비 -4.2% · 20일 이격 -0.2% · 변동성 지수 대비 1.7배 — 종합 +67/100 (리스크 −2)"
+    "최근 6개월 +15.1% · S&P 500 대비 +2.7%p — 지수 상회 (12개월 +28.2%)",
+    "구성 4종목 중 2개 50일선 위 · 4개 3개월 상승 — 폭 75%, 참여 광범위",
+    "52주 고점 대비 -4.2% · 20일 이격 -0.0% · 변동성 지수 대비 1.7배 — 종합 +59/100 (리스크 −2)"
    ],
    "perf": 2.11,
    "lead": {
@@ -274,21 +271,21 @@
     }
    ],
    "cat": {
-    "ti": "Eli Lilly files 6 lawsuits against businesses selling 'black market' obesity drug",
-    "link": "https://news.google.com/rss/articles/CBMivwFBVV95cUxObnpHc3MybE50TUdZbHZMMkoyZVM3R2JzektIY25MalFVclNHZmhibEZycm5yZmd0SG14b0lJMWliYjlpSGV5Nm1hd3ROdmVxdGJzdTJNV1h0bDUtNGdHYnU4eG55bnI0T1dvd0ZfVnZoTS1taG81RHlmSkFySDZkaGdjdXBTbTlzQksxM0ZkQXRDZmh6SllKLUkyeGNLV2JIaGRUSGxvRE13cXpkeHFubzQ2NGd1b3dMTkdQd2FuMA?oc=5",
-    "src": "NPR",
-    "tm": "5일 전"
+    "ti": "Novo takes first round of oral obesity duel. Can it stay ahead of Lilly?",
+    "link": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQWkdwSkZWRTN1dzN0WjU4SHBnbnl3RF9GQm9uQlNfV2R0aDdxTFhfVXVMZm40dkJwN09yTTZDZHNZNGFlMFdnU3JaZU5sOGZMLUMxWUVoR3l3bXQtcXppN2FXWXo2VThXWVBMUFV3ZktfVGtlN1BnT3lUX2JmVzNPb0NyazBjYU91UHVzWWd2OGVmQjJNbkNic1ZDRTFJM1pCdTg0YjJZYw?oc=5",
+    "src": "BioSpace",
+    "tm": "2시간 전"
    },
    "metrics": {
-    "r126": 0.1866,
-    "rs": 0.0786,
-    "breadth": 0.5,
-    "ext20": -0.0016,
-    "rsi14": 51.9,
-    "volRatio": 1.75,
+    "r126": 0.1513,
+    "rs": 0.0273,
+    "breadth": 0.75,
+    "ext20": -0.0002,
+    "rsi14": 51.7,
+    "volRatio": 1.71,
     "curDD": -0.0418,
     "penalty": 2,
-    "driver": 69
+    "driver": 61
    }
   },
   {
@@ -298,13 +295,13 @@
    "op": "op-buy",
    "opTxt": "비중확대",
    "warns": [],
-   "conf": 92,
+   "conf": 93,
    "confBand": "높음",
-   "score": 75,
+   "score": 81,
    "pts": [
-    "최근 6개월 +17.2% · S&P 500 대비 +6.4%p — 지수 상회 (12개월 +38.5%)",
+    "최근 6개월 +20.0% · S&P 500 대비 +7.6%p — 지수 상회 (12개월 +38.5%)",
     "구성 4종목 중 3개 50일선 위 · 4개 3개월 상승 — 폭 88%, 참여 광범위",
-    "52주 고점 대비 -2.1% · 20일 이격 +1.4% · 변동성 지수 대비 1.5배 — 종합 +75/100 (리스크 −0)"
+    "52주 고점 대비 -2.1% · 20일 이격 +1.2% · 변동성 지수 대비 1.5배 — 종합 +81/100 (리스크 −0)"
    ],
    "perf": -0.04,
    "lead": {
@@ -336,33 +333,31 @@
     "tm": "1일 전"
    },
    "metrics": {
-    "r126": 0.172,
-    "rs": 0.0639,
+    "r126": 0.2002,
+    "rs": 0.0762,
     "breadth": 0.875,
-    "ext20": 0.0135,
+    "ext20": 0.0124,
     "rsi14": 57.2,
-    "volRatio": 1.55,
+    "volRatio": 1.52,
     "curDD": -0.0212,
     "penalty": 0,
-    "driver": 75
+    "driver": 81
    }
   },
   {
    "nm": "에너지",
    "desk": "에너지 데스크",
    "thesis": "공급 규율과 지정학 프리미엄 vs 수요 둔화의 균형",
-   "op": "op-hold",
-   "opTxt": "중립",
-   "warns": [
-    "지수 동반 상승 — 초과성과 없음"
-   ],
-   "conf": 71,
+   "op": "op-buy",
+   "opTxt": "비중확대",
+   "warns": [],
+   "conf": 87,
    "confBand": "높음",
-   "score": 40,
+   "score": 52,
    "pts": [
-    "최근 6개월 +8.7% · S&P 500 대비 -2.1%p — 지수 하회 (12개월 +46.9%)",
+    "최근 6개월 +12.9% · S&P 500 대비 +0.5%p — 시장 수준 (12개월 +46.9%)",
     "구성 4종목 중 4개 50일선 위 · 3개 3개월 상승 — 폭 88%, 참여 광범위",
-    "52주 고점 대비 -2.3% · 20일 이격 +6.1% · 변동성 지수 대비 2.0배 — 종합 +40/100 (리스크 −5)"
+    "52주 고점 대비 -2.3% · 20일 이격 +5.7% · 변동성 지수 대비 2.0배 — 종합 +52/100 (리스크 −5)"
    ],
    "perf": 1.13,
    "lead": {
@@ -391,18 +386,18 @@
     "ti": "Current price of oil as of Aug. 18, 2026",
     "link": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE1KM0xoMEc1a1o5QnZBYk5BbTE3SkVGWHM5bDg3bmJ0LVBKN2I4TGNUOEFzMV9vUVh5M19kQVJDQkZuOWpjaWxKQV9nR293bHhMeEZlbWFsendJbDVSb3FmbGd3?oc=5",
     "src": "Fortune",
-    "tm": "13시간 전"
+    "tm": "19시간 전"
    },
    "metrics": {
-    "r126": 0.0872,
-    "rs": -0.0209,
+    "r126": 0.1288,
+    "rs": 0.0048,
     "breadth": 0.875,
-    "ext20": 0.061,
-    "rsi14": 69.8,
-    "volRatio": 1.98,
+    "ext20": 0.0569,
+    "rsi14": 69.4,
+    "volRatio": 2.02,
     "curDD": -0.023,
     "penalty": 5,
-    "driver": 45
+    "driver": 57
    }
   }
  ]
