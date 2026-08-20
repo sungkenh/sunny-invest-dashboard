@@ -1,5 +1,5 @@
 {
- "_updated": "2026-08-20T00:55:37",
+ "_updated": "2026-08-20T06:38:12",
  "mkt": "us",
  "benchmark": "S&P 500",
  "riskOff": false,
@@ -13,13 +13,13 @@
    "op": "op-buy",
    "opTxt": "비중확대",
    "warns": [],
-   "conf": 62,
+   "conf": 59,
    "confBand": "보통",
-   "score": 46,
+   "score": 43,
    "pts": [
-    "최근 6개월 +41.9% · S&P 500 대비 +29.8%p — 지수 상회 (12개월 +77.8%)",
-    "구성 4종목 중 1개 50일선 위 · 2개 3개월 상승 — 폭 38%, 참여 제한적",
-    "52주 고점 대비 -11.8% · 20일 이격 -3.0% · 변동성 지수 대비 3.7배 — 종합 +46/100 (리스크 −10)"
+    "최근 6개월 +40.5% · S&P 500 대비 +27.7%p — 지수 상회 (12개월 +77.8%)",
+    "구성 4종목 중 1개 50일선 위 · 1개 3개월 상승 — 폭 25%, 참여 제한적",
+    "52주 고점 대비 -11.8% · 20일 이격 -3.1% · 변동성 지수 대비 3.8배 — 종합 +43/100 (리스크 −10)"
    ],
    "perf": -2.41,
    "lead": {
@@ -45,21 +45,21 @@
     }
    ],
    "cat": {
-    "ti": "Analog Devices' quarterly forecast tops estimates on AI-fueled chip demand",
-    "link": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNY3Y1czRfYnNzUnFMM1FDQzVydm1nOVRIamIxdmt0dVRQOEc4dDljRVcwNURHU2ZrMzhoUFVURlFoc1ZncUtlOWluUno0ZW01Yk1pdnp3Y0lWSWNrRVVrbURLdmFzVU44VWZyNTVyd2p6VndSblRwRDYyMm1wNkpBTUJlTXh6bFhYNnkyQVR4Z1pjYmc5ckRmaTZRRkJZU0JCR29zVzg2ZjFJRC1HTlRzaUVfSzdWaDRn?oc=5",
-    "src": "Reuters",
-    "tm": "13시간 전"
+    "ti": "Nvidia was \"stuck\" with half a million chips. Then the solution was found",
+    "link": "https://news.google.com/rss/articles/CBMihgFBVV95cUxNUGg3RTNuSUpNajF1WUZHZ2VsOV9kSHpvZHhaSHEtTzdORVVpWklSMC1zRE5JYUZuYWhZX2dRVHBZeWdxZmNSMW80VVBCZEZFZC11TTJjQ1pNaW5GalVacFNpT0xORS1FUms3UTMzY3NZQmpibkJNQjY0YVBCMklHeVRsekFTZw?oc=5",
+    "src": "The Jerusalem Post",
+    "tm": "1시간 전"
    },
    "metrics": {
-    "r126": 0.4185,
-    "rs": 0.2984,
-    "breadth": 0.375,
-    "ext20": -0.03,
-    "rsi14": 43.3,
-    "volRatio": 3.67,
+    "r126": 0.4054,
+    "rs": 0.2773,
+    "breadth": 0.25,
+    "ext20": -0.0309,
+    "rsi14": 43.7,
+    "volRatio": 3.8,
     "curDD": -0.1182,
     "penalty": 10,
-    "driver": 56
+    "driver": 53
    }
   },
   {
@@ -68,14 +68,16 @@
    "thesis": "AI 수익화 초기 국면 — 클라우드·광고 현금흐름이 투자를 뒷받침",
    "op": "op-hold",
    "opTxt": "중립",
-   "warns": [],
-   "conf": 54,
-   "confBand": "보통",
-   "score": 9,
+   "warns": [
+    "지수 동반 상승 — 초과성과 없음"
+   ],
+   "conf": 40,
+   "confBand": "낮음",
+   "score": 8,
    "pts": [
-    "최근 6개월 +12.4% · S&P 500 대비 +0.4%p — 시장 수준 (12개월 +13.5%)",
+    "최근 6개월 +12.3% · S&P 500 대비 -0.5%p — 시장 수준 (12개월 +13.5%)",
     "구성 4종목 중 2개 50일선 위 · 2개 3개월 상승 — 폭 50%, 참여 보통",
-    "52주 고점 대비 -4.0% · 20일 이격 +3.1% · 변동성 지수 대비 2.9배 — 종합 +9/100 (리스크 −10)"
+    "52주 고점 대비 -4.0% · 20일 이격 +3.1% · 변동성 지수 대비 3.8배 — 종합 +8/100 (리스크 −10)"
    ],
    "perf": 0.82,
    "lead": {
@@ -104,18 +106,18 @@
     "ti": "Microsoft named a Leader in the Frost Radar™: Cloud Workload Protection Platforms, 2026",
     "link": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxQVmdYWmphSXJ3NmYwTGo4ZU1sMGt1T2ZfVkRkdXkzMzF2aEVnbUVKM0xmbUpJMlVlLVB2ZzBIaVdFMWR5MmdlUm9iSHZOcklPcmxsRDNZMC1iS2UzZWd0Um9NaFkxMTN0a3hrVURmWHg4YlZCZ2kzSkZ1T1c3WFBVb21rNlpJZS1yaW1PNEdqVGU4VmR2aTQzcjVOYmkyelJxX28xRlJYaHZuVkg2RENLVXdaSHRpZTNodWFIcmdpLXdROG5JVmdhRGl4NzJ3WkktbEpHM01HR1hZZw?oc=5",
     "src": "Microsoft",
-    "tm": "7시간 전"
+    "tm": "13시간 전"
    },
    "metrics": {
-    "r126": 0.1239,
-    "rs": 0.0037,
+    "r126": 0.1234,
+    "rs": -0.0047,
     "breadth": 0.5,
-    "ext20": 0.0312,
-    "rsi14": 55.9,
-    "volRatio": 2.93,
+    "ext20": 0.0306,
+    "rsi14": 55.5,
+    "volRatio": 3.78,
     "curDD": -0.0397,
     "penalty": 10,
-    "driver": 19
+    "driver": 18
    }
   },
   {
@@ -125,13 +127,13 @@
    "op": "op-sell",
    "opTxt": "비중축소",
    "warns": [],
-   "conf": 83,
+   "conf": 80,
    "confBand": "높음",
-   "score": -78,
+   "score": -76,
    "pts": [
-    "최근 6개월 -6.2% · S&P 500 대비 -18.2%p — 지수 하회 (12개월 +1.5%)",
-    "구성 4종목 중 1개 50일선 위 · 2개 3개월 상승 — 폭 38%, 참여 제한적",
-    "52주 고점 대비 -15.9% · 20일 이격 -2.0% · 변동성 지수 대비 3.5배 — 종합 -78/100 (리스크 −10)"
+    "최근 6개월 -2.6% · S&P 500 대비 -15.4%p — 지수 하회 (12개월 +1.5%)",
+    "구성 4종목 중 1개 50일선 위 · 1개 3개월 상승 — 폭 25%, 참여 제한적",
+    "52주 고점 대비 -15.9% · 20일 이격 -2.1% · 변동성 지수 대비 3.5배 — 종합 -76/100 (리스크 −10)"
    ],
    "perf": 1.74,
    "lead": {
@@ -163,15 +165,15 @@
     "tm": "9일 전"
    },
    "metrics": {
-    "r126": -0.0618,
-    "rs": -0.1819,
-    "breadth": 0.375,
-    "ext20": -0.0197,
-    "rsi14": 44.7,
-    "volRatio": 3.51,
+    "r126": -0.0258,
+    "rs": -0.1539,
+    "breadth": 0.25,
+    "ext20": -0.0214,
+    "rsi14": 44.9,
+    "volRatio": 3.5,
     "curDD": -0.1594,
     "penalty": 10,
-    "driver": -68
+    "driver": -66
    }
   },
   {
@@ -181,13 +183,13 @@
    "op": "op-hold",
    "opTxt": "중립",
    "warns": [],
-   "conf": 49,
+   "conf": 51,
    "confBand": "보통",
-   "score": 1,
+   "score": 9,
    "pts": [
-    "최근 6개월 -2.8% · S&P 500 대비 -14.8%p — 지수 하회 (12개월 +23.7%)",
+    "최근 6개월 -0.3% · S&P 500 대비 -13.1%p — 지수 하회 (12개월 +23.7%)",
     "구성 4종목 중 4개 50일선 위 · 4개 3개월 상승 — 폭 100%, 참여 광범위",
-    "52주 고점 대비 -7.0% · 20일 이격 +1.1% · 변동성 지수 대비 2.0배 — 종합 +1/100 (리스크 −5)"
+    "52주 고점 대비 -7.0% · 20일 이격 +1.5% · 변동성 지수 대비 2.0배 — 종합 +9/100 (리스크 −5)"
    ],
    "perf": -1.65,
    "lead": {
@@ -219,15 +221,15 @@
     "tm": "2일 전"
    },
    "metrics": {
-    "r126": -0.0278,
-    "rs": -0.1479,
+    "r126": -0.0025,
+    "rs": -0.1306,
     "breadth": 1.0,
-    "ext20": 0.0114,
-    "rsi14": 59.5,
-    "volRatio": 1.96,
+    "ext20": 0.0153,
+    "rsi14": 59.7,
+    "volRatio": 2.02,
     "curDD": -0.0695,
     "penalty": 5,
-    "driver": 6
+    "driver": 14
    }
   },
   {
@@ -237,13 +239,13 @@
    "op": "op-buy",
    "opTxt": "비중확대",
    "warns": [],
-   "conf": 87,
+   "conf": 86,
    "confBand": "높음",
-   "score": 68,
+   "score": 65,
    "pts": [
-    "최근 6개월 +18.8% · S&P 500 대비 +6.8%p — 지수 상회 (12개월 +31.0%)",
+    "최근 6개월 +18.8% · S&P 500 대비 +6.0%p — 지수 상회 (12개월 +31.0%)",
     "구성 4종목 중 2개 50일선 위 · 3개 3개월 상승 — 폭 63%, 참여 광범위",
-    "52주 고점 대비 -2.2% · 20일 이격 +2.0% · 변동성 지수 대비 1.8배 — 종합 +68/100 (리스크 −3)"
+    "52주 고점 대비 -2.2% · 20일 이격 +1.9% · 변동성 지수 대비 1.9배 — 종합 +65/100 (리스크 −4)"
    ],
    "perf": 1.88,
    "lead": {
@@ -272,18 +274,18 @@
     "ti": "Can Eli Lilly Catch Novo Nordisk in the Oral GLP-1 Race?",
     "link": "https://news.google.com/rss/articles/CBMikwFBVV95cUxQNHJ2Y1RETzBRZXRTLXJWYWw2Y3dQT2hMU0tudW9HMjhXTE9SN21KeDhsZXhaX3BfdEczaXRCT09PVUYySVlVNUdUaDZwakFXb0t5MzhMRGhqYk1WUFdKaUQ2YlFGcUtWNFBjZldUQTFOYkhZMzBNV0lVNXlxRUR4YkNQcEItejh5TkpFZmtiWVNrZzA?oc=5",
     "src": "Yahoo Finance",
-    "tm": "2시간 전"
+    "tm": "8시간 전"
    },
    "metrics": {
-    "r126": 0.1884,
-    "rs": 0.0683,
+    "r126": 0.1882,
+    "rs": 0.0601,
     "breadth": 0.625,
-    "ext20": 0.0199,
-    "rsi14": 57.5,
-    "volRatio": 1.77,
+    "ext20": 0.019,
+    "rsi14": 57.6,
+    "volRatio": 1.91,
     "curDD": -0.0222,
-    "penalty": 3,
-    "driver": 71
+    "penalty": 4,
+    "driver": 69
    }
   },
   {
@@ -293,13 +295,13 @@
    "op": "op-buy",
    "opTxt": "비중확대",
    "warns": [],
-   "conf": 87,
+   "conf": 90,
    "confBand": "높음",
-   "score": 64,
+   "score": 74,
    "pts": [
-    "최근 6개월 +16.1% · S&P 500 대비 +4.1%p — 지수 상회 (12개월 +35.8%)",
+    "최근 6개월 +19.6% · S&P 500 대비 +6.8%p — 지수 상회 (12개월 +35.8%)",
     "구성 4종목 중 2개 50일선 위 · 4개 3개월 상승 — 폭 75%, 참여 광범위",
-    "52주 고점 대비 -3.8% · 20일 이격 -0.4% · 변동성 지수 대비 1.6배 — 종합 +64/100 (리스크 −1)"
+    "52주 고점 대비 -3.8% · 20일 이격 -0.4% · 변동성 지수 대비 1.6배 — 종합 +74/100 (리스크 −1)"
    ],
    "perf": -1.66,
    "lead": {
@@ -331,15 +333,15 @@
     "tm": "2일 전"
    },
    "metrics": {
-    "r126": 0.1606,
-    "rs": 0.0405,
+    "r126": 0.1959,
+    "rs": 0.0678,
     "breadth": 0.75,
-    "ext20": -0.0037,
-    "rsi14": 49.5,
-    "volRatio": 1.57,
+    "ext20": -0.0035,
+    "rsi14": 49.9,
+    "volRatio": 1.64,
     "curDD": -0.0376,
     "penalty": 1,
-    "driver": 65
+    "driver": 75
    }
   },
   {
@@ -353,11 +355,11 @@
    ],
    "conf": 72,
    "confBand": "높음",
-   "score": 43,
+   "score": 44,
    "pts": [
-    "최근 6개월 +10.2% · S&P 500 대비 -1.8%p — 시장 수준 (12개월 +46.1%)",
+    "최근 6개월 +11.1% · S&P 500 대비 -1.7%p — 시장 수준 (12개월 +46.1%)",
     "구성 4종목 중 4개 50일선 위 · 3개 3개월 상승 — 폭 88%, 참여 광범위",
-    "52주 고점 대비 -2.1% · 20일 이격 +5.5% · 변동성 지수 대비 2.0배 — 종합 +43/100 (리스크 −5)"
+    "52주 고점 대비 -2.1% · 20일 이격 +5.7% · 변동성 지수 대비 2.1배 — 종합 +44/100 (리스크 −6)"
    ],
    "perf": 0.21,
    "lead": {
@@ -383,21 +385,21 @@
     }
    ],
    "cat": {
-    "ti": "Current price of oil as of August 19, 2026",
+    "ti": "Current price of oil as of Aug. 19, 2026",
     "link": "https://news.google.com/rss/articles/CBMiYkFVX3lxTFBIYlRWaXFRWVd3STMwYWZ1N1U3eHBlemdwVFhqLUx5ejFoY1ZwU3RLU2hKYWlQQnYzRVpwRkt5RDBQV0JUcHlVQnZCb3VuS19NUzZqcWNyQXBvTFV5S0NRTUdB?oc=5",
     "src": "Fortune",
-    "tm": "11시간 전"
+    "tm": "19시간 전"
    },
    "metrics": {
-    "r126": 0.1024,
-    "rs": -0.0177,
+    "r126": 0.1112,
+    "rs": -0.0169,
     "breadth": 0.875,
-    "ext20": 0.0545,
-    "rsi14": 69.8,
-    "volRatio": 2.0,
+    "ext20": 0.057,
+    "rsi14": 70.2,
+    "volRatio": 2.07,
     "curDD": -0.0209,
-    "penalty": 5,
-    "driver": 48
+    "penalty": 6,
+    "driver": 50
    }
   }
  ]
