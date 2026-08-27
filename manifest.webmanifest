@@ -1,0 +1,17 @@
+{
+  "name": "써니의 투자 인사이트",
+  "short_name": "써니 투자",
+  "description": "국내외 시장 히트맵, 매매 시그널, 분할 매매 플래너를 한곳에서 봅니다.",
+  "lang": "ko",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0a0b0d",
+  "theme_color": "#0a0b0d",
+  "icons": [
+    { "src": "/assets/icon.svg", "type": "image/svg+xml", "sizes": "any" },
+    { "src": "/assets/icon-192.png", "type": "image/png", "sizes": "192x192" },
+    { "src": "/assets/icon-512.png", "type": "image/png", "sizes": "512x512" },
+    { "src": "/assets/icon-maskable-512.png", "type": "image/png", "sizes": "512x512", "purpose": "maskable" }
+  ]
+}
