@@ -1,5 +1,5 @@
 {
- "_updated": "2026-08-29T12:11:33",
+ "_updated": "2026-08-29T20:19:55",
  "mkt": "us",
  "benchmark": "S&P 500",
  "riskOff": false,
@@ -13,53 +13,53 @@
    "op": "op-buy",
    "opTxt": "비중확대",
    "warns": [],
-   "conf": 64,
+   "conf": 59,
    "confBand": "보통",
-   "score": 50,
+   "score": 43,
    "pts": [
-    "최근 6개월 +46.0% · S&P 500 대비 +34.1%p — 지수 상회 (12개월 +83.5%)",
-    "구성 4종목 중 2개 50일선 위 · 2개 3개월 상승 — 폭 50%, 참여 보통",
-    "52주 고점 대비 -9.1% · 20일 이격 -0.1% · 변동성 지수 대비 3.2배 — 종합 +50/100 (리스크 −10)"
+    "최근 6개월 +44.8% · S&P 500 대비 +32.7%p — 지수 상회 (12개월 +79.0%)",
+    "구성 4종목 중 1개 50일선 위 · 1개 3개월 상승 — 폭 25%, 참여 제한적",
+    "52주 고점 대비 -11.3% · 20일 이격 -2.5% · 변동성 지수 대비 3.3배 — 종합 +43/100 (리스크 −10)"
    ],
-   "perf": 3.66,
+   "perf": -2.48,
    "lead": {
-    "name": "엔비디아",
-    "pct": 8.74
+    "name": "브로드컴",
+    "pct": -0.74
    },
    "picks": [
     {
      "name": "엔비디아",
-     "pct": 8.74
+     "pct": -4.57
     },
     {
      "name": "브로드컴",
-     "pct": 4.49
+     "pct": -0.74
     },
     {
      "name": "AMD",
-     "pct": -0.89
+     "pct": -2.33
     },
     {
      "name": "TSMC",
-     "pct": 2.3
+     "pct": -2.29
     }
    ],
    "cat": {
-    "ti": "Nvidia almighty: Chip riches flood through AI universe",
-    "link": "https://news.google.com/rss/articles/CBMifkFVX3lxTE1aS25jMHM5ZU5EakVpMWdWUlpBaGRQNkZFNGFBN1FBWnc3Y25McjNTSFduWXQ2MER6TjlRVFN1QlZVOUNiakZ4SlpkVUdoQ1JSaVdPMnZ3RkUwWkdKVDJ2OGJsM1BMWXBmX3RiMUJKQUdHTzVrbUx4bW1nUkRGdw?oc=5",
-    "src": "Axios",
-    "tm": "17시간 전"
+    "ti": "Amazon.com (AMZN) Triples AI Chip Orders As Robotaxi Supplier Network Expands",
+    "link": "https://news.google.com/rss/articles/CBMigAFBVV95cUxPd2hCc0J6VmpxSFFyVjRiaWF0X0hqcUhfWHFzd2NHWmQtdzVhUTdWRlg1dE9NbGVkT09aNXloTzhsQXR3R3NKT2JlckR5bnRaT0Jpa1d6alhWcHVFQ1EyMnhIS1hkcnVjUEdnQ01zVG9FdXduV29pWHNnMGRDRWp3Ng?oc=5",
+    "src": "Yahoo Finance Singapore",
+    "tm": "2시간 전"
    },
    "metrics": {
-    "r126": 0.4599,
-    "rs": 0.3409,
-    "breadth": 0.5,
-    "ext20": -0.0007,
-    "rsi14": 50.4,
-    "volRatio": 3.17,
-    "curDD": -0.0907,
+    "r126": 0.4479,
+    "rs": 0.3268,
+    "breadth": 0.25,
+    "ext20": -0.0253,
+    "rsi14": 46.1,
+    "volRatio": 3.31,
+    "curDD": -0.1129,
     "penalty": 10,
-    "driver": 60
+    "driver": 53
    }
   },
   {
@@ -69,53 +69,53 @@
    "op": "op-hold",
    "opTxt": "중립",
    "warns": [],
-   "conf": 56,
+   "conf": 57,
    "confBand": "보통",
-   "score": 16,
+   "score": 20,
    "pts": [
-    "최근 6개월 +14.1% · S&P 500 대비 +2.2%p — 지수 상회 (12개월 +13.9%)",
+    "최근 6개월 +15.5% · S&P 500 대비 +3.4%p — 지수 상회 (12개월 +15.3%)",
     "구성 4종목 중 2개 50일선 위 · 2개 3개월 상승 — 폭 50%, 참여 보통",
-    "52주 고점 대비 -1.9% · 20일 이격 +2.0% · 변동성 지수 대비 3.3배 — 종합 +16/100 (리스크 −10)"
+    "52주 고점 대비 -0.7% · 20일 이격 +2.7% · 변동성 지수 대비 3.1배 — 종합 +20/100 (리스크 −10)"
    ],
-   "perf": 1.31,
+   "perf": 1.21,
    "lead": {
-    "name": "팔란티어",
-    "pct": 4.75
+    "name": "알파벳",
+    "pct": 1.74
    },
    "picks": [
     {
      "name": "마이크로소프트",
-     "pct": 1.75
+     "pct": 1.68
     },
     {
      "name": "알파벳",
-     "pct": -0.39
+     "pct": 1.74
     },
     {
      "name": "메타",
-     "pct": -0.87
+     "pct": 1.21
     },
     {
      "name": "팔란티어",
-     "pct": 4.75
+     "pct": 0.19
     }
    ],
    "cat": {
-    "ti": "Adobe Stock and Two AI Software Names Investors May Want to Watch",
-    "link": "https://news.google.com/rss/articles/CBMilgFBVV95cUxQZVFkcm5scDd3Z3gtejV4MkJWYnFJZ2dnQ2JtUlVwSktPX0Y1YjhNT095RUk4bzRMZF9IcnZ6U21rS2hDbS1FYjdNaGlXZzJoQU1nb1E0eHR4ajJlMEtJYlAtaW1WWC1ZVEQ5WlVaY3FXR0xKaVB2U2c3aEJDSVh4UkgwbWpoY19CRHNvX2NFMHVRX0FpaGc?oc=5",
-    "src": "Yahoo Finance",
-    "tm": "13시간 전"
+    "ti": "The 12 Best AI Accounting Software and Tools for 2026",
+    "link": "https://news.google.com/rss/articles/CBMiigFBVV95cUxQMHpGRjhPZkoyMzRSYk9NRF9KMVRhQzNQcjJhYjZ3Ukh1aWFjY1R2UFNpN3FUWnRIYlNKUHpjRUN0bEh2SmJIX3d1WVVLTlJ3cXY0U0Y2TzBMSllvT0diTnVXUmRzdklEanp0TmpiNEFMcElXOGc0VjQwU2Q2VDhVWWxLWWlnTndLaFE?oc=5",
+    "src": "Intuit",
+    "tm": "3일 전"
    },
    "metrics": {
-    "r126": 0.141,
-    "rs": 0.022,
+    "r126": 0.1554,
+    "rs": 0.0343,
     "breadth": 0.5,
-    "ext20": 0.0204,
-    "rsi14": 61.8,
-    "volRatio": 3.31,
-    "curDD": -0.019,
+    "ext20": 0.0274,
+    "rsi14": 64.4,
+    "volRatio": 3.12,
+    "curDD": -0.0069,
     "penalty": 10,
-    "driver": 26
+    "driver": 30
    }
   },
   {
@@ -124,54 +124,56 @@
    "thesis": "데이터센터 전력수요 급증으로 발전·원자력 계약단가가 재평가",
    "op": "op-sell",
    "opTxt": "비중축소",
-   "warns": [],
-   "conf": 84,
-   "confBand": "높음",
-   "score": -98,
-   "pts": [
-    "최근 6개월 -14.2% · S&P 500 대비 -26.1%p — 지수 하회 (12개월 -0.0%)",
-    "구성 4종목 중 1개 50일선 위 · 0개 3개월 상승 — 폭 13%, 참여 제한적",
-    "52주 고점 대비 -17.7% · 20일 이격 -2.3% · 변동성 지수 대비 3.2배 — 종합 -98/100 (리스크 −10)"
+   "warns": [
+    "하락추세 가능 — 저가매수 아님"
    ],
-   "perf": -0.13,
+   "conf": 85,
+   "confBand": "높음",
+   "score": -100,
+   "pts": [
+    "최근 6개월 -16.6% · S&P 500 대비 -28.7%p — 지수 하회 (12개월 -3.1%)",
+    "구성 4종목 중 1개 50일선 위 · 0개 3개월 상승 — 폭 13%, 참여 제한적",
+    "52주 고점 대비 -20.3% · 20일 이격 -5.0% · 변동성 지수 대비 3.4배 — 종합 -100/100 (리스크 −10)"
+   ],
+   "perf": -2.8,
    "lead": {
-    "name": "콘스텔레이션",
-    "pct": 1.03
+    "name": "비스트라",
+    "pct": -1.95
    },
    "picks": [
     {
      "name": "GE버노바",
-     "pct": 0.08
+     "pct": -4.39
     },
     {
      "name": "비스트라",
-     "pct": -0.16
+     "pct": -1.95
     },
     {
      "name": "콘스텔레이션",
-     "pct": 1.03
+     "pct": -2.0
     },
     {
      "name": "NRG에너지",
-     "pct": -1.49
+     "pct": -2.88
     }
    ],
    "cat": {
-    "ti": "Vistra Corp Stock (VST) Opinions on AI Data Center Power Needs",
-    "link": "https://news.google.com/rss/articles/CBMioAFBVV95cUxPSWhGODVHaGJOOEkxeDhEdmhhSnZJVUtBUXZfWS12YndSeDFZTW5zVmVtWFRmdUxyUG9LbTJRLTJ1U19vYjdDS3pzQUU4djcxYjdhOWthRlpBYjQ1bmh4azRfQnFxZ0NtSkhiTi1QaGJucGYzUVF2Tmc1eUl1aDlFZk5aRTNBMnVNeS1BbmF4TklHdzNxMVFCa2E1ckVYRHVk?oc=5",
-    "src": "Quiver Quantitative",
-    "tm": "22시간 전"
+    "ti": "Data Centers Push Vistra to Grow U.S. Nuclear, Natural Gas Fleet",
+    "link": "https://news.google.com/rss/articles/CBMizAFBVV95cUxNMnpURmM2QWpYZTB6OFlfMEMzcm5WWGFhcHNtZzF5TFBFOTlpek1Tak9PWjgyNGlTbGh1WldkUDl4dVcwbGZrNmhqTy1nT1lLNlpCdEVxWmloRWxSNE9jODZJcm53ZWFOWDhVT3lnMC1ISG4tc1IxenhUQTQ5TUJoSmZZRUZvTEFFa0ZzUVhxNzBZSHpsUTFYSTZMaGZzTkFfcUVSemlxQUZYV1k0SVpUNHZXakM2bDdLeTBJRl8xRlRpYzFhaXZ4TlBGcmc?oc=5",
+    "src": "Industrial Info Resources",
+    "tm": "4일 전"
    },
    "metrics": {
-    "r126": -0.1422,
-    "rs": -0.2612,
+    "r126": -0.1659,
+    "rs": -0.287,
     "breadth": 0.125,
-    "ext20": -0.0232,
-    "rsi14": 43.5,
-    "volRatio": 3.21,
-    "curDD": -0.1773,
+    "ext20": -0.05,
+    "rsi14": 38.2,
+    "volRatio": 3.37,
+    "curDD": -0.2027,
     "penalty": 10,
-    "driver": -88
+    "driver": -91
    }
   },
   {
@@ -183,33 +185,33 @@
    "warns": [],
    "conf": 56,
    "confBand": "보통",
-   "score": -6,
+   "score": -8,
    "pts": [
-    "최근 6개월 -5.4% · S&P 500 대비 -17.3%p — 지수 하회 (12개월 +16.9%)",
+    "최근 6개월 -7.6% · S&P 500 대비 -19.7%p — 지수 하회 (12개월 +16.6%)",
     "구성 4종목 중 4개 50일선 위 · 3개 3개월 상승 — 폭 88%, 참여 광범위",
-    "52주 고점 대비 -10.9% · 20일 이격 -2.8% · 변동성 지수 대비 1.9배 — 종합 -6/100 (리스크 −4)"
+    "52주 고점 대비 -11.1% · 20일 이격 -2.9% · 변동성 지수 대비 1.8배 — 종합 -8/100 (리스크 −3)"
    ],
-   "perf": -0.32,
+   "perf": -0.16,
    "lead": {
-    "name": "록히드마틴",
-    "pct": 0.05
+    "name": "노스롭그루먼",
+    "pct": 0.08
    },
    "picks": [
     {
      "name": "RTX",
-     "pct": 0.04
+     "pct": -0.17
     },
     {
      "name": "록히드마틴",
-     "pct": 0.05
+     "pct": -0.36
     },
     {
      "name": "노스롭그루먼",
-     "pct": -0.88
+     "pct": 0.08
     },
     {
      "name": "제너럴다이내믹스",
-     "pct": -0.51
+     "pct": -0.19
     }
    ],
    "cat": {
@@ -219,15 +221,15 @@
     "tm": "2일 전"
    },
    "metrics": {
-    "r126": -0.0538,
-    "rs": -0.1728,
+    "r126": -0.076,
+    "rs": -0.1971,
     "breadth": 0.875,
-    "ext20": -0.0283,
-    "rsi14": 46.7,
-    "volRatio": 1.85,
-    "curDD": -0.1094,
-    "penalty": 4,
-    "driver": -2
+    "ext20": -0.0293,
+    "rsi14": 46.1,
+    "volRatio": 1.84,
+    "curDD": -0.111,
+    "penalty": 3,
+    "driver": -5
    }
   },
   {
@@ -237,53 +239,53 @@
    "op": "op-buy",
    "opTxt": "비중확대",
    "warns": [],
-   "conf": 71,
-   "confBand": "높음",
-   "score": 46,
+   "conf": 69,
+   "confBand": "보통",
+   "score": 37,
    "pts": [
-    "최근 6개월 +21.5% · S&P 500 대비 +9.6%p — 지수 상회 (12개월 +23.2%)",
+    "최근 6개월 +18.0% · S&P 500 대비 +5.8%p — 지수 상회 (12개월 +22.3%)",
     "구성 4종목 중 1개 50일선 위 · 4개 3개월 상승 — 폭 63%, 참여 광범위",
-    "52주 고점 대비 -5.3% · 20일 이격 -0.7% · 변동성 지수 대비 2.2배 — 종합 +46/100 (리스크 −7)"
+    "52주 고점 대비 -6.0% · 20일 이격 -1.4% · 변동성 지수 대비 2.0배 — 종합 +37/100 (리스크 −5)"
    ],
-   "perf": -1.6,
+   "perf": -0.77,
    "lead": {
     "name": "일라이릴리",
-    "pct": -1.12
+    "pct": -0.13
    },
    "picks": [
     {
      "name": "일라이릴리",
-     "pct": -1.12
+     "pct": -0.13
     },
     {
      "name": "노보노디스크",
-     "pct": -1.97
+     "pct": -1.41
     },
     {
      "name": "유나이티드헬스",
-     "pct": -1.49
+     "pct": -0.53
     },
     {
      "name": "애브비",
-     "pct": -1.81
+     "pct": -1.03
     }
    ],
    "cat": {
     "ti": "Eli Lilly's diabetes drug Mounjaro gets approval for a new use",
     "link": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxOcHNScjJJOG1lTFFLcE9QcjBKZ0tXRzZ6ZDR6eklFS1ltZ0g4all3MDJnUzltcHBXNW5OSkFRQS12WFN5TVNNSmRsSUtscDB5dXJZRlFzN2R0N19yUlNYVXVURTFDWW5Bb040UVY0UkR2cDlwYnNUZ0d4dWVLbDR1V1ZyRzctRXo2c2Fvd1cxbDVDLUpSc1dmdUd1b2JlaE1UWEtwcXRNaXJ6cndidU8zRUVoY0FicVVjUl9wNHktV2ItanpfbVFSbjlteFl1ZmplTmc?oc=5",
     "src": "USA Today",
-    "tm": "18시간 전"
+    "tm": "1일 전"
    },
    "metrics": {
-    "r126": 0.2151,
-    "rs": 0.0961,
+    "r126": 0.1795,
+    "rs": 0.0584,
     "breadth": 0.625,
-    "ext20": -0.0074,
-    "rsi14": 46.0,
-    "volRatio": 2.22,
-    "curDD": -0.0532,
-    "penalty": 7,
-    "driver": 53
+    "ext20": -0.0137,
+    "rsi14": 44.1,
+    "volRatio": 2.04,
+    "curDD": -0.0596,
+    "penalty": 5,
+    "driver": 42
    }
   },
   {
@@ -293,35 +295,35 @@
    "op": "op-buy",
    "opTxt": "비중확대",
    "warns": [],
-   "conf": 88,
+   "conf": 92,
    "confBand": "높음",
-   "score": 65,
+   "score": 84,
    "pts": [
-    "최근 6개월 +16.4% · S&P 500 대비 +4.5%p — 지수 상회 (12개월 +30.1%)",
+    "최근 6개월 +23.4% · S&P 500 대비 +11.3%p — 지수 상회 (12개월 +30.7%)",
     "구성 4종목 중 2개 50일선 위 · 4개 3개월 상승 — 폭 75%, 참여 광범위",
-    "52주 고점 대비 -4.1% · 20일 이격 -0.9% · 변동성 지수 대비 1.6배 — 종합 +65/100 (리스크 −1)"
+    "52주 고점 대비 -3.7% · 20일 이격 -0.5% · 변동성 지수 대비 1.6배 — 종합 +84/100 (리스크 −1)"
    ],
-   "perf": -0.48,
+   "perf": 0.53,
    "lead": {
-    "name": "모건스탠리",
-    "pct": 0.36
+    "name": "뱅크오브아메리카",
+    "pct": 1.88
    },
    "picks": [
     {
      "name": "JP모건",
-     "pct": -0.64
+     "pct": 0.96
     },
     {
      "name": "골드만삭스",
-     "pct": 0.04
+     "pct": -0.66
     },
     {
      "name": "뱅크오브아메리카",
-     "pct": -1.7
+     "pct": 1.88
     },
     {
      "name": "모건스탠리",
-     "pct": 0.36
+     "pct": -0.04
     }
    ],
    "cat": {
@@ -331,15 +333,15 @@
     "tm": "2일 전"
    },
    "metrics": {
-    "r126": 0.1639,
-    "rs": 0.0449,
+    "r126": 0.2338,
+    "rs": 0.1128,
     "breadth": 0.75,
-    "ext20": -0.0088,
-    "rsi14": 48.6,
-    "volRatio": 1.56,
-    "curDD": -0.0413,
+    "ext20": -0.0049,
+    "rsi14": 50.4,
+    "volRatio": 1.57,
+    "curDD": -0.0369,
     "penalty": 1,
-    "driver": 66
+    "driver": 85
    }
   },
   {
@@ -351,53 +353,53 @@
    "warns": [
     "지수 동반 상승 — 초과성과 없음"
    ],
-   "conf": 71,
+   "conf": 73,
    "confBand": "높음",
-   "score": 37,
+   "score": 40,
    "pts": [
-    "최근 6개월 +9.1% · S&P 500 대비 -2.8%p — 지수 하회 (12개월 +35.4%)",
-    "구성 4종목 중 4개 50일선 위 · 3개 3개월 상승 — 폭 88%, 참여 광범위",
-    "52주 고점 대비 -3.6% · 20일 이격 +1.7% · 변동성 지수 대비 2.2배 — 종합 +37/100 (리스크 −7)"
+    "최근 6개월 +9.2% · S&P 500 대비 -2.9%p — 지수 하회 (12개월 +37.5%)",
+    "구성 4종목 중 4개 50일선 위 · 4개 3개월 상승 — 폭 100%, 참여 광범위",
+    "52주 고점 대비 -2.0% · 20일 이격 +3.0% · 변동성 지수 대비 2.3배 — 종합 +40/100 (리스크 −8)"
    ],
-   "perf": 0.12,
+   "perf": 1.52,
    "lead": {
     "name": "SLB",
-    "pct": 2.63
+    "pct": 4.22
    },
    "picks": [
     {
      "name": "엑슨모빌",
-     "pct": -1.11
+     "pct": 0.17
     },
     {
      "name": "셰브론",
-     "pct": -0.22
+     "pct": 1.05
     },
     {
      "name": "코노코필립스",
-     "pct": -0.83
+     "pct": 0.64
     },
     {
      "name": "SLB",
-     "pct": 2.63
+     "pct": 4.22
     }
    ],
    "cat": {
-    "ti": "Current price of oil as of August 28, 2026",
-    "link": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE4xNGVGWjNpNlM2U2kzdDVuV1pCdUhncTJzYzl4YXhHUzY3cHItbXNTYUExWGxEdVZiM0NqMVRwUldVcENFcjVLeXlra2FOMUVqSk51WGJ3VDJWeWkwa3NRM1Zn?oc=5",
-    "src": "Fortune",
-    "tm": "4시간 전"
+    "ti": "Oil prices fall as U.S. rolls out global sanctions focused on Iran",
+    "link": "https://news.google.com/rss/articles/CBMihwFBVV95cUxOYmM1OWVNT01lQlNPWmo3Zk1RM1UtdE5HcXNBTHEtRFNNZS14b0prb2xkc1A3ZHNKY3pvR3dxcE5COWlFakFUSWM1SW5ldjhEYjNEY1Q5eUF6SEtXV1FYNGs4UzE5ajRBTGJpaG1scm9mOVZENzdVTUxVQ0RCTWNLaHcyZjFIQk3SAYwBQVVfeXFMTU9JYUFXTl91WGZhNXhua1hCZTF4ME5nc2hHRGVBVDJXYTVBMXlOLURJTG8teFdKRnhSTC1NdkVIM0FYU2xObWpPa2RMTEg5eS1vTHR4dmZuVkF5bUtLWmlDUHRXenQ5dVJ4QXZFODZKM3oyUlpraTJneVpGLUlyMFRYUEZKQTJTYVlTNEY?oc=5",
+    "src": "CNBC",
+    "tm": "4일 전"
    },
    "metrics": {
-    "r126": 0.0911,
-    "rs": -0.0279,
-    "breadth": 0.875,
-    "ext20": 0.0172,
-    "rsi14": 60.0,
-    "volRatio": 2.21,
-    "curDD": -0.0357,
-    "penalty": 7,
-    "driver": 44
+    "r126": 0.0921,
+    "rs": -0.0289,
+    "breadth": 1.0,
+    "ext20": 0.0301,
+    "rsi14": 64.5,
+    "volRatio": 2.26,
+    "curDD": -0.0202,
+    "penalty": 8,
+    "driver": 48
    }
   }
  ]
