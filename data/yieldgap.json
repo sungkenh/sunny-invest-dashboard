@@ -1,33 +1,33 @@
 {
- "_updated": "2026-08-03T05:53:23+00:00",
+ "_updated": "2026-08-31T12:31:27+00:00",
  "us": {
   "safe": {
    "label": "국채 10년",
-   "val": 4.69,
-   "est": false
+   "val": null,
+   "est": true
   },
   "stock": {
    "label": "주식 어닝일드 (S&P500)",
-   "val": 3.47,
+   "val": 3.36,
    "est": false
   },
   "nasdaq": {
    "label": "주식 어닝일드 (NASDAQ100)",
-   "val": 3.28,
+   "val": 3.26,
    "est": false
   },
   "reit": {
    "label": "리츠 배당 (VNQ)",
-   "val": 3.6,
+   "val": 3.51,
    "est": false
   },
-  "gap": -1.22,
-  "gapNdx": -1.41
+  "gap": null,
+  "gapNdx": null
  },
  "kr": {
   "safe": {
    "label": "국채 10년",
-   "val": 4.27,
+   "val": 4.31,
    "est": false
   },
   "stock": {
@@ -40,7 +40,7 @@
    "val": 7.5,
    "est": true
   },
-  "gap": 13.73
+  "gap": 13.69
  },
  "longterm": [
   {
