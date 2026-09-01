@@ -1,5 +1,5 @@
 {
- "_updated": "2026-09-01T03:29:03",
+ "_updated": "2026-09-01T11:11:59",
  "source": "snapshot",
  "mkt": "russell2000",
  "n": 500,
@@ -7,17 +7,6 @@
  "delay": 0,
  "count": 500,
  "items": [
-  {
-   "code": "RUSHA",
-   "rc": "RUSHA.O",
-   "name": "러시 엔터프라이즈 Class A",
-   "mk": "NSQ",
-   "price": 76.83,
-   "pct": 0.73,
-   "cap": 12491606834.986816,
-   "sector": "경기소비재",
-   "ind": "Auto & Truck Dealerships"
-  },
   {
    "code": "FROG",
    "rc": "FROG.O",
@@ -266,10 +255,11 @@
    "name": "크리네틱스 파머슈티컬스",
    "mk": "NSQ",
    "price": 84.95,
-   "pct": 0.13,
+   "pct": 0.0,
    "cap": 9012787340.97313,
    "sector": "헬스케어",
-   "ind": "Biotechnology"
+   "ind": "Biotechnology",
+   "h": 1
   },
   {
    "code": "SM",
@@ -336,6 +326,17 @@
    "cap": 8425698168.202273,
    "sector": "헬스케어",
    "ind": "Biotechnology"
+  },
+  {
+   "code": "RUSHA",
+   "rc": "RUSHA.O",
+   "name": "러시 엔터프라이즈 Class A",
+   "mk": "NSQ",
+   "price": 76.83,
+   "pct": 0.73,
+   "cap": 8327737889.991211,
+   "sector": "경기소비재",
+   "ind": "Auto & Truck Dealerships"
   },
   {
    "code": "TGTX",
@@ -3325,7 +3326,7 @@
    "mk": "NSQ",
    "price": 249.28,
    "pct": 0.24,
-   "cap": 3599393810.6185913,
+   "cap": 3599466078.3737183,
    "sector": "기술",
    "ind": "Electronic Components"
   },
@@ -3754,7 +3755,7 @@
    "mk": "NSQ",
    "price": 33.96,
    "pct": 1.21,
-   "cap": 3287618317.33284,
+   "cap": 3288102165.39608,
    "sector": "금융",
    "ind": "Banks - Regional"
   },
