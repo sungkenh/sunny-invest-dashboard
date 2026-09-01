@@ -1,5 +1,5 @@
 {
- "_updated": "2026-08-31T22:32:43",
+ "_updated": "2026-09-01T03:29:03",
  "source": "snapshot",
  "mkt": "russell2000",
  "n": 500,
@@ -7,6 +7,17 @@
  "delay": 0,
  "count": 500,
  "items": [
+  {
+   "code": "RUSHA",
+   "rc": "RUSHA.O",
+   "name": "러시 엔터프라이즈 Class A",
+   "mk": "NSQ",
+   "price": 76.83,
+   "pct": 0.73,
+   "cap": 12491606834.986816,
+   "sector": "경기소비재",
+   "ind": "Auto & Truck Dealerships"
+  },
   {
    "code": "FROG",
    "rc": "FROG.O",
@@ -217,6 +228,17 @@
    "ind": "REIT - Healthcare Facilities"
   },
   {
+   "code": "TWST",
+   "rc": "TWST.O",
+   "name": "트위스트 바이오사이언스",
+   "mk": "NSQ",
+   "price": 139.0,
+   "pct": 1.68,
+   "cap": 9150706936.0,
+   "sector": "헬스케어",
+   "ind": "Diagnostics & Research"
+  },
+  {
    "code": "PCVX",
    "rc": "PCVX.O",
    "name": "백사이트",
@@ -272,17 +294,6 @@
    "ind": "REIT - Hotel & Motel"
   },
   {
-   "code": "TWST",
-   "rc": "TWST.O",
-   "name": "트위스트 바이오사이언스",
-   "mk": "NSQ",
-   "price": 139.0,
-   "pct": 1.68,
-   "cap": 8716331936.0,
-   "sector": "헬스케어",
-   "ind": "Diagnostics & Research"
-  },
-  {
    "code": "PBF",
    "rc": "PBF",
    "name": "PBF 에너지",
@@ -325,17 +336,6 @@
    "cap": 8425698168.202273,
    "sector": "헬스케어",
    "ind": "Biotechnology"
-  },
-  {
-   "code": "RUSHA",
-   "rc": "RUSHA.O",
-   "name": "러시 엔터프라이즈 Class A",
-   "mk": "NSQ",
-   "price": 76.83,
-   "pct": 0.73,
-   "cap": 8327737889.991211,
-   "sector": "경기소비재",
-   "ind": "Auto & Truck Dealerships"
   },
   {
    "code": "TGTX",
@@ -2038,7 +2038,7 @@
    "mk": "NYS",
    "price": 38.22,
    "pct": 0.12,
-   "cap": 4701266003.073059,
+   "cap": 4702875829.524475,
    "sector": "유틸리티",
    "ind": "Utilities - Regulated Gas"
   },
@@ -2340,6 +2340,17 @@
    "ind": "Medical Devices"
   },
   {
+   "code": "ONDS",
+   "rc": "ONDS.O",
+   "name": "온다스",
+   "mk": "NSQ",
+   "price": 7.66,
+   "pct": 3.1,
+   "cap": 4374485511.575958,
+   "sector": "기술",
+   "ind": "Communication Equipment"
+  },
+  {
    "code": "CLMT",
    "rc": "CLMT.O",
    "name": "칼루멧",
@@ -2349,17 +2360,6 @@
    "cap": 4371179136.583382,
    "sector": "소재",
    "ind": "Specialty Chemicals"
-  },
-  {
-   "code": "ONDS",
-   "rc": "ONDS.O",
-   "name": "온다스",
-   "mk": "NSQ",
-   "price": 7.66,
-   "pct": 3.1,
-   "cap": 4367578290.0616455,
-   "sector": "기술",
-   "ind": "Communication Equipment"
   },
   {
    "code": "IBOC",
@@ -2687,7 +2687,7 @@
    "mk": "NSQ",
    "price": 34.93,
    "pct": 0.17,
-   "cap": 4122216795.5849075,
+   "cap": 4122801558.7200165,
    "sector": "헬스케어",
    "ind": "Drug Manufacturers - Specialty & Generic"
   },
@@ -2910,6 +2910,17 @@
    "cap": 3920619657.2960815,
    "sector": "헬스케어",
    "ind": "Medical Devices"
+  },
+  {
+   "code": "UUUU",
+   "rc": "UUUU.K",
+   "name": "에너지 퓨얼스",
+   "mk": "AMX",
+   "price": 14.75,
+   "pct": 0.55,
+   "cap": 3905410187.0,
+   "sector": "에너지",
+   "ind": "Uranium"
   },
   {
    "code": "CVBF",
@@ -3174,17 +3185,6 @@
    "cap": 3739356649.2027855,
    "sector": "금융",
    "ind": "Banks - Regional"
-  },
-  {
-   "code": "UUUU",
-   "rc": "UUUU.K",
-   "name": "에너지 퓨얼스",
-   "mk": "AMX",
-   "price": 14.75,
-   "pct": 0.55,
-   "cap": 3686983750.0,
-   "sector": "에너지",
-   "ind": "Uranium"
   },
   {
    "code": "CALM",
