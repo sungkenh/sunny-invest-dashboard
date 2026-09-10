@@ -1,5 +1,5 @@
 {
- "_updated": "2026-09-09T20:19:22",
+ "_updated": "2026-09-10T02:44:07",
  "mkt": "kr",
  "benchmark": "KOSPI",
  "riskOff": false,
@@ -16,53 +16,48 @@
     "하락추세 가능 — 저가매수 아님",
     "지수 동반 상승 — 초과성과 없음"
    ],
-   "conf": 49,
+   "conf": 57,
    "confBand": "보통",
-   "score": 23,
+   "score": 42,
    "pts": [
-    "최근 6개월 +15.5% · KOSPI 대비 -9.0%p — 지수 하회 (12개월 +257.5%)",
-    "구성 4종목 중 2개 50일선 위 · 0개 3개월 상승 — 폭 25%, 참여 제한적",
-    "52주 고점 대비 -30.4% · 20일 이격 +6.8% · 변동성 지수 대비 1.3배 — 종합 +23/100 (리스크 −0)"
+    "최근 6개월 +19.4% · KOSPI 대비 -6.3%p — 지수 하회 (12개월 +252.2%)",
+    "구성 4종목 중 4개 50일선 위 · 0개 3개월 상승 — 폭 50%, 참여 보통",
+    "52주 고점 대비 -28.8% · 20일 이격 +7.4% · 변동성 지수 대비 1.3배 — 종합 +42/100 (리스크 −0)"
    ],
-   "perf": 0.69,
+   "perf": 0.41,
    "lead": {
-    "name": "한미반도체",
-    "pct": 1.66
+    "name": "리노공업",
+    "pct": 2.28
    },
    "picks": [
     {
      "name": "삼성전자",
-     "pct": -0.19
+     "pct": -1.3
     },
     {
      "name": "SK하이닉스",
-     "pct": 0.56
+     "pct": -0.54
     },
     {
      "name": "한미반도체",
-     "pct": 1.66
+     "pct": 1.2
     },
     {
      "name": "리노공업",
-     "pct": 0.73
+     "pct": 2.28
     }
    ],
-   "cat": {
-    "ti": "속보 코스피, 7천선에 안착...SK하이닉스 180만 원 돌파",
-    "link": "https://news.google.com/rss/articles/CBMiXkFVX3lxTFBuOWMzeEZ0SnVXdml3NTRDUFltMm9OekFJR3haUXFlTGdxOUFJOFJVNVNjVjlHX3JwMWl6Zl9qSWlvRHlWRzV0MlRpcmRZNHlBRV9La1JWN21JWnlyMXc?oc=5",
-    "src": "YTN",
-    "tm": "13시간 전"
-   },
+   "cat": null,
    "metrics": {
-    "r126": 0.1548,
-    "rs": -0.0904,
-    "breadth": 0.25,
-    "ext20": 0.0684,
-    "rsi14": 56.3,
-    "volRatio": 1.29,
-    "curDD": -0.3037,
+    "r126": 0.194,
+    "rs": -0.0629,
+    "breadth": 0.5,
+    "ext20": 0.0737,
+    "rsi14": 58.3,
+    "volRatio": 1.28,
+    "curDD": -0.2881,
     "penalty": 0,
-    "driver": 23
+    "driver": 42
    }
   },
   {
@@ -78,47 +73,42 @@
    "confBand": "높음",
    "score": -92,
    "pts": [
-    "최근 6개월 -30.3% · KOSPI 대비 -54.8%p — 지수 하회 (12개월 +11.1%)",
-    "구성 4종목 중 0개 50일선 위 · 2개 3개월 상승 — 폭 25%, 참여 제한적",
-    "52주 고점 대비 -34.8% · 20일 이격 -6.7% · 변동성 지수 대비 1.2배 — 종합 -92/100 (리스크 −0)"
+    "최근 6개월 -25.6% · KOSPI 대비 -51.3%p — 지수 하회 (12개월 +8.4%)",
+    "구성 4종목 중 1개 50일선 위 · 1개 3개월 상승 — 폭 25%, 참여 제한적",
+    "52주 고점 대비 -34.7% · 20일 이격 -5.5% · 변동성 지수 대비 1.0배 — 종합 -92/100 (리스크 −0)"
    ],
-   "perf": -0.51,
+   "perf": -1.16,
    "lead": {
     "name": "LIG넥스원",
-    "pct": 1.06
+    "pct": 0.45
    },
    "picks": [
     {
      "name": "한화에어로스페이스",
-     "pct": -1.15
+     "pct": -0.48
     },
     {
      "name": "LIG넥스원",
-     "pct": 1.06
+     "pct": 0.45
     },
     {
      "name": "현대로템",
-     "pct": -0.71
+     "pct": -3.89
     },
     {
      "name": "한국항공우주",
-     "pct": -1.24
+     "pct": -0.74
     }
    ],
-   "cat": {
-    "ti": "광양만권에 1조655억원 투자…해상풍력·에너지·방산 4개사 유치",
-    "link": "https://news.google.com/rss/articles/CBMia0FVX3lxTE9melB0dzl1ZUdCR2tPUFMxMVFkSGtkMU1rc2xzSkw0di0wVE1Ra0g2ZVZMdHl3ZFg2RlB2UEIwNFh3Nl9wRTFKb1FzcThvRGJGR28xR2dzcWI5al9PTlFkSTJBbVRpM0N0SHRz?oc=5",
-    "src": "해사신문",
-    "tm": "2시간 전"
-   },
+   "cat": null,
    "metrics": {
-    "r126": -0.303,
-    "rs": -0.5483,
+    "r126": -0.2556,
+    "rs": -0.5125,
     "breadth": 0.25,
-    "ext20": -0.0673,
-    "rsi14": 42.0,
-    "volRatio": 1.21,
-    "curDD": -0.3477,
+    "ext20": -0.0549,
+    "rsi14": 42.5,
+    "volRatio": 0.99,
+    "curDD": -0.3471,
     "penalty": 0,
     "driver": -92
    }
@@ -133,53 +123,48 @@
     "하락추세 가능 — 저가매수 아님",
     "지수 동반 상승 — 초과성과 없음"
    ],
-   "conf": 43,
+   "conf": 40,
    "confBand": "낮음",
-   "score": 1,
+   "score": -19,
    "pts": [
-    "최근 6개월 +9.0% · KOSPI 대비 -15.6%p — 지수 하회 (12개월 +113.5%)",
-    "구성 4종목 중 2개 50일선 위 · 0개 3개월 상승 — 폭 25%, 참여 제한적",
-    "52주 고점 대비 -39.3% · 20일 이격 +0.1% · 변동성 지수 대비 1.3배 — 종합 +1/100 (리스크 −0)"
+    "최근 6개월 +7.4% · KOSPI 대비 -18.3%p — 지수 하회 (12개월 +101.2%)",
+    "구성 4종목 중 3개 50일선 위 · 1개 3개월 상승 — 폭 50%, 참여 보통",
+    "52주 고점 대비 -38.9% · 20일 이격 +0.5% · 변동성 지수 대비 1.4배 — 종합 -19/100 (리스크 −0)"
    ],
-   "perf": -2.58,
+   "perf": -3.23,
    "lead": {
-    "name": "두산에너빌리티",
-    "pct": 1.82
+    "name": "HD현대일렉트릭",
+    "pct": -2.4
    },
    "picks": [
     {
      "name": "두산에너빌리티",
-     "pct": 1.82
+     "pct": -3.22
     },
     {
      "name": "HD현대일렉트릭",
-     "pct": -4.59
+     "pct": -2.4
     },
     {
      "name": "LS ELECTRIC",
-     "pct": -3.14
+     "pct": -4.26
     },
     {
      "name": "효성중공업",
-     "pct": -4.42
+     "pct": -3.07
     }
    ],
-   "cat": {
-    "ti": "대미 투자 ‘원전 8기’ 논의 속…수출 주도기관 ‘조정 키’ 쥔 산업부",
-    "link": "https://news.google.com/rss/articles/CBMidEFVX3lxTE82ZkRvU29hdmtPdTI1Q1ZqOGc4QVR2WVhzdFpSV3dOaHV0LXRQQ0p1RnZFM0JwYmdoX1lkekNtc2I4X0VzVlNrWHRxYldEV1FkWmlVT0dxbzlSRUkta3JVVmhPYWp1cDB2dVRuenM2TURpbG1G?oc=5",
-    "src": "dnews.co.kr",
-    "tm": "12시간 전"
-   },
+   "cat": null,
    "metrics": {
-    "r126": 0.0897,
-    "rs": -0.1555,
-    "breadth": 0.25,
-    "ext20": 0.0015,
-    "rsi14": 50.6,
-    "volRatio": 1.31,
-    "curDD": -0.3927,
+    "r126": 0.0738,
+    "rs": -0.1832,
+    "breadth": 0.5,
+    "ext20": 0.0047,
+    "rsi14": 50.8,
+    "volRatio": 1.36,
+    "curDD": -0.3893,
     "penalty": 0,
-    "driver": 1
+    "driver": -19
    }
   },
   {
@@ -191,51 +176,46 @@
    "warns": [
     "하락추세 가능 — 저가매수 아님"
    ],
-   "conf": 84,
+   "conf": 85,
    "confBand": "높음",
    "score": -100,
    "pts": [
-    "최근 6개월 -22.5% · KOSPI 대비 -47.0%p — 지수 하회 (12개월 -12.2%)",
+    "최근 6개월 -22.7% · KOSPI 대비 -48.4%p — 지수 하회 (12개월 -12.2%)",
     "구성 4종목 중 0개 50일선 위 · 0개 3개월 상승 — 폭 0%, 참여 제한적",
-    "52주 고점 대비 -34.2% · 20일 이격 -2.2% · 변동성 지수 대비 1.0배 — 종합 -100/100 (리스크 −0)"
+    "52주 고점 대비 -33.6% · 20일 이격 -0.8% · 변동성 지수 대비 1.0배 — 종합 -100/100 (리스크 −0)"
    ],
-   "perf": -1.07,
+   "perf": -1.83,
    "lead": {
-    "name": "삼성중공업",
-    "pct": -0.47
+    "name": "HD현대중공업",
+    "pct": 1.02
    },
    "picks": [
     {
      "name": "HD한국조선해양",
-     "pct": -1.42
+     "pct": -2.39
     },
     {
      "name": "HD현대중공업",
-     "pct": -1.0
+     "pct": 1.02
     },
     {
      "name": "한화오션",
-     "pct": -1.37
+     "pct": -3.86
     },
     {
      "name": "삼성중공업",
-     "pct": -0.47
+     "pct": -2.08
     }
    ],
-   "cat": {
-    "ti": "한화오션, 하반기 생산직 신입사원 채용…조선 현장 12개 직무 모집",
-    "link": "https://news.google.com/rss/articles/CBMia0FVX3lxTE9taTJ0RkJsWGJGejBSQ1VqWmxkSHlvZ2VMUFdZSTRRVlliNDlMSmNaSEZseTdPOUUxTDF3QTBKbHJ4dDhWeUxSSTJQcVBkaVZXcmFYNGZGVTdxaXNpUXpJVk1PUktKSmJ0Sm5z?oc=5",
-    "src": "해사신문",
-    "tm": "3시간 전"
-   },
+   "cat": null,
    "metrics": {
-    "r126": -0.2249,
-    "rs": -0.4702,
+    "r126": -0.2273,
+    "rs": -0.4842,
     "breadth": 0.0,
-    "ext20": -0.022,
-    "rsi14": 45.5,
-    "volRatio": 0.97,
-    "curDD": -0.3422,
+    "ext20": -0.0081,
+    "rsi14": 47.1,
+    "volRatio": 0.98,
+    "curDD": -0.3363,
     "penalty": 0,
     "driver": -100
    }
@@ -249,53 +229,48 @@
    "warns": [
     "하락추세 가능 — 저가매수 아님"
    ],
-   "conf": 60,
+   "conf": 59,
    "confBand": "보통",
-   "score": -43,
+   "score": -31,
    "pts": [
-    "최근 6개월 -9.0% · KOSPI 대비 -33.5%p — 지수 하회 (12개월 +47.0%)",
-    "구성 4종목 중 3개 50일선 위 · 1개 3개월 상승 — 폭 50%, 참여 보통",
-    "52주 고점 대비 -35.1% · 20일 이격 +0.1% · 변동성 지수 대비 1.4배 — 종합 -43/100 (리스크 −0)"
+    "최근 6개월 -3.3% · KOSPI 대비 -29.0%p — 지수 하회 (12개월 +56.9%)",
+    "구성 4종목 중 3개 50일선 위 · 2개 3개월 상승 — 폭 63%, 참여 광범위",
+    "52주 고점 대비 -32.1% · 20일 이격 +3.5% · 변동성 지수 대비 1.5배 — 종합 -31/100 (리스크 −0)"
    ],
-   "perf": -2.19,
+   "perf": -2.91,
    "lead": {
     "name": "포스코퓨처엠",
-    "pct": -1.1
+    "pct": -1.87
    },
    "picks": [
     {
      "name": "LG에너지솔루션",
-     "pct": -3.86
+     "pct": -2.96
     },
     {
      "name": "삼성SDI",
-     "pct": -2.03
+     "pct": -3.14
     },
     {
      "name": "에코프로비엠",
-     "pct": -1.78
+     "pct": -3.66
     },
     {
      "name": "포스코퓨처엠",
-     "pct": -1.1
+     "pct": -1.87
     }
    ],
-   "cat": {
-    "ti": "1∼7월 비중국 전기차 배터리 사용량 25.8%↑…중국업체 독주",
-    "link": "https://news.google.com/rss/articles/CBMiW0FVX3lxTFBCeVZianltV2pPLUNMQmd6N19KQUNKRGV2aW0yY19YejBFSnZXeFBjdFdEcDVmdEpTVTVKNmN4eFE0R1MyMDUzQXNOTUdkdGFMVUNxUElWR0dWM3PSAWBBVV95cUxORjBjWEU2c1BPS3VtNU9pbWwzTTYtQ2lNanJfQ2FoV1huSzNvQ2pORWlHcDV3SlZHdzNTWWgyWkdOQndLQkhoMXBUNWRvVU1oUGN6ZGYtZWxpcTFweWZ1TFM?oc=5",
-    "src": "연합뉴스",
-    "tm": "19시간 전"
-   },
+   "cat": null,
    "metrics": {
-    "r126": -0.09,
-    "rs": -0.3352,
-    "breadth": 0.5,
-    "ext20": 0.0013,
-    "rsi14": 51.8,
-    "volRatio": 1.43,
-    "curDD": -0.3508,
+    "r126": -0.0329,
+    "rs": -0.2899,
+    "breadth": 0.625,
+    "ext20": 0.0348,
+    "rsi14": 55.7,
+    "volRatio": 1.53,
+    "curDD": -0.3209,
     "penalty": 0,
-    "driver": -43
+    "driver": -31
    }
   },
   {
@@ -307,53 +282,48 @@
    "warns": [
     "하락추세 가능 — 저가매수 아님"
    ],
-   "conf": 63,
-   "confBand": "보통",
-   "score": -40,
+   "conf": 79,
+   "confBand": "높음",
+   "score": -68,
    "pts": [
-    "최근 6개월 -11.4% · KOSPI 대비 -35.9%p — 지수 하회 (12개월 -13.8%)",
-    "구성 4종목 중 2개 50일선 위 · 4개 3개월 상승 — 폭 75%, 참여 광범위",
-    "52주 고점 대비 -23.9% · 20일 이격 -6.3% · 변동성 지수 대비 0.6배 — 종합 -40/100 (리스크 −0)"
+    "최근 6개월 -11.0% · KOSPI 대비 -36.7%p — 지수 하회 (12개월 -15.1%)",
+    "구성 4종목 중 1개 50일선 위 · 4개 3개월 상승 — 폭 63%, 참여 광범위",
+    "52주 고점 대비 -24.9% · 20일 이격 -6.5% · 변동성 지수 대비 0.6배 — 종합 -68/100 (리스크 −0)"
    ],
-   "perf": -2.16,
+   "perf": -2.07,
    "lead": {
     "name": "셀트리온",
-    "pct": -1.72
+    "pct": -1.58
    },
    "picks": [
     {
      "name": "삼성바이오로직스",
-     "pct": -1.77
+     "pct": -1.65
     },
     {
      "name": "셀트리온",
-     "pct": -1.72
+     "pct": -1.58
     },
     {
      "name": "알테오젠",
-     "pct": -3.15
+     "pct": -3.04
     },
     {
      "name": "유한양행",
-     "pct": -1.98
+     "pct": -2.0
     }
    ],
-   "cat": {
-    "ti": "이근우 브리즈바이오 대표 “신약개발도 반도체처럼…韓 엄청난 기회”[K바이오 딜 써밋]",
-    "link": "https://news.google.com/rss/articles/CBMibkFVX3lxTE5NTGJseGJaQ251cHdfam4tV1ZncUM1QkhGQW5GX1hPSGJ1SENZbDVNZVdmN3E2eDRHM0VuNU9hVktUck12QXY2TG5kcW5vTnZBbHRqWG1ZdDNXUmc1ZDdDMnF4MV9BdkVTUjR4OFVR?oc=5",
-    "src": "팜이데일리",
-    "tm": "11시간 전"
-   },
+   "cat": null,
    "metrics": {
-    "r126": -0.1137,
-    "rs": -0.3589,
-    "breadth": 0.75,
-    "ext20": -0.0629,
-    "rsi14": 41.4,
-    "volRatio": 0.63,
-    "curDD": -0.2394,
+    "r126": -0.1097,
+    "rs": -0.3666,
+    "breadth": 0.625,
+    "ext20": -0.0652,
+    "rsi14": 39.2,
+    "volRatio": 0.59,
+    "curDD": -0.2495,
     "penalty": 0,
-    "driver": -40
+    "driver": -68
    }
   },
   {
@@ -365,53 +335,48 @@
    "warns": [
     "지수 동반 상승 — 초과성과 없음"
    ],
-   "conf": 74,
+   "conf": 70,
    "confBand": "높음",
-   "score": 60,
+   "score": 52,
    "pts": [
-    "최근 6개월 +21.6% · KOSPI 대비 -2.9%p — 지수 하회 (12개월 +43.6%)",
-    "구성 4종목 중 4개 50일선 위 · 3개 3개월 상승 — 폭 88%, 참여 광범위",
-    "52주 고점 대비 -3.8% · 20일 이격 +3.3% · 변동성 지수 대비 0.7배 — 종합 +60/100 (리스크 −0)"
+    "최근 6개월 +20.7% · KOSPI 대비 -5.0%p — 지수 하회 (12개월 +35.6%)",
+    "구성 4종목 중 3개 50일선 위 · 3개 3개월 상승 — 폭 75%, 참여 광범위",
+    "52주 고점 대비 -6.0% · 20일 이격 +0.6% · 변동성 지수 대비 0.7배 — 종합 +52/100 (리스크 −0)"
    ],
-   "perf": -1.35,
+   "perf": -0.2,
    "lead": {
-    "name": "신한지주",
-    "pct": -0.61
+    "name": "메리츠금융",
+    "pct": 0.24
    },
    "picks": [
     {
      "name": "KB금융",
-     "pct": -1.25
+     "pct": 0.12
     },
     {
      "name": "신한지주",
-     "pct": -0.61
+     "pct": -0.99
     },
     {
      "name": "메리츠금융",
-     "pct": -2.17
+     "pct": 0.24
     },
     {
      "name": "삼성화재",
-     "pct": -1.37
+     "pct": -0.16
     }
    ],
-   "cat": {
-    "ti": "3%대 기준금리에 PF 사업장 '초비상'",
-    "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE1NcnY2VjZwNTlwdmV6dDNsQjVSY3BfZWRsTkx3bU44SHFzcTdtQ1MwVmpQbGVfcldGV1FNZGVLRllhS2RmdGVIMkRSU29hM0Y0aTN1bG53MHJRdzFMVjdsZnZYeWfSAWhBVV95cUxNUFlTQk42STlPeFRXcUxhazAzWVg1TUZfbFEyZ3MtUTc1eEQxZE9jTnVqREdLRnBUc0lOckg4Nk9fVU51Y3lYZTZVUlRFUkpiVzhmc1A5cXNKQWxtdWZuZ084X3VqaGN2eg?oc=5",
-    "src": "매일일보",
-    "tm": "13시간 전"
-   },
+   "cat": null,
    "metrics": {
-    "r126": 0.2161,
-    "rs": -0.0291,
-    "breadth": 0.875,
-    "ext20": 0.033,
-    "rsi14": 56.3,
-    "volRatio": 0.7,
-    "curDD": -0.0377,
+    "r126": 0.2067,
+    "rs": -0.0503,
+    "breadth": 0.75,
+    "ext20": 0.0062,
+    "rsi14": 51.1,
+    "volRatio": 0.72,
+    "curDD": -0.0598,
     "penalty": 0,
-    "driver": 60
+    "driver": 52
    }
   }
  ]
