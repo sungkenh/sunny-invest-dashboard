@@ -1,5 +1,5 @@
 {
- "_updated": "2026-09-10T10:29:07",
+ "_updated": "2026-09-10T15:43:22",
  "mkt": "us",
  "benchmark": "S&P 500",
  "riskOff": false,
@@ -13,51 +13,51 @@
    "op": "op-buy",
    "opTxt": "비중확대",
    "warns": [],
-   "conf": 94,
+   "conf": 95,
    "confBand": "높음",
    "score": 83,
    "pts": [
-    "최근 6개월 +57.0% · S&P 500 대비 +44.4%p — 지수 상회 (12개월 +79.6%)",
+    "최근 6개월 +52.8% · S&P 500 대비 +40.6%p — 지수 상회 (12개월 +76.5%)",
     "구성 4종목 중 3개 50일선 위 · 3개 3개월 상승 — 폭 75%, 참여 광범위",
-    "52주 고점 대비 -5.8% · 20일 이격 +4.5% · 변동성 지수 대비 3.7배 — 종합 +83/100 (리스크 −10)"
+    "52주 고점 대비 -7.4% · 20일 이격 +2.6% · 변동성 지수 대비 3.7배 — 종합 +83/100 (리스크 −10)"
    ],
-   "perf": 0.04,
+   "perf": -1.41,
    "lead": {
-    "name": "AMD",
-    "pct": 3.04
+    "name": "브로드컴",
+    "pct": 0.01
    },
    "picks": [
     {
      "name": "엔비디아",
-     "pct": -0.91
+     "pct": -2.28
     },
     {
      "name": "브로드컴",
-     "pct": -1.13
+     "pct": 0.01
     },
     {
      "name": "AMD",
-     "pct": 3.04
+     "pct": -2.58
     },
     {
      "name": "TSMC",
-     "pct": -0.83
+     "pct": -0.78
     }
    ],
    "cat": {
-    "ti": "TSMC Revenue Rises 53% as AI Chip Demand Outstrips Supply",
-    "link": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPYl9WbFZJWVZKbXo0TnhxTjVzWGxBRk54QTA0VW8wZm9CZFhZMDZNdWdsT2R6dGpkMVNVUkpsNmJfREgyOG82UllIclZRNjZTTUR6RExJbWFoSVg1QzVyWDF0eW1TeWN6LVBrNGttZGtWd3ljdHZqNjhkUnpaSE5vMmxrZWUyWlhYdWFjMTN6ZW5sUFlsVjV2Zl9jM0JwS0VwMnRZcFZWX3pQMGs?oc=5",
-    "src": "Bloomberg.com",
-    "tm": "4시간 전"
+    "ti": "World’s largest contract chipmaker TSMC sees August revenue surge over 53% to record high",
+    "link": "https://news.google.com/rss/articles/CBMickFVX3lxTE9ycjd0eDNoeHBMd2Y4OE5TT2JvVUlNbVlhREFBc19jRTU3b0lrRTkxU1JrSmdmZ1AwcGFsWUlvZXBfT3FVS093cWxNZDA0WlRmb3haODhHVHREaDlyV3RYWVNjdEtYWTMtdGxwUEhPb3kzd9IBd0FVX3lxTE51eV9XN2ZtTHdhbUJaX1dtaTFWT0k5THItMFBIb3RRN3ZZT2dlamlnLXRaMkROcHFCQjBTWkcyQ3BlTWc1bmRsMUpsTnRwU2VKUWRxSW5lQ3FiTV9MRzVKX1QwUi1LYThTaEhpdUs0dTcyd0hER2Jn?oc=5",
+    "src": "CNBC",
+    "tm": "10시간 전"
    },
    "metrics": {
-    "r126": 0.5704,
-    "rs": 0.4443,
+    "r126": 0.5284,
+    "rs": 0.4059,
     "breadth": 0.75,
-    "ext20": 0.0447,
-    "rsi14": 58.9,
-    "volRatio": 3.68,
-    "curDD": -0.0577,
+    "ext20": 0.0264,
+    "rsi14": 54.7,
+    "volRatio": 3.7,
+    "curDD": -0.0742,
     "penalty": 10,
     "driver": 93
    }
@@ -73,51 +73,51 @@
    ],
    "conf": 68,
    "confBand": "보통",
-   "score": 32,
+   "score": 30,
    "pts": [
-    "최근 6개월 +9.8% · S&P 500 대비 -2.8%p — 지수 하회 (12개월 +6.3%)",
+    "최근 6개월 +9.3% · S&P 500 대비 -3.0%p — 지수 하회 (12개월 +6.0%)",
     "구성 4종목 중 3개 50일선 위 · 3개 3개월 상승 — 폭 75%, 참여 광범위",
-    "52주 고점 대비 -3.9% · 20일 이격 +0.1% · 변동성 지수 대비 2.7배 — 종합 +32/100 (리스크 −10)"
+    "52주 고점 대비 -4.1% · 20일 이격 -0.2% · 변동성 지수 대비 2.6배 — 종합 +30/100 (리스크 −10)"
    ],
-   "perf": 0.84,
+   "perf": -0.28,
    "lead": {
     "name": "메타",
-    "pct": 6.55
+    "pct": 0.09
    },
    "picks": [
     {
      "name": "마이크로소프트",
-     "pct": -0.47
+     "pct": 0.08
     },
     {
      "name": "알파벳",
-     "pct": -2.28
+     "pct": -0.11
     },
     {
      "name": "메타",
-     "pct": 6.55
+     "pct": 0.09
     },
     {
      "name": "팔란티어",
-     "pct": -0.45
+     "pct": -1.2
     }
    ],
    "cat": {
-    "ti": "AI Is Disrupting Software Companies—but Not as Fast as Many Feared",
-    "link": "https://news.google.com/rss/articles/CBMipAFBVV95cUxQRFZESWNiZVRnU2pTUE9jeDVPaUEtT3NYY2dTd0FHUVpLc09WeFhDbXZVazVpdl9QblRRLUhQRDgxbmZfMmtmOE42MTVWeFhNTmkxTFpJenY0N2tIdjFRd21nX3FSdWpnbTdpX0pBcjVoZ2owYnFPejdzZ1hFX1NPN0RFNTE4VDd4MVNfOTNyMHNnb05wOGNpN1A5Z0JyRXlXVkF2OQ?oc=5",
-    "src": "WSJ",
-    "tm": "57분 전"
+    "ti": "Build apps in Copilot Cowork and Copilot Studio",
+    "link": "https://news.google.com/rss/articles/CBMiugFBVV95cUxPeFlJaUlRMHEyelRFMUVJOU1NVHM4YXR1UEp5TkpaeWxZbHBrUWJBZVh6LXhrdWdxeHgxWUdZMGVYQ01fbzNoZ3BCTWxVOUhGc2Y4Q0NGUWtMUktyaHI3TlY4d1h4Y1Q1WWQtcGRCZDFvTXBVU3VYMzM2Ql9TNlY3RjF1aEZ0NHJZWTlDVERySGYxTkQtZGNvOGFLQ1FkbzJuX1Q5SFZPak9odE9RX2ZncXZtTHFQdnF4U3c?oc=5",
+    "src": "Microsoft",
+    "tm": "25분 전"
    },
    "metrics": {
-    "r126": 0.0982,
-    "rs": -0.0279,
+    "r126": 0.0925,
+    "rs": -0.03,
     "breadth": 0.75,
-    "ext20": 0.0007,
-    "rsi14": 53.5,
-    "volRatio": 2.7,
-    "curDD": -0.0387,
+    "ext20": -0.0024,
+    "rsi14": 52.7,
+    "volRatio": 2.6,
+    "curDD": -0.0414,
     "penalty": 10,
-    "driver": 42
+    "driver": 40
    }
   },
   {
@@ -129,33 +129,33 @@
    "warns": [],
    "conf": 77,
    "confBand": "높음",
-   "score": -69,
+   "score": -67,
    "pts": [
-    "최근 6개월 -5.2% · S&P 500 대비 -17.8%p — 지수 하회 (12개월 -4.1%)",
+    "최근 6개월 -3.5% · S&P 500 대비 -15.8%p — 지수 하회 (12개월 -5.0%)",
     "구성 4종목 중 2개 50일선 위 · 3개 3개월 상승 — 폭 63%, 참여 광범위",
-    "52주 고점 대비 -15.6% · 20일 이격 +1.4% · 변동성 지수 대비 3.9배 — 종합 -69/100 (리스크 −10)"
+    "52주 고점 대비 -16.3% · 20일 이격 +0.7% · 변동성 지수 대비 3.8배 — 종합 -67/100 (리스크 −10)"
    ],
-   "perf": -1.95,
+   "perf": -0.6,
    "lead": {
     "name": "비스트라",
-    "pct": -0.41
+    "pct": 0.98
    },
    "picks": [
     {
      "name": "GE버노바",
-     "pct": -2.09
+     "pct": -1.86
     },
     {
      "name": "비스트라",
-     "pct": -0.41
+     "pct": 0.98
     },
     {
      "name": "콘스텔레이션",
-     "pct": -1.72
+     "pct": -0.88
     },
     {
      "name": "NRG에너지",
-     "pct": -3.57
+     "pct": -0.62
     }
    ],
    "cat": {
@@ -165,15 +165,15 @@
     "tm": "1일 전"
    },
    "metrics": {
-    "r126": -0.0517,
-    "rs": -0.1778,
+    "r126": -0.0351,
+    "rs": -0.1576,
     "breadth": 0.625,
-    "ext20": 0.0137,
-    "rsi14": 51.7,
-    "volRatio": 3.85,
-    "curDD": -0.1559,
+    "ext20": 0.0068,
+    "rsi14": 49.8,
+    "volRatio": 3.81,
+    "curDD": -0.1632,
     "penalty": 10,
-    "driver": -59
+    "driver": -57
    }
   },
   {
@@ -183,53 +183,53 @@
    "op": "op-sell",
    "opTxt": "비중축소",
    "warns": [],
-   "conf": 67,
+   "conf": 68,
    "confBand": "보통",
-   "score": -67,
+   "score": -62,
    "pts": [
-    "최근 6개월 -14.1% · S&P 500 대비 -26.7%p — 지수 하회 (12개월 +9.6%)",
-    "구성 4종목 중 0개 50일선 위 · 2개 3개월 상승 — 폭 25%, 참여 제한적",
-    "52주 고점 대비 -17.0% · 20일 이격 -6.7% · 변동성 지수 대비 2.3배 — 종합 -67/100 (리스크 −8)"
+    "최근 6개월 -13.8% · S&P 500 대비 -26.0%p — 지수 하회 (12개월 +9.9%)",
+    "구성 4종목 중 0개 50일선 위 · 3개 3개월 상승 — 폭 38%, 참여 제한적",
+    "52주 고점 대비 -16.8% · 20일 이격 -6.0% · 변동성 지수 대비 2.3배 — 종합 -62/100 (리스크 −8)"
    ],
-   "perf": -1.12,
+   "perf": 0.25,
    "lead": {
     "name": "노스롭그루먼",
-    "pct": -0.58
+    "pct": 0.61
    },
    "picks": [
     {
      "name": "RTX",
-     "pct": -0.63
+     "pct": -0.29
     },
     {
      "name": "록히드마틴",
-     "pct": -2.18
+     "pct": 0.59
     },
     {
      "name": "노스롭그루먼",
-     "pct": -0.58
+     "pct": 0.61
     },
     {
      "name": "제너럴다이내믹스",
-     "pct": -1.1
+     "pct": 0.1
     }
    ],
    "cat": {
-    "ti": "Months of budget infighting delayed critical Arrow 3 interceptor orders during war",
-    "link": "https://news.google.com/rss/articles/CBMiV0FVX3lxTFBia2hBOW90UzI4aHhmZUtTalEzQmdFZ1paQ2tfOUVZR0gzamowc21lWGlvRm0zc1pqZ3NHUFd0UEYxS2ZLY1BBekZjRHllSk5tV3dlLWdWbw?oc=5",
-    "src": "Ynetnews",
-    "tm": "6일 전"
+    "ti": "US rebuilding weapons stockpile could delay orders from allies",
+    "link": "https://news.google.com/rss/articles/CBMilAFBVV95cUxNbHJUNFlGaG5sZEMwN2J4MnRCVmItLU5YYlFCSVBOZXByNVVCVFRyRHZybFNNaXhNNEU0UVdDcDctcVFiazZENnkzTGNNLVlHM0E4ZTE5RWZubDBZd2pzcXl5S2xBRXd1bXZHbWlDeE9va2p2ZWpYZXJiN053a1VmdlBBR3J3T1ZuNDNJdVZYOTNUWkZn0gGaAUFVX3lxTE1JMVd2TzRGQVlTaGdrRDNzVnQ0SkRwNmZ3LW0wdEJDRHRsUjBNRUJlMUU0ZHllSm4wV1FLMlY5Vk44YUZ1dkhSam1HSVJSZzg4Z1lhMW1XOVVEOEt4Ym81OFc2aFZ5Z2p4d3ptRWlTRXdidWIxYWVxN1p3VkR6VmUyQlNtNE1YUFdJWENfMDFwaUpiOVk5bWtsZWc?oc=5",
+    "src": "Fox News",
+    "tm": "2일 전"
    },
    "metrics": {
-    "r126": -0.1413,
-    "rs": -0.2674,
-    "breadth": 0.25,
-    "ext20": -0.0673,
-    "rsi14": 31.0,
-    "volRatio": 2.31,
-    "curDD": -0.1695,
+    "r126": -0.1376,
+    "rs": -0.2602,
+    "breadth": 0.375,
+    "ext20": -0.0596,
+    "rsi14": 32.0,
+    "volRatio": 2.29,
+    "curDD": -0.1677,
     "penalty": 8,
-    "driver": -59
+    "driver": -54
    }
   },
   {
@@ -241,33 +241,33 @@
    "warns": [],
    "conf": 53,
    "confBand": "보통",
-   "score": 23,
+   "score": 22,
    "pts": [
-    "최근 6개월 +17.9% · S&P 500 대비 +5.3%p — 지수 상회 (12개월 +15.7%)",
+    "최근 6개월 +17.7% · S&P 500 대비 +5.4%p — 지수 상회 (12개월 +15.8%)",
     "구성 4종목 중 0개 50일선 위 · 2개 3개월 상승 — 폭 25%, 참여 제한적",
-    "52주 고점 대비 -8.1% · 20일 이격 -3.4% · 변동성 지수 대비 2.2배 — 종합 +23/100 (리스크 −7)"
+    "52주 고점 대비 -8.0% · 20일 이격 -3.1% · 변동성 지수 대비 2.3배 — 종합 +22/100 (리스크 −8)"
    ],
-   "perf": -0.6,
+   "perf": 0.08,
    "lead": {
     "name": "애브비",
-    "pct": 0.86
+    "pct": 0.6
    },
    "picks": [
     {
      "name": "일라이릴리",
-     "pct": 0.03
+     "pct": 0.35
     },
     {
      "name": "노보노디스크",
-     "pct": -1.33
+     "pct": -0.06
     },
     {
      "name": "유나이티드헬스",
-     "pct": -1.94
+     "pct": -0.58
     },
     {
      "name": "애브비",
-     "pct": 0.86
+     "pct": 0.6
     }
    ],
    "cat": {
@@ -277,14 +277,14 @@
     "tm": "10일 전"
    },
    "metrics": {
-    "r126": 0.1789,
-    "rs": 0.0529,
+    "r126": 0.1768,
+    "rs": 0.0543,
     "breadth": 0.25,
-    "ext20": -0.0338,
-    "rsi14": 38.7,
+    "ext20": -0.0308,
+    "rsi14": 39.2,
     "volRatio": 2.25,
-    "curDD": -0.0808,
-    "penalty": 7,
+    "curDD": -0.0797,
+    "penalty": 8,
     "driver": 30
    }
   },
@@ -295,53 +295,53 @@
    "op": "op-buy",
    "opTxt": "비중확대",
    "warns": [],
-   "conf": 91,
+   "conf": 77,
    "confBand": "높음",
-   "score": 84,
+   "score": 64,
    "pts": [
-    "최근 6개월 +27.3% · S&P 500 대비 +14.7%p — 지수 상회 (12개월 +29.1%)",
-    "구성 4종목 중 2개 50일선 위 · 3개 3개월 상승 — 폭 63%, 참여 광범위",
-    "52주 고점 대비 -3.7% · 20일 이격 -0.3% · 변동성 지수 대비 1.9배 — 종합 +84/100 (리스크 −4)"
+    "최근 6개월 +27.3% · S&P 500 대비 +15.1%p — 지수 상회 (12개월 +28.6%)",
+    "구성 4종목 중 2개 50일선 위 · 4개 3개월 상승 — 폭 75%, 참여 광범위",
+    "52주 고점 대비 -4.1% · 20일 이격 -0.6% · 변동성 지수 대비 1.9배 — 종합 +64/100 (리스크 −4)"
    ],
-   "perf": -0.09,
+   "perf": -0.43,
    "lead": {
     "name": "뱅크오브아메리카",
-    "pct": 0.45
+    "pct": -0.34
    },
    "picks": [
     {
      "name": "JP모건",
-     "pct": 0.34
+     "pct": -0.39
     },
     {
      "name": "골드만삭스",
-     "pct": -0.75
+     "pct": -0.57
     },
     {
      "name": "뱅크오브아메리카",
-     "pct": 0.45
+     "pct": -0.34
     },
     {
      "name": "모건스탠리",
-     "pct": -0.41
+     "pct": -0.4
     }
    ],
    "cat": {
     "ti": "Fed's rate cut will hit bank accounts. How to keep earning interest.",
     "link": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOeEEzUHJNaWFzSUppb1NDLTFNalcwRmRGNnFfM2Fmc0czZnVkWVgxdXI0eTREZi03ZEQ3OXZuQXlpd0xONF9yd2ExTDFHNjVtOGJ4TjJ5VGVYMFgxZklaNFR0RHpTa3RhamtQQTF4d3JqNUdmYS1hb2JwX18tWXpUVmlzZkZhT1BLMTV3c2lvcTR3VXA5ZmV1eVhvVVI3THpSdHZoQWl2WDdGckY0d0tZQXJuYzNkUQ?oc=5",
-    "src": "finance.yahoo.com",
+    "src": "Yahoo Finance",
     "tm": "176일 전"
    },
    "metrics": {
-    "r126": 0.2733,
-    "rs": 0.1473,
-    "breadth": 0.625,
-    "ext20": -0.0031,
-    "rsi14": 50.1,
-    "volRatio": 1.9,
-    "curDD": -0.037,
+    "r126": 0.2732,
+    "rs": 0.1507,
+    "breadth": 0.75,
+    "ext20": -0.0062,
+    "rsi14": 48.2,
+    "volRatio": 1.86,
+    "curDD": -0.0411,
     "penalty": 4,
-    "driver": 88
+    "driver": 68
    }
   },
   {
@@ -351,53 +351,53 @@
    "op": "op-buy",
    "opTxt": "비중확대",
    "warns": [],
-   "conf": 93,
+   "conf": 87,
    "confBand": "높음",
-   "score": 66,
+   "score": 51,
    "pts": [
-    "최근 6개월 +15.9% · S&P 500 대비 +3.3%p — 지수 상회 (12개월 +46.0%)",
-    "구성 4종목 중 4개 50일선 위 · 4개 3개월 상승 — 폭 100%, 참여 광범위",
-    "52주 고점 대비 -0.4% · 20일 이격 +3.2% · 변동성 지수 대비 2.0배 — 종합 +66/100 (리스크 −5)"
+    "최근 6개월 +12.9% · S&P 500 대비 +0.6%p — 시장 수준 (12개월 +45.0%)",
+    "구성 4종목 중 4개 50일선 위 · 3개 3개월 상승 — 폭 88%, 참여 광범위",
+    "52주 고점 대비 -1.1% · 20일 이격 +2.1% · 변동성 지수 대비 2.1배 — 종합 +51/100 (리스크 −6)"
    ],
-   "perf": 1.29,
+   "perf": -0.67,
    "lead": {
     "name": "엑슨모빌",
-    "pct": 2.22
+    "pct": 0.36
    },
    "picks": [
     {
      "name": "엑슨모빌",
-     "pct": 2.22
+     "pct": 0.36
     },
     {
      "name": "셰브론",
-     "pct": 1.91
+     "pct": -0.24
     },
     {
      "name": "코노코필립스",
-     "pct": 1.1
+     "pct": 0.0
     },
     {
      "name": "SLB",
-     "pct": -0.09
+     "pct": -2.79
     }
    ],
    "cat": {
     "ti": "'Saved the day': How China helped keep the lid on oil price surge as Iran war disrupted supplies",
     "link": "https://news.google.com/rss/articles/CBMikgFBVV95cUxQRTdXWmJBYnc1VnBEUWVuazlUQkQ1SmV5aDlfY1cxUXgzeERlWXoxWEl4WElXdFFlUWZzZzN0NlRHRUVQMWU1bGpubUlBaDM3SUZvTFJ6NHRFbi0wMUhMNkNBakFjdVduS2R2NFRGaEVDYjlyVzJNWmh6TjNMemUtajRTSWhZbnFoN25pQ3FEeXBtdw?oc=5",
     "src": "CNBC",
-    "tm": "4시간 전"
+    "tm": "9시간 전"
    },
    "metrics": {
-    "r126": 0.1592,
-    "rs": 0.0331,
-    "breadth": 1.0,
-    "ext20": 0.0316,
-    "rsi14": 67.5,
-    "volRatio": 2.02,
-    "curDD": -0.004,
-    "penalty": 5,
-    "driver": 71
+    "r126": 0.129,
+    "rs": 0.0064,
+    "breadth": 0.875,
+    "ext20": 0.0212,
+    "rsi14": 63.9,
+    "volRatio": 2.05,
+    "curDD": -0.0112,
+    "penalty": 6,
+    "driver": 57
    }
   }
  ]
