@@ -1,5 +1,5 @@
 {
- "_updated": "2026-09-25T10:59:59",
+ "_updated": "2026-09-25T16:22:09",
  "mkt": "us",
  "benchmark": "S&P 500",
  "riskOff": false,
@@ -13,52 +13,52 @@
    "op": "op-buy",
    "opTxt": "비중확대",
    "warns": [],
-   "conf": 94,
+   "conf": 95,
    "confBand": "높음",
-   "score": 81,
+   "score": 83,
    "pts": [
-    "최근 6개월 +76.3% · S&P 500 대비 +58.8%p — 지수 상회 (12개월 +96.0%)",
+    "최근 6개월 +81.4% · S&P 500 대비 +61.9%p — 지수 상회 (12개월 +96.2%)",
     "구성 4종목 중 3개 50일선 위 · 3개 3개월 상승 — 폭 75%, 참여 광범위",
-    "52주 고점 대비 +0.0% · 20일 이격 +11.4% · 변동성 지수 대비 3.4배 — 종합 +81/100 (리스크 −12)"
+    "52주 고점 대비 -0.3% · 20일 이격 +9.9% · 변동성 지수 대비 3.5배 — 종합 +83/100 (리스크 −10)"
    ],
-   "perf": 0.42,
+   "perf": 0.22,
    "lead": {
-    "name": "AMD",
-    "pct": 2.38
+    "name": "브로드컴",
+    "pct": 0.55
    },
    "picks": [
     {
      "name": "엔비디아",
-     "pct": -0.41
+     "pct": 0.15
     },
     {
      "name": "브로드컴",
-     "pct": -1.3
+     "pct": 0.55
     },
     {
      "name": "AMD",
-     "pct": 2.38
+     "pct": -0.11
     },
     {
      "name": "TSMC",
-     "pct": 1.03
+     "pct": 0.27
     }
    ],
    "cat": {
-    "ti": "5 AI Semiconductor Stocks to Buy and Hold Through 2031",
-    "link": "https://news.google.com/rss/articles/CBMilwFBVV95cUxNU3VkSWVGbkJpMklxVExYeE9BcjR4d0ltcWx6bGpnZ2o5Q25PcWNSWHpleF8xZ09saEFVck5OWVo2SzRfbGIyNS1EczNCdUV6WU9nSDVZNkxWLWhlV2FQQXROWEJIZ1E2QWxrT3U2ZF9JMjJWRkxvMWFzVmNaS3ZYcGxMWEExWmJfTEtrVmZYR0FwQUtWNXVV?oc=5",
-    "src": "The Motley Fool",
-    "tm": "14시간 전"
+    "ti": "Nvidia Stock: Here’s How Many AI Chips SpaceX Is Buying.",
+    "link": "https://news.google.com/rss/articles/CBMihAFBVV95cUxQZEoxQzk3Mno1cFg0Mm1RbEJ6RklMRUJrSWdQeHo3aE52czJ6VDJuNzZSaWpudmIwdURaVmxCSXk2MkZDalM2MXRIVU40ck5ZeFJFak05OUk4MzJuM3FoU1JJYTVDN3JBcHJKT1htT0pjaFBFY2liRVFJM2xlUlZaZXduOVM?oc=5",
+    "src": "barrons.com",
+    "tm": "1시간 전"
    },
    "metrics": {
-    "r126": 0.7627,
-    "rs": 0.5876,
+    "r126": 0.8136,
+    "rs": 0.6192,
     "breadth": 0.75,
-    "ext20": 0.1139,
-    "rsi14": 69.2,
-    "volRatio": 3.41,
-    "curDD": 0.0,
-    "penalty": 12,
+    "ext20": 0.0986,
+    "rsi14": 67.7,
+    "volRatio": 3.5,
+    "curDD": -0.0035,
+    "penalty": 10,
     "driver": 93
    }
   },
@@ -69,53 +69,53 @@
    "op": "op-buy",
    "opTxt": "비중확대",
    "warns": [],
-   "conf": 91,
+   "conf": 98,
    "confBand": "높음",
-   "score": 71,
+   "score": 84,
    "pts": [
-    "최근 6개월 +25.6% · S&P 500 대비 +8.1%p — 지수 상회 (12개월 +12.2%)",
-    "구성 4종목 중 3개 50일선 위 · 3개 3개월 상승 — 폭 75%, 참여 광범위",
-    "52주 고점 대비 +0.0% · 20일 이격 +6.2% · 변동성 지수 대비 2.3배 — 종합 +71/100 (리스크 −8)"
+    "최근 6개월 +31.2% · S&P 500 대비 +11.7%p — 지수 상회 (12개월 +12.2%)",
+    "구성 4종목 중 4개 50일선 위 · 4개 3개월 상승 — 폭 100%, 참여 광범위",
+    "52주 고점 대비 -0.1% · 20일 이격 +5.4% · 변동성 지수 대비 2.4배 — 종합 +84/100 (리스크 −9)"
    ],
-   "perf": 1.43,
+   "perf": -0.06,
    "lead": {
-    "name": "메타",
-    "pct": 4.5
+    "name": "마이크로소프트",
+    "pct": 3.39
    },
    "picks": [
     {
      "name": "마이크로소프트",
-     "pct": -0.53
+     "pct": 3.39
     },
     {
      "name": "알파벳",
-     "pct": 1.34
+     "pct": 0.61
     },
     {
      "name": "메타",
-     "pct": 4.5
+     "pct": -3.7
     },
     {
      "name": "팔란티어",
-     "pct": 0.42
+     "pct": -0.54
     }
    ],
    "cat": {
-    "ti": "What if robots didn't need all their AI onboard?",
-    "link": "https://news.google.com/rss/articles/CBMipAFBVV95cUxNMnpNaGRsVmFjZXZ2Y3czS2I5MHlLSlgtMVB6d0pXY2J1aW94Q3RyRE82WnpIaUdZOU1QMFM0SDdJbzB0a2htSmJFQTZ0VDNWeGJrcXZpREdGRnFHeFF1TTF1TnhJODVkUWlLT1hCbFM3SnRCTlM1cFJFV2tsRDhwdmphVnN2Mmt5MFlUTVVHOVl0TW1GeS12OG5WWFR2ZlA3MDhMOA?oc=5",
-    "src": "microsoft.com",
-    "tm": "1일 전"
+    "ti": "Microsoft packages business AI in single app as it tries to compete with Anthropic",
+    "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTE1LaE56cEZlT0tlaGw5Mno4QUZnTUFKT3Jod2ZQZEZsSmtxVWg0Vy10M2hwMU1acjNqamZ4LXZ6cS1nNkI2aURrRklYaEFmVVVvZEhWUURVOWhfcEwtZUVDck04WGhuX2ZZd0Rsa0dfMnlhNHExQlVsdDVmOF95V2_SAYQBQVVfeXFMTnpIaHZQWVV2WFd5Y0xNamVvZ0NxaDAzdzdPd3phSF9MZUlTaHdJdFpvUEFNdDBMczIyNkVMQ0R0Nk9Tb1dISlVQd28tV2FvUHFScFljWDRBRExmYmFHX2hhMTJ6Nm5aZncyQnJFTnpfSUItWFBqSllHTGpXZXBIVnBqMW45?oc=5",
+    "src": "CNBC",
+    "tm": "4시간 전"
    },
    "metrics": {
-    "r126": 0.2563,
-    "rs": 0.0813,
-    "breadth": 0.75,
-    "ext20": 0.0618,
-    "rsi14": 69.6,
-    "volRatio": 2.35,
-    "curDD": 0.0,
-    "penalty": 8,
-    "driver": 79
+    "r126": 0.3118,
+    "rs": 0.1175,
+    "breadth": 1.0,
+    "ext20": 0.0538,
+    "rsi14": 69.5,
+    "volRatio": 2.39,
+    "curDD": -0.0005,
+    "penalty": 9,
+    "driver": 93
    }
   },
   {
@@ -129,51 +129,51 @@
    ],
    "conf": 81,
    "confBand": "높음",
-   "score": -96,
+   "score": -93,
    "pts": [
-    "최근 6개월 -10.5% · S&P 500 대비 -28.0%p — 지수 하회 (12개월 -8.5%)",
+    "최근 6개월 -8.5% · S&P 500 대비 -27.9%p — 지수 하회 (12개월 -8.6%)",
     "구성 4종목 중 0개 50일선 위 · 0개 3개월 상승 — 폭 0%, 참여 제한적",
-    "52주 고점 대비 -21.3% · 20일 이격 -2.7% · 변동성 지수 대비 3.3배 — 종합 -96/100 (리스크 −10)"
+    "52주 고점 대비 -21.4% · 20일 이격 -2.4% · 변동성 지수 대비 3.4배 — 종합 -93/100 (리스크 −10)"
    ],
-   "perf": -0.85,
+   "perf": -0.04,
    "lead": {
-    "name": "GE버노바",
-    "pct": 0.34
+    "name": "NRG에너지",
+    "pct": 1.13
    },
    "picks": [
     {
      "name": "GE버노바",
-     "pct": 0.34
+     "pct": -0.17
     },
     {
      "name": "비스트라",
-     "pct": -0.02
+     "pct": -1.01
     },
     {
      "name": "콘스텔레이션",
-     "pct": -0.86
+     "pct": -0.11
     },
     {
      "name": "NRG에너지",
-     "pct": -2.85
+     "pct": 1.13
     }
    ],
    "cat": {
-    "ti": "Power Play: Vistra Powers New Era’s AI Data Center Deal",
-    "link": "https://news.google.com/rss/articles/CBMilAFBVV95cUxQTjNIbW9QMVo2bVk4aFlWVk5rUzVVMWpwb1RydXdjczhOWlJnTlg1di0xb1VUYkNQN2FaWmgtOUh6Vkt4SG5TMWlHYVVSZFdFWGNXcjhUT2IyUzFzOEZLa21HT3RWcHpxX20teVo5S09uRFdudFdyd1llWlVKbGpiMWZPSHlMQ0QxeVdqOGN6UkFMNGR1?oc=5",
-    "src": "MarketBeat",
-    "tm": "21시간 전"
+    "ti": "Vistra Struck a 20-Year Power Deal with New Era — Here's What Else Happened This Month",
+    "link": "https://news.google.com/rss/articles/CBMi2wFBVV95cUxNWUtWN3RUM3VKUHFXYnRBeWZYcEZwNnVqSWltY1NXclg0eU5ybllzcS1vRkYwMnJ5X3FRblFDUUUtRFZYcEhhY0p6amNSRTQzWVdoUC0wS0JCTm5aQ2dBUkl4bERBTzcyUkx6eVNRbVpvWVBrWlREZUpEdnpKcGJTcjJVX0lIQlowcVFCNGZITVFCZWpJZkhyQUJTY3NYLW9jNXdETXNwZ0pjT1dwOWJfd3FNeXZKWDUwR0dDSm44MFNoWGNLTV8tQ1BKNHdCcFo4WUl5YUExS1R6OXM?oc=5",
+    "src": "TradingView",
+    "tm": "5시간 전"
    },
    "metrics": {
-    "r126": -0.1045,
-    "rs": -0.2796,
+    "r126": -0.0849,
+    "rs": -0.2793,
     "breadth": 0.0,
-    "ext20": -0.027,
-    "rsi14": 41.9,
+    "ext20": -0.024,
+    "rsi14": 41.6,
     "volRatio": 3.35,
-    "curDD": -0.213,
+    "curDD": -0.2137,
     "penalty": 10,
-    "driver": -86
+    "driver": -83
    }
   },
   {
@@ -183,53 +183,53 @@
    "op": "op-sell",
    "opTxt": "비중축소",
    "warns": [],
-   "conf": 67,
+   "conf": 68,
    "confBand": "보통",
-   "score": -51,
+   "score": -53,
    "pts": [
-    "최근 6개월 -11.5% · S&P 500 대비 -29.0%p — 지수 하회 (12개월 +4.0%)",
+    "최근 6개월 -12.5% · S&P 500 대비 -32.0%p — 지수 하회 (12개월 +4.4%)",
     "구성 4종목 중 0개 50일선 위 · 3개 3개월 상승 — 폭 38%, 참여 제한적",
-    "52주 고점 대비 -19.3% · 20일 이격 -4.7% · 변동성 지수 대비 1.4배 — 종합 -51/100 (리스크 −0)"
+    "52주 고점 대비 -19.0% · 20일 이격 -3.5% · 변동성 지수 대비 1.4배 — 종합 -53/100 (리스크 −0)"
    ],
-   "perf": -1.29,
+   "perf": 0.34,
    "lead": {
-    "name": "록히드마틴",
-    "pct": -0.19
+    "name": "제너럴다이내믹스",
+    "pct": 0.81
    },
    "picks": [
     {
      "name": "RTX",
-     "pct": -1.86
+     "pct": 0.33
     },
     {
      "name": "록히드마틴",
-     "pct": -0.19
+     "pct": -0.49
     },
     {
      "name": "노스롭그루먼",
-     "pct": -1.06
+     "pct": 0.7
     },
     {
      "name": "제너럴다이내믹스",
-     "pct": -2.05
+     "pct": 0.81
     }
    ],
    "cat": {
-    "ti": "Months of budget infighting delayed critical Arrow 3 interceptor orders during war",
-    "link": "https://news.google.com/rss/articles/CBMiV0FVX3lxTFBia2hBOW90UzI4aHhmZUtTalEzQmdFZ1paQ2tfOUVZR0gzamowc21lWGlvRm0zc1pqZ3NHUFd0UEYxS2ZLY1BBekZjRHllSk5tV3dlLWdWbw?oc=5",
-    "src": "Ynetnews",
-    "tm": "21일 전"
+    "ti": "Lockheed Martin Gets GM Defense-Made PAC-3 MSE Components Under One Month From Order",
+    "link": "https://news.google.com/rss/articles/CBMiygFBVV95cUxPSzBVd3VuZTlRbUdieUdFSUJ3Sm5PVGM3dEFmaTNySUM3WkZ4Z2d5cFp5T2MybGRRbGZsSHJPNkxoRzQwVEtWcnhqcmxTVU5maWg1eVJDRm8zaUlnZ283N1c1RkhtcWdPZmpoVmY0UnpnOWZQWGozSWpCc3ptU3c3clBRSFZBTVBURjk4YnhTYnRiT3FuUHBTakNsSFMyUExYSnRucWY4Nk1qYVRSRy1DUVIzZjQ3MUxQUDlBY0llM2hXVFRCQktEb0JB?oc=5",
+    "src": "Defense Daily",
+    "tm": "6일 전"
    },
    "metrics": {
-    "r126": -0.1145,
-    "rs": -0.2896,
+    "r126": -0.1253,
+    "rs": -0.3197,
     "breadth": 0.375,
-    "ext20": -0.0468,
-    "rsi14": 27.7,
-    "volRatio": 1.41,
-    "curDD": -0.1926,
+    "ext20": -0.0347,
+    "rsi14": 30.7,
+    "volRatio": 1.44,
+    "curDD": -0.19,
     "penalty": 0,
-    "driver": -51
+    "driver": -53
    }
   },
   {
@@ -239,53 +239,53 @@
    "op": "op-buy",
    "opTxt": "비중확대",
    "warns": [],
-   "conf": 62,
+   "conf": 55,
    "confBand": "보통",
-   "score": 49,
+   "score": 37,
    "pts": [
-    "최근 6개월 +27.2% · S&P 500 대비 +9.7%p — 지수 상회 (12개월 +16.0%)",
-    "구성 4종목 중 2개 50일선 위 · 2개 3개월 상승 — 폭 50%, 참여 보통",
-    "52주 고점 대비 -8.3% · 20일 이격 -1.3% · 변동성 지수 대비 1.5배 — 종합 +49/100 (리스크 −0)"
+    "최근 6개월 +26.6% · S&P 500 대비 +7.2%p — 지수 상회 (12개월 +15.4%)",
+    "구성 4종목 중 1개 50일선 위 · 1개 3개월 상승 — 폭 25%, 참여 제한적",
+    "52주 고점 대비 -8.8% · 20일 이격 -1.4% · 변동성 지수 대비 1.4배 — 종합 +37/100 (리스크 −0)"
    ],
-   "perf": 1.22,
+   "perf": -0.32,
    "lead": {
-    "name": "일라이릴리",
-    "pct": 2.68
+    "name": "유나이티드헬스",
+    "pct": 0.98
    },
    "picks": [
     {
      "name": "일라이릴리",
-     "pct": 2.68
+     "pct": -1.6
     },
     {
      "name": "노보노디스크",
-     "pct": 1.18
+     "pct": -0.01
     },
     {
      "name": "유나이티드헬스",
-     "pct": 1.0
+     "pct": 0.98
     },
     {
      "name": "애브비",
-     "pct": 0.02
+     "pct": -0.65
     }
    ],
    "cat": {
     "ti": "Eli Lilly CEO touts 70% share as Medicare GLP-1 program reaches 700K seniors",
     "link": "https://news.google.com/rss/articles/CBMirAFBVV95cUxPN0hKalNXV2dRX0t2MV8zMEZaSEZLVVVNdmQ0TnRLeVg0ck5qaE1HS2cwbHZfZFFDZGRJQkpnSTlra3JodmNoZEpjR0VyNjYxamZCT2lERVlBVEYtcGh5UFBmSnZFalNVRjBqZXRuOHlMTVVXZWE3N2twd3U0SnNNYUR3dkQ2VU1mWFY0Y0p5UlpZR2l2RXZrUWVsY0xEWDl3R08wNWowdzNXUTFG?oc=5",
     "src": "Fierce Pharma",
-    "tm": "1일 전"
+    "tm": "2일 전"
    },
    "metrics": {
-    "r126": 0.272,
-    "rs": 0.097,
-    "breadth": 0.5,
-    "ext20": -0.0131,
-    "rsi14": 43.5,
-    "volRatio": 1.52,
-    "curDD": -0.0832,
+    "r126": 0.2663,
+    "rs": 0.072,
+    "breadth": 0.25,
+    "ext20": -0.0138,
+    "rsi14": 41.9,
+    "volRatio": 1.38,
+    "curDD": -0.0879,
     "penalty": 0,
-    "driver": 49
+    "driver": 37
    }
   },
   {
@@ -298,53 +298,53 @@
     "지수 동반 상승 — 초과성과 없음",
     "참고용 · 저신뢰"
    ],
-   "conf": 32,
+   "conf": 33,
    "confBand": "낮음",
-   "score": 2,
+   "score": 4,
    "pts": [
-    "최근 6개월 +15.2% · S&P 500 대비 -2.3%p — 지수 하회 (12개월 +13.9%)",
+    "최근 6개월 +17.0% · S&P 500 대비 -2.5%p — 지수 하회 (12개월 +14.7%)",
     "구성 4종목 중 0개 50일선 위 · 1개 3개월 상승 — 폭 13%, 참여 제한적",
-    "52주 고점 대비 -12.1% · 20일 이격 -6.4% · 변동성 지수 대비 2.0배 — 종합 +2/100 (리스크 −5)"
+    "52주 고점 대비 -11.4% · 20일 이격 -5.0% · 변동성 지수 대비 2.0배 — 종합 +4/100 (리스크 −5)"
    ],
-   "perf": -0.52,
+   "perf": 0.72,
    "lead": {
-    "name": "JP모건",
-    "pct": 0.31
+    "name": "뱅크오브아메리카",
+    "pct": 1.15
    },
    "picks": [
     {
      "name": "JP모건",
-     "pct": 0.31
+     "pct": 1.12
     },
     {
      "name": "골드만삭스",
-     "pct": -1.4
+     "pct": 0.61
     },
     {
      "name": "뱅크오브아메리카",
-     "pct": 0.05
+     "pct": 1.15
     },
     {
      "name": "모건스탠리",
-     "pct": -1.04
+     "pct": -0.02
     }
    ],
    "cat": {
-    "ti": "What Does the Fed Rate Hike Mean for JPMorgan's Banking Business?",
-    "link": "https://news.google.com/rss/articles/CBMikgFBVV95cUxQTDZyTWZuWWZqZmtCMlBjSjJySXlKLWxzV1NLOGpmOTN6SGRsdjJXamk4Ni1vSTAyQXhxcS1Sc3dSeXI0VlBBam9MZTVsWVRvMFZfUDF6RUtSSzVKUXNaTFZ2SzFjeXZ0em1aR0pJaGZlVjhEY21Mak5fVU5IQVlBVlRiVEpnMTdnU0NoYnlUMkk3Zw?oc=5",
+    "ti": "Fed Rate Hike Fails to Lift Bank Stocks as Market Reprices the Rally",
+    "link": "https://news.google.com/rss/articles/CBMikwFBVV95cUxOa3FwZnNWYWlDMkhIdnRDSlRPX09YN0tMX28zSFRnQjVSMTVsMUFxSXBsNng5NFBBZEozcTdaM1pQZnZvdXhmbUpQalZWQmMtZ0p4TTR0dUd0d2FyUE83NGdHdVNyaFFocm42VGlFWnBBSmo4bi1WUU11ZDlHMWRiMVl5cmNuWFh6amdVemlLMFBRUnc?oc=5",
     "src": "Yahoo Finance",
-    "tm": "2일 전"
+    "tm": "4일 전"
    },
    "metrics": {
-    "r126": 0.152,
-    "rs": -0.0231,
+    "r126": 0.1698,
+    "rs": -0.0246,
     "breadth": 0.125,
-    "ext20": -0.0638,
-    "rsi14": 29.6,
-    "volRatio": 2.02,
-    "curDD": -0.1205,
+    "ext20": -0.05,
+    "rsi14": 32.5,
+    "volRatio": 1.97,
+    "curDD": -0.1145,
     "penalty": 5,
-    "driver": 7
+    "driver": 9
    }
   },
   {
@@ -354,53 +354,53 @@
    "op": "op-hold",
    "opTxt": "중립",
    "warns": [],
-   "conf": 48,
+   "conf": 47,
    "confBand": "보통",
-   "score": -2,
+   "score": -6,
    "pts": [
-    "최근 6개월 -0.2% · S&P 500 대비 -17.7%p — 지수 하회 (12개월 +37.6%)",
+    "최근 6개월 -2.6% · S&P 500 대비 -22.0%p — 지수 하회 (12개월 +36.7%)",
     "구성 4종목 중 3개 50일선 위 · 4개 3개월 상승 — 폭 88%, 참여 광범위",
-    "52주 고점 대비 -5.8% · 20일 이격 -3.0% · 변동성 지수 대비 2.3배 — 종합 -2/100 (리스크 −8)"
+    "52주 고점 대비 -6.5% · 20일 이격 -3.5% · 변동성 지수 대비 2.3배 — 종합 -6/100 (리스크 −8)"
    ],
-   "perf": 0.19,
+   "perf": -0.7,
    "lead": {
-    "name": "코노코필립스",
-    "pct": 0.98
+    "name": "SLB",
+    "pct": 0.44
    },
    "picks": [
     {
      "name": "엑슨모빌",
-     "pct": 0.56
+     "pct": -1.06
     },
     {
      "name": "셰브론",
-     "pct": 0.07
+     "pct": -0.59
     },
     {
      "name": "코노코필립스",
-     "pct": 0.98
+     "pct": -1.57
     },
     {
      "name": "SLB",
-     "pct": -0.85
+     "pct": 0.44
     }
    ],
    "cat": {
-    "ti": "Bond yields surge to fresh two-decade highs, but oil prices are buffeted by Iran headlines",
-    "link": "https://news.google.com/rss/articles/CBMilwFBVV95cUxOc2dHS3BHajdxalhVdWxDQkxZRGI0WGk3U1BUdGF0RWNxdFdMYThSOEZkeS1WOTFpR0NCRnlrbXIwWERfdF9BYUhZcGNON2dNMi1RanYtODZxak1TUWctX2tfRWJmdm9sWDVFWWxUZkFESHAyc2JHTmpRXzc0cmRuUDNmeENqM3VGZkNpb3FiOE4wNm52Zkp3?oc=5",
-    "src": "NBC News",
-    "tm": "14시간 전"
+    "ti": "Mechanic Goes To Costco. Then He Sees Something Shocking: ‘Wouldn't Be Putting Kirkland Oil In My Car’",
+    "link": "https://news.google.com/rss/articles/CBMibkFVX3lxTE5mX2FZcGFTX08xMmJjQ2tIU0lIWkV4Y2doOTNhbVNfWkktZ0plS3RIc1hEMklOX0VXWXJDS1NucU9zYWpmam5xNGJsdDNlR19OeV9oU3JFYm5VSWlzODRHVUpFZWQ3MEdIa2ZzWFhR?oc=5",
+    "src": "Motor1.com",
+    "tm": "3시간 전"
    },
    "metrics": {
-    "r126": -0.0016,
-    "rs": -0.1766,
+    "r126": -0.0258,
+    "rs": -0.2201,
     "breadth": 0.875,
-    "ext20": -0.0299,
-    "rsi14": 45.3,
-    "volRatio": 2.27,
-    "curDD": -0.0582,
+    "ext20": -0.0353,
+    "rsi14": 43.8,
+    "volRatio": 2.34,
+    "curDD": -0.0645,
     "penalty": 8,
-    "driver": 6
+    "driver": 2
    }
   }
  ]
