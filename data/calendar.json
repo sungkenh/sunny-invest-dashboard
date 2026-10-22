@@ -1,554 +1,12 @@
 {
- "_updated": "2026-10-22T10:59:54+00:00",
- "today": "2026-10-22",
+ "_updated": "2026-10-22T16:28:36+00:00",
+ "today": "2026-10-23",
  "window": {
-  "from": "2026-10-15",
-  "to": "2026-11-21"
+  "from": "2026-10-16",
+  "to": "2026-11-22"
  },
- "count": 324,
+ "count": 288,
  "events": [
-  {
-   "date": "2026-10-15",
-   "time": "09:00",
-   "et": "20:00",
-   "mk": "kr",
-   "type": "econ",
-   "title": "무역수지",
-   "title_en": "Trade Balance",
-   "importance": 2,
-   "forecast": "49.85B",
-   "previous": "34.79B",
-   "actual": "49.97B",
-   "category": "지표"
-  },
-  {
-   "date": "2026-10-15",
-   "time": "09:00",
-   "et": "20:00",
-   "mk": "kr",
-   "type": "econ",
-   "title": "수출(전년比)",
-   "title_en": "Exports",
-   "importance": 1,
-   "forecast": "83.5%",
-   "previous": "68.7%",
-   "actual": "83.7%",
-   "category": "지표"
-  },
-  {
-   "date": "2026-10-15",
-   "time": "09:00",
-   "et": "20:00",
-   "mk": "kr",
-   "type": "econ",
-   "title": "수입(전년比)",
-   "title_en": "Imports",
-   "importance": 1,
-   "forecast": "26.0%",
-   "previous": "22.4%",
-   "actual": "26.0%",
-   "category": "지표"
-  },
-  {
-   "date": "2026-10-15",
-   "time": "12:00",
-   "et": "23:00",
-   "mk": "kr",
-   "type": "econ",
-   "title": "M3 Money Supply",
-   "title_en": "M3 Money Supply",
-   "importance": 1,
-   "forecast": "",
-   "previous": "6,354.1B",
-   "actual": "6,368.6B",
-   "category": "지표"
-  },
-  {
-   "date": "2026-10-15",
-   "time": "12:00",
-   "et": "23:00",
-   "mk": "kr",
-   "type": "econ",
-   "title": "M2 Money supply",
-   "title_en": "M2 Money supply",
-   "importance": 1,
-   "forecast": "",
-   "previous": "8.10%",
-   "actual": "7.20%",
-   "category": "지표"
-  },
-  {
-   "date": "2026-10-15",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "근원 생산자물가 (전월比)",
-   "title_en": "Core PPI",
-   "importance": 3,
-   "forecast": "0.3%",
-   "previous": "0.2%",
-   "actual": "0.7%",
-   "category": "지표",
-   "articles": [
-    {
-     "t": "美 9월 PPI, 전월比 1.3% 상승…예상치 상회",
-     "u": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE5TcnE3Y05sRE56UXhUejY3WUx1YXotdDI1cVdBWmlwcDRRMGEwR3hRZENINGNXajZxYTRoTVFHSFpaLTYwUktfMXFYODJjNGFY?oc=5",
-     "s": "블루밍비트",
-     "d": "2026-10-15"
-    },
-    {
-     "t": "미국 9월 생산자물가 전월 대비 1.3% 급등‥전망치 큰 폭 상회",
-     "u": "https://news.google.com/rss/articles/CBMidEFVX3lxTE9RWGx1QzdvNkxlZHlSd3Q0UzBoWkZsSFJrUS1PeDFiamMtYmpON3dGWDA2Mm80TldybTlNSjNvaVZIN25jYWNNb1dSaDZYbVdTU2VMZWVQdjlENDNzZ04ycmlfMHFZOGx2bWxYUmt2alMyUkVS0gF0QVVfeXFMTU1Ga3RVVE91ajFkMjBGaTVYSndGaEZrRE05YlZLRnNuU1IxMElXWVk3aExQbmxtRnJHQVhOaWMyWVVDVkVfc3hOZEFCWW1FWDZmLU55VnBiR1YyZzRnLTZWMjNtcDBEcWl4RmlaSUZ5VXJXRzY?oc=5",
-     "s": "MBC 뉴스",
-     "d": "2026-10-15"
-    }
-   ]
-  },
-  {
-   "date": "2026-10-15",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "근원 생산자물가 (전년比)",
-   "title_en": "Core PPI",
-   "importance": 3,
-   "forecast": "4.4%",
-   "previous": "4.8%",
-   "actual": "5.0%",
-   "category": "지표",
-   "articles": [
-    {
-     "t": "美 9월 PPI, 전월比 1.3% 상승…예상치 상회",
-     "u": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE5TcnE3Y05sRE56UXhUejY3WUx1YXotdDI1cVdBWmlwcDRRMGEwR3hRZENINGNXajZxYTRoTVFHSFpaLTYwUktfMXFYODJjNGFY?oc=5",
-     "s": "블루밍비트",
-     "d": "2026-10-15"
-    },
-    {
-     "t": "미국 9월 생산자물가 전월 대비 1.3% 급등‥전망치 큰 폭 상회",
-     "u": "https://news.google.com/rss/articles/CBMidEFVX3lxTE9RWGx1QzdvNkxlZHlSd3Q0UzBoWkZsSFJrUS1PeDFiamMtYmpON3dGWDA2Mm80TldybTlNSjNvaVZIN25jYWNNb1dSaDZYbVdTU2VMZWVQdjlENDNzZ04ycmlfMHFZOGx2bWxYUmt2alMyUkVS0gF0QVVfeXFMTU1Ga3RVVE91ajFkMjBGaTVYSndGaEZrRE05YlZLRnNuU1IxMElXWVk3aExQbmxtRnJHQVhOaWMyWVVDVkVfc3hOZEFCWW1FWDZmLU55VnBiR1YyZzRnLTZWMjNtcDBEcWl4RmlaSUZ5VXJXRzY?oc=5",
-     "s": "MBC 뉴스",
-     "d": "2026-10-15"
-    }
-   ]
-  },
-  {
-   "date": "2026-10-15",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "근원 소매판매",
-   "title_en": "Core Retail Sales",
-   "importance": 3,
-   "forecast": "0.6%",
-   "previous": "1.4%",
-   "actual": "0.9%",
-   "category": "지표",
-   "articles": [
-    {
-     "t": "美 9월 소매판매 전월比 0.8%↑…예상치 상회",
-     "u": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE56NTRBeE50XzlsTUEtMWdoMHgtZHhDYXFnN1VCWUlJVEdlS1lna2NPOHNzRTZpbzRuNEhVTllWSlFyNnpvNmtIek5OS1FPdUEw?oc=5",
-     "s": "블루밍비트",
-     "d": "2026-10-15"
-    },
-    {
-     "t": "美 9월 소매판매 전월비 0.8%↑…예상치 상회(종합)",
-     "u": "https://news.google.com/rss/articles/CBMicEFVX3lxTFBXRG83LU9VcllHNjlNRG8tS0lfdHdBQkowSVJBVm03bkxDMmF5VUJObmdmOFMzcXJPTUhEU0N6V3FpSUhTQkV1azhXWllpVlZKR0d6NmFDbFlpZXQ5N0dmajg5Y3RsVGdrRzhNZE5RN24?oc=5",
-     "s": "연합인포맥스",
-     "d": "2026-10-15"
-    }
-   ]
-  },
-  {
-   "date": "2026-10-15",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "생산자물가(PPI) (전월比)",
-   "title_en": "PPI",
-   "importance": 3,
-   "forecast": "0.6%",
-   "previous": "0.5%",
-   "actual": "1.3%",
-   "category": "지표",
-   "articles": [
-    {
-     "t": "美 9월 PPI, 전월比 1.3% 상승…예상치 상회",
-     "u": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE5TcnE3Y05sRE56UXhUejY3WUx1YXotdDI1cVdBWmlwcDRRMGEwR3hRZENINGNXajZxYTRoTVFHSFpaLTYwUktfMXFYODJjNGFY?oc=5",
-     "s": "블루밍비트",
-     "d": "2026-10-15"
-    },
-    {
-     "t": "미국 9월 생산자물가 전월 대비 1.3% 급등‥전망치 큰 폭 상회",
-     "u": "https://news.google.com/rss/articles/CBMidEFVX3lxTE9RWGx1QzdvNkxlZHlSd3Q0UzBoWkZsSFJrUS1PeDFiamMtYmpON3dGWDA2Mm80TldybTlNSjNvaVZIN25jYWNNb1dSaDZYbVdTU2VMZWVQdjlENDNzZ04ycmlfMHFZOGx2bWxYUmt2alMyUkVS0gF0QVVfeXFMTU1Ga3RVVE91ajFkMjBGaTVYSndGaEZrRE05YlZLRnNuU1IxMElXWVk3aExQbmxtRnJHQVhOaWMyWVVDVkVfc3hOZEFCWW1FWDZmLU55VnBiR1YyZzRnLTZWMjNtcDBEcWl4RmlaSUZ5VXJXRzY?oc=5",
-     "s": "MBC 뉴스",
-     "d": "2026-10-15"
-    }
-   ]
-  },
-  {
-   "date": "2026-10-15",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "생산자물가(PPI) (전년比)",
-   "title_en": "PPI",
-   "importance": 3,
-   "forecast": "5.3%",
-   "previous": "5.6%",
-   "actual": "6.3%",
-   "category": "지표",
-   "articles": [
-    {
-     "t": "美 9월 PPI, 전월比 1.3% 상승…예상치 상회",
-     "u": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE5TcnE3Y05sRE56UXhUejY3WUx1YXotdDI1cVdBWmlwcDRRMGEwR3hRZENINGNXajZxYTRoTVFHSFpaLTYwUktfMXFYODJjNGFY?oc=5",
-     "s": "블루밍비트",
-     "d": "2026-10-15"
-    },
-    {
-     "t": "미국 9월 생산자물가 전월 대비 1.3% 급등‥전망치 큰 폭 상회",
-     "u": "https://news.google.com/rss/articles/CBMidEFVX3lxTE9RWGx1QzdvNkxlZHlSd3Q0UzBoWkZsSFJrUS1PeDFiamMtYmpON3dGWDA2Mm80TldybTlNSjNvaVZIN25jYWNNb1dSaDZYbVdTU2VMZWVQdjlENDNzZ04ycmlfMHFZOGx2bWxYUmt2alMyUkVS0gF0QVVfeXFMTU1Ga3RVVE91ajFkMjBGaTVYSndGaEZrRE05YlZLRnNuU1IxMElXWVk3aExQbmxtRnJHQVhOaWMyWVVDVkVfc3hOZEFCWW1FWDZmLU55VnBiR1YyZzRnLTZWMjNtcDBEcWl4RmlaSUZ5VXJXRzY?oc=5",
-     "s": "MBC 뉴스",
-     "d": "2026-10-15"
-    }
-   ]
-  },
-  {
-   "date": "2026-10-15",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "생산자물가(식품·에너지·운송 제외)",
-   "title_en": "PPI ex. Food/Energy/Transport",
-   "importance": 3,
-   "forecast": "",
-   "previous": "4.8%",
-   "actual": "5.0%",
-   "category": "지표",
-   "articles": [
-    {
-     "t": "美 9월 PPI, 전월比 1.3% 상승…예상치 상회",
-     "u": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE5TcnE3Y05sRE56UXhUejY3WUx1YXotdDI1cVdBWmlwcDRRMGEwR3hRZENINGNXajZxYTRoTVFHSFpaLTYwUktfMXFYODJjNGFY?oc=5",
-     "s": "블루밍비트",
-     "d": "2026-10-15"
-    },
-    {
-     "t": "미국 9월 생산자물가 전월 대비 1.3% 급등‥전망치 큰 폭 상회",
-     "u": "https://news.google.com/rss/articles/CBMidEFVX3lxTE9RWGx1QzdvNkxlZHlSd3Q0UzBoWkZsSFJrUS1PeDFiamMtYmpON3dGWDA2Mm80TldybTlNSjNvaVZIN25jYWNNb1dSaDZYbVdTU2VMZWVQdjlENDNzZ04ycmlfMHFZOGx2bWxYUmt2alMyUkVS0gF0QVVfeXFMTU1Ga3RVVE91ajFkMjBGaTVYSndGaEZrRE05YlZLRnNuU1IxMElXWVk3aExQbmxtRnJHQVhOaWMyWVVDVkVfc3hOZEFCWW1FWDZmLU55VnBiR1YyZzRnLTZWMjNtcDBEcWl4RmlaSUZ5VXJXRzY?oc=5",
-     "s": "MBC 뉴스",
-     "d": "2026-10-15"
-    }
-   ]
-  },
-  {
-   "date": "2026-10-15",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "생산자물가(식품·에너지·운송 제외)",
-   "title_en": "PPI ex. Food/Energy/Transport",
-   "importance": 3,
-   "forecast": "",
-   "previous": "0.3%",
-   "actual": "0.5%",
-   "category": "지표",
-   "articles": [
-    {
-     "t": "美 9월 PPI, 전월比 1.3% 상승…예상치 상회",
-     "u": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE5TcnE3Y05sRE56UXhUejY3WUx1YXotdDI1cVdBWmlwcDRRMGEwR3hRZENINGNXajZxYTRoTVFHSFpaLTYwUktfMXFYODJjNGFY?oc=5",
-     "s": "블루밍비트",
-     "d": "2026-10-15"
-    },
-    {
-     "t": "미국 9월 생산자물가 전월 대비 1.3% 급등‥전망치 큰 폭 상회",
-     "u": "https://news.google.com/rss/articles/CBMidEFVX3lxTE9RWGx1QzdvNkxlZHlSd3Q0UzBoWkZsSFJrUS1PeDFiamMtYmpON3dGWDA2Mm80TldybTlNSjNvaVZIN25jYWNNb1dSaDZYbVdTU2VMZWVQdjlENDNzZ04ycmlfMHFZOGx2bWxYUmt2alMyUkVS0gF0QVVfeXFMTU1Ga3RVVE91ajFkMjBGaTVYSndGaEZrRE05YlZLRnNuU1IxMElXWVk3aExQbmxtRnJHQVhOaWMyWVVDVkVfc3hOZEFCWW1FWDZmLU55VnBiR1YyZzRnLTZWMjNtcDBEcWl4RmlaSUZ5VXJXRzY?oc=5",
-     "s": "MBC 뉴스",
-     "d": "2026-10-15"
-    }
-   ]
-  },
-  {
-   "date": "2026-10-15",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "소매판매",
-   "title_en": "Retail Sales",
-   "importance": 3,
-   "forecast": "0.3%",
-   "previous": "1.3%",
-   "actual": "0.8%",
-   "category": "지표",
-   "articles": [
-    {
-     "t": "美 9월 소매판매 전월比 0.8%↑…예상치 상회",
-     "u": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE56NTRBeE50XzlsTUEtMWdoMHgtZHhDYXFnN1VCWUlJVEdlS1lna2NPOHNzRTZpbzRuNEhVTllWSlFyNnpvNmtIek5OS1FPdUEw?oc=5",
-     "s": "블루밍비트",
-     "d": "2026-10-15"
-    },
-    {
-     "t": "美 9월 소매판매 전월비 0.8%↑…예상치 상회(종합)",
-     "u": "https://news.google.com/rss/articles/CBMicEFVX3lxTFBXRG83LU9VcllHNjlNRG8tS0lfdHdBQkowSVJBVm03bkxDMmF5VUJObmdmOFMzcXJPTUhEU0N6V3FpSUhTQkV1azhXWllpVlZKR0d6NmFDbFlpZXQ5N0dmajg5Y3RsVGdrRzhNZE5RN24?oc=5",
-     "s": "연합인포맥스",
-     "d": "2026-10-15"
-    }
-   ]
-  },
-  {
-   "date": "2026-10-15",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "소매판매",
-   "title_en": "Retail Sales",
-   "importance": 3,
-   "forecast": "",
-   "previous": "5.56%",
-   "actual": "6.29%",
-   "category": "지표",
-   "articles": [
-    {
-     "t": "美 9월 소매판매 전월比 0.8%↑…예상치 상회",
-     "u": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE56NTRBeE50XzlsTUEtMWdoMHgtZHhDYXFnN1VCWUlJVEdlS1lna2NPOHNzRTZpbzRuNEhVTllWSlFyNnpvNmtIek5OS1FPdUEw?oc=5",
-     "s": "블루밍비트",
-     "d": "2026-10-15"
-    },
-    {
-     "t": "美 9월 소매판매 전월비 0.8%↑…예상치 상회(종합)",
-     "u": "https://news.google.com/rss/articles/CBMicEFVX3lxTFBXRG83LU9VcllHNjlNRG8tS0lfdHdBQkowSVJBVm03bkxDMmF5VUJObmdmOFMzcXJPTUhEU0N6V3FpSUhTQkV1azhXWllpVlZKR0d6NmFDbFlpZXQ5N0dmajg5Y3RsVGdrRzhNZE5RN24?oc=5",
-     "s": "연합인포맥스",
-     "d": "2026-10-15"
-    }
-   ]
-  },
-  {
-   "date": "2026-10-15",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "소매판매",
-   "title_en": "Retail Sales Ex Gas/Autos",
-   "importance": 3,
-   "forecast": "",
-   "previous": "1.1%",
-   "actual": "0.2%",
-   "category": "지표",
-   "articles": [
-    {
-     "t": "美 9월 소매판매 전월比 0.8%↑…예상치 상회",
-     "u": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE56NTRBeE50XzlsTUEtMWdoMHgtZHhDYXFnN1VCWUlJVEdlS1lna2NPOHNzRTZpbzRuNEhVTllWSlFyNnpvNmtIek5OS1FPdUEw?oc=5",
-     "s": "블루밍비트",
-     "d": "2026-10-15"
-    },
-    {
-     "t": "美 9월 소매판매 전월비 0.8%↑…예상치 상회(종합)",
-     "u": "https://news.google.com/rss/articles/CBMicEFVX3lxTFBXRG83LU9VcllHNjlNRG8tS0lfdHdBQkowSVJBVm03bkxDMmF5VUJObmdmOFMzcXJPTUhEU0N6V3FpSUhTQkV1azhXWllpVlZKR0d6NmFDbFlpZXQ5N0dmajg5Y3RsVGdrRzhNZE5RN24?oc=5",
-     "s": "연합인포맥스",
-     "d": "2026-10-15"
-    }
-   ]
-  },
-  {
-   "date": "2026-10-15",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "연속 실업수당청구",
-   "title_en": "Continuing Jobless Claims",
-   "importance": 2,
-   "forecast": "1,710K",
-   "previous": "1,714K",
-   "actual": "1,710K",
-   "category": "지표"
-  },
-  {
-   "date": "2026-10-15",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "신규 실업수당청구",
-   "title_en": "Initial Jobless Claims",
-   "importance": 2,
-   "forecast": "199K",
-   "previous": "198K",
-   "actual": "199K",
-   "category": "지표"
-  },
-  {
-   "date": "2026-10-15",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "뉴욕 엠파이어스테이트 제조업",
-   "title_en": "NY Empire State Manufacturing Index",
-   "importance": 2,
-   "forecast": "12.10",
-   "previous": "7.60",
-   "actual": "25.50",
-   "category": "지표"
-  },
-  {
-   "date": "2026-10-15",
-   "time": "21:30",
-   "et": "08:30",
-   "mk": "us",
-   "type": "econ",
-   "title": "필라델피아 연은 제조업",
-   "title_en": "Philadelphia Fed Manufacturing Index",
-   "importance": 2,
-   "forecast": "28.2",
-   "previous": "37.8",
-   "actual": "20.9",
-   "category": "지표"
-  },
-  {
-   "date": "2026-10-15",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "The Charles Schwab",
-   "ticker": "SCHW",
-   "session": "시간 미정",
-   "eps_est": "$1.66",
-   "eps_prev": "",
-   "eps_actual": "$1.69",
-   "surprise": "+1.8%",
-   "n_ests": "11",
-   "mktcap": "$157B",
-   "importance": 3
-  },
-  {
-   "date": "2026-10-15",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Prologis",
-   "ticker": "PLD",
-   "session": "시간 미정",
-   "eps_est": "$1.58",
-   "eps_prev": "",
-   "eps_actual": "$1.60",
-   "surprise": "+1.3%",
-   "n_ests": "2",
-   "mktcap": "$121B",
-   "importance": 3
-  },
-  {
-   "date": "2026-10-15",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "The Bank Of New York Mellon",
-   "ticker": "BNY",
-   "session": "시간 미정",
-   "eps_est": "$2.26",
-   "eps_prev": "",
-   "eps_actual": "$2.37",
-   "surprise": "+4.9%",
-   "n_ests": "7",
-   "mktcap": "$98B",
-   "importance": 2
-  },
-  {
-   "date": "2026-10-15",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "U.S. Bancorp",
-   "ticker": "USB",
-   "session": "시간 미정",
-   "eps_est": "$1.32",
-   "eps_prev": "",
-   "eps_actual": "$1.34",
-   "surprise": "+1.5%",
-   "n_ests": "10",
-   "mktcap": "$92B",
-   "importance": 2
-  },
-  {
-   "date": "2026-10-15",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Marsh",
-   "ticker": "MRSH",
-   "session": "시간 미정",
-   "eps_est": "$1.96",
-   "eps_prev": "",
-   "eps_actual": "$2.03",
-   "surprise": "+3.6%",
-   "n_ests": "10",
-   "mktcap": "$91B",
-   "importance": 2
-  },
-  {
-   "date": "2026-10-15",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "PNC Financial Services Group (The)",
-   "ticker": "PNC",
-   "session": "시간 미정",
-   "eps_est": "$4.97",
-   "eps_prev": "",
-   "eps_actual": "$5.09",
-   "surprise": "+2.4%",
-   "n_ests": "8",
-   "mktcap": "$88B",
-   "importance": 2
-  },
-  {
-   "date": "2026-10-15",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Interactive Brokers Group",
-   "ticker": "IBKR",
-   "session": "시간 미정",
-   "eps_est": "$0.67",
-   "eps_prev": "",
-   "eps_actual": "$0.67",
-   "surprise": "",
-   "n_ests": "3",
-   "mktcap": "$38B",
-   "importance": 2
-  },
-  {
-   "date": "2026-10-15",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "J.B. Hunt Transport Services",
-   "ticker": "JBHT",
-   "session": "시간 미정",
-   "eps_est": "$1.81",
-   "eps_prev": "",
-   "eps_actual": "$1.82",
-   "surprise": "+0.6%",
-   "n_ests": "7",
-   "mktcap": "$21B",
-   "importance": 2
-  },
   {
    "date": "2026-10-16",
    "time": "06:00",
@@ -589,21 +47,7 @@
    "forecast": "",
    "previous": "2.7%",
    "actual": "2.6%",
-   "category": "지표",
-   "articles": [
-    {
-     "t": "미국 9월 비농업 고용 둔화, 실업률 상승",
-     "u": "https://news.google.com/rss/articles/CBMigAFBVV95cUxPVVhZMG9nQ3dEaGhIRHBiNFhiRVBkbTJvcVJHQTAyMzVLdnFVU3BBdi1HV0VwYktURFo1WkVaWDdSakgxTDNfcWd5cTJPcHI2b1E2Um1tc3ZNMmNHMERqVzM5elh0ZWlBVW9wUDNRZlhrUWpDdkdITGtyNTFiQkdZRg?oc=5",
-     "s": "KDI 경제교육·정보센터",
-     "d": "2026-10-13"
-    },
-    {
-     "t": "[데이터 인사이트] 취업자 11만명 늘었는데 청년은 14만7000명 감소…고용시장의 두 얼굴",
-     "u": "https://news.google.com/rss/articles/CBMibEFVX3lxTE4wYXhVNnZ4RkcwcDBGUm0tUDFYcDNWWnpjMVZOMnk0NUpLVG1EcjNEVkVvV0h3Skw2NnRfUkdvTmdLRTBGNGxxVFA1V2tMckJfRWF6Q1hfVjBzWUw3Wm5IS1NwV1FscFhOa1NiWNIBcEFVX3lxTE1hZEFEUEsxRGN3MGpWRUFaWU9sdUcwc3pSM1F4YW4wQTR5TUQzY2tNZXhjZXZhaTNHY3BabERRQ1g3UWhFZGxvUVdIYTBtY19Zbi1LRjcwQ2NzaWpyS3JRRkpfc2dmTjNGazk0NHF4eE0?oc=5",
-     "s": "데이터솜",
-     "d": "2026-10-16"
-    }
-   ]
+   "category": "지표"
   },
   {
    "date": "2026-10-16",
@@ -661,7 +105,7 @@
    "eps_actual": "$9.18",
    "surprise": "+29.8%",
    "n_ests": "12",
-   "mktcap": "$81B",
+   "mktcap": "$82B",
    "importance": 2
   },
   {
@@ -763,7 +207,7 @@
    "eps_actual": "$5.26",
    "surprise": "-3.0%",
    "n_ests": "3",
-   "mktcap": "$35B",
+   "mktcap": "$36B",
    "importance": 2
   },
   {
@@ -780,7 +224,7 @@
    "eps_actual": "$1.17",
    "surprise": "+2.6%",
    "n_ests": "6",
-   "mktcap": "$27B",
+   "mktcap": "$28B",
    "importance": 2
   },
   {
@@ -914,20 +358,20 @@
    "eps_actual": "$0.35",
    "surprise": "+250.0%",
    "n_ests": "9",
-   "mktcap": "$2.01T",
+   "mktcap": "$2.16T",
    "importance": 3,
    "articles": [
+    {
+     "t": "Space Exploration Technologies 주가가 오늘 하락하는 이유",
+     "u": "https://news.google.com/rss/articles/CBMid0FVX3lxTE9uSU9MSF9LLTZDM19ob2lvRkxDdlBGVXQwbGJDV1dwX1JYUnM0ZmdYcmhjNzhETFk0Q0oyZm1mQTV1MkNpa0R2UW55SzVnb1BlSV8ta3pLMEdnTjdBTU1VeUtXOGNRTEFzSzNEZWRZT3d2WEtSaGJz?oc=5",
+     "s": "Investing.com 한국어",
+     "d": "2026-10-22"
+    },
     {
      "t": "Space Exploration Technologies 주가, 오늘 급등한 이유는?",
      "u": "https://news.google.com/rss/articles/CBMid0FVX3lxTE5GQzV0ejROMkRScnN0R3g5X25iWnR5YURfYXJOVThlc2Fnc0dhVmpfc3ZpZ3pPa0tycUpHNFMxaGFmSGNwenp6aU0weUFFY0wzWmVhazhSMmNwZXR5ZXNrQ0NGdEZ2eDhCNGJ1Z0FZNl9JQTctS3FV?oc=5",
      "s": "Investing.com 한국어",
      "d": "2026-10-21"
-    },
-    {
-     "t": "SpaceX (SPCX) 주식 움직였습니다 상승 3.01%에 10월19일: 변동 원인",
-     "u": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQLXBBbnV4aFdPeVBiaDBjeUdaY3dwUHBnMy1GaWhYUGYyX1AzZTVMSklTSjZnY2FhSUR0SEt2Y0lGa0czcndHc2lJTGVwN3JSZ3ZwdWUyd0FhcFctYlp0OF9YUGFpSXlkVjNxSXlseUQyVW9nTjNjT1A3bTlDaVhva2pzMXoyeFpoSWhzLUVBTQ?oc=5",
-     "s": "TradingKey",
-     "d": "2026-10-19"
     }
    ]
   },
@@ -945,7 +389,7 @@
    "eps_actual": "$2.25",
    "surprise": "+11.4%",
    "n_ests": "7",
-   "mktcap": "$311B",
+   "mktcap": "$306B",
    "importance": 3,
    "articles": [
     {
@@ -976,7 +420,7 @@
    "eps_actual": "$0.87",
    "surprise": "+6.1%",
    "n_ests": "13",
-   "mktcap": "$286B",
+   "mktcap": "$271B",
    "importance": 3,
    "articles": [
     {
@@ -1007,7 +451,7 @@
    "eps_actual": "$2.26",
    "surprise": "+27.0%",
    "n_ests": "5",
-   "mktcap": "$261B",
+   "mktcap": "$259B",
    "importance": 3,
    "articles": [
     {
@@ -1038,7 +482,7 @@
    "eps_actual": "$2.53",
    "surprise": "+18.8%",
    "n_ests": "8",
-   "mktcap": "$155B",
+   "mktcap": "$151B",
    "importance": 3,
    "articles": [
     {
@@ -1069,7 +513,7 @@
    "eps_actual": "$7.66",
    "surprise": "+17.3%",
    "n_ests": "10",
-   "mktcap": "$138B",
+   "mktcap": "$137B",
    "importance": 3,
    "articles": [
     {
@@ -1079,10 +523,10 @@
      "d": "2026-10-13"
     },
     {
-     "t": "처브(CB) 6% 저평가 가능성 실적 발표와 영국 플랫폼 출시가 관건",
-     "u": "https://news.google.com/rss/articles/CBMihwFBVV95cUxONTZPWm0wLWNncENzZUpuNEFRbDBrQlZJZGJMUWtpaGZXQW5KNjRFWktCVkZycGVHQzJfekhKVWFmbkY5MXhzamlZNnZRQzVZZDdfbjVvcmtoQnFTWTlVM2tzRVg4RU1WOHFBSFhYa05aZnJYQlh1RkE2YTdiMkVCMVpybWpkb2vSAYwBQVVfeXFMTlRNbzZLcTRuSUlWY1ZlVVhQVm02UXEtU0RZM3U2OEhYS2RHWlJYVUVyMnp6bFlyYXcyMTAyUmV3U0Vwb1RhLVVIeDQ0aXlKdU1maXdVNnUtU0FUQlVMZzJrMHNVNDZVa18yNUFuWTFNaWxNdWVrdDBXdUE2VnJHNDlQRWx3MVlQQzFCN0k?oc=5",
-     "s": "Simply Wall Street",
-     "d": "2026-10-07"
+     "t": "처브 실적 발표 앞두고 주목할 점…보험료율 하락에도 수익성 지킬까?",
+     "u": "https://news.google.com/rss/articles/CBMia0FVX3lxTE54SjBzWGhfcEsxTE5Qc3FJb1pFRGlrUGtHcVliQW9UWXVUUGU4cXdmUFU5b3gxT3AxQzFwS2QtRHdLV21UZWJuLVdBbHRTOXVEVXpWejNHekNqWGM0TEx1XzdDT3JUWEplejJ3?oc=5",
+     "s": "Investing.com 한국어",
+     "d": "2026-10-20"
     }
    ]
   },
@@ -1100,7 +544,7 @@
    "eps_actual": "$6.69",
    "surprise": "+22.8%",
    "n_ests": "8",
-   "mktcap": "$124B",
+   "mktcap": "$127B",
    "importance": 3,
    "articles": [
     {
@@ -1131,7 +575,7 @@
    "eps_actual": "$2.50",
    "surprise": "+4.2%",
    "n_ests": "5",
-   "mktcap": "$88B",
+   "mktcap": "$90B",
    "importance": 2
   },
   {
@@ -1148,7 +592,7 @@
    "eps_actual": "$7.89",
    "surprise": "+9.3%",
    "n_ests": "6",
-   "mktcap": "$76B",
+   "mktcap": "$77B",
    "importance": 2
   },
   {
@@ -1165,7 +609,7 @@
    "eps_actual": "$3.70",
    "surprise": "+4.2%",
    "n_ests": "6",
-   "mktcap": "$68B",
+   "mktcap": "$64B",
    "importance": 2
   },
   {
@@ -1199,7 +643,7 @@
    "eps_actual": "$2.54",
    "surprise": "-2.3%",
    "n_ests": "7",
-   "mktcap": "$32B",
+   "mktcap": "$33B",
    "importance": 2
   },
   {
@@ -1285,13 +729,13 @@
    "index": "S&P500",
    "title": "메타",
    "ticker": "META",
-   "session": "장 마감 후",
-   "eps_est": "$4.98",
+   "session": "시간 미정",
+   "eps_est": "$6.52",
    "eps_prev": "",
-   "eps_actual": "$7.25",
-   "surprise": "",
-   "n_ests": "12",
-   "mktcap": "$1.77T",
+   "eps_actual": "$7.40",
+   "surprise": "+13.5%",
+   "n_ests": "6",
+   "mktcap": "$1.78T",
    "importance": 3,
    "articles": [
     {
@@ -1316,13 +760,13 @@
    "index": "S&P500",
    "title": "테슬라",
    "ticker": "TSLA",
-   "session": "장 마감 후",
+   "session": "시간 미정",
    "eps_est": "$0.22",
    "eps_prev": "",
-   "eps_actual": "$0.37",
-   "surprise": "",
+   "eps_actual": "$0.20",
+   "surprise": "-9.1%",
    "n_ests": "10",
-   "mktcap": "$1.48T",
+   "mktcap": "$1.53T",
    "importance": 3,
    "articles": [
     {
@@ -1347,13 +791,13 @@
    "index": "S&P500",
    "title": "Lam Research",
    "ticker": "LRCX",
-   "session": "장 마감 후",
+   "session": "시간 미정",
    "eps_est": "$2.17",
    "eps_prev": "",
-   "eps_actual": "$1.26",
-   "surprise": "",
+   "eps_actual": "$2.20",
+   "surprise": "+1.4%",
    "n_ests": "9",
-   "mktcap": "$330B",
+   "mktcap": "$326B",
    "importance": 3,
    "articles": [
     {
@@ -1384,7 +828,7 @@
    "eps_actual": "$2.36",
    "surprise": "+2.6%",
    "n_ests": "4",
-   "mktcap": "$312B",
+   "mktcap": "$308B",
    "importance": 3,
    "articles": [
     {
@@ -1394,10 +838,41 @@
      "d": "2026-10-14"
     },
     {
-     "t": "Philip Morris International Inc (PM) 주식 움직였습니다 상승 3.73%에 10월8일: 핵심 원인 공개",
-     "u": "https://news.google.com/rss/articles/CBMijAFBVV95cUxOV2szaElYVk9jYkpZZHdUdXZLQVp6Mkw4NkxKVGNsNVFyYkRGSEJsNXlYeGVrUWV0d3BLblQ1d0VSNUtmc2JLbjFkWk5jeXBkUTc0UnFadXdIMGxscXBWR2MtbzZ0ZmZwVVBKRzNXYkt2cjhqQWRlcmpnSF8zenZ5QVNveVRPOHZGbFJrMA?oc=5",
-     "s": "TradingKey",
-     "d": "2026-10-08"
+     "t": "Philip Morris International Inc. Tokenized Stock (Coinbase) (PMc) 가격, 차트, 시가총액 | 코인마켓캡",
+     "u": "https://news.google.com/rss/articles/CBMingFBVV95cUxOR19jdS1qaVZwN1ZhRWtNXzRoUnNESmxnWnA2Z1c3UF9rdnJaRVYyQ2g5ckxaSHpfNkl3SVJPX3NpbkxvUnNSLUJBa0FzZ1laOUZkVWp2NnV1cnBPZFU2RWhNelhjQWMxTlJXNDVtMlJFcXdmMDA3bVBLREEtUGx6N3FPNTFpRXJTRTYtcWlrMHN0LXBFNklGcWdRY0FjQQ?oc=5",
+     "s": "CoinMarketCap",
+     "d": "2026-10-07"
+    }
+   ]
+  },
+  {
+   "date": "2026-10-21",
+   "time": "",
+   "mk": "us",
+   "type": "earnings",
+   "index": "S&P500",
+   "title": "Texas Instruments Incorporated",
+   "ticker": "TXN",
+   "session": "시간 미정",
+   "eps_est": "$2.40",
+   "eps_prev": "",
+   "eps_actual": "$2.62",
+   "surprise": "+9.2%",
+   "n_ests": "9",
+   "mktcap": "$260B",
+   "importance": 3,
+   "articles": [
+    {
+     "t": "Truist, 업황 회복세 반영해 Texas Instruments 목표주가 상향",
+     "u": "https://news.google.com/rss/articles/CBMidEFVX3lxTFBpM1pBMExvTGJMaEVTWFI3OUFCdlJESkFPb3BxckpQUFlTY0Y2SV8wSFBCSENPRTE4cGNjTHZ4dWRHYnBjV2hmSHBZRlRPamxVeTFCaHVwUy00eDFSdS1Eam5PWFBRZXNmZGdzOG9nOEhCZlZ3?oc=5",
+     "s": "Investing.com 한국어",
+     "d": "2026-10-22"
+    },
+    {
+     "t": "2035년 자동차용 폐루프 전류 변환기 시장: 800V 전기차 아키텍처가 이끄는 성장 - 뉴스 및 통계",
+     "u": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxNbWI1d29yOW9EckliYmE0U19McDF3NlFmMktmZkRJMTFzVG9rMWVJbDBRUUp6dHREQmYzNmpJaEZWV2d2S2ZjRmVRa1RPdjNKcmJkX2RRMXRRd3FrN1cwcXNYdjg1T2pBbl9NMVRMYmdFcWsxNWR6dnRmcHhaYnFnS1ZHWDd0bFRFVldsWEJrczVTbi10elVDZG9hYllkaTVMdEc5UDlibUpEMVRIQzc0blY1LWp1LU1pb2JuRWxNNkhUVmNMcWtyZUQtTTBxeEJtRE9HdGhWSlNPbGE1YXc?oc=5",
+     "s": "IndexBox",
+     "d": "2026-10-12"
     }
    ]
   },
@@ -1415,45 +890,20 @@
    "eps_actual": "$6.68",
    "surprise": "+4.4%",
    "n_ests": "8",
-   "mktcap": "$254B",
+   "mktcap": "$257B",
    "importance": 3,
    "articles": [
+    {
+     "t": "UBS, 견조한 분기 실적에 Thermo Fisher Scientific 매수 의견 유지",
+     "u": "https://news.google.com/rss/articles/CBMidEFVX3lxTE1QNVRUSHQ2TTVQd19ycVYtYjAydmFEdzJDQUdCZnRCd2hMbGxxb3VpSG1XS2t5a1ZwR3VRZVJGOVRTZGlJbkpjWWtpTTRNeUVUMlR4NVl2WmkwTkRpZjQzM3J5RWkwcmlBOGFaZ21Qa2I1emFB?oc=5",
+     "s": "Investing.com 한국어",
+     "d": "2026-10-22"
+    },
     {
      "t": "Thermo Fisher Scientific Inc (TMO) 주식 움직였습니다 상승 3.21%에 10월15일: 핵심 원인 공개",
      "u": "https://news.google.com/rss/articles/CBMijgFBVV95cUxQVGU2bDY0YmxFWER0Vjd3QXdWZkNXalJNck1KWlhxeDhTSk81cHd3SFJlQkJkLWdKMzdpOHJlYlJuZlhUUVVqZFdnMWtaaXBqNDRWV2tHQXNuRlk0VF80djE3bVJ2TWVYc242Nk9XbFFKZUprUW5JaDVOZ284YjQ3QkQtaGRaYjdzcDYwWDRn?oc=5",
      "s": "TradingKey",
      "d": "2026-10-15"
-    },
-    {
-     "t": "Thermo Fisher Scientific 주가, 호실적에도 하락하는 이유는?",
-     "u": "https://news.google.com/rss/articles/CBMid0FVX3lxTE5NU1VzNnU0QlBXWUlCQmRJMG1vLUVFTll3TDNFNGtwd3NrSGRkLW5leUxxWk1YTEhwOFVaaWZGRVpWemxLV2cyMm5sOVJXeTdUY1ptUGdBS1BaY0haQjdJbG8tTnhwQjZJZFlxc2dOMkdSaENUX0J3?oc=5",
-     "s": "Investing.com 한국어",
-     "d": "2026-10-21"
-    }
-   ]
-  },
-  {
-   "date": "2026-10-21",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Texas Instruments Incorporated",
-   "ticker": "TXN",
-   "session": "장 마감 후",
-   "eps_est": "$2.40",
-   "eps_prev": "",
-   "eps_actual": "$1.48",
-   "surprise": "",
-   "n_ests": "9",
-   "mktcap": "$254B",
-   "importance": 3,
-   "articles": [
-    {
-     "t": "근거리 태그 안테나 시장 2035년 전망: 소매 단품 태깅과 비접촉 결제가 성장 견인 - 뉴스 및 통계",
-     "u": "https://news.google.com/rss/articles/CBMi5AFBVV95cUxPdlEyQXRzeFJDaW5TRVFrX01RclVFQjIyZEZCby00QmtNQ1NUNUx0Wnh3QlNhcnA4ODJmSk1jbnE0cGFEbFVUaGZ6OXNWQURBUnpSNUdXMEdndFJ0LVJacUJJNU40MUk3Z0ZuLTFucmdZY3JGSzljUUpsU3dINklDT2xTOGlHWDRReFdyOGxrYzB6YkVQdnZzR1cwSGZ0Mk04SjRlVlJET2tTdS1TVzduc2JFZnM3Y1VWcXBBWWNkTmJPMFBlM3BkSUdQendwaGVYa3dfQ3V4NnFSM1FUMDFnOWtsNTc?oc=5",
-     "s": "IndexBox",
-     "d": "2026-10-14"
     }
    ]
   },
@@ -1465,13 +915,13 @@
    "index": "S&P500",
    "title": "International Business Machines",
    "ticker": "IBM",
-   "session": "장 마감 후",
+   "session": "시간 미정",
    "eps_est": "$2.88",
    "eps_prev": "",
-   "eps_actual": "$2.65",
-   "surprise": "",
+   "eps_actual": "$2.95",
+   "surprise": "+2.4%",
    "n_ests": "6",
-   "mktcap": "$228B",
+   "mktcap": "$237B",
    "importance": 3,
    "articles": [
     {
@@ -1481,9 +931,9 @@
      "d": "2026-10-21"
     },
     {
-     "t": "IBM, 3분기 깜짝실적에도 시간외거래서 4.96%↓",
-     "u": "https://news.google.com/rss/articles/CBMickFVX3lxTE5wV3V1RS1kd2tGMDhsMGxOYmhjcTJ5dlFHRzd4Q1BKNDNhSXpnV3Q3MDY3MVkyM1JEcG9yUnVXNmJ0bmlLb0twMXZ5aUt6b043VFNhbFluLWZ1N3ktOEl5V2pUeGZJUmZ2dFdhVTZNNEl5QQ?oc=5",
-     "s": "KB Think",
+     "t": "실적 호조 속 3%대 반등한 IBM의 뉴욕 증시 흐름 : 기업주식정보",
+     "u": "https://news.google.com/rss/articles/CBMiS0FVX3lxTE84SmFBN3RkdzR4OFBrUVdKRjhEME9SYWM4MHZMQ1FGYldKVE1HUTlEQTd6bDhHVXRvR3JuYks2ODZIaEJ5NDNMNHZ5Zw?oc=5",
+     "s": "재경일보",
      "d": "2026-10-21"
     }
    ]
@@ -1502,7 +952,7 @@
    "eps_actual": "$1.42",
    "surprise": "-0.7%",
    "n_ests": "8",
-   "mktcap": "$177B",
+   "mktcap": "$174B",
    "importance": 3,
    "articles": [
     {
@@ -1525,6 +975,37 @@
    "mk": "us",
    "type": "earnings",
    "index": "S&P500",
+   "title": "Danaher",
+   "ticker": "DHR",
+   "session": "시간 미정",
+   "eps_est": "$1.92",
+   "eps_prev": "",
+   "eps_actual": "$2.11",
+   "surprise": "+9.9%",
+   "n_ests": "7",
+   "mktcap": "$164B",
+   "importance": 3,
+   "articles": [
+    {
+     "t": "Danaher 주가, 다음 주 실적 발표에 6.2% 변동 가능성",
+     "u": "https://news.google.com/rss/articles/CBMid0FVX3lxTE5NMFdHbXpvSlk0bkRKckpwdzMwWkVTekdibEFTUU42WDRPOFpJdHFVbTNFd3Jpem1OQVV2d1VBR2dSWFBDNkJmWXBwcmRqX19vZTU2RFJZNEZxa0UzalctS01kUkVPd29GeTdNMkZselBTODJGZndJ?oc=5",
+     "s": "Investing.com 한국어",
+     "d": "2026-10-14"
+    },
+    {
+     "t": "Danaher Corp (DHR) 주식 시작했습니다 상승 3.03%에 10월21일: 어떤 신호인가요?",
+     "u": "https://news.google.com/rss/articles/CBMijgFBVV95cUxOWDl5dXNTWlFKTE9yNVFKNDJ5Mzl5NXBmVkUza0Y0N0NpSU54SUhwU2hZMWxNMGVzLWpUTHh4bm1xRnRmYjdHVTNJOU5zZ1JWQ3ZCdkNuOThVX2htdmRZdXVCTTh2WnJ6UXhRcHU3QnZyMmZ5RkpJOG8tdmY2Z01RSDBEQjIwUzIzYWt4ZWJn?oc=5",
+     "s": "TradingKey",
+     "d": "2026-10-21"
+    }
+   ]
+  },
+  {
+   "date": "2026-10-21",
+   "time": "",
+   "mk": "us",
+   "type": "earnings",
+   "index": "S&P500",
    "title": "NextEra Energy",
    "ticker": "NEE",
    "session": "시간 미정",
@@ -1533,7 +1014,7 @@
    "eps_actual": "$1.24",
    "surprise": "+3.3%",
    "n_ests": "5",
-   "mktcap": "$165B",
+   "mktcap": "$163B",
    "importance": 3,
    "articles": [
     {
@@ -1564,7 +1045,7 @@
    "eps_actual": "$0.65",
    "surprise": "+6.6%",
    "n_ests": "7",
-   "mktcap": "$160B",
+   "mktcap": "$150B",
    "importance": 3,
    "articles": [
     {
@@ -1577,37 +1058,6 @@
      "t": "AT&T Q3 실적, 수익 예상치를 넘어",
      "u": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE5sSUZrUmpyR202MkgzR0Nqd3RDZUlBbEpsWjZ5eFI0Z25SRlFRX1NPTkhGU3JDRlJrQzRYM19rNDBCMGtGeXhKbHdfekF4aDBvTXhSMUw1bFZVVlhFbDBiVU5oV3Q?oc=5",
      "s": "Investing.com 한국어",
-     "d": "2026-10-21"
-    }
-   ]
-  },
-  {
-   "date": "2026-10-21",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Danaher",
-   "ticker": "DHR",
-   "session": "시간 미정",
-   "eps_est": "$1.92",
-   "eps_prev": "",
-   "eps_actual": "$2.11",
-   "surprise": "+9.9%",
-   "n_ests": "7",
-   "mktcap": "$158B",
-   "importance": 3,
-   "articles": [
-    {
-     "t": "Danaher 주가, 다음 주 실적 발표에 6.2% 변동 가능성",
-     "u": "https://news.google.com/rss/articles/CBMid0FVX3lxTE5NMFdHbXpvSlk0bkRKckpwdzMwWkVTekdibEFTUU42WDRPOFpJdHFVbTNFd3Jpem1OQVV2d1VBR2dSWFBDNkJmWXBwcmRqX19vZTU2RFJZNEZxa0UzalctS01kUkVPd29GeTdNMkZselBTODJGZndJ?oc=5",
-     "s": "Investing.com 한국어",
-     "d": "2026-10-14"
-    },
-    {
-     "t": "Danaher Corp (DHR) 주식 시작했습니다 상승 3.03%에 10월21일: 어떤 신호인가요?",
-     "u": "https://news.google.com/rss/articles/CBMijgFBVV95cUxOWDl5dXNTWlFKTE9yNVFKNDJ5Mzl5NXBmVkUza0Y0N0NpSU54SUhwU2hZMWxNMGVzLWpUTHh4bm1xRnRmYjdHVTNJOU5zZ1JWQ3ZCdkNuOThVX2htdmRZdXVCTTh2WnJ6UXhRcHU3QnZyMmZ5RkpJOG8tdmY2Z01RSDBEQjIwUzIzYWt4ZWJn?oc=5",
-     "s": "TradingKey",
      "d": "2026-10-21"
     }
    ]
@@ -1691,16 +1141,16 @@
    "category": "지표",
    "articles": [
     {
+     "t": "한은, 이번 주 기준금리 결정...시장은 동결 전망",
+     "u": "https://news.google.com/rss/articles/CBMib0FVX3lxTFBVMnUwY2hLU3N5VEdkRl90S2hndlE5dnJ1V2lqVGZlSDd0Sldwbmpmd3E3Nk42cU04NnpWSlh2djNhUDN1RVRTWllFbUZIYVFtakRnYkhIYmoxMHN1RXRnQ3dVQlZIXzVpUG40Yi1NOA?oc=5",
+     "s": "YTN",
+     "d": "2026-10-18"
+    },
+    {
      "t": "[AM-PM] 한은 금통위 오늘 기준금리 결정…동결 전망 우세 外",
      "u": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE1iMDJ3cEZ1a083SjR2VWtDc1RrcF9QSTQtR09MM09qbGpOSnNxTlF1QUZ3WGMyTmVVNkVGZzNtaDJkUlcxb3pSd2FFSFM0YXA5YzNKQzE5NEpvYUxtU05ndXJVXzNCRGc?oc=5",
      "s": "연합뉴스TV",
      "d": "2026-10-21"
-    },
-    {
-     "t": "기준금리 3% 동결...한은 총재, 재정 지속성 우려도",
-     "u": "https://news.google.com/rss/articles/CBMib0FVX3lxTFBmMWRNV0VUOHNKOEZLdjZLc09TS0FreE5sWHRXQVlsbXhtc1k0X1NQSFNFZWd0cDVyaTRrNFZPQ3JqZTZ0cFViOG9pUDNzbjRZaE9aelE4QTQtTmh2OUhucWJIcHUxT1J2VmdCR09qSQ?oc=5",
-     "s": "YTN",
-     "d": "2026-10-22"
     }
    ]
   },
@@ -1728,8 +1178,8 @@
    "title_en": "Continuing Jobless Claims",
    "importance": 2,
    "forecast": "1,720K",
-   "previous": "1,710K",
-   "actual": "",
+   "previous": "1,703K",
+   "actual": "1,728K",
    "category": "지표"
   },
   {
@@ -1742,291 +1192,9 @@
    "title_en": "Initial Jobless Claims",
    "importance": 2,
    "forecast": "200K",
-   "previous": "199K",
-   "actual": "",
+   "previous": "200K",
+   "actual": "194K",
    "category": "지표"
-  },
-  {
-   "date": "2026-10-22",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Procter & Gamble Company (The)",
-   "ticker": "PG",
-   "session": "장 시작 전",
-   "eps_est": "$1.89",
-   "eps_prev": "$1.99",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "10",
-   "mktcap": "$370B",
-   "importance": 3,
-   "articles": [
-    {
-     "t": "엑세스바이오,미국 P&G와 '인플루엔자+코로나 홈 테스트' 공급계약",
-     "u": "https://news.google.com/rss/articles/CBMiekFVX3lxTFB5WE5pSDNpRTB1a09odEhjSEdmb1g1OHJ5am5GVmR0bXNpQ0xSRndLSW9VcVdWUTNnOVBqdE54SFYtcHpjYUFIVzYxT3pEVnVxNWUyYzUxYkxXTE1pMC1wYUduNUpLOEkwMmxOZFZEM3Ryd2JiTHZrVHNB?oc=5",
-     "s": "약업신문",
-     "d": "2026-10-20"
-    },
-    {
-     "t": "엑세스바이오, P&G에 코로나·독감 진단키트 공급…\"가동률 반등 기대\"",
-     "u": "https://news.google.com/rss/articles/CBMiVEFVX3lxTE5nSGlRUUZlQnVheHYtTnlmMjRJRUdza2VQOUJJQ19XcnZ6TVRBYlV3OGpKaFVwVUVoaW9DNzczbzZlcUtrZlNIdXNUZWNtMHNyZFFJMg?oc=5",
-     "s": "바이오북미디어",
-     "d": "2026-10-20"
-    }
-   ]
-  },
-  {
-   "date": "2026-10-22",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Union Pacific",
-   "ticker": "UNP",
-   "session": "장 시작 전",
-   "eps_est": "$3.47",
-   "eps_prev": "$3.08",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "7",
-   "mktcap": "$171B",
-   "importance": 3,
-   "articles": [
-    {
-     "t": "[MK시그널] 철도운송 기업 유니언 퍼시픽, 매수신호 발생",
-     "u": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE1ZLXp6eFlGeWk2cXJNTjR5ZEIta28tYU5rWHR5emJmVXRYMURBSkswSGVYaEQ4MGY2ZWNSSDZTa0tlY0ZobFM4VV93el92clBQY2c?oc=5",
-     "s": "매일경제",
-     "d": "2026-10-16"
-    }
-   ]
-  },
-  {
-   "date": "2026-10-22",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Western Digital",
-   "ticker": "WDC",
-   "session": "장 마감 후",
-   "eps_est": "$3.99",
-   "eps_prev": "$1.64",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "4",
-   "mktcap": "$136B",
-   "importance": 3,
-   "articles": [
-    {
-     "t": "Western Digital 옵션, 10월 23일 실적 발표 때 주가 5.6% 변동 시사",
-     "u": "https://news.google.com/rss/articles/CBMid0FVX3lxTFBXaFJHMEJDTnNUaG9Ya0dJeVV0NlpPTFhWMGkxb3oyRjV4ZEpjMEtHYlBBdW41Z3NyUzlvSGNnRk1kVjVBenc4THhJejlGMDQ0OHFOOWhTc3EtY0ZiRkt2LUpzbEx5aGlnZ0VmSTZaSHU2aWdRMjVn?oc=5",
-     "s": "Investing.com 한국어",
-     "d": "2026-10-15"
-    },
-    {
-     "t": "웨스턴디지털 실적 프리뷰: 매출 47% 증가 전망, 월가 최고 목표주가 900달러",
-     "u": "https://news.google.com/rss/articles/CBMivgFBVV95cUxPOFJiOEVrM2V4YkI1VlRsWXlyelNNeERsNndKRmtpcGpiM2QxajdsNXdPMng0YWFLc3MtVG1JSjIyd1VsX0dJNWtDVE5XZUtTTlZLWVdtMnBkcHNaTmtvVmFtOWpBTHJNNlExNm51NTV4TWlWNnhkUDVpNFRpd05XWHNPeEZVa0NqRE5HUWFnUWJGQmhhdEVsa2dnd2NMVXBwb0UyNHMxTXFkZ1haVWRaNElqb1pQWVBLRWt3WUp3?oc=5",
-     "s": "TradingKey",
-     "d": "2026-10-21"
-    }
-   ]
-  },
-  {
-   "date": "2026-10-22",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Lockheed Martin",
-   "ticker": "LMT",
-   "session": "장 시작 전",
-   "eps_est": "$7.49",
-   "eps_prev": "$6.95",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "6",
-   "mktcap": "$127B",
-   "importance": 3,
-   "articles": [
-    {
-     "t": "록히드 마틴 실적 발표 임박…미사일 증산이 성장으로 이어질까?",
-     "u": "https://news.google.com/rss/articles/CBMia0FVX3lxTE5TZEQzTFR3aFQ2WUxtNXh3VjB2X2xRNmptckNHU3YxcVJZVmstY1c2OEptb2xPSF95V0ptR3Zyb0xfa2RUbTNnbkZLODVYaWpoZFlkWkRvUWVyeVZQdW0tRTVMQWFLeUdSblN3?oc=5",
-     "s": "Investing.com 한국어",
-     "d": "2026-10-21"
-    },
-    {
-     "t": "Lockheed Martin Corp (LMT) 주식 마감했습니다 상승 3.65%에 10월16일: 어떤 신호인가요?",
-     "u": "https://news.google.com/rss/articles/CBMijgFBVV95cUxOTWdicDhmOEtISng4RW5YOGVJLW16Y05SZzVmMWQyemk2b2FGWUp5cUNiU3pyLUQtMXRQWk9Hazk4QU5fdG53ZVF0T3h6UWVCeFVvdVUzS3R6NXVCMkdYT2RXcVM5UGtNemhFV0ZyQS1FUE9TZXcyS1VwTE9fQkFybkRGTWVvZktDZjQzUmxn?oc=5",
-     "s": "TradingKey",
-     "d": "2026-10-16"
-    }
-   ]
-  },
-  {
-   "date": "2026-10-22",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Valero Energy",
-   "ticker": "VLO",
-   "session": "장 시작 전",
-   "eps_est": "$21.28",
-   "eps_prev": "$3.66",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "5",
-   "mktcap": "$125B",
-   "importance": 3,
-   "articles": [
-    {
-     "t": "Valero Energy Corp (VLO) 주식 움직였습니다 상승 3.26%에 10월13일: 변동을 뒷받침하는 사실",
-     "u": "https://news.google.com/rss/articles/CBMijgFBVV95cUxPclZmTUNrTFJSRno3dF9RRGFRWm1xSm5SdVVicEJCMmozOU81d2pUR0o2S2hRU2FLMVIzT1NaVGh0SG1UZmFCaHcxcUM5bTVLYUJGZ0lMWXZ1Z1NjXzZBcElKQmQ1R0M4TTFkbG85aUZFRW4xVXVHOHptRTNwNnR6UF9mRzlsUFZORk9LOENn?oc=5",
-     "s": "TradingKey",
-     "d": "2026-10-13"
-    },
-    {
-     "t": "Valero Energy Corp (VLO) 주식 마감했습니다 하락 3.41%에 10월15일: 투자자가 알아야 할 정보",
-     "u": "https://news.google.com/rss/articles/CBMijgFBVV95cUxQYUtYN0JJYTNTbWU3ZjBvNVNhYzQyRXlWNElUM1psUUZiSEh6ajRteUdGQXRTckhEMG8zN2JIZkZsTExWd3h2Mm9reFItQjNSaXhicE5hVktCOHRLZ0J5UkEyNGtEZVU5ZjJVWGpaLTdBaWc0TGxsYkNkcmdNNjVOZGtzQ256NWFJQi1IbDB3?oc=5",
-     "s": "TradingKey",
-     "d": "2026-10-15"
-    }
-   ]
-  },
-  {
-   "date": "2026-10-22",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Newmont",
-   "ticker": "NEM",
-   "session": "장 마감 후",
-   "eps_est": "$1.94",
-   "eps_prev": "$1.71",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "6",
-   "mktcap": "$123B",
-   "importance": 3,
-   "articles": [
-    {
-     "t": "Newmont 옵션시장, 실적 발표 후 주가 4.2% 변동 시사",
-     "u": "https://news.google.com/rss/articles/CBMid0FVX3lxTFBCckNIY1ZycTI3YmltWEphZWU2YUN4M2s4TTJyRjNKLXBfbDNqbFlOMzZvc1dZY1dJSE9RQWFEejRyM3dJNjY2SkVybFJnNkQ4UHd1akhyN1ZvbXM5bW1rajdNT2o2TE92dHp5TEJGNnJMRjBWZ3VJ?oc=5",
-     "s": "Investing.com 한국어",
-     "d": "2026-10-15"
-    },
-    {
-     "t": "실적 발표가 다가오면서 투자자들이 뉴몬트 주가에 어떻게 반응할까",
-     "u": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxOV09PR251V0VSWFdaa2NSZlp2MzFfNUptaFNCR0QtaGtyeGtrbDNLcE1oN3lFNmd1VmpTb3ZCNmlvNVlvWThDOXBlWXN0WW1BRFI2dTRQSnBYWTV0WUpIWm02dXh3UVluM01uT1YxalVwZnJncXRmVHBoMTBVdkZjcm9lMzYxTnQ1elhN0gGQAUFVX3lxTFBXbzZNbktGSnltUmhuS0V2V3ByVGlzeFFzYWlnUnVtOEx3RkNMQjhyQUR5WXY2ZkN5aGhkQnFmWTJSOUR1R1ZCNkt1Y3BSanotWWNCV21RQUZoVXR3LTV0S25Qa0lRNGZuUk1tVmRqZHJkOE5ITS1JUU1FUF9QZ2pRakxrZVN5SFhvRUNVa09yRw?oc=5",
-     "s": "Simply Wall Street",
-     "d": "2026-10-15"
-    }
-   ]
-  },
-  {
-   "date": "2026-10-22",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Blackstone",
-   "ticker": "BX",
-   "session": "장 시작 전",
-   "eps_est": "$1.26",
-   "eps_prev": "$1.52",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "9",
-   "mktcap": "$83B",
-   "importance": 2
-  },
-  {
-   "date": "2026-10-22",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Comcast",
-   "ticker": "CMCSA",
-   "session": "장 시작 전",
-   "eps_est": "$0.98",
-   "eps_prev": "$1.12",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "8",
-   "mktcap": "$79B",
-   "importance": 2
-  },
-  {
-   "date": "2026-10-22",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Norfolk Southern",
-   "ticker": "NSC",
-   "session": "장 시작 전",
-   "eps_est": "$3.48",
-   "eps_prev": "$3.30",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "6",
-   "mktcap": "$73B",
-   "importance": 2
-  },
-  {
-   "date": "2026-10-22",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Honeywell International",
-   "ticker": "HON",
-   "session": "장 시작 전",
-   "eps_est": "$2.17",
-   "eps_prev": "$5.64",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "5",
-   "mktcap": "$68B",
-   "importance": 2
-  },
-  {
-   "date": "2026-10-22",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Bloom Energy",
-   "ticker": "BE",
-   "session": "장 마감 후",
-   "eps_est": "$0.56",
-   "eps_prev": "($0.01)",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "5",
-   "mktcap": "$66B",
-   "importance": 2
-  },
-  {
-   "date": "2026-10-22",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Nasdaq",
-   "ticker": "NDAQ",
-   "session": "장 시작 전",
-   "eps_est": "$1.02",
-   "eps_prev": "$0.88",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "9",
-   "mktcap": "$53B",
-   "importance": 2
   },
   {
    "date": "2026-10-22",
@@ -2117,7 +1285,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "9",
-   "mktcap": "$215B",
+   "mktcap": "$219B",
    "importance": 3,
    "articles": [
     {
@@ -2127,10 +1295,10 @@
      "d": "2026-10-09"
     },
     {
-     "t": "American Express 주간 주가 전망: $312.78 저항선이 주목받는 가운데 AXP는 박스권을 지킬 수 있을까?",
-     "u": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQeTlzUjRTTVVaRjQwNnBKNTZWZF9vOWNSZW9ZSUNRdGRtdHVVX1JYQ1BuZmNLQS1MYWxodWZiczlncm0wSnphcF9fWk1lVHdOVmtrM2xfNnVlUktOYUJ2OXBWeklsdWhxaTdtNmFzVjBnM3JFQkpPaEdHZlpKOG5ySzB2bzhGT3JXbmFaN1BvT0hCSXgwR1pROQ?oc=5",
-     "s": "Traders Union",
-     "d": "2026-10-15"
+     "t": "기프트 카드 시장 규모, 점유율, 성장, 분석, 보고서, 2034년",
+     "u": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE56S2lGWkJvTUN3c3J4UUI4NzdvM1dBanhnTzZHeElFaFFoLWQ1MWF6VF9qdkJIUGhCOGxVRkl2VUo2YmZZcVB5YWJKNU9wN3lfSHdlaFN6d0VXTWZBWXV3T2J6YkNhZw?oc=5",
+     "s": "Straits Research",
+     "d": "2026-10-16"
     }
    ]
   },
@@ -2148,7 +1316,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "10",
-   "mktcap": "$74B",
+   "mktcap": "$76B",
    "importance": 2
   },
   {
@@ -2203,7 +1371,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "7",
-   "mktcap": "$185B",
+   "mktcap": "$181B",
    "importance": 3,
    "articles": [
     {
@@ -2234,7 +1402,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "5",
-   "mktcap": "$172B",
+   "mktcap": "$169B",
    "importance": 3
   },
   {
@@ -2246,12 +1414,12 @@
    "title": "Cadence Design Systems",
    "ticker": "CDNS",
    "session": "장 마감 후",
-   "eps_est": "$1.60",
+   "eps_est": "$1.61",
    "eps_prev": "$1.51",
    "eps_actual": "",
    "surprise": "",
    "n_ests": "6",
-   "mktcap": "$88B",
+   "mktcap": "$90B",
    "importance": 2
   },
   {
@@ -2268,7 +1436,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "4",
-   "mktcap": "$59B",
+   "mktcap": "$60B",
    "importance": 2
   },
   {
@@ -2319,7 +1487,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "8",
-   "mktcap": "$26B",
+   "mktcap": "$27B",
    "importance": 2
   },
   {
@@ -2430,7 +1598,7 @@
      "t": "IMF, 올해 韓 1인당 GDP 4만弗 돌파 전망…명목 GDP 2.2조달러 관측",
      "u": "https://news.google.com/rss/articles/CBMicEFVX3lxTE1sTGQ3OGV4TW55VElfaEZWN0FWak8tLTVXZHpOY0VKTVZkTzNCOXNHcEIzejFEYWYyVnU0d2dBQURsMlBIYWdKZ21ZenkwQlNCT0g0NkJLNGx3LVAxWWo5VERwZUJvTGtRcG5RYXd3SVg?oc=5",
      "s": "연합인포맥스",
-     "d": "2026-10-13"
+     "d": "2026-10-14"
     }
    ]
   },
@@ -2458,7 +1626,7 @@
      "t": "IMF, 올해 韓 1인당 GDP 4만弗 돌파 전망…명목 GDP 2.2조달러 관측",
      "u": "https://news.google.com/rss/articles/CBMicEFVX3lxTE1sTGQ3OGV4TW55VElfaEZWN0FWak8tLTVXZHpOY0VKTVZkTzNCOXNHcEIzejFEYWYyVnU0d2dBQURsMlBIYWdKZ21ZenkwQlNCT0g0NkJLNGx3LVAxWWo5VERwZUJvTGtRcG5RYXd3SVg?oc=5",
      "s": "연합인포맥스",
-     "d": "2026-10-13"
+     "d": "2026-10-14"
     }
    ]
   },
@@ -2574,7 +1742,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "12",
-   "mktcap": "$726B",
+   "mktcap": "$729B",
    "importance": 3,
    "articles": [
     {
@@ -2605,7 +1773,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "8",
-   "mktcap": "$402B",
+   "mktcap": "$399B",
    "importance": 3,
    "articles": [
     {
@@ -2615,10 +1783,10 @@
      "d": "2026-10-02"
     },
     {
-     "t": "Philip Morris International Inc (PM) 주식 마감했습니다 상승 3.16%에 10월14일: 변동을 뒷받침하는 사실",
-     "u": "https://news.google.com/rss/articles/CBMijAFBVV95cUxNaUt2eUJ2VnVWemRCVE5wWnJGdXJpLUtaWERzSUxwbGxYQ09wU2NLdGhIVGJPck8zSVcxM1Q5MHNjOTk0aGZ6OGhFSGI5a25IT1JYT3Q2N0tySXplLTlIcHFiRUNFNVhMclltN29oRk4zWEZOLUZqWWgxcFBwUTNtd05pc0xtRWFveHRaTA?oc=5",
-     "s": "TradingKey",
-     "d": "2026-10-14"
+     "t": "코카콜라(KO.N) 인플레이션 구간에도 실적 상향 가능..단기 밸류는 부담",
+     "u": "https://news.google.com/rss/articles/CBMibkFVX3lxTE1vb1F2MjN5LV9yYlBGYUkyMFE1anE3cl9lbEM4M0tCNXFUZ0czTVVfM3AtcS1nckhNakhacjRFaWNlbUpiaGFVcE1ockVvaWp1bU8wdVIxMjU2VkpDcnY2Tk9pUVlYODNBVUtfcGtB?oc=5",
+     "s": "알파경제",
+     "d": "2026-10-08"
     }
    ]
   },
@@ -2636,7 +1804,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "4",
-   "mktcap": "$154B",
+   "mktcap": "$159B",
    "importance": 3,
    "articles": [
     {
@@ -2667,7 +1835,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "7",
-   "mktcap": "$151B",
+   "mktcap": "$152B",
    "importance": 3,
    "articles": [
     {
@@ -2698,7 +1866,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "8",
-   "mktcap": "$129B",
+   "mktcap": "$131B",
    "importance": 3,
    "articles": [
     {
@@ -2729,7 +1897,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "5",
-   "mktcap": "$114B",
+   "mktcap": "$116B",
    "importance": 3,
    "articles": [
     {
@@ -2743,37 +1911,6 @@
      "u": "https://news.google.com/rss/articles/CBMijgFBVV95cUxQMlBZU0NMSDNqZ1I2M0xJeERtaHpFd0NjR2ZEYnUzUmpEeUNPMC1EWVo3YjRvR213ZWt5WjRxLXhrVDBZczRNOXYzRTdxLVVndUpoYVl1UHA5VzliSFhMQWJuaWI3WXhpb0dnSFU5UHZqVkpONG1GU0ZHSGdoRGdKbExDb2N0YWhqNnRDSldn?oc=5",
      "s": "TradingKey",
      "d": "2026-10-16"
-    }
-   ]
-  },
-  {
-   "date": "2026-10-27",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "HCA Healthcare",
-   "ticker": "HCA",
-   "session": "장 시작 전",
-   "eps_est": "$6.75",
-   "eps_prev": "$6.96",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "9",
-   "mktcap": "$101B",
-   "importance": 3,
-   "articles": [
-    {
-     "t": "Cantor Fitzgerald, HCA 헬스케어 ’비중확대’ 투자의견 재확인",
-     "u": "https://news.google.com/rss/articles/CBMidEFVX3lxTFBLRFRQRHdTVzFma1l5dG55WUtiRklhVzRnLU1QYTFLaUM1RkxjalFVeXQwNHFsNzg4UmxoMEd3XzFlU0hTQ1djNDlFVU9LVWlpZjdUYXdTS2xYM0IxZlFfdmUwWU5TRTEwVTlXdWxSaFpVZlJ2?oc=5",
-     "s": "Investing.com 한국어",
-     "d": "2026-10-02"
-    },
-    {
-     "t": "HCA 헬스케어(HCA)의 실적 호조가 투자 전망을 어떻게 바꿨는가",
-     "u": "https://news.google.com/rss/articles/CBMimwFBVV95cUxPc2JfVFBTc2JPVGJmcXBkZ1dHczZvRlhocjFjQVk4LWZOdmJDME50bWpQdmFodFR3X1pvcHlKNU15cGVPSE5qaVQ2ZGI1RVhBUlRUQ1AwMFhVMkZzSXpqdGJnN3hDdVZrZEVkSVV6N1RMY2JzMkRhRWlLREpNQXhPVlp0R0FfcHhxLWJOaHVJQnpNREJsTE8tQWxEZ9IBmwFBVV95cUxPc2JfVFBTc2JPVGJmcXBkZ1dHczZvRlhocjFjQVk4LWZOdmJDME50bWpQdmFodFR3X1pvcHlKNU15cGVPSE5qaVQ2ZGI1RVhBUlRUQ1AwMFhVMkZzSXpqdGJnN3hDdVZrZEVkSVV6N1RMY2JzMkRhRWlLREpNQXhPVlp0R0FfcHhxLWJOaHVJQnpNREJsTE8tQWxEZw?oc=5",
-     "s": "Simply Wall Street",
-     "d": "2026-10-17"
     }
    ]
   },
@@ -2849,10 +1986,27 @@
    "mk": "us",
    "type": "earnings",
    "index": "S&P500",
+   "title": "HCA Healthcare",
+   "ticker": "HCA",
+   "session": "장 시작 전",
+   "eps_est": "$6.75",
+   "eps_prev": "$6.96",
+   "eps_actual": "",
+   "surprise": "",
+   "n_ests": "9",
+   "mktcap": "$99B",
+   "importance": 2
+  },
+  {
+   "date": "2026-10-27",
+   "time": "",
+   "mk": "us",
+   "type": "earnings",
+   "index": "S&P500",
    "title": "Freeport-McMoran",
    "ticker": "FCX",
    "session": "장 시작 전",
-   "eps_est": "$0.75",
+   "eps_est": "$0.78",
    "eps_prev": "$0.50",
    "eps_actual": "",
    "surprise": "",
@@ -2874,24 +2028,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "10",
-   "mktcap": "$93B",
-   "importance": 2
-  },
-  {
-   "date": "2026-10-27",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Johnson Controls International plc",
-   "ticker": "JCI",
-   "session": "장 시작 전",
-   "eps_est": "$1.58",
-   "eps_prev": "$1.26",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "6",
-   "mktcap": "$90B",
+   "mktcap": "$92B",
    "importance": 2
   },
   {
@@ -2908,7 +2045,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "8",
-   "mktcap": "$88B",
+   "mktcap": "$92B",
    "importance": 2
   },
   {
@@ -2917,15 +2054,32 @@
    "mk": "us",
    "type": "earnings",
    "index": "S&P500",
-   "title": "American Tower (REIT)",
-   "ticker": "AMT",
+   "title": "Johnson Controls International plc",
+   "ticker": "JCI",
    "session": "장 시작 전",
-   "eps_est": "$2.78",
-   "eps_prev": "$2.78",
+   "eps_est": "$1.58",
+   "eps_prev": "$1.26",
    "eps_actual": "",
    "surprise": "",
-   "n_ests": "4",
-   "mktcap": "$86B",
+   "n_ests": "6",
+   "mktcap": "$91B",
+   "importance": 2
+  },
+  {
+   "date": "2026-10-27",
+   "time": "",
+   "mk": "us",
+   "type": "earnings",
+   "index": "S&P500",
+   "title": "United Parcel Service",
+   "ticker": "UPS",
+   "session": "장 시작 전",
+   "eps_est": "$1.63",
+   "eps_prev": "$1.74",
+   "eps_actual": "",
+   "surprise": "",
+   "n_ests": "10",
+   "mktcap": "$85B",
    "importance": 2
   },
   {
@@ -2975,7 +2129,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "14",
-   "mktcap": "$4.16T",
+   "mktcap": "$4.09T",
    "importance": 3,
    "articles": [
     {
@@ -3006,7 +2160,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "14",
-   "mktcap": "$4.16T",
+   "mktcap": "$4.09T",
    "importance": 3,
    "articles": [
     {
@@ -3037,7 +2191,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "14",
-   "mktcap": "$3.95T",
+   "mktcap": "$3.96T",
    "importance": 3,
    "articles": [
     {
@@ -3068,7 +2222,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "7",
-   "mktcap": "$237B",
+   "mktcap": "$247B",
    "importance": 3,
    "articles": [
     {
@@ -3099,7 +2253,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "8",
-   "mktcap": "$211B",
+   "mktcap": "$213B",
    "importance": 3,
    "articles": [
     {
@@ -3130,7 +2284,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "4",
-   "mktcap": "$196B",
+   "mktcap": "$195B",
    "importance": 3,
    "articles": [
     {
@@ -3161,7 +2315,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "7",
-   "mktcap": "$169B",
+   "mktcap": "$165B",
    "importance": 3,
    "articles": [
     {
@@ -3192,7 +2346,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "12",
-   "mktcap": "$155B",
+   "mktcap": "$158B",
    "importance": 3,
    "articles": [
     {
@@ -3223,7 +2377,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "11",
-   "mktcap": "$125B",
+   "mktcap": "$128B",
    "importance": 3,
    "articles": [
     {
@@ -3233,10 +2387,41 @@
      "d": "2026-10-21"
     },
     {
-     "t": "Fortinet Inc (FTNT) 주식 시작했습니다 하락 4.80%에 10월16일: 투자자가 알아야 할 정보",
-     "u": "https://news.google.com/rss/articles/CBMijwFBVV95cUxPUS1QNHFwOW9tSGJxdHBMZDZoOWxOM2NLVDF1emtOTzhOTURjT0lLdmpqQTFhXzhLOFJyZWZfV2pzUm8xZUNHNF8yNHlDcG9iZG52R2Eyc2hxQnFESW5yVjNtSl9Fd2I2cllOUldrXy03a1lUTUoxRnpzSElWSV9JOXJpVjd5QktQbVg3UHo0QQ?oc=5",
+     "t": "Fortinet Inc (FTNT) 주식 움직였습니다 상승 3.09%에 10월6일: 변동을 뒷받침하는 사실",
+     "u": "https://news.google.com/rss/articles/CBMijwFBVV95cUxOcnFiU3U5X0I4bE9QdnQ1QnlyUUpEQUtXbHktdnA3ZDFnaDkzRWdOMmR6N1pqQ3hkcXowSlE3cld1UGE2ZkdxUkZoYjV3MDZTYkNiVER6ZGtvMXdjRG13U1IwUHM2RFFaTUpVTDMwczBPRmNNSWowRHllQmcwZlM2ejMycy0wZUVFQnFvN1hZZw?oc=5",
      "s": "TradingKey",
-     "d": "2026-10-16"
+     "d": "2026-10-06"
+    }
+   ]
+  },
+  {
+   "date": "2026-10-28",
+   "time": "",
+   "mk": "us",
+   "type": "earnings",
+   "index": "S&P500",
+   "title": "Automatic Data Processing",
+   "ticker": "ADP",
+   "session": "장 시작 전",
+   "eps_est": "$2.78",
+   "eps_prev": "$2.49",
+   "eps_actual": "",
+   "surprise": "",
+   "n_ests": "4",
+   "mktcap": "$117B",
+   "importance": 3,
+   "articles": [
+    {
+     "t": "수익성 개선이 ADP 주식 투자자들에게 어떤 조치를 요구할까?",
+     "u": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNVUREeHdGVVdWMk9xQldEa1FvVHF0alZBaEV2bldndFU2cm1QVFRpbEpPbUc5X0Q4bEhValVHYTdzNVhBWWdtejhwYU1JMFUxeTVGdFFUcTN0b3BDZkJDTVBwZjZVS3dCcUhkMzFUczNHb2pvQVRmR0ZFMGtoc2lLMXJvR0piNE11bEVXN3JyVzAwQ3JEV2dwLXFvaXA4TWFUOVlEeTU1U3owcUhrbTExTXI1UdIBuAFBVV95cUxPdm1OeklYWWdseXNPcFFsV3d5TmppVWEwaWZvbHcyWWpvOHZkVVl3ejZqaWhkeHB4U0xEUk1ma3JQaHNQbTYtRkdvQVFnUjhOb0VzLVc2Vmx0Z0VvMlhUVWJwQjMtMnhVTzBrTFVsQXBIOWRCcnUyQUJVeXBDYWExNVQ2MzBTUF9WcmZoX3FKdHNPSVZMMkstbDJRdGF0a0x1QjdGZ0duNEdPU3B2dkpvTHM5RU1ZRlVi?oc=5",
+     "s": "Simply Wall Street",
+     "d": "2026-10-17"
+    },
+    {
+     "t": "TD Cowen이 주목하는 인적자본관리(HCM) 최우선 투자 종목",
+     "u": "https://news.google.com/rss/articles/CBMicEFVX3lxTFBCZERndGU1X2NYN0dBR0pfV2dKZUNTSWMzZ3pWNFY3SWpJTzJ3UTlPRVM0dlBwWHcxNlhJWlN2YmdVNUQ1MjIweWR3UzR1Q1VHMXlFZ05UTXBJem5GZktGZ3ViN2w2YUROZVB6UjZ3a1Y?oc=5",
+     "s": "Investing.com 한국어",
+     "d": "2026-10-13"
     }
    ]
   },
@@ -3268,37 +2453,6 @@
      "u": "https://news.google.com/rss/articles/CBMijgFBVV95cUxPZHc2X0Mxci1TOXNaenZtOHdUSXo5dERLYndmcVRyWnJHbHFvSnFHeVNVb0Fqd05jTEY0bXh6QkE2TUFQOFZIV3RTOWROWGhsUTk0Y1RjRzN2NmRiRVJKdF9BQXF5OXROWnUtN2E5YkdGWDVMTHNtdHVucl9EMS11VXZMWVgwOC1CTkhOWWln?oc=5",
      "s": "TradingKey",
      "d": "2026-10-13"
-    }
-   ]
-  },
-  {
-   "date": "2026-10-28",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Automatic Data Processing",
-   "ticker": "ADP",
-   "session": "장 시작 전",
-   "eps_est": "$2.78",
-   "eps_prev": "$2.49",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "4",
-   "mktcap": "$116B",
-   "importance": 3,
-   "articles": [
-    {
-     "t": "TD Cowen이 주목하는 인적자본관리(HCM) 최우선 투자 종목",
-     "u": "https://news.google.com/rss/articles/CBMicEFVX3lxTFBCZERndGU1X2NYN0dBR0pfV2dKZUNTSWMzZ3pWNFY3SWpJTzJ3UTlPRVM0dlBwWHcxNlhJWlN2YmdVNUQ1MjIweWR3UzR1Q1VHMXlFZ05UTXBJem5GZktGZ3ViN2w2YUROZVB6UjZ3a1Y?oc=5",
-     "s": "Investing.com 한국어",
-     "d": "2026-10-13"
-    },
-    {
-     "t": "수익성 개선이 ADP 주식 투자자들에게 어떤 조치를 요구할까?",
-     "u": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxPdm1OeklYWWdseXNPcFFsV3d5TmppVWEwaWZvbHcyWWpvOHZkVVl3ejZqaWhkeHB4U0xEUk1ma3JQaHNQbTYtRkdvQVFnUjhOb0VzLVc2Vmx0Z0VvMlhUVWJwQjMtMnhVTzBrTFVsQXBIOWRCcnUyQUJVeXBDYWExNVQ2MzBTUF9WcmZoX3FKdHNPSVZMMkstbDJRdGF0a0x1QjdGZ0duNEdPU3B2dkpvTHM5RU1ZRlVi0gG4AUFVX3lxTE92bU56SVhZZ2x5c09wUWxXd3lOamlVYTBpZm9sdzJZam84dmRVWXd6NmppaGR4cHhTTERSTWZrclBoc1BtNi1GR29BUWdSOE5vRXMtVzZWbHRnRW8yWFRVYnBCMy0yeFVPMGtMVWxBcEg5ZEJydTJBQlV5cENhYTE1VDYzMFNQX1ZyZmhfcUp0c09JVkwySy1sMlF0YXRrTHVCN0ZnR240R09TcHZ2Sm9MczlFTVlGVWI?oc=5",
-     "s": "Simply Wall Street",
-     "d": "2026-10-17"
     }
    ]
   },
@@ -3349,7 +2503,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "5",
-   "mktcap": "$97B",
+   "mktcap": "$98B",
    "importance": 2
   },
   {
@@ -3528,7 +2682,21 @@
    "forecast": "",
    "previous": "3.30%",
    "actual": "",
-   "category": "지표"
+   "category": "지표",
+   "articles": [
+    {
+     "t": "[글로벌차트] 美 인플레 궤적 좀 낮아졌네…PCE 산출방식 변경 효과",
+     "u": "https://news.google.com/rss/articles/CBMicEFVX3lxTE52U29mNnItblFQcU9Xbm05di1CcHdkQkZoU1dtZnVkOXd0dTdXTjVQZzYza29pS0JTdVZmS2Y5NlI4RGhYYTZuY2VBWlBVZWQ4Q0NRN3p1b2ptQnhpdklPTzRnbWV4cmMyMXlKRE5rT2Q?oc=5",
+     "s": "연합인포맥스",
+     "d": "2026-10-01"
+    },
+    {
+     "t": "美 물가 상승률 예상치 하회, 금융시장은 무반응…핵심은 '유가'",
+     "u": "https://news.google.com/rss/articles/CBMiaEFVX3lxTFBWZDUteU90WkcyaWFydDFDaVdaLWQ2Vl9EaDk0MUxsVnBlWDBaR2pOajNNZTM1TXQzakZCbGoxLWg1VE4xRmJUMWpCZmkxUXUwY0dCZ2NCQTZ3Vk05Nmt1VVBHZkZ2U3Jf?oc=5",
+     "s": "FETV",
+     "d": "2026-10-01"
+    }
+   ]
   },
   {
    "date": "2026-10-29",
@@ -3542,7 +2710,21 @@
    "forecast": "",
    "previous": "2.2%",
    "actual": "",
-   "category": "지표"
+   "category": "지표",
+   "articles": [
+    {
+     "t": "[그래픽] 미국 경제성장률 추이",
+     "u": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE00enZTMGN3N05QbW5SZ253emx6M0NYSGZNTnI2MVlfRTlLako5b28zQ3BiUmtKN2M0dlBKSHBmb2x0SGxyRW0ySkozZnJOdm9Ibm1lTlFEVzVNRlXSAWBBVV95cUxNZkxCZUFBUUwzYjlvMzI4S0VyOXI5VTdkRzhVMHgwZGJJU0ZudDRiV0dBRF9jUjB6dkhqTGhEVXRQUm9qYk55VkFCamFtTHhCU253ODlOODBkdmNnUTNubUg?oc=5",
+     "s": "연합뉴스",
+     "d": "2026-09-30"
+    },
+    {
+     "t": "美 2분기 성장률 2.2%로 대폭 상향…소비·민간투자 '활활'(종합)",
+     "u": "https://news.google.com/rss/articles/CBMicEFVX3lxTE1jVEg3RHhvUmxyMjFTeld1b1IxSmIyXy1ZX2toeG9pQjRWWko1am1WVzV2TGN6UG9UdUt5QXZBcEVrb19ycmJrcDNYNHppUVdob2RncjRzT25KcWY0aGloQXFpUERfRTFOc1MwblF4NDI?oc=5",
+     "s": "연합인포맥스",
+     "d": "2026-10-01"
+    }
+   ]
   },
   {
    "date": "2026-10-29",
@@ -3556,7 +2738,21 @@
    "forecast": "",
    "previous": "6.1%",
    "actual": "",
-   "category": "지표"
+   "category": "지표",
+   "articles": [
+    {
+     "t": "[그래픽] 미국 경제성장률 추이",
+     "u": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE00enZTMGN3N05QbW5SZ253emx6M0NYSGZNTnI2MVlfRTlLako5b28zQ3BiUmtKN2M0dlBKSHBmb2x0SGxyRW0ySkozZnJOdm9Ibm1lTlFEVzVNRlXSAWBBVV95cUxNZkxCZUFBUUwzYjlvMzI4S0VyOXI5VTdkRzhVMHgwZGJJU0ZudDRiV0dBRF9jUjB6dkhqTGhEVXRQUm9qYk55VkFCamFtTHhCU253ODlOODBkdmNnUTNubUg?oc=5",
+     "s": "연합뉴스",
+     "d": "2026-09-30"
+    },
+    {
+     "t": "美 2분기 성장률 2.2%로 대폭 상향…소비·민간투자 '활활'(종합)",
+     "u": "https://news.google.com/rss/articles/CBMicEFVX3lxTE1jVEg3RHhvUmxyMjFTeld1b1IxSmIyXy1ZX2toeG9pQjRWWko1am1WVzV2TGN6UG9UdUt5QXZBcEVrb19ycmJrcDNYNHppUVdob2RncjRzT25KcWY0aGloQXFpUERfRTFOc1MwblF4NDI?oc=5",
+     "s": "연합인포맥스",
+     "d": "2026-10-01"
+    }
+   ]
   },
   {
    "date": "2026-10-29",
@@ -3570,7 +2766,21 @@
    "forecast": "",
    "previous": "2.8%",
    "actual": "",
-   "category": "지표"
+   "category": "지표",
+   "articles": [
+    {
+     "t": "[그래픽] 미국 경제성장률 추이",
+     "u": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE00enZTMGN3N05QbW5SZ253emx6M0NYSGZNTnI2MVlfRTlLako5b28zQ3BiUmtKN2M0dlBKSHBmb2x0SGxyRW0ySkozZnJOdm9Ibm1lTlFEVzVNRlXSAWBBVV95cUxNZkxCZUFBUUwzYjlvMzI4S0VyOXI5VTdkRzhVMHgwZGJJU0ZudDRiV0dBRF9jUjB6dkhqTGhEVXRQUm9qYk55VkFCamFtTHhCU253ODlOODBkdmNnUTNubUg?oc=5",
+     "s": "연합뉴스",
+     "d": "2026-09-30"
+    },
+    {
+     "t": "美 2분기 성장률 2.2%로 대폭 상향…소비·민간투자 '활활'(종합)",
+     "u": "https://news.google.com/rss/articles/CBMicEFVX3lxTE1jVEg3RHhvUmxyMjFTeld1b1IxSmIyXy1ZX2toeG9pQjRWWko1am1WVzV2TGN6UG9UdUt5QXZBcEVrb19ycmJrcDNYNHppUVdob2RncjRzT25KcWY0aGloQXFpUERfRTFOc1MwblF4NDI?oc=5",
+     "s": "연합인포맥스",
+     "d": "2026-10-01"
+    }
+   ]
   },
   {
    "date": "2026-10-29",
@@ -3584,7 +2794,21 @@
    "forecast": "",
    "previous": "3.4%",
    "actual": "",
-   "category": "지표"
+   "category": "지표",
+   "articles": [
+    {
+     "t": "美 8월 PCE 물가 3.4%↑…전망 밑돌며 10월 금리인상 부담 완화(종합)",
+     "u": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE9yM1ZrczZxQkR4eFFrZ29Pa2VYQ19peWVnMVBlTlE0Y0VGQ0wxU3V5TVNhZUVyRVJ0MHcyTlRYbFd5Y1BBaXZSdGx3WGhVSloxY2ZHS0xrc1QwM3fSAWBBVV95cUxObXlLWW4xQVhnRDZMblAyVGRwMXJZcTVlQUxCX2FYdG5HU0YzNFJJVG96Y2dCYzd2LURqVnFqNy1laXVHT2s1UndGTC1zakpHY2REbkp0R3NFSmRhOFV4ZHg?oc=5",
+     "s": "연합뉴스",
+     "d": "2026-09-30"
+    },
+    {
+     "t": "미국 8월 PCE 물가 전년 대비 3.4%↑…전망치 소폭 하회",
+     "u": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTFBhVUFLUXR1d3BXS2QzQ0JZWF9JaWlCY3F1VTB5SUZnRGFxTFlCRHFBc28zbWNDU0EzM3g4ZGlaQ2VjSWp0amVxc3M1V0xoMWdTMnl1eUY0NHBQR1c1WkI2TGhmS3pnWTA?oc=5",
+     "s": "연합뉴스TV",
+     "d": "2026-09-30"
+    }
+   ]
   },
   {
    "date": "2026-10-29",
@@ -3598,7 +2822,21 @@
    "forecast": "",
    "previous": "0.3%",
    "actual": "",
-   "category": "지표"
+   "category": "지표",
+   "articles": [
+    {
+     "t": "美 8월 PCE 물가 3.4%↑…전망 밑돌며 10월 금리인상 부담 완화(종합)",
+     "u": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE9yM1ZrczZxQkR4eFFrZ29Pa2VYQ19peWVnMVBlTlE0Y0VGQ0wxU3V5TVNhZUVyRVJ0MHcyTlRYbFd5Y1BBaXZSdGx3WGhVSloxY2ZHS0xrc1QwM3fSAWBBVV95cUxObXlLWW4xQVhnRDZMblAyVGRwMXJZcTVlQUxCX2FYdG5HU0YzNFJJVG96Y2dCYzd2LURqVnFqNy1laXVHT2s1UndGTC1zakpHY2REbkp0R3NFSmRhOFV4ZHg?oc=5",
+     "s": "연합뉴스",
+     "d": "2026-09-30"
+    },
+    {
+     "t": "미국 8월 PCE 물가 전년 대비 3.4%↑…전망치 소폭 하회",
+     "u": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTFBhVUFLUXR1d3BXS2QzQ0JZWF9JaWlCY3F1VTB5SUZnRGFxTFlCRHFBc28zbWNDU0EzM3g4ZGlaQ2VjSWp0amVxc3M1V0xoMWdTMnl1eUY0NHBQR1c1WkI2TGhmS3pnWTA?oc=5",
+     "s": "연합뉴스TV",
+     "d": "2026-09-30"
+    }
+   ]
   },
   {
    "date": "2026-10-29",
@@ -3612,7 +2850,21 @@
    "forecast": "",
    "previous": "5.0%",
    "actual": "",
-   "category": "지표"
+   "category": "지표",
+   "articles": [
+    {
+     "t": "미국 8월 PCE 물가 전년 대비 3.4%↑…전망치 소폭 하회",
+     "u": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTFBhVUFLUXR1d3BXS2QzQ0JZWF9JaWlCY3F1VTB5SUZnRGFxTFlCRHFBc28zbWNDU0EzM3g4ZGlaQ2VjSWp0amVxc3M1V0xoMWdTMnl1eUY0NHBQR1c1WkI2TGhmS3pnWTA?oc=5",
+     "s": "연합뉴스TV",
+     "d": "2026-09-30"
+    },
+    {
+     "t": "美 8월 PCE 물가 3.4%↑…전망 밑돌며 10월 금리인상 부담 완화(종합)",
+     "u": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE9yM1ZrczZxQkR4eFFrZ29Pa2VYQ19peWVnMVBlTlE0Y0VGQ0wxU3V5TVNhZUVyRVJ0MHcyTlRYbFd5Y1BBaXZSdGx3WGhVSloxY2ZHS0xrc1QwM3fSAWBBVV95cUxObXlLWW4xQVhnRDZMblAyVGRwMXJZcTVlQUxCX2FYdG5HU0YzNFJJVG96Y2dCYzd2LURqVnFqNy1laXVHT2s1UndGTC1zakpHY2REbkp0R3NFSmRhOFV4ZHg?oc=5",
+     "s": "연합뉴스",
+     "d": "2026-09-30"
+    }
+   ]
   },
   {
    "date": "2026-10-29",
@@ -3679,13 +2931,27 @@
    "title": "아마존",
    "ticker": "AMZN",
    "session": "장 마감 후",
-   "eps_est": "$2.02",
+   "eps_est": "$2.01",
    "eps_prev": "$1.95",
    "eps_actual": "",
    "surprise": "",
    "n_ests": "14",
    "mktcap": "$2.83T",
-   "importance": 3
+   "importance": 3,
+   "articles": [
+    {
+     "t": "아마존닷컴, 실적 발표에 주가 6.6% 변동 가능성",
+     "u": "https://news.google.com/rss/articles/CBMid0FVX3lxTE1UbkRsNjJGd0s0V0l0REdyc0UzVDVZTnZYdkZXSjVGbUd4MHMwT216VHlaMkJaazhYZU1YdHY4em9wSnRHdXFCbDNRWUd4a045S2JNTzFvUTVPSUlQUUZQOVFXOUpOMmNsZ1Vjd2NZM3VSdXhaNC0w?oc=5",
+     "s": "Investing.com 한국어",
+     "d": "2026-10-22"
+    },
+    {
+     "t": "아마존(AMZN), 3분기 실적 발표 직전 목표주가 '뚝'...AWS가 4분기 구세주 될까?",
+     "u": "https://news.google.com/rss/articles/CBMiSkFVX3lxTE5rRXl2VFY2cTF1NWNucXVvZ0lRSkZLNHdhR3FRUFNDYWg3ZC16VjRjZHNHVUdNOGlYSEhjSHI1T2xrdmJ3bFprZk5R?oc=5",
+     "s": "코인리더스",
+     "d": "2026-10-13"
+    }
+   ]
   },
   {
    "date": "2026-10-29",
@@ -3701,8 +2967,22 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "3",
-   "mktcap": "$1.21T",
-   "importance": 3
+   "mktcap": "$1.20T",
+   "importance": 3,
+   "articles": [
+    {
+     "t": "Eli Lilly and Co (LLY) 주식 시작했습니다 상승 3.70%에 10월14일: 변동 원인",
+     "u": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNRzJCNDNZR1kxS19iUGc1RGJDMjBKRHFQUkpwNFpCRjFvX1hQUHZ4S1FBZ1pNMFBNbEVXczItSFhQSXZVcnRuRVJjSE5VOXJWRVA3SGpzVFFlWjdvNlVtMTUyUkNxTnlDaUFRR3lhdXc3Ymt6eFJSTnpFVkpwSmNBOFlMUExJME1jM3FvM0ln?oc=5",
+     "s": "TradingKey",
+     "d": "2026-10-14"
+    },
+    {
+     "t": "Peptron Shares Plunge Nearly 30% After Eli Lilly SmartDepot Evaluation Ends Without Commer",
+     "u": "https://news.google.com/rss/articles/CBMibkFVX3lxTFBiejVYc0k4TFFDTENqdVNubC1LbzVadzNDamszc2xUSjNGTVFmbC05c0dVRmh4cUM2YVNrdE1KdGI0aEFQSm1LakVQZU9UUy1nWkhEN3ZfdVNlV3VMd2RFR084UXZIMmVJdEhvTmZR?oc=5",
+     "s": "알파경제",
+     "d": "2026-10-07"
+    }
+   ]
   },
   {
    "date": "2026-10-29",
@@ -3718,8 +2998,22 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "11",
-   "mktcap": "$543B",
-   "importance": 3
+   "mktcap": "$545B",
+   "importance": 3,
+   "articles": [
+    {
+     "t": "Baird Sees Over 20% Upside in Mastercard Before Its October 29 Report. Here’s What the Qua",
+     "u": "https://news.google.com/rss/articles/CBMizgFBVV95cUxQUWN0UmwtOWg3ZjFuelhENHhCVlRGQldkWm5OYWRRWkNVVnBjYmUwUHBoMTZxaHY4ZXJrdEpvMGphM0U0YjlhWEZPc2MxVkhJanBEcjkwT1NxbWNFVktBclFHR040VEtZUmxBN1BVaW1WWTJFOWtYUjVBVlJzaHo4ZTY4X09pLUhPbF92NGJKMGd6WTk0MllGcnUyaWo1WllCV0hjVlBIdlVPbDltUEdBU1NTekxPa29QdUpPUHN4OHpTcnZoZUZvZkRXZk1lQQ?oc=5",
+     "s": "TIKR.com",
+     "d": "2026-10-10"
+    },
+    {
+     "t": "Mastercard Stock Is Up 12% Over the Past Year. The Chart Hides a Trip Below $500",
+     "u": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPUnVaTUpSMFJ2SGJONFdEVkZNYnhCOFJGWkhvWEt6YTZaVzFJZVAybXNGZ2s1dm5sUllsRjNFbk44d2l0N19rdkxwbU5QSXk3djJrUGFsN3Z5V1B0T3BhNy1wUVcwdTcydjhvbzh3Um5uWEdoUngwMnRrYjJsRUM1MjFTeVp5ek5paDFRbHF5TEZDZDZkSlJ0N014Q2RUeE9JaGlOM2taNHVqQQ?oc=5",
+     "s": "TIKR.com",
+     "d": "2026-10-19"
+    }
+   ]
   },
   {
    "date": "2026-10-29",
@@ -3735,8 +3029,22 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "13",
-   "mktcap": "$485B",
-   "importance": 3
+   "mktcap": "$491B",
+   "importance": 3,
+   "articles": [
+    {
+     "t": "인텔, 10월 30일 실적 발표에 주가 8.3% 변동 가능성",
+     "u": "https://news.google.com/rss/articles/CBMid0FVX3lxTE1fNzRrOFlLX0ZNMFJLN1gya3E2UDNBVHc3eHZKc3RJQUFFeEt1cHdoYXpObG1EM2VWQkdQcEFBYThRd0JIaHdaX3ByUktpYmtqVThLSVhsU3liUTR1RkRHalRFZXZBS0hUM2NkTzlIdlhFcFBRaHlB?oc=5",
+     "s": "Investing.com 한국어",
+     "d": "2026-10-22"
+    },
+    {
+     "t": "다음주 S&P500 기업중 80개 실적 발표…알파벳·테슬라·인텔 예정",
+     "u": "https://news.google.com/rss/articles/CBMie0FVX3lxTE45VWRfa1NIaWVJZTJoT1owX1VPeDdJMTQwTlRxYk9PX1dUT1pBNFd4Q0huM1pTaFpzLS1KOVZZNmFva21JQ3FkU0lGX2lOd3hmcXBPZGxSV3g0Mlg5YzRKOXk2X0xLcEtGcFRfcVVaWDUxTm5FNkNqbk5kRQ?oc=5",
+     "s": "이데일리TV",
+     "d": "2026-10-13"
+    }
+   ]
   },
   {
    "date": "2026-10-29",
@@ -3752,8 +3060,22 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "5",
-   "mktcap": "$366B",
-   "importance": 3
+   "mktcap": "$370B",
+   "importance": 3,
+   "articles": [
+    {
+     "t": "Merck 주가, 10월 29일 실적 발표에 5.5% 변동 가능",
+     "u": "https://news.google.com/rss/articles/CBMid0FVX3lxTE1kOFFNY2JGSUpPd1pzSllMYzZ5LTMwTHN6NE13dVp3TzJIQVVxNGp5MTU0ZFU3eXN0emtXakowV1lONXhraU1ra0tIallfWUl1bGZOazlQVmZuLVpFeURma01WNUZHRzhOTFRoTjRqX2plQmJsMnBB?oc=5",
+     "s": "Investing.com 한국어",
+     "d": "2026-10-22"
+    },
+    {
+     "t": "Merck & Co Inc (MRK) 주식 움직였습니다 상승 3.73%에 10월14일: 어떤 신호인가요?",
+     "u": "https://news.google.com/rss/articles/CBMijgFBVV95cUxPbTVYSjJEUm42b2dyR0NJMjlsMmF3R2hNd29TcGg1dVltMTVNMEhTeXNKZHJQQ2VHSTJsMnBpR0o0REdUR1hUUGUwZ3ZQaWk2LWx6S3Y0WU45cURibU45VFFzUldGVGNjTF93cUxQMTUzQ0JYVTRkM3RnSm9iT2N6ZlVsN1MzSU9mdVVWVDJ3?oc=5",
+     "s": "TradingKey",
+     "d": "2026-10-14"
+    }
+   ]
   },
   {
    "date": "2026-10-29",
@@ -3769,8 +3091,22 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "11",
-   "mktcap": "$333B",
-   "importance": 3
+   "mktcap": "$340B",
+   "importance": 3,
+   "articles": [
+    {
+     "t": "캐터필러, 10월 29일 실적 발표 후 주가 6.3% 변동 가능",
+     "u": "https://news.google.com/rss/articles/CBMid0FVX3lxTE8tQTc3RUxjLVNMUU1Xazh0d3lMdlc2bmpmU2NoMDNvZmt6YzAwOGtxSVMtQlRVQTIyQmF1bDIzOWN0N3V1Y055UjVjNU1BRWJzdjdvUWNmVUlDX1ZibE5pLWkzVWJxU283UzNUOER3R0g1dy1ldmVJ?oc=5",
+     "s": "Investing.com 한국어",
+     "d": "2026-10-22"
+    },
+    {
+     "t": "Caterpillar Inc (CAT) 주식 움직였습니다 하락 3.10%에 10월15일: 핵심 원인 공개",
+     "u": "https://news.google.com/rss/articles/CBMijgFBVV95cUxPZDZsZExuSGZLY0Nfc3JvdUppSGdpN3hxWUxvRnZod2ZsN0pqMXA2X1hwejBSWmxaQk5UMGhFS1RxVVRBYjdET25ySUIwckV2dU9FT2dOY3poV2htdzRBczRhRHNHclZRRkxPVnNhOWZBVWF5X1VmdTBYOUd4TFRUbGJXU29jQVRKTEw5ZVBn?oc=5",
+     "s": "TradingKey",
+     "d": "2026-10-15"
+    }
+   ]
   },
   {
    "date": "2026-10-29",
@@ -3803,8 +3139,22 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "4",
-   "mktcap": "$198B",
-   "importance": 3
+   "mktcap": "$200B",
+   "importance": 3,
+   "articles": [
+    {
+     "t": "Sandisk 주가, 다음 주 실적 발표 후 7.7% 변동 가능성",
+     "u": "https://news.google.com/rss/articles/CBMid0FVX3lxTFBta1kwaGRqTnJQZ3FUbzROb2h5bC1XcS1ySmNvdE1tZXBpMml3dk96REI3cjhjbTJqMk9wUzg4S0xOek9uWmNVOGtuRm4xX3hWNEZuaXdDNC1rTmNyNm5zTUU4dEM3bVBVR0NOM1VIN0t5REUya3FZ?oc=5",
+     "s": "Investing.com 한국어",
+     "d": "2026-10-22"
+    },
+    {
+     "t": "[美특징주]'29일 실적 발표' 샌디스크, 개장 전 반등…\"낸드 가격 견조\"",
+     "u": "https://news.google.com/rss/articles/CBMigAFBVV95cUxOUWtITDFVMXJLTWFBSkJIaDBpU1hSTjlHQlhjTzRUZEVxa2gtVWJzaG01QU9velVUYUd2d1hMdHpfUExBVUE1UGpGMkxUSFNuTmpsMGFCcWJXYkM1S3ljMi00NVhnVVdWRHlKSmVzZFRrM3FYLW5BSEg2eHdOOHBMWg?oc=5",
+     "s": "이데일리",
+     "d": "2026-10-21"
+    }
+   ]
   },
   {
    "date": "2026-10-29",
@@ -3820,8 +3170,22 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "6",
-   "mktcap": "$194B",
-   "importance": 3
+   "mktcap": "$190B",
+   "importance": 3,
+   "articles": [
+    {
+     "t": "Gilead Sciences Inc (GILD) 주식 움직였습니다 상승 3.67%에 10월15일: 변동을 뒷받침하는 사실",
+     "u": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQNlJVdFBGVUdqdmZMejRJTzZGTFI1Y0pmRmIxVS0xNjJjd192SnpDbzhTRTlPNVdIbG52dVIwbU9uMHloNldrMDhrZXpXMEpLZmJuZV9Nd1llOWhvbmVCVEVCSFphNnBpOUI1enZBVmxuQU1PM2YycDZTd2I3Y0pyVEFIaFVEWU1LLWtTTDB6TQ?oc=5",
+     "s": "TradingKey",
+     "d": "2026-10-15"
+    },
+    {
+     "t": "Gilead Sciences Inc (GILD) 주식 움직였습니다 상승 3.12%에 10월14일: 전체 분석",
+     "u": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQX29MNzZuZTdkTDdSVTV5bkdYNmR1Mm51MWZpUFlVcjhrQ0tGbFpfYlJpUUFMa1BKTHRuR2N0bEtlZXFnOHo0Q0pHS0E2N3ZmNXhYYVUwUDFZUTZPVV9leWNxWUJjeFU2ZXJrRGgzbms2cWc3cjFXUHhWWWdCRlpTdVk2WE1jWVoyNi1TVzh5Yw?oc=5",
+     "s": "TradingKey",
+     "d": "2026-10-14"
+    }
+   ]
   },
   {
    "date": "2026-10-29",
@@ -3837,8 +3201,22 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "9",
-   "mktcap": "$126B",
-   "importance": 3
+   "mktcap": "$125B",
+   "importance": 3,
+   "articles": [
+    {
+     "t": "BMS Halts ORM-6151; Orum’s Next DAC Steps Up",
+     "u": "https://news.google.com/rss/articles/CBMia0FVX3lxTE1EOFdpTHQ3clZBa2djRTQ2aTdiVlBoY0x6OHNrOHdDQWppc2hIUGk1ZlEtUHk3alNDMHJ1bXFEVUgwd2hqZXJPajN6X08yLXZ1NDFRbC1VcmwwNWNXMUZKVXVxem9PVHBrTDRj?oc=5",
+     "s": "히트뉴스",
+     "d": "2026-09-28"
+    },
+    {
+     "t": "브리스톨-마이어스 스큅(BMY)에 대한 투자 논거, 혼합된 임상 시험 결과로 인해 바뀔 수도 있다",
+     "u": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPa2VHbHowbnR3MWQzYkJtOGJvQU1CRXZ6SHhHZ0ptRDlRdkZmWmp3bWxJUnVqOG5tRjAyWHRzSUxLbG5KaWY1dDM2b0lnOXh3N2tYOUxVTmxFSS00aWxwNWNKRFljZS1XdlhKaVhQeUY0SVNyUEthSTVxcGM3TTBhU3EyMzdXSnNfMkxHdFJNNW1jdUlEN283Y1pEMGJXRGF0TWFabHpqMGlyWGdwalJMLTd0dkXSAbQBQVVfeXFMT2tlR2x6MG50dzFkM2JCbThib0FNQkV2ekh4R2dKbUQ5UXZGZlpqd21sSVJ1ajhubUYwMlh0c0lMS2xuSmlmNXQzNm9JZzl4dzdrWDlMVU5sRUktNGlscDVjSkRZY2UtV3ZYSmlYUHlGNElTclBLYUk1cXBjN00wYVNxMjM3V0pzXzJMR3RSTTVtY3VJRDdvN2NaRDBiV0RhdE1hWmx6ajBpclhncGpSTC03dHZF?oc=5",
+     "s": "Simply Wall Street",
+     "d": "2026-10-15"
+    }
+   ]
   },
   {
    "date": "2026-10-29",
@@ -3854,8 +3232,22 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "5",
-   "mktcap": "$125B",
-   "importance": 3
+   "mktcap": "$123B",
+   "importance": 3,
+   "articles": [
+    {
+     "t": "Altria Group Inc (MO) 주식 움직였습니다 상승 3.45%에 10월8일: 핵심 원인 공개",
+     "u": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQX015eFpxQk1TX2JXbzNPbFdkSFRUMlBjeldxeGx1RTdWSlNjeGZLRHlINDViT2p4Q1JUM3doWkJqR29mVTJRbkViaXYySjRvMHc4Q3h0Ynl2WXhSM1NyZi02eFRPaGg3dUR6ZjQxVVVnSUs0Q3dvLXExbTBvLTlFMy1jOVk1YTMyVnc3dA?oc=5",
+     "s": "TradingKey",
+     "d": "2026-10-08"
+    },
+    {
+     "t": "알트리아 그룹(MO)의 주가가 실적 대비 프리미엄을 기록할 수 있을까?",
+     "u": "https://news.google.com/rss/articles/CBMioAFBVV95cUxPNFhPbmxocVg3SWpsT1U4VXY2aXlXN0dFZzhJbElhRHZ1dXNRQzl6VjYzMzN1d1ZfeGVCejZNTkVEYVh5algwZTJhNGQ3dFEzUUN3RmtWUXhIU1FtQ2doRUxzQVBEdldmdmtaNkdfV201N2xxSzFJemk4dEN6TzFSV0taMlEtME1neDNMVW9vTmxBcFVUWjdyLVpJVkpTQkph0gGmAUFVX3lxTE05a1M3U1dmd1JUb1ZQVU91RmJTbzB5QXFBa0tJaVRBWXhDLUFvbUp2Y2UxRUZtZTlKWGxFRy02MXZramJMOHFSX0ZNaXBOeE1RZXZCbktlYTRXYUhBNXhlelp4bU55aElkclhMY0NoeFVTc0s2a1MxTDlGTEM2eEFJU1Jucl9GSklYa0hFRDNmTWdJQWJYOUtzOHVYd1BNdXU5MGZPRXc?oc=5",
+     "s": "Simply Wall Street",
+     "d": "2026-10-03"
+    }
+   ]
   },
   {
    "date": "2026-10-29",
@@ -3871,7 +3263,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "9",
-   "mktcap": "$117B",
+   "mktcap": "$114B",
    "importance": 3
   },
   {
@@ -4105,12 +3497,12 @@
    "title": "ExxonMobil Holdings",
    "ticker": "XOM",
    "session": "장 시작 전",
-   "eps_est": "$3.93",
+   "eps_est": "$3.96",
    "eps_prev": "$1.88",
    "eps_actual": "",
    "surprise": "",
    "n_ests": "7",
-   "mktcap": "$731B",
+   "mktcap": "$732B",
    "importance": 3
   },
   {
@@ -4127,7 +3519,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "5",
-   "mktcap": "$511B",
+   "mktcap": "$503B",
    "importance": 3
   },
   {
@@ -4144,7 +3536,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "7",
-   "mktcap": "$446B",
+   "mktcap": "$448B",
    "importance": 3
   },
   {
@@ -4195,7 +3587,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "9",
-   "mktcap": "$75B",
+   "mktcap": "$74B",
    "importance": 2
   },
   {
@@ -4224,7 +3616,7 @@
    "title": "Exelon",
    "ticker": "EXC",
    "session": "장 시작 전",
-   "eps_est": "$0.80",
+   "eps_est": "$0.81",
    "eps_prev": "$0.86",
    "eps_actual": "",
    "surprise": "",
@@ -4263,7 +3655,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "6",
-   "mktcap": "$21B",
+   "mktcap": "$20B",
    "importance": 2
   },
   {
@@ -4465,7 +3857,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "8",
-   "mktcap": "$4.95T",
+   "mktcap": "$5.02T",
    "importance": 3
   },
   {
@@ -4482,7 +3874,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "9",
-   "mktcap": "$463B",
+   "mktcap": "$485B",
    "importance": 3
   },
   {
@@ -4499,7 +3891,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "5",
-   "mktcap": "$130B",
+   "mktcap": "$133B",
    "importance": 3
   },
   {
@@ -4511,12 +3903,12 @@
    "title": "Marriott International",
    "ticker": "MAR",
    "session": "장 시작 전",
-   "eps_est": "$2.84",
+   "eps_est": "$2.85",
    "eps_prev": "$2.47",
    "eps_actual": "",
    "surprise": "",
    "n_ests": "8",
-   "mktcap": "$104B",
+   "mktcap": "$105B",
    "importance": 3
   },
   {
@@ -4533,7 +3925,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "8",
-   "mktcap": "$86B",
+   "mktcap": "$89B",
    "importance": 2
   },
   {
@@ -4545,12 +3937,12 @@
    "title": "Diamondback Energy",
    "ticker": "FANG",
    "session": "장 마감 후",
-   "eps_est": "$4.74",
+   "eps_est": "$4.80",
    "eps_prev": "$3.08",
    "eps_actual": "",
    "surprise": "",
    "n_ests": "8",
-   "mktcap": "$57B",
+   "mktcap": "$56B",
    "importance": 2
   },
   {
@@ -4562,12 +3954,12 @@
    "title": "Realty Income",
    "ticker": "O",
    "session": "장 마감 후",
-   "eps_est": "$1.11",
+   "eps_est": "$1.10",
    "eps_prev": "$1.08",
    "eps_actual": "",
    "surprise": "",
    "n_ests": "7",
-   "mktcap": "$53B",
+   "mktcap": "$52B",
    "importance": 2
   },
   {
@@ -4584,7 +3976,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "5",
-   "mktcap": "$49B",
+   "mktcap": "$50B",
    "importance": 2
   },
   {
@@ -4619,6 +4011,40 @@
    "surprise": "",
    "n_ests": "10",
    "mktcap": "$38B",
+   "importance": 2
+  },
+  {
+   "date": "2026-11-02",
+   "time": "",
+   "mk": "us",
+   "type": "earnings",
+   "index": "S&P500",
+   "title": "Kenvue",
+   "ticker": "KVUE",
+   "session": "시간 미정",
+   "eps_est": "$0.28",
+   "eps_prev": "$0.28",
+   "eps_actual": "",
+   "surprise": "",
+   "n_ests": "4",
+   "mktcap": "$37B",
+   "importance": 2
+  },
+  {
+   "date": "2026-11-02",
+   "time": "",
+   "mk": "us",
+   "type": "earnings",
+   "index": "S&P500",
+   "title": "Public Service Enterprise Group Incorporated",
+   "ticker": "PEG",
+   "session": "장 시작 전",
+   "eps_est": "$1.21",
+   "eps_prev": "$1.13",
+   "eps_actual": "",
+   "surprise": "",
+   "n_ests": "4",
+   "mktcap": "$35B",
    "importance": 2
   },
   {
@@ -4710,7 +4136,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "13",
-   "mktcap": "$873B",
+   "mktcap": "$902B",
    "importance": 3
   },
   {
@@ -4744,7 +4170,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "9",
-   "mktcap": "$229B",
+   "mktcap": "$232B",
    "importance": 3
   },
   {
@@ -4761,7 +4187,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "13",
-   "mktcap": "$224B",
+   "mktcap": "$226B",
    "importance": 3
   },
   {
@@ -4778,7 +4204,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "5",
-   "mktcap": "$172B",
+   "mktcap": "$170B",
    "importance": 3
   },
   {
@@ -4795,7 +4221,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "10",
-   "mktcap": "$148B",
+   "mktcap": "$153B",
    "importance": 3
   },
   {
@@ -4812,7 +4238,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "5",
-   "mktcap": "$133B",
+   "mktcap": "$131B",
    "importance": 3
   },
   {
@@ -4824,12 +4250,12 @@
    "title": "Booking Holdings",
    "ticker": "BKNG",
    "session": "장 마감 후",
-   "eps_est": "$4.48",
+   "eps_est": "$4.47",
    "eps_prev": "$3.98",
    "eps_actual": "",
    "surprise": "",
    "n_ests": "11",
-   "mktcap": "$123B",
+   "mktcap": "$119B",
    "importance": 3
   },
   {
@@ -5002,7 +4428,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "7",
-   "mktcap": "$235B",
+   "mktcap": "$241B",
    "importance": 3
   },
   {
@@ -5019,7 +4445,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "9",
-   "mktcap": "$185B",
+   "mktcap": "$187B",
    "importance": 3
   },
   {
@@ -5053,7 +4479,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "7",
-   "mktcap": "$141B",
+   "mktcap": "$138B",
    "importance": 3
   },
   {
@@ -5070,7 +4496,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "9",
-   "mktcap": "$121B",
+   "mktcap": "$120B",
    "importance": 3
   },
   {
@@ -5087,25 +4513,8 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "6",
-   "mktcap": "$120B",
+   "mktcap": "$118B",
    "importance": 3
-  },
-  {
-   "date": "2026-11-04",
-   "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "NASDAQ100",
-   "title": "MercadoLibre",
-   "ticker": "MELI",
-   "session": "시간 미정",
-   "eps_est": "$9.41",
-   "eps_prev": "$8.32",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "3",
-   "mktcap": "$95B",
-   "importance": 2
   },
   {
    "date": "2026-11-04",
@@ -5121,7 +4530,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "9",
-   "mktcap": "$92B",
+   "mktcap": "$98B",
    "importance": 2
   },
   {
@@ -5129,16 +4538,16 @@
    "time": "",
    "mk": "us",
    "type": "earnings",
-   "index": "S&P500",
-   "title": "Applovin",
-   "ticker": "APP",
-   "session": "장 마감 후",
-   "eps_est": "$3.94",
-   "eps_prev": "$2.45",
+   "index": "NASDAQ100",
+   "title": "MercadoLibre",
+   "ticker": "MELI",
+   "session": "시간 미정",
+   "eps_est": "$9.41",
+   "eps_prev": "$8.32",
    "eps_actual": "",
    "surprise": "",
-   "n_ests": "9",
-   "mktcap": "$91B",
+   "n_ests": "3",
+   "mktcap": "$94B",
    "importance": 2
   },
   {
@@ -5155,6 +4564,23 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "7",
+   "mktcap": "$91B",
+   "importance": 2
+  },
+  {
+   "date": "2026-11-04",
+   "time": "",
+   "mk": "us",
+   "type": "earnings",
+   "index": "S&P500",
+   "title": "Applovin",
+   "ticker": "APP",
+   "session": "장 마감 후",
+   "eps_est": "$3.94",
+   "eps_prev": "$2.45",
+   "eps_actual": "",
+   "surprise": "",
+   "n_ests": "9",
    "mktcap": "$90B",
    "importance": 2
   },
@@ -5287,7 +4713,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "9",
-   "mktcap": "$138B",
+   "mktcap": "$137B",
    "importance": 3
   },
   {
@@ -5298,13 +4724,13 @@
    "index": "S&P500",
    "title": "Parker-Hannifin",
    "ticker": "PH",
-   "session": "시간 미정",
+   "session": "장 시작 전",
    "eps_est": "$8.23",
    "eps_prev": "$7.22",
    "eps_actual": "",
    "surprise": "",
    "n_ests": "6",
-   "mktcap": "$119B",
+   "mktcap": "$121B",
    "importance": 3
   },
   {
@@ -5321,7 +4747,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "12",
-   "mktcap": "$106B",
+   "mktcap": "$104B",
    "importance": 3
   },
   {
@@ -5374,7 +4800,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "6",
-   "mktcap": "$95B",
+   "mktcap": "$94B",
    "importance": 2
   },
   {
@@ -5408,7 +4834,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "7",
-   "mktcap": "$81B",
+   "mktcap": "$80B",
    "importance": 2
   },
   {
@@ -5425,7 +4851,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "6",
-   "mktcap": "$75B",
+   "mktcap": "$77B",
    "importance": 2
   },
   {
@@ -5442,7 +4868,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "7",
-   "mktcap": "$74B",
+   "mktcap": "$75B",
    "importance": 2
   },
   {
@@ -5553,7 +4979,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "2",
-   "mktcap": "$1.16T",
+   "mktcap": "$1.17T",
    "importance": 3
   },
   {
@@ -5570,7 +4996,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "7",
-   "mktcap": "$97B",
+   "mktcap": "$98B",
    "importance": 2
   },
   {
@@ -5582,12 +5008,29 @@
    "title": "Constellation Energy",
    "ticker": "CEG",
    "session": "시간 미정",
-   "eps_est": "$3.99",
+   "eps_est": "$3.82",
    "eps_prev": "$3.04",
    "eps_actual": "",
    "surprise": "",
    "n_ests": "3",
-   "mktcap": "$92B",
+   "mktcap": "$96B",
+   "importance": 2
+  },
+  {
+   "date": "2026-11-06",
+   "time": "",
+   "mk": "us",
+   "type": "earnings",
+   "index": "S&P500",
+   "title": "Vistra Corp.",
+   "ticker": "VST",
+   "session": "장 시작 전",
+   "eps_est": "$2.86",
+   "eps_prev": "$1.75",
+   "eps_actual": "",
+   "surprise": "",
+   "n_ests": "3",
+   "mktcap": "$52B",
    "importance": 2
   },
   {
@@ -5610,23 +5053,6 @@
   {
    "date": "2026-11-06",
    "time": "",
-   "mk": "us",
-   "type": "earnings",
-   "index": "S&P500",
-   "title": "Vistra Corp.",
-   "ticker": "VST",
-   "session": "장 시작 전",
-   "eps_est": "$2.86",
-   "eps_prev": "$1.75",
-   "eps_actual": "",
-   "surprise": "",
-   "n_ests": "3",
-   "mktcap": "$50B",
-   "importance": 2
-  },
-  {
-   "date": "2026-11-06",
-   "time": "",
    "et": "",
    "mk": "kr",
    "type": "earnings",
@@ -5635,7 +5061,7 @@
    "market": "KOSPI",
    "index": "KOSPI",
    "session": "",
-   "eps_est": "468원",
+   "eps_est": "467원",
    "eps_prev": "278원",
    "eps_actual": "",
    "surprise": "",
@@ -5685,12 +5111,12 @@
    "title": "KKR & Co.",
    "ticker": "KKR",
    "session": "장 시작 전",
-   "eps_est": "$1.43",
+   "eps_est": "$1.41",
    "eps_prev": "$1.22",
    "eps_actual": "",
    "surprise": "",
-   "n_ests": "6",
-   "mktcap": "$80B",
+   "n_ests": "7",
+   "mktcap": "$81B",
    "importance": 2
   },
   {
@@ -5708,6 +5134,23 @@
    "surprise": "",
    "n_ests": "9",
    "mktcap": "$63B",
+   "importance": 2
+  },
+  {
+   "date": "2026-11-09",
+   "time": "",
+   "mk": "us",
+   "type": "earnings",
+   "index": "S&P500",
+   "title": "Skydance",
+   "ticker": "SKYD",
+   "session": "장 마감 후",
+   "eps_est": "$0.11",
+   "eps_prev": "",
+   "eps_actual": "",
+   "surprise": "",
+   "n_ests": "3",
+   "mktcap": "$40B",
    "importance": 2
   },
   {
@@ -5752,13 +5195,13 @@
    "index": "NASDAQ100",
    "title": "Rocket Lab",
    "ticker": "RKLB",
-   "session": "시간 미정",
+   "session": "장 마감 후",
    "eps_est": "($0.05)",
    "eps_prev": "($0.01)",
    "eps_actual": "",
    "surprise": "",
    "n_ests": "2",
-   "mktcap": "$32B",
+   "mktcap": "$34B",
    "importance": 2
   },
   {
@@ -5881,7 +5324,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "8",
-   "mktcap": "$421B",
+   "mktcap": "$423B",
    "importance": 3
   },
   {
@@ -5898,7 +5341,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "5",
-   "mktcap": "$63B",
+   "mktcap": "$62B",
    "importance": 2
   },
   {
@@ -5915,7 +5358,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "2",
-   "mktcap": "$49B",
+   "mktcap": "$50B",
    "importance": 2
   },
   {
@@ -5951,7 +5394,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "10",
-   "mktcap": "$321B",
+   "mktcap": "$325B",
    "importance": 3
   },
   {
@@ -5987,7 +5430,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "11",
-   "mktcap": "$314B",
+   "mktcap": "$313B",
    "importance": 3
   },
   {
@@ -6021,7 +5464,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "8",
-   "mktcap": "$121B",
+   "mktcap": "$119B",
    "importance": 3
   },
   {
@@ -6038,7 +5481,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "2",
-   "mktcap": "$116B",
+   "mktcap": "$112B",
    "importance": 3
   },
   {
@@ -6055,7 +5498,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "13",
-   "mktcap": "$5.22T",
+   "mktcap": "$5.35T",
    "importance": 3
   },
   {
@@ -6072,7 +5515,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "14",
-   "mktcap": "$278B",
+   "mktcap": "$284B",
    "importance": 3
   },
   {
@@ -6089,7 +5532,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "7",
-   "mktcap": "$162B",
+   "mktcap": "$160B",
    "importance": 3
   },
   {
@@ -6106,7 +5549,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "11",
-   "mktcap": "$111B",
+   "mktcap": "$110B",
    "importance": 3
   },
   {
@@ -6123,7 +5566,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "12",
-   "mktcap": "$70B",
+   "mktcap": "$69B",
    "importance": 2
   },
   {
@@ -6173,7 +5616,7 @@
    "eps_prev": "$1.88",
    "eps_actual": "",
    "surprise": "",
-   "n_ests": "10",
+   "n_ests": "9",
    "mktcap": "$90B",
    "importance": 2
   },
@@ -6191,7 +5634,7 @@
    "eps_actual": "",
    "surprise": "",
    "n_ests": "7",
-   "mktcap": "$76B",
+   "mktcap": "$75B",
    "importance": 2
   },
   {
