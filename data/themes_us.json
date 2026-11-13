@@ -1,5 +1,5 @@
 {
- "_updated": "2026-11-13T13:48:23",
+ "_updated": "2026-11-13T23:09:22",
  "mkt": "us",
  "benchmark": "S&P 500",
  "riskOff": false,
@@ -10,56 +10,56 @@
    "nm": "AI · 반도체",
    "desk": "Semis 데스크",
    "thesis": "가속컴퓨팅 전환으로 AI 인프라 CapEx가 반도체 이익에 집중",
-   "op": "op-hold",
-   "opTxt": "중립",
+   "op": "op-sell",
+   "opTxt": "비중축소",
    "warns": [],
    "conf": 57,
    "confBand": "보통",
-   "score": -22,
+   "score": -30,
    "pts": [
-    "최근 6개월 -1.5% · S&P 500 대비 -2.8%p — 지수 하회 (12개월 +44.0%)",
-    "구성 4종목 중 2개 50일선 위 · 1개 3개월 상승 — 폭 38%, 참여 제한적",
-    "52주 고점 대비 -14.2% · 20일 이격 +3.0% · 변동성 지수 대비 3.4배 — 종합 -22/100 (리스크 −10)"
+    "최근 6개월 -2.4% · S&P 500 대비 -4.4%p — 지수 하회 (12개월 +35.8%)",
+    "구성 4종목 중 1개 50일선 위 · 1개 3개월 상승 — 폭 25%, 참여 제한적",
+    "52주 고점 대비 -18.7% · 20일 이격 -2.1% · 변동성 지수 대비 3.5배 — 종합 -30/100 (리스크 −10)"
    ],
-   "perf": 1.29,
+   "perf": -4.3,
    "lead": {
-    "name": "AMD",
-    "pct": 5.86
+    "name": "TSMC",
+    "pct": -1.67
    },
    "picks": [
     {
      "name": "엔비디아",
-     "pct": -4.34
+     "pct": -2.01
     },
     {
      "name": "브로드컴",
-     "pct": 5.54
+     "pct": -4.76
     },
     {
      "name": "AMD",
-     "pct": 5.86
+     "pct": -8.75
     },
     {
      "name": "TSMC",
-     "pct": -1.9
+     "pct": -1.67
     }
    ],
    "cat": {
     "ti": "Applied Materials forecasts quarterly revenue above estimates on strong AI chip demand",
     "link": "https://news.google.com/rss/articles/CBMivgFBVV95cUxNeVJYSC1hal9odmptblkwc25YV0pZQXBaaTd0SGFyMW5tT1ZtNzZaTlN0OGFnY2I0dnI3ZmZRaXpwUThvZW5kay1tMElieklOVVZLTDFBTmtQbkpiSWpUZzlLNnZPRmlJSkxoWVZhZGlveTdzNjVsN0ZtZUVMMnk2REQtYmRHRzQwMDhNMVBYQXVQbjBpcHNNYnFWWldTbUItYV9pT1hMYkwwZi1jS0pvZXp4eHJhbHE4OEp6RW13?oc=5",
     "src": "Reuters",
-    "tm": "14시간 전"
+    "tm": "23시간 전"
    },
    "metrics": {
-    "r126": -0.0155,
-    "rs": -0.0276,
-    "breadth": 0.375,
-    "ext20": 0.0299,
-    "rsi14": 51.7,
-    "volRatio": 3.42,
-    "curDD": -0.1423,
+    "r126": -0.0235,
+    "rs": -0.0442,
+    "breadth": 0.25,
+    "ext20": -0.0209,
+    "rsi14": 46.1,
+    "volRatio": 3.52,
+    "curDD": -0.1866,
     "penalty": 10,
-    "driver": -12
+    "driver": -20
    }
   },
   {
@@ -68,54 +68,56 @@
    "thesis": "AI 수익화 초기 국면 — 클라우드·광고 현금흐름이 투자를 뒷받침",
    "op": "op-hold",
    "opTxt": "중립",
-   "warns": [],
-   "conf": 48,
-   "confBand": "보통",
-   "score": 0,
-   "pts": [
-    "최근 6개월 +2.1% · S&P 500 대비 +0.9%p — 시장 수준 (12개월 +3.3%)",
-    "구성 4종목 중 1개 50일선 위 · 2개 3개월 상승 — 폭 38%, 참여 제한적",
-    "52주 고점 대비 -14.2% · 20일 이격 -3.1% · 변동성 지수 대비 1.6배 — 종합 +0/100 (리스크 −1)"
+   "warns": [
+    "지수 동반 상승 — 초과성과 없음"
    ],
-   "perf": 0.21,
+   "conf": 41,
+   "confBand": "낮음",
+   "score": -1,
+   "pts": [
+    "최근 6개월 +1.9% · S&P 500 대비 -0.2%p — 시장 수준 (12개월 +2.9%)",
+    "구성 4종목 중 1개 50일선 위 · 2개 3개월 상승 — 폭 38%, 참여 제한적",
+    "52주 고점 대비 -14.2% · 20일 이격 -2.7% · 변동성 지수 대비 1.5배 — 종합 -1/100 (리스크 −0)"
+   ],
+   "perf": 0.0,
    "lead": {
-    "name": "알파벳",
-    "pct": 1.79
+    "name": "메타",
+    "pct": 2.9
    },
    "picks": [
     {
      "name": "마이크로소프트",
-     "pct": 0.36
+     "pct": 0.17
     },
     {
      "name": "알파벳",
-     "pct": 1.79
+     "pct": -0.98
     },
     {
      "name": "메타",
-     "pct": -0.82
+     "pct": 2.9
     },
     {
      "name": "팔란티어",
-     "pct": -0.48
+     "pct": -2.09
     }
    ],
    "cat": {
-    "ti": "AI software is sinking, why is Accenture winning $84.5B deals?",
-    "link": "https://news.google.com/rss/articles/CBMiigFBVV95cUxOMVVqdFMxNW53N2U4cEJlb2JsV0lfbVc4dDBibDZQT20zeFJORUJ6bW5mejJROHZWTzRPREk5N3A3UHRDZWVObDE5UnRCdzNDYktGY0hZaVlUV0o0SFIydVlkdFd2aVVTOE9jdUE3R1l1T3dTeldvVDZHLVU2eS04NGE0VU5zMHBiaWc?oc=5",
-    "src": "Yahoo! Finance Canada",
+    "ti": "SCKit abuses ScreenConnect to deploy remote access and target technician sessions",
+    "link": "https://news.google.com/rss/articles/CBMizAFBVV95cUxPZmdrWTA0R1pVbTYtTjZBN3AyWV9SMm1YMURvc3lVbnl3OXFwLWp5TXhfUjJKVVdpMGdKcFo4SDhBTTNkSWxRV0dpcGRXNDY5QjN0WmhpbkV5OTRqbG8yS0I2SnhUeDJjYk1OOEZKb0dYcTVubkpnZzVzck1OMEhRWjk5c1Q3cWtMUWd3SmZ6TmpSZjJfTXRZNlY2ckIxN3d2cnZIRmY2N19sWlBYQUMzM3plMk9sU2UwWm1FbktuaWlwRkliNnZDZlg0Ukg?oc=5",
+    "src": "Microsoft",
     "tm": "1시간 전"
    },
    "metrics": {
-    "r126": 0.0214,
-    "rs": 0.0092,
+    "r126": 0.0185,
+    "rs": -0.0021,
     "breadth": 0.375,
-    "ext20": -0.0313,
+    "ext20": -0.0268,
     "rsi14": 41.0,
-    "volRatio": 1.55,
-    "curDD": -0.1416,
-    "penalty": 1,
-    "driver": 1
+    "volRatio": 1.47,
+    "curDD": -0.1419,
+    "penalty": 0,
+    "driver": -1
    }
   },
   {
@@ -129,51 +131,51 @@
    ],
    "conf": 85,
    "confBand": "높음",
-   "score": -100,
+   "score": -94,
    "pts": [
-    "최근 6개월 -16.5% · S&P 500 대비 -17.8%p — 지수 하회 (12개월 -8.0%)",
-    "구성 4종목 중 1개 50일선 위 · 0개 3개월 상승 — 폭 13%, 참여 제한적",
-    "52주 고점 대비 -25.1% · 20일 이격 -0.1% · 변동성 지수 대비 3.2배 — 종합 -100/100 (리스크 −10)"
+    "최근 6개월 -14.6% · S&P 500 대비 -16.7%p — 지수 하회 (12개월 -10.9%)",
+    "구성 4종목 중 1개 50일선 위 · 1개 3개월 상승 — 폭 25%, 참여 제한적",
+    "52주 고점 대비 -26.0% · 20일 이격 -0.9% · 변동성 지수 대비 3.3배 — 종합 -94/100 (리스크 −10)"
    ],
-   "perf": 1.35,
+   "perf": -1.18,
    "lead": {
     "name": "콘스텔레이션",
-    "pct": 2.79
+    "pct": -0.78
    },
    "picks": [
     {
      "name": "GE버노바",
-     "pct": 1.27
+     "pct": -1.88
     },
     {
      "name": "비스트라",
-     "pct": 0.79
+     "pct": -1.12
     },
     {
      "name": "콘스텔레이션",
-     "pct": 2.79
+     "pct": -0.78
     },
     {
      "name": "NRG에너지",
-     "pct": 0.56
+     "pct": -0.97
     }
    ],
    "cat": {
-    "ti": "Constellation and Vistra Get the Headlines. These 2 Power Producers Barely Get Mentioned.",
-    "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQaFZaYy02M0tXVWpiOXpEaTNGWGk1R0pCbFZDVThhZGEtSkxiRHU0cmNMVXpwR1NuVU9rZTlHb3dheTNlR0dsajN1Vy1CdGVERXozOHdfU1BNS196Qi1EV2IxbHBodDhqdTh1Vjk0UFgzXzQxbWhSR3ZYcG5KUFczSEpDSGd4OWliSVYtMTRlb2JMamlmVmtaZg?oc=5",
-    "src": "The Motley Fool",
-    "tm": "2일 전"
+    "ti": "Vistra Holds Steady on Growth Outlook After Texas Election Shakes Shares",
+    "link": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNQk42UW5OcUZLaV8zNDBjQi11N2xkTUxhWUFzYllUekNKQXVaSjYyYkhEdFhnRmt3d3lMeEFpenQ5bndscXI3S2tTR2VRM0JMNFF1NGpBRXVvcDVlRGR6VzZzOXJtZnNFdUk4ZnlNa1BsNWFoQlVYdHJIVU5MVWJqdjRsdnAtd2t4eGtxTU1BVVRnQQ?oc=5",
+    "src": "Hart Energy",
+    "tm": "2시간 전"
    },
    "metrics": {
-    "r126": -0.1654,
-    "rs": -0.1776,
-    "breadth": 0.125,
-    "ext20": -0.001,
-    "rsi14": 48.1,
-    "volRatio": 3.21,
-    "curDD": -0.2506,
+    "r126": -0.1463,
+    "rs": -0.167,
+    "breadth": 0.25,
+    "ext20": -0.009,
+    "rsi14": 46.7,
+    "volRatio": 3.26,
+    "curDD": -0.2605,
     "penalty": 10,
-    "driver": -91
+    "driver": -84
    }
   },
   {
@@ -183,53 +185,53 @@
    "op": "op-buy",
    "opTxt": "비중확대",
    "warns": [],
-   "conf": 57,
+   "conf": 67,
    "confBand": "보통",
-   "score": 30,
+   "score": 37,
    "pts": [
-    "최근 6개월 +9.2% · S&P 500 대비 +8.0%p — 지수 상회 (12개월 +12.6%)",
-    "구성 4종목 중 4개 50일선 위 · 0개 3개월 상승 — 폭 50%, 참여 보통",
-    "52주 고점 대비 -12.4% · 20일 이격 +1.0% · 변동성 지수 대비 1.5배 — 종합 +30/100 (리스크 −0)"
+    "최근 6개월 +10.7% · S&P 500 대비 +8.6%p — 지수 상회 (12개월 +11.3%)",
+    "구성 4종목 중 4개 50일선 위 · 1개 3개월 상승 — 폭 63%, 참여 광범위",
+    "52주 고점 대비 -12.6% · 20일 이격 +0.5% · 변동성 지수 대비 1.4배 — 종합 +37/100 (리스크 −0)"
    ],
-   "perf": -0.97,
+   "perf": -0.22,
    "lead": {
     "name": "노스롭그루먼",
-    "pct": -0.33
+    "pct": 0.24
    },
    "picks": [
     {
      "name": "RTX",
-     "pct": -1.46
+     "pct": 0.11
     },
     {
      "name": "록히드마틴",
-     "pct": -0.98
+     "pct": -1.33
     },
     {
      "name": "노스롭그루먼",
-     "pct": -0.33
+     "pct": 0.24
     },
     {
      "name": "제너럴다이내믹스",
-     "pct": -1.13
+     "pct": 0.11
     }
    ],
    "cat": {
     "ti": "EXCLUSIVE: Japan warns arms suppliers of deep cuts to expected orders due to budget squeeze, sources say",
     "link": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxPVHpSM2d5bFdOQ0pfSU9rT3FuUjU3RmQ4aGxYTENXOC1Yak5CVUZfNndFOHdBRWxUb0p0OWpTd3l3OXVQZ2MzdEZPZ3hMbElJTlhhS3AzNXBfTk1nOUpfZHVWZjhnX3hFdVJRYWhUcTI2Q3hyVEltTTlON2FSeWNXQk12RTZZdFZGMm91WFV6SER0aXFweWNNUmQyZ0gyd3prcmVvNTBuXzJyTlNNbTZ1blpCc2FVNVRmd0hDeXBwOXJqajQ2d2J6cEQzNV8yRXdaeXJMc2d1aw?oc=5",
     "src": "Reuters",
-    "tm": "13시간 전"
+    "tm": "22시간 전"
    },
    "metrics": {
-    "r126": 0.0921,
-    "rs": 0.08,
-    "breadth": 0.5,
-    "ext20": 0.0103,
-    "rsi14": 56.2,
-    "volRatio": 1.5,
-    "curDD": -0.1237,
+    "r126": 0.1067,
+    "rs": 0.0861,
+    "breadth": 0.625,
+    "ext20": 0.0048,
+    "rsi14": 55.4,
+    "volRatio": 1.43,
+    "curDD": -0.1264,
     "penalty": 0,
-    "driver": 30
+    "driver": 37
    }
   },
   {
@@ -239,35 +241,35 @@
    "op": "op-buy",
    "opTxt": "비중확대",
    "warns": [],
-   "conf": 96,
+   "conf": 97,
    "confBand": "높음",
-   "score": 92,
+   "score": 95,
    "pts": [
-    "최근 6개월 +17.0% · S&P 500 대비 +15.8%p — 지수 상회 (12개월 +17.7%)",
+    "최근 6개월 +19.1% · S&P 500 대비 +17.0%p — 지수 상회 (12개월 +20.2%)",
     "구성 4종목 중 4개 50일선 위 · 3개 3개월 상승 — 폭 88%, 참여 광범위",
-    "52주 고점 대비 -0.8% · 20일 이격 +2.4% · 변동성 지수 대비 1.1배 — 종합 +92/100 (리스크 −0)"
+    "52주 고점 대비 +0.0% · 20일 이격 +3.0% · 변동성 지수 대비 1.1배 — 종합 +95/100 (리스크 −0)"
    ],
-   "perf": -0.35,
+   "perf": 1.08,
    "lead": {
-    "name": "유나이티드헬스",
-    "pct": 0.54
+    "name": "노보노디스크",
+    "pct": 2.41
    },
    "picks": [
     {
      "name": "일라이릴리",
-     "pct": -0.7
+     "pct": 1.14
     },
     {
      "name": "노보노디스크",
-     "pct": -1.07
+     "pct": 2.41
     },
     {
      "name": "유나이티드헬스",
-     "pct": 0.54
+     "pct": 0.58
     },
     {
      "name": "애브비",
-     "pct": -0.18
+     "pct": 0.2
     }
    ],
    "cat": {
@@ -277,55 +279,53 @@
     "tm": "1일 전"
    },
    "metrics": {
-    "r126": 0.1702,
-    "rs": 0.1581,
+    "r126": 0.1907,
+    "rs": 0.1701,
     "breadth": 0.875,
-    "ext20": 0.0241,
-    "rsi14": 62.4,
-    "volRatio": 1.1,
-    "curDD": -0.0077,
+    "ext20": 0.0304,
+    "rsi14": 64.8,
+    "volRatio": 1.11,
+    "curDD": 0.0,
     "penalty": 0,
-    "driver": 92
+    "driver": 95
    }
   },
   {
    "nm": "금융 · 은행",
    "desk": "금융 데스크",
    "thesis": "금리 하강기 순이자마진 둔화 vs 자본시장 수수료·자사주 매입",
-   "op": "op-sell",
-   "opTxt": "비중축소",
-   "warns": [
-    "지수 동반 상승 — 초과성과 없음"
-   ],
-   "conf": 57,
-   "confBand": "보통",
-   "score": -35,
+   "op": "op-hold",
+   "opTxt": "중립",
+   "warns": [],
+   "conf": 42,
+   "confBand": "낮음",
+   "score": -30,
    "pts": [
-    "최근 6개월 +1.2% · S&P 500 대비 -0.0%p — 시장 수준 (12개월 +8.5%)",
+    "최근 6개월 +3.1% · S&P 500 대비 +1.0%p — 시장 수준 (12개월 +10.8%)",
     "구성 4종목 중 1개 50일선 위 · 0개 3개월 상승 — 폭 13%, 참여 제한적",
-    "52주 고점 대비 -14.8% · 20일 이격 +1.3% · 변동성 지수 대비 1.4배 — 종합 -35/100 (리스크 −0)"
+    "52주 고점 대비 -14.2% · 20일 이격 +1.9% · 변동성 지수 대비 1.4배 — 종합 -30/100 (리스크 −0)"
    ],
-   "perf": -0.67,
+   "perf": 0.77,
    "lead": {
-    "name": "JP모건",
-    "pct": -0.17
+    "name": "뱅크오브아메리카",
+    "pct": 1.01
    },
    "picks": [
     {
      "name": "JP모건",
-     "pct": -0.17
+     "pct": 0.98
     },
     {
      "name": "골드만삭스",
-     "pct": -1.43
+     "pct": 0.32
     },
     {
      "name": "뱅크오브아메리카",
-     "pct": -0.32
+     "pct": 1.01
     },
     {
      "name": "모건스탠리",
-     "pct": -0.76
+     "pct": 0.78
     }
    ],
    "cat": {
@@ -335,15 +335,15 @@
     "tm": "32일 전"
    },
    "metrics": {
-    "r126": 0.0117,
-    "rs": -0.0005,
+    "r126": 0.0306,
+    "rs": 0.0099,
     "breadth": 0.125,
-    "ext20": 0.0125,
-    "rsi14": 50.1,
-    "volRatio": 1.41,
-    "curDD": -0.1485,
+    "ext20": 0.0188,
+    "rsi14": 52.2,
+    "volRatio": 1.43,
+    "curDD": -0.1418,
     "penalty": 0,
-    "driver": -35
+    "driver": -30
    }
   },
   {
@@ -353,51 +353,51 @@
    "op": "op-buy",
    "opTxt": "비중확대",
    "warns": [],
-   "conf": 86,
+   "conf": 88,
    "confBand": "높음",
    "score": 59,
    "pts": [
-    "최근 6개월 +8.2% · S&P 500 대비 +6.9%p — 지수 상회 (12개월 +44.7%)",
-    "구성 4종목 중 3개 50일선 위 · 3개 3개월 상승 — 폭 75%, 참여 광범위",
-    "52주 고점 대비 -8.0% · 20일 이격 -2.6% · 변동성 지수 대비 1.3배 — 종합 +59/100 (리스크 −0)"
+    "최근 6개월 +7.6% · S&P 500 대비 +5.5%p — 지수 상회 (12개월 +44.5%)",
+    "구성 4종목 중 4개 50일선 위 · 3개 3개월 상승 — 폭 88%, 참여 광범위",
+    "52주 고점 대비 -6.8% · 20일 이격 -1.2% · 변동성 지수 대비 1.3배 — 종합 +59/100 (리스크 −0)"
    ],
-   "perf": 1.19,
+   "perf": 1.3,
    "lead": {
-    "name": "엑슨모빌",
-    "pct": 1.84
+    "name": "셰브론",
+    "pct": 1.64
    },
    "picks": [
     {
      "name": "엑슨모빌",
-     "pct": 1.84
+     "pct": 0.48
     },
     {
      "name": "셰브론",
-     "pct": 1.44
+     "pct": 1.64
     },
     {
      "name": "코노코필립스",
-     "pct": 1.6
+     "pct": 1.59
     },
     {
      "name": "SLB",
-     "pct": -0.1
+     "pct": 1.49
     }
    ],
    "cat": {
     "ti": "Oil Prices Head for Second Weekly Loss Despite Fresh Middle East Attacks",
     "link": "https://news.google.com/rss/articles/CBMixwFBVV95cUxQTDJWQVAyQXRWT1BfUFotSHVGajZlMU5FcG1PS2VVSlNLTTRldnBvaDI1Z18xMmlUdEd2bkNVQU03YVlaNE9keWFBRnJWYTBYVWlJWVFjT0MzV0tiVGFMMDh3R2hRc2xKeXpoc0VCeVl5eERPZXBVdTZ6blRmUmQ2RHJQamEzbDdfbGNQaExiSmZtY19JVnNWb2g5TkJaSGowV2FfZGo1b3FRb0V0QkstMTJlamFsajdVRWp5RjJoVGRaUC11eFpz0gHMAUFVX3lxTFBteE9QSHZZU2dGdHNvbFhrTVNuUGVWTW9HVlBWVFNBa3RXRVRfZW9RckdWWTRKVHQ1OVMxR19pQkdkWDVuNkNtZjRIMzRWRDllc1NVUElrdWI0STkyMXBwbDdFVEZhXzE5Zm0xSU5TcEY3aTh3Z3p2MXkxQWVqYUl5T2pKaEJmOWtlUzdfUTVBYU12MnRvQWIweDAxUU40OXpUVmpZQWVpZDhralZFMU5VVlBzYlpubzNNZ054RnZiMkVnS014STdSSmdLTg?oc=5",
     "src": "Crude Oil Prices Today | OilPrice.com",
-    "tm": "8시간 전"
+    "tm": "17시간 전"
    },
    "metrics": {
-    "r126": 0.0816,
-    "rs": 0.0694,
-    "breadth": 0.75,
-    "ext20": -0.0257,
-    "rsi14": 48.2,
-    "volRatio": 1.35,
-    "curDD": -0.0802,
+    "r126": 0.0755,
+    "rs": 0.0548,
+    "breadth": 0.875,
+    "ext20": -0.0124,
+    "rsi14": 51.9,
+    "volRatio": 1.31,
+    "curDD": -0.0682,
     "penalty": 0,
     "driver": 59
    }
